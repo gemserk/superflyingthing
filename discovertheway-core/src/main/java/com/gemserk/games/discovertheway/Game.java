@@ -46,9 +46,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			camera = new Libgdx2dCameraTransformImpl();
 			world = new World(new Vector2(), false);
 
-			camera.center(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
-//			cameraData = new CameraImpl(0f, 0f, 32f, 0f);
-			cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-5f, 0f, 200f, 15f));
+			camera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 4);
+			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
+			cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, -10f, 30f, 400f));
 
 			// camera.zoom(32f);
 
@@ -61,34 +61,42 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			BodyBuilder bodyBuilder = new BodyBuilder(world);
 			body = bodyBuilder.mass(50f) //
 					.boxShape(0.25f, 0.25f) //
-					.position(0f, 5f) //
+					.position(15f, 0f) //
 					.restitution(0f) //
 					.type(BodyType.DynamicBody) //
 					.build();
 
-			Body obstacle1 = bodyBuilder.mass(1000f) //
-					.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
-					.position(15f, 5f) //
-					.restitution(0f) //
-					.type(BodyType.StaticBody) //
-					.build();
+			for (int i = 0; i < 50; i++) {
 
-			Body obstacle2 = bodyBuilder.mass(1000f) //
-					.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
-					.restitution(0f) //
-					.type(BodyType.StaticBody) //
-					.build();
-			obstacle2.setTransform(new Vector2(12f, 11f), 90f);
+				float randomY = MathUtils.random(-5f, 15f);
+				
+				bodyBuilder.mass(1000f) //
+						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
+						.position(5f + randomY, 15f + i * 8f) //
+						.restitution(0f) //
+						.type(BodyType.StaticBody) //
+						.build();
 
-			direction = new Vector2(1f, 0f);
+				bodyBuilder.mass(1000f) //
+						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
+						.restitution(0f) //
+						.type(BodyType.StaticBody) //
+						.position(11f + randomY, 12f + i * 8f) //
+						.angle(90f)//
+						.build();
+
+			}
+
+			direction = new Vector2(0f, 1f);
 		}
 
 		@Override
 		public void render(int delta) {
 			Vector2 position = body.getTransform().getPosition();
-			
+
 			camera.move(cameraData.getX(), cameraData.getY());
 			camera.zoom(cameraData.getZoom());
+			camera.rotate(cameraData.getAngle());
 
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
@@ -148,7 +156,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void dispose() {
+			whiteRectangleSprite.getTexture().dispose();
 			spriteBatch.dispose();
+			world.dispose();
 		}
 
 	}
