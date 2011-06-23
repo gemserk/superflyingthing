@@ -30,15 +30,13 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 public class Game extends com.gemserk.commons.gdx.Game {
 
 	class SuperSheepGameState extends GameStateImpl {
-
+		
 		private SpriteBatch spriteBatch;
 		private Libgdx2dCamera camera;
-		private Sprite whiteRectangleSprite;
 		private World world;
-		private Body body;
-		private Vector2 direction;
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 		private Camera cameraData;
+		private SuperSheep superSheep;
 
 		@Override
 		public void init() {
@@ -46,33 +44,33 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			camera = new Libgdx2dCameraTransformImpl();
 			world = new World(new Vector2(), false);
 
-			camera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 4);
+			camera.center(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
 			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
-			cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, -10f, 30f, 400f));
+			cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-5f, 0f, 400f, 15f));
 
 			// camera.zoom(32f);
 
 			box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) camera, world);
 
 			Texture whiteRectangle = new Texture(Gdx.files.internal("data/images/white-rectangle.png"));
-			whiteRectangleSprite = new Sprite(whiteRectangle);
-			whiteRectangleSprite.setSize(0.5f, 0.5f);
+			Sprite sprite = new Sprite(whiteRectangle);
+			sprite.setSize(0.5f, 0.5f);
 
 			BodyBuilder bodyBuilder = new BodyBuilder(world);
-			body = bodyBuilder.mass(50f) //
+			Body body = bodyBuilder.mass(50f) //
 					.boxShape(0.25f, 0.25f) //
-					.position(15f, 0f) //
+					.position(0f, 5f) //
 					.restitution(0f) //
 					.type(BodyType.DynamicBody) //
 					.build();
 
 			for (int i = 0; i < 50; i++) {
 
-				float randomY = MathUtils.random(-5f, 15f);
+				float randomY = MathUtils.random(-5f, 5f);
 				
 				bodyBuilder.mass(1000f) //
 						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
-						.position(5f + randomY, 15f + i * 8f) //
+						.position(15f + i * 8f, 5f + randomY) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.build();
@@ -81,19 +79,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
-						.position(11f + randomY, 12f + i * 8f) //
+						.position(12f + i * 8f, 11f + randomY) //
 						.angle(90f)//
 						.build();
 
 			}
 
-			direction = new Vector2(0f, 1f);
+			superSheep = new SuperSheep(body, sprite, new Vector2(1f, 0f));
 		}
 
 		@Override
 		public void render(int delta) {
-			Vector2 position = body.getTransform().getPosition();
-
 			camera.move(cameraData.getX(), cameraData.getY());
 			camera.zoom(cameraData.getZoom());
 			camera.rotate(cameraData.getAngle());
@@ -101,14 +97,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
 			spriteBatch.begin();
-			SpriteBatchUtils.drawCentered(spriteBatch, whiteRectangleSprite, position.x, position.y, body.getAngle() * MathUtils.radiansToDegrees);
+			superSheep.drawSuperSheep(spriteBatch);
 			spriteBatch.end();
 
-			float x = position.x + direction.tmp().mul(1f).x;
-			float y = position.y + direction.tmp().mul(1f).y;
-
-			ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
-
+			superSheep.drawDebug();
+			
 			box2dCustomDebugRenderer.render();
 		}
 
@@ -116,47 +109,79 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 
-			Vector2 position = body.getTransform().getPosition();
+			calculateDirectionFromInput(delta, superSheep.direction);
 
+			superSheep.updateSuperSheep();
+			
+			Vector2 position = superSheep.body.getTransform().getPosition();
+			cameraData.setPosition(position.x, position.y);
+		}
+		
+		class SuperSheep {
+			
+			Body body;
+			
+			Sprite sprite;
+			
+			Vector2 direction;
+			
+			public SuperSheep(Body body, Sprite sprite, Vector2 direction) {
+				this.body = body;
+				this.sprite = sprite;
+				this.direction = direction;
+			}
+			
+			public void updateSuperSheep() {
+				Vector2 position = body.getTransform().getPosition();
+				body.setTransform(position, direction.angle() * MathUtils.degreesToRadians);
+				body.applyForce(direction.tmp().mul(5000f), position);
+
+				Vector2 linearVelocity = body.getLinearVelocity();
+				float speed = linearVelocity.len();
+				float maxSpeed = 7f;
+				if (speed > maxSpeed) {
+					linearVelocity.mul(maxSpeed / speed);
+					body.setLinearVelocity(linearVelocity);
+				}
+				
+				sprite.setPosition(position.x, position.y);
+			}
+			
+			public void drawSuperSheep(SpriteBatch spriteBatch) {
+				Vector2 position = body.getTransform().getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, body.getAngle() * MathUtils.radiansToDegrees);
+			}
+			
+			public void drawDebug() {
+				Vector2 position = body.getTransform().getPosition();
+				float x = position.x + superSheep.direction.tmp().mul(1f).x;
+				float y = position.y + superSheep.direction.tmp().mul(1f).y;
+				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
+			}
+			
+		}
+		
+		private void calculateDirectionFromInput(int delta, Vector2 direction) {
 			if (Gdx.app.getType() == ApplicationType.Android) {
-
 				if (Gdx.input.isTouched()) {
-
 					float x = Gdx.input.getX();
-
 					if (x < Gdx.graphics.getWidth() / 2) {
 						direction.rotate(360f * delta * 0.001f);
 					} else {
 						direction.rotate(-360f * delta * 0.001f);
 					}
-
 				}
-
 			} else {
 				if (Gdx.input.isKeyPressed(Keys.LEFT))
 					direction.rotate(360f * delta * 0.001f);
 				else if (Gdx.input.isKeyPressed(Keys.RIGHT))
 					direction.rotate(-360f * delta * 0.001f);
 			}
-
-			body.setTransform(position, direction.angle() * MathUtils.degreesToRadians);
-			body.applyForce(direction.tmp().mul(5000f), position);
-
-			Vector2 linearVelocity = body.getLinearVelocity();
-			float speed = linearVelocity.len();
-			float maxSpeed = 7f;
-			if (speed > maxSpeed) {
-				linearVelocity.mul(maxSpeed / speed);
-				body.setLinearVelocity(linearVelocity);
-			}
-
-			whiteRectangleSprite.setPosition(position.x, position.y);
-			cameraData.setPosition(position.x, position.y);
 		}
 
 		@Override
 		public void dispose() {
-			whiteRectangleSprite.getTexture().dispose();
+			superSheep.sprite.getTexture().dispose();
 			spriteBatch.dispose();
 			world.dispose();
 		}
