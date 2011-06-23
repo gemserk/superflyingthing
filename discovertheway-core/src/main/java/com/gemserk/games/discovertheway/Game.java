@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -19,6 +20,8 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
+import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
@@ -35,6 +38,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private Body body;
 		private Vector2 direction;
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
+		private Camera cameraData;
 
 		@Override
 		public void init() {
@@ -42,7 +46,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			camera = new Libgdx2dCameraTransformImpl();
 			world = new World(new Vector2(), false);
 
-			camera.zoom(32f);
+			camera.center(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
+//			cameraData = new CameraImpl(0f, 0f, 32f, 0f);
+			cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-5f, 0f, 200f, 15f));
+
+			// camera.zoom(32f);
 
 			box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) camera, world);
 
@@ -78,6 +86,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		@Override
 		public void render(int delta) {
 			Vector2 position = body.getTransform().getPosition();
+			
+			camera.move(cameraData.getX(), cameraData.getY());
+			camera.zoom(cameraData.getZoom());
 
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
@@ -132,6 +143,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			whiteRectangleSprite.setPosition(position.x, position.y);
+			cameraData.setPosition(position.x, position.y);
 		}
 
 		@Override
