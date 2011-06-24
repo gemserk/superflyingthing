@@ -1,5 +1,7 @@
 package com.gemserk.games.discovertheway;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -66,11 +68,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				}
 
 				sprite.setPosition(position.x, position.y);
+				
+				for (int i = 0; i < miniPlanets.size(); i++) 
+				{
+					MiniPlanet miniPlanet = miniPlanets.get(i);
+					if (miniPlanet.getPosition().dst(position) < 3f && miniPlanet.superSheep == null) {
+						miniPlanet.attachSuperSheep(this);
+						break;
+					}
+				}
 
 				// updates camera
 				if (camera == null)
 					return;
-				
+
 				camera.setPosition(position.x, position.y);
 			}
 
@@ -93,14 +104,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			float radius;
 			Body body;
 			SuperSheep superSheep;
+			Camera camera;
+			Joint joint;
 
-			public MiniPlanet(Body body, float radius, SuperSheep superSheep) {
+			public Vector2 getPosition() {
+				return body.getTransform().getPosition();
+			}
+
+			public MiniPlanet(Body body, float radius, Camera camera) {
 				this.body = body;
 				this.radius = radius;
-				this.superSheep = superSheep;
+				this.superSheep = null;
+				this.camera = camera;
+				this.joint = null;
 			}
 
 			public void update(int delta) {
+				processInput();
+
 				if (superSheep == null)
 					return;
 
@@ -111,11 +132,42 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				diff.rotate(-90f);
 
 				superSheep.direction.set(diff);
+
+				// updates camera when having a super sheep to avoid it moving
+				if (superSheep == null)
+					return;
+
+				camera.setPosition(position.x, position.y);
+			}
+
+			private void processInput() {
+				if (superSheep == null)
+					return;
+
+				if (Gdx.app.getType() == ApplicationType.Android) {
+					if (!Gdx.input.isTouched())
+						return;
+				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
+					return;
+
+				superSheep = null;
+				world.destroyJoint(joint);
+				joint = null;
 			}
 
 			public void drawDebug() {
 				Vector2 position = body.getTransform().getPosition();
 				ImmediateModeRendererUtils.drawSolidCircle(position, radius, Color.BLUE);
+			}
+
+			public void attachSuperSheep(SuperSheep superSheep) {
+				this.superSheep = superSheep;
+				DistanceJointDef jointDef = new DistanceJointDef();
+				jointDef.bodyA = superSheep.body;
+				jointDef.bodyB = this.body;
+				jointDef.collideConnected = false;
+				jointDef.length = 3f;
+				joint = world.createJoint(jointDef);
 			}
 
 		}
@@ -125,18 +177,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private World world;
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 		private SuperSheep superSheep;
-		private MiniPlanet miniPlanet;
-		private Joint joint;
 		private BodyBuilder bodyBuilder;
+		
+		private ArrayList<MiniPlanet> miniPlanets;
+		private MiniPlanet startMiniPlanet;
 
 		@Override
 		public void init() {
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
+			miniPlanets = new ArrayList<MiniPlanet>();
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
 
-			camera.center(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
+			camera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
 			Camera cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-5f, 0f, 400f, 15f));
 
@@ -156,7 +210,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					.type(BodyType.DynamicBody) //
 					.build();
 
-			for (int i = 0; i < 50; i++) {
+			float lastX = 0f;
+
+			for (int i = 0; i < 5; i++) {
 
 				float randomY = MathUtils.random(-5f, 5f);
 
@@ -175,24 +231,31 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.angle(90f)//
 						.build();
 
+				lastX = 17f + i * 8f;
 			}
 
 			Body miniPlanetBody = bodyBuilder.mass(1000f) //
 					.circleShape(1.5f) //
-					.position(5f, 5f) //
+					.position(5f, 7.5f) //
 					.restitution(0f) //
 					.type(BodyType.StaticBody) //
 					.build();
 
-			DistanceJointDef jointDef = new DistanceJointDef();
-			jointDef.bodyA = body;
-			jointDef.bodyB = miniPlanetBody;
-			jointDef.collideConnected = false;
-			jointDef.length = 3f;
-			joint = world.createJoint(jointDef);
-
 			superSheep = new SuperSheep(body, sprite, new Vector2(1f, 0f), cameraData);
-			miniPlanet = new MiniPlanet(miniPlanetBody, 1.5f, superSheep);
+			
+			startMiniPlanet = new MiniPlanet(miniPlanetBody, 1.5f, cameraData);
+			startMiniPlanet.attachSuperSheep(superSheep);
+			miniPlanets.add(startMiniPlanet);
+
+			Body dbody = bodyBuilder.mass(1000f) //
+					.circleShape(1.5f) //
+					.position(lastX + 7f, 7.5f) //
+					.restitution(0f) //
+					.type(BodyType.StaticBody) //
+					.build();
+
+			MiniPlanet miniPlanet = new MiniPlanet(dbody, 1.5f, cameraData);
+			miniPlanets.add(miniPlanet);
 
 		}
 
@@ -228,10 +291,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			superSheep.draw(spriteBatch);
 			spriteBatch.end();
 
-			superSheep.drawDebug();
-			miniPlanet.drawDebug();
-
 			box2dCustomDebugRenderer.render();
+
+			superSheep.drawDebug();
+			
+			for (int i = 0; i < miniPlanets.size(); i++) 
+				miniPlanets.get(i).drawDebug();
 		}
 
 		@Override
@@ -239,73 +304,56 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 
 			calculateDirectionFromInput(delta, superSheep.direction);
-			inputReleaseSheep(delta);
+			// inputReleaseSheep(delta);
 
 			superSheep.update(delta);
-			miniPlanet.update(delta);
+			for (int i = 0; i < miniPlanets.size(); i++) 
+				miniPlanets.get(i).update(delta);
 
 			//
 
 			if (!superSheep.dead)
 				return;
-			
+
 			Body body = bodyBuilder.mass(50f) //
 					.boxShape(0.25f, 0.25f) //
 					.position(5f, 2f) //
 					.restitution(0f) //
 					.type(BodyType.DynamicBody) //
 					.build();
-			
+
 			Camera camera = superSheep.camera;
 			superSheep.camera = null;
 			superSheep.body.setType(BodyType.StaticBody);
-			
+
 			superSheep = new SuperSheep(body, new Sprite(superSheep.sprite), new Vector2(1f, 0f), camera);
-			miniPlanet.superSheep = superSheep;
-			
-			DistanceJointDef jointDef = new DistanceJointDef();
-			jointDef.bodyA = superSheep.body;
-			jointDef.bodyB = miniPlanet.body;
-			jointDef.collideConnected = false;
-			jointDef.length = 3f;
-			joint = world.createJoint(jointDef);
-		}
-
-		private void inputReleaseSheep(int delta) {
-			if (miniPlanet.superSheep == null)
-				return;
-
-			if (Gdx.app.getType() == ApplicationType.Android) {
-				if (!Gdx.input.isTouched())
-					return;
-			} else {
-				if (!Gdx.input.isKeyPressed(Keys.SPACE))
-					return;
-			}
-
-			miniPlanet.superSheep = null;
-			world.destroyJoint(joint);
+			startMiniPlanet.attachSuperSheep(superSheep);
 		}
 
 		private void calculateDirectionFromInput(int delta, Vector2 direction) {
-			if (Gdx.app.getType() == ApplicationType.Android) {
+			processInputSuperSheepAndroid(delta, direction);
+			processInputSuperSheepPC(delta, direction);
+		}
 
-				for (int i = 0; i < 5; i++) {
+		private void processInputSuperSheepPC(int delta, Vector2 direction) {
+			if (Gdx.app.getType() == ApplicationType.Android)
+				return;
+			if (Gdx.input.isKeyPressed(Keys.LEFT))
+				direction.rotate(360f * delta * 0.001f);
+			else if (Gdx.input.isKeyPressed(Keys.RIGHT))
+				direction.rotate(-360f * delta * 0.001f);
+		}
 
-					if (!Gdx.input.isTouched(i))
-						continue;
-
-					float x = Gdx.input.getX(i);
-					if (x < Gdx.graphics.getWidth() / 2)
-						direction.rotate(360f * delta * 0.001f);
-					else
-						direction.rotate(-360f * delta * 0.001f);
-				}
-
-			} else {
-				if (Gdx.input.isKeyPressed(Keys.LEFT))
+		private void processInputSuperSheepAndroid(int delta, Vector2 direction) {
+			if (Gdx.app.getType() != ApplicationType.Android)
+				return;
+			for (int i = 0; i < 5; i++) {
+				if (!Gdx.input.isTouched(i))
+					continue;
+				float x = Gdx.input.getX(i);
+				if (x < Gdx.graphics.getWidth() / 2)
 					direction.rotate(360f * delta * 0.001f);
-				else if (Gdx.input.isKeyPressed(Keys.RIGHT))
+				else
 					direction.rotate(-360f * delta * 0.001f);
 			}
 		}
