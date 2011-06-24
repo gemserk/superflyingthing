@@ -330,7 +330,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					.build();
 
 			bodyBuilder.type(BodyType.StaticBody) //
-					.boxShape(0.1f * 0.5f, worldHeight * 0.5f) //
+					.boxShape(0.1f * 0.5f, worldHeight  * 0.5f) //
 					.restitution(1f) //
 					.mass(1f)//
 					.friction(0f) //
@@ -432,9 +432,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			if (Gdx.app.getType() == ApplicationType.Android)
 				return;
 			if (Gdx.input.isKeyPressed(Keys.LEFT))
-				direction.rotate(360f * delta * 0.001f);
+				direction.rotate(400f * delta * 0.001f);
 			else if (Gdx.input.isKeyPressed(Keys.RIGHT))
-				direction.rotate(-360f * delta * 0.001f);
+				direction.rotate(-400f * delta * 0.001f);
 		}
 
 		private void processInputSuperSheepAndroid(int delta, Vector2 direction) {
@@ -445,9 +445,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					continue;
 				float x = Gdx.input.getX(i);
 				if (x < Gdx.graphics.getWidth() / 2)
-					direction.rotate(360f * delta * 0.001f);
+					direction.rotate(400f * delta * 0.001f);
 				else
-					direction.rotate(-360f * delta * 0.001f);
+					direction.rotate(-400f * delta * 0.001f);
 			}
 		}
 
