@@ -38,7 +38,7 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
-	interface SpatialEntity {
+	interface SpatialComponent {
 
 		Spatial getSpatial();
 
@@ -49,7 +49,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		class CameraFollowEntity {
 
 			Camera camera;
-			SpatialEntity spatialEntity;
+			SpatialComponent spatialComponent;
 
 			public Camera getCamera() {
 				return camera;
@@ -60,19 +60,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				if (spatialEntity == null)
+				if (spatialComponent == null)
 					return;
-				Spatial spatial = spatialEntity.getSpatial();
+				Spatial spatial = spatialComponent.getSpatial();
 				camera.setPosition(spatial.getX(), spatial.getY());
 			}
 
-			public void follow(SpatialEntity spatialEntity) {
-				this.spatialEntity = spatialEntity;
+			public void follow(SpatialComponent spatialComponent) {
+				this.spatialComponent = spatialComponent;
 			}
 
 		}
 
-		class SuperSheep implements SpatialEntity {
+		class SuperSheep implements SpatialComponent {
 
 			Body body;
 			Sprite sprite;
@@ -137,7 +137,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class MiniPlanet implements SpatialEntity {
+		class MiniPlanet implements SpatialComponent {
 
 			float radius;
 			Body body;
@@ -236,7 +236,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private MiniPlanet startMiniPlanet;
 
 		private ArrayList<SuperSheep> superSheeps;
-		private SuperSheep superSheep;
 		private CameraFollowEntity cameraFollowEntity;
 
 		@Override
@@ -288,7 +287,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			cameraFollowEntity = new CameraFollowEntity(cameraData);
 
-			superSheep = new SuperSheep(5f, 2f, sprite, new Vector2(1f, 0f));
+			SuperSheep superSheep = new SuperSheep(5f, 5f, sprite, new Vector2(1f, 0f));
+			superSheeps.add(superSheep);
 
 			startMiniPlanet = new MiniPlanet(2.5f, 7.5f, 1.5f);
 			startMiniPlanet.attachSuperSheep(superSheep);
@@ -306,10 +306,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		private void checkContactSuperSheep(Fixture fixture) {
-			if (fixture.getBody() != superSheep.body)
-				return;
-			Gdx.app.log("SuperSheep", "die!");
-			superSheep.dead = true;
+			for (int i = 0; i < superSheeps.size(); i++) {
+				SuperSheep superSheep = superSheeps.get(i);
+				if (fixture.getBody() != superSheep.body)
+					return;
+				Gdx.app.log("SuperSheep", "die!");
+				superSheep.dead = true;
+			}
 		}
 
 		@Override
@@ -328,12 +331,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
 			spriteBatch.begin();
-			superSheep.draw(spriteBatch);
+			for (int i = 0; i < superSheeps.size(); i++) {
+				SuperSheep superSheep = superSheeps.get(i);
+				superSheep.draw(spriteBatch);
+			}
 			spriteBatch.end();
 
 			box2dCustomDebugRenderer.render();
 
-			superSheep.drawDebug();
+			for (int i = 0; i < superSheeps.size(); i++) {
+				SuperSheep superSheep = superSheeps.get(i);
+				superSheep.drawDebug();
+			}
 
 			for (int i = 0; i < miniPlanets.size(); i++)
 				miniPlanets.get(i).drawDebug();
@@ -342,22 +351,35 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		@Override
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-
-			calculateDirectionFromInput(delta, superSheep.direction);
+			
 			// inputReleaseSheep(delta);
 
-			superSheep.update(delta);
+			for (int i = 0; i < superSheeps.size(); i++) {
+				SuperSheep superSheep = superSheeps.get(i);
+				calculateDirectionFromInput(delta, superSheep.direction);
+				superSheep.update(delta);
+			}
+			
 			for (int i = 0; i < miniPlanets.size(); i++)
 				miniPlanets.get(i).update(delta);
 
 			cameraFollowEntity.update(delta);
 
-			if (!superSheep.dead)
-				return;
+			ArrayList<SuperSheep> toRemove = new ArrayList<SuperSheep>();
+			for (int i = 0; i < superSheeps.size(); i++) {
+				SuperSheep superSheep = superSheeps.get(i);
+				
+				if (!superSheep.dead)
+					continue;
+				
+				toRemove.add(superSheep);
 
-			superSheep.body.setType(BodyType.StaticBody);
-			superSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
-			startMiniPlanet.attachSuperSheep(superSheep);
+				superSheep.body.setType(BodyType.StaticBody);
+				superSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
+				startMiniPlanet.attachSuperSheep(superSheep);
+				superSheeps.add(superSheep);
+			}
+			superSheeps.removeAll(toRemove);
 
 			// cameraFollowEntity.follow(startMiniPlanet);
 		}
@@ -392,7 +414,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void dispose() {
-			superSheep.sprite.getTexture().dispose();
 			spriteBatch.dispose();
 			world.dispose();
 		}
