@@ -13,6 +13,9 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
@@ -31,7 +34,7 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
-	class SuperSheepGameState extends GameStateImpl {
+	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class SuperSheep {
 
@@ -39,12 +42,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Sprite sprite;
 			Vector2 direction;
 			Camera camera;
+			boolean dead;
 
 			public SuperSheep(Body body, Sprite sprite, Vector2 direction, Camera camera) {
 				this.body = body;
 				this.sprite = sprite;
 				this.direction = direction;
 				this.camera = camera;
+				this.dead = false;
 			}
 
 			public void update(int delta) {
@@ -63,6 +68,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				sprite.setPosition(position.x, position.y);
 
 				// updates camera
+				if (camera == null)
+					return;
+				
 				camera.setPosition(position.x, position.y);
 			}
 
@@ -119,12 +127,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private SuperSheep superSheep;
 		private MiniPlanet miniPlanet;
 		private Joint joint;
+		private BodyBuilder bodyBuilder;
 
 		@Override
 		public void init() {
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
 			world = new World(new Vector2(), false);
+			world.setContactListener(this);
 
 			camera.center(Gdx.graphics.getWidth() / 4, Gdx.graphics.getHeight() / 2);
 			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
@@ -138,7 +148,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Sprite sprite = new Sprite(whiteRectangle);
 			sprite.setSize(0.5f, 0.5f);
 
-			BodyBuilder bodyBuilder = new BodyBuilder(world);
+			bodyBuilder = new BodyBuilder(world);
 			Body body = bodyBuilder.mass(50f) //
 					.boxShape(0.25f, 0.25f) //
 					.position(5f, 2f) //
@@ -183,6 +193,25 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			superSheep = new SuperSheep(body, sprite, new Vector2(1f, 0f), cameraData);
 			miniPlanet = new MiniPlanet(miniPlanetBody, 1.5f, superSheep);
+
+		}
+
+		@Override
+		public void beginContact(Contact contact) {
+			checkContactSuperSheep(contact.getFixtureA());
+			checkContactSuperSheep(contact.getFixtureB());
+		}
+
+		private void checkContactSuperSheep(Fixture fixture) {
+			if (fixture.getBody() != superSheep.body)
+				return;
+			Gdx.app.log("SuperSheep", "die!");
+			superSheep.dead = true;
+		}
+
+		@Override
+		public void endContact(Contact contact) {
+
 		}
 
 		@Override
@@ -214,6 +243,32 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			superSheep.update(delta);
 			miniPlanet.update(delta);
+
+			//
+
+			if (!superSheep.dead)
+				return;
+			
+			Body body = bodyBuilder.mass(50f) //
+					.boxShape(0.25f, 0.25f) //
+					.position(5f, 2f) //
+					.restitution(0f) //
+					.type(BodyType.DynamicBody) //
+					.build();
+			
+			Camera camera = superSheep.camera;
+			superSheep.camera = null;
+			superSheep.body.setType(BodyType.StaticBody);
+			
+			superSheep = new SuperSheep(body, new Sprite(superSheep.sprite), new Vector2(1f, 0f), camera);
+			miniPlanet.superSheep = superSheep;
+			
+			DistanceJointDef jointDef = new DistanceJointDef();
+			jointDef.bodyA = superSheep.body;
+			jointDef.bodyB = miniPlanet.body;
+			jointDef.collideConnected = false;
+			jointDef.length = 3f;
+			joint = world.createJoint(jointDef);
 		}
 
 		private void inputReleaseSheep(int delta) {
