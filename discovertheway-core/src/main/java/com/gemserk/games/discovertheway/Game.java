@@ -86,8 +86,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
-				body = bodyBuilder.mass(50f) //
-						.boxShape(0.25f, 0.15f) //
+				float width = 0.4f;
+				float height = 0.2f;
+				this.body = bodyBuilder.mass(50f) //
+						.boxShape(width * 0.3f, height * 0.3f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
@@ -95,7 +97,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
-				this.spatial = new SpatialPhysicsImpl(body, 0.5f, 0.3f);
+				this.spatial = new SpatialPhysicsImpl(body, width, height);
 			}
 
 			public void update(int delta) {
@@ -116,7 +118,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				for (int i = 0; i < miniPlanets.size(); i++) {
 					MiniPlanet miniPlanet = miniPlanets.get(i);
-					if (miniPlanet.getPosition().dst(position) < 2f && !miniPlanet.containsSuperSheep(this)) {
+					if (miniPlanet.getPosition().dst(position) < 1.5f && !miniPlanet.containsSuperSheep(this)) {
 						miniPlanet.attachSuperSheep(this);
 						break;
 					}
@@ -130,8 +132,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void drawDebug() {
 				Vector2 position = body.getTransform().getPosition();
-				float x = position.x + direction.tmp().mul(1f).x;
-				float y = position.y + direction.tmp().mul(1f).y;
+				float x = position.x + direction.tmp().mul(0.5f).x;
+				float y = position.y + direction.tmp().mul(0.5f).y;
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 			}
 
@@ -214,7 +216,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				jointDef.bodyA = superSheep.body;
 				jointDef.bodyB = this.body;
 				jointDef.collideConnected = false;
-				jointDef.length = 2f;
+				jointDef.length = 1.5f;
 				joint = world.createJoint(jointDef);
 
 				cameraFollowEntity.follow(this);
@@ -464,14 +466,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		setScreen(new ScreenImpl(new SuperSheepGameState()));
-
-		Gdx.input.setCatchBackKey(true);
+		// Gdx.input.setCatchBackKey(true);
 	}
 
 	@Override
 	public void render() {
 		super.render();
-		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.BACK)) {
+		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
 			getScreen().dispose();
 			setScreen(new ScreenImpl(new SuperSheepGameState()));
 		}
