@@ -31,27 +31,71 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
+	interface SpatialEntity {
+
+		Spatial getSpatial();
+
+	}
+
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
-		class SuperSheep {
+		class CameraFollowEntity {
+
+			Camera camera;
+			SpatialEntity spatialEntity;
+
+			public Camera getCamera() {
+				return camera;
+			}
+
+			public CameraFollowEntity(Camera camera) {
+				this.camera = camera;
+			}
+
+			public void update(int delta) {
+				if (spatialEntity == null)
+					return;
+				Spatial spatial = spatialEntity.getSpatial();
+				camera.setPosition(spatial.getX(), spatial.getY());
+			}
+
+			public void follow(SpatialEntity spatialEntity) {
+				this.spatialEntity = spatialEntity;
+			}
+
+		}
+
+		class SuperSheep implements SpatialEntity {
 
 			Body body;
 			Sprite sprite;
 			Vector2 direction;
-			Camera camera;
 			boolean dead;
 
-			public SuperSheep(Body body, Sprite sprite, Vector2 direction, Camera camera) {
-				this.body = body;
+			Spatial spatial;
+
+			public Spatial getSpatial() {
+				return spatial;
+			}
+
+			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
+				body = bodyBuilder.mass(50f) //
+						.boxShape(0.25f, 0.25f) //
+						.position(x, y) //
+						.restitution(0f) //
+						.type(BodyType.DynamicBody) //
+						.build();
 				this.sprite = sprite;
 				this.direction = direction;
-				this.camera = camera;
 				this.dead = false;
+				this.spatial = new SpatialPhysicsImpl(body, 0.5f, 0.5f);
 			}
 
 			public void update(int delta) {
@@ -61,7 +105,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				Vector2 linearVelocity = body.getLinearVelocity();
 				float speed = linearVelocity.len();
-				float maxSpeed = 7f;
+				float maxSpeed = 6f;
 				if (speed > maxSpeed) {
 					linearVelocity.mul(maxSpeed / speed);
 					body.setLinearVelocity(linearVelocity);
@@ -76,12 +120,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						break;
 					}
 				}
-
-				// updates camera
-				if (camera == null)
-					return;
-
-				camera.setPosition(position.x, position.y);
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
@@ -98,19 +136,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class MiniPlanet {
+		class MiniPlanet implements SpatialEntity {
 
 			float radius;
 			Body body;
 			ArrayList<SuperSheep> superSheeps;
-			Camera camera;
 			Joint joint;
+
+			Spatial spatial;
+
+			public Spatial getSpatial() {
+				return spatial;
+			}
 
 			public Vector2 getPosition() {
 				return body.getTransform().getPosition();
 			}
 
-			public MiniPlanet(float x, float y, float radius, Camera camera) {
+			public MiniPlanet(float x, float y, float radius) {
 				this.body = bodyBuilder.mass(1000f) //
 						.circleShape(radius) //
 						.position(x, y) //
@@ -119,8 +162,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.build();
 				this.radius = radius;
 				this.superSheeps = new ArrayList<SuperSheep>();
-				this.camera = camera;
 				this.joint = null;
+				this.spatial = new SpatialPhysicsImpl(body, radius * 2, radius * 2);
 			}
 
 			public void update(int delta) {
@@ -140,12 +183,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					superSheep.direction.set(diff);
 				}
 
-				// updates camera when having a super sheep to avoid it moving
-				if (this.superSheeps.isEmpty())
-					return;
-
-				Vector2 position = body.getTransform().getPosition();
-				camera.setPosition(position.x, position.y);
 			}
 
 			private void processInput() {
@@ -158,8 +195,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
 					return;
 
-				this.superSheeps.remove(0);
-				// superSheep = null;
+				SuperSheep superSheep = this.superSheeps.remove(0);
+				cameraFollowEntity.follow(superSheep);
 
 				world.destroyJoint(joint);
 				joint = null;
@@ -178,8 +215,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				jointDef.collideConnected = false;
 				jointDef.length = 3f;
 				joint = world.createJoint(jointDef);
+
+				cameraFollowEntity.follow(this);
 			}
-			
+
 			public boolean containsSuperSheep(SuperSheep superSheep) {
 				return this.superSheeps.contains(superSheep);
 			}
@@ -197,6 +236,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		private ArrayList<SuperSheep> superSheeps;
 		private SuperSheep superSheep;
+		private CameraFollowEntity cameraFollowEntity;
 
 		@Override
 		public void init() {
@@ -209,7 +249,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			camera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
-			Camera cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-2.5f, 0f, 73f, 15f));
+			Camera cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-2.5f, 0f, 73f, 15f));
 
 			// camera.zoom(32f);
 
@@ -220,12 +260,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			sprite.setSize(0.5f, 0.5f);
 
 			bodyBuilder = new BodyBuilder(world);
-			Body body = bodyBuilder.mass(50f) //
-					.boxShape(0.25f, 0.25f) //
-					.position(5f, 2f) //
-					.restitution(0f) //
-					.type(BodyType.DynamicBody) //
-					.build();
 
 			float lastX = 0f;
 
@@ -251,14 +285,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				lastX = 17f + i * 8f;
 			}
 
-			superSheep = new SuperSheep(body, sprite, new Vector2(1f, 0f), cameraData);
+			cameraFollowEntity = new CameraFollowEntity(cameraData);
 
-			startMiniPlanet = new MiniPlanet(2.5f, 7.5f, 1.5f, cameraData);
+			superSheep = new SuperSheep(5f, 2f, sprite, new Vector2(1f, 0f));
+
+			startMiniPlanet = new MiniPlanet(2.5f, 7.5f, 1.5f);
 			startMiniPlanet.attachSuperSheep(superSheep);
 			miniPlanets.add(startMiniPlanet);
 
-			MiniPlanet miniPlanet = new MiniPlanet(lastX + 9f, 7.5f, 1.5f, cameraData);
+			MiniPlanet miniPlanet = new MiniPlanet(lastX + 9f, 7.5f, 1.5f);
 			miniPlanets.add(miniPlanet);
+
 		}
 
 		@Override
@@ -281,7 +318,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void render(int delta) {
-			Camera cameraData = superSheep.camera;
+			Camera cameraData = cameraFollowEntity.getCamera();
 
 			camera.move(cameraData.getX(), cameraData.getY());
 			camera.zoom(cameraData.getZoom());
@@ -312,24 +349,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			for (int i = 0; i < miniPlanets.size(); i++)
 				miniPlanets.get(i).update(delta);
 
-			//
+			cameraFollowEntity.update(delta);
 
 			if (!superSheep.dead)
 				return;
 
-			Body body = bodyBuilder.mass(50f) //
-					.boxShape(0.25f, 0.25f) //
-					.position(5f, 2f) //
-					.restitution(0f) //
-					.type(BodyType.DynamicBody) //
-					.build();
-
-			Camera camera = superSheep.camera;
-			superSheep.camera = null;
 			superSheep.body.setType(BodyType.StaticBody);
-
-			superSheep = new SuperSheep(body, new Sprite(superSheep.sprite), new Vector2(1f, 0f), camera);
+			superSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
 			startMiniPlanet.attachSuperSheep(superSheep);
+
+			// cameraFollowEntity.follow(startMiniPlanet);
 		}
 
 		private void calculateDirectionFromInput(int delta, Vector2 direction) {

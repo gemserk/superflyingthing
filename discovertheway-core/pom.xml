@@ -15,7 +15,7 @@
 	<description>Discover the way - Core</description>
 
 	<properties>
-		<commons.gdx.version>0.0.2-SNAPSHOT</commons.gdx.version>
+		<commons.gdx.version>0.0.3-SNAPSHOT</commons.gdx.version>
 		<resourcesmanager.version>0.0.12-SNAPSHOT</resourcesmanager.version>
 	</properties>
 
