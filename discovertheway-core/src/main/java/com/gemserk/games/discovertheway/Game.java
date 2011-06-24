@@ -87,7 +87,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				body = bodyBuilder.mass(50f) //
-						.boxShape(0.25f, 0.25f) //
+						.boxShape(0.25f, 0.15f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
@@ -95,7 +95,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
-				this.spatial = new SpatialPhysicsImpl(body, 0.5f, 0.5f);
+				this.spatial = new SpatialPhysicsImpl(body, 0.5f, 0.3f);
 			}
 
 			public void update(int delta) {
@@ -112,6 +112,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				}
 
 				sprite.setPosition(position.x, position.y);
+				sprite.setSize(spatial.getWidth(), spatial.getHeight());
 
 				for (int i = 0; i < miniPlanets.size(); i++) {
 					MiniPlanet miniPlanet = miniPlanets.get(i);
