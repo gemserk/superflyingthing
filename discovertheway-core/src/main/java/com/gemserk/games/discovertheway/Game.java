@@ -94,14 +94,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void update(int delta) {
 				if (superSheep == null)
-					return ;
-				
+					return;
+
 				Vector2 superSheepPosition = superSheep.body.getTransform().getPosition();
 				Vector2 position = body.getTransform().getPosition();
-				
+
 				Vector2 diff = superSheepPosition.sub(position).nor();
 				diff.rotate(-90f);
-				
+
 				superSheep.direction.set(diff);
 			}
 
@@ -180,7 +180,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			jointDef.collideConnected = false;
 			jointDef.length = 3f;
 			joint = world.createJoint(jointDef);
-			
+
 			superSheep = new SuperSheep(body, sprite, new Vector2(1f, 0f), cameraData);
 			miniPlanet = new MiniPlanet(miniPlanetBody, 1.5f, superSheep);
 		}
@@ -208,10 +208,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		@Override
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-			
+
 			calculateDirectionFromInput(delta, superSheep.direction);
 			inputReleaseSheep(delta);
-			
+
 			superSheep.update(delta);
 			miniPlanet.update(delta);
 		}
@@ -219,7 +219,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private void inputReleaseSheep(int delta) {
 			if (miniPlanet.superSheep == null)
 				return;
-			
+
 			if (Gdx.app.getType() == ApplicationType.Android) {
 				if (!Gdx.input.isTouched())
 					return;
@@ -227,7 +227,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (!Gdx.input.isKeyPressed(Keys.SPACE))
 					return;
 			}
-			
+
 			miniPlanet.superSheep = null;
 			world.destroyJoint(joint);
 		}
@@ -236,14 +236,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			if (Gdx.app.getType() == ApplicationType.Android) {
 
 				for (int i = 0; i < 5; i++) {
-					if (Gdx.input.isTouched(i)) {
-						float x = Gdx.input.getX();
-						if (x < Gdx.graphics.getWidth() / 2)
-							direction.rotate(360f * delta * 0.001f);
-						else
-							direction.rotate(-360f * delta * 0.001f);
-						return;
-					}
+
+					if (!Gdx.input.isTouched(i))
+						continue;
+
+					float x = Gdx.input.getX(i);
+					if (x < Gdx.graphics.getWidth() / 2)
+						direction.rotate(360f * delta * 0.001f);
+					else
+						direction.rotate(-360f * delta * 0.001f);
 				}
 
 			} else {
