@@ -116,7 +116,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				for (int i = 0; i < miniPlanets.size(); i++) {
 					MiniPlanet miniPlanet = miniPlanets.get(i);
-					if (miniPlanet.getPosition().dst(position) < 3f && !miniPlanet.containsSuperSheep(this)) {
+					if (miniPlanet.getPosition().dst(position) < 2f && !miniPlanet.containsSuperSheep(this)) {
 						miniPlanet.attachSuperSheep(this);
 						break;
 					}
@@ -214,7 +214,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				jointDef.bodyA = superSheep.body;
 				jointDef.bodyB = this.body;
 				jointDef.collideConnected = false;
-				jointDef.length = 3f;
+				jointDef.length = 2f;
 				joint = world.createJoint(jointDef);
 
 				cameraFollowEntity.follow(this);
@@ -249,7 +249,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			camera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
-			Camera cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(-2.5f, 0f, 73f, 15f));
+			Camera cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
 
 			// camera.zoom(32f);
 
@@ -261,28 +261,25 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			bodyBuilder = new BodyBuilder(world);
 
-			float lastX = 0f;
-
-			for (int i = 0; i < 5; i++) {
-
-				float randomY = MathUtils.random(-5f, 5f);
+			for (int i = 0; i < 10; i++) {
+				float randomY = MathUtils.random(0f, 15f);
 
 				bodyBuilder.mass(1000f) //
 						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
-						.position(17f + i * 8f, 5f + randomY) //
+						.position(17f + i * 8f, randomY) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.build();
 
+				randomY = MathUtils.random(0f, 15f);
+
 				bodyBuilder.mass(1000f) //
 						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
-						.position(14f + i * 8f, 11f + randomY) //
+						.position(12f + i * 8f, randomY) //
 						.angle(90f)//
 						.build();
-
-				lastX = 17f + i * 8f;
 			}
 
 			cameraFollowEntity = new CameraFollowEntity(cameraData);
@@ -290,13 +287,55 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			SuperSheep superSheep = new SuperSheep(5f, 5f, sprite, new Vector2(1f, 0f));
 			superSheeps.add(superSheep);
 
-			startMiniPlanet = new MiniPlanet(2.5f, 7.5f, 1.5f);
+			startMiniPlanet = new MiniPlanet(5f, 7.5f, 1f);
 			startMiniPlanet.attachSuperSheep(superSheep);
 			miniPlanets.add(startMiniPlanet);
 
-			MiniPlanet miniPlanet = new MiniPlanet(lastX + 9f, 7.5f, 1.5f);
+			MiniPlanet miniPlanet = new MiniPlanet(95f, 7.5f, 1f);
 			miniPlanets.add(miniPlanet);
 
+			// templates.createBorder((worldWidth * 0.5f), 0, worldWidth, 0.1f);
+			// templates.createBorder((worldWidth * 0.5f), worldHeight, worldWidth, 1f);
+			// templates.createBorder(0, (worldHeight * 0.5f), 0.1f, worldHeight);
+			// templates.createBorder(worldWidth, (worldHeight * 0.5f), 0.1f, worldHeight);
+
+			float worldWidth = 100f;
+			float worldHeight = 20f;
+
+			float x = worldWidth * 0.5f;
+			float y = worldHeight * 0.5f;
+
+			bodyBuilder.type(BodyType.StaticBody) //
+					.boxShape(worldWidth * 0.5f, 0.1f * 0.5f) //
+					.restitution(1f) //
+					.mass(1f)//
+					.friction(0f) //
+					.position(x, 0f) //
+					.build();
+
+			bodyBuilder.type(BodyType.StaticBody) //
+					.boxShape(worldWidth * 0.5f, 0.1f * 0.5f) //
+					.restitution(1f) //
+					.mass(1f)//
+					.friction(0f) //
+					.position(x, 15f) //
+					.build();
+
+			bodyBuilder.type(BodyType.StaticBody) //
+					.boxShape(0.1f * 0.5f, worldHeight * 0.5f) //
+					.restitution(1f) //
+					.mass(1f)//
+					.friction(0f) //
+					.position(0f, y) //
+					.build();
+
+			bodyBuilder.type(BodyType.StaticBody) //
+					.boxShape(0.1f * 0.5f, worldHeight * 0.5f) //
+					.restitution(1f) //
+					.mass(1f)//
+					.friction(0f) //
+					.position(100f, y) //
+					.build();
 		}
 
 		@Override
@@ -351,7 +390,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		@Override
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-			
+
 			// inputReleaseSheep(delta);
 
 			for (int i = 0; i < superSheeps.size(); i++) {
@@ -359,7 +398,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				calculateDirectionFromInput(delta, superSheep.direction);
 				superSheep.update(delta);
 			}
-			
+
 			for (int i = 0; i < miniPlanets.size(); i++)
 				miniPlanets.get(i).update(delta);
 
@@ -368,10 +407,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			ArrayList<SuperSheep> toRemove = new ArrayList<SuperSheep>();
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
-				
+
 				if (!superSheep.dead)
 					continue;
-				
+
 				toRemove.add(superSheep);
 
 				superSheep.body.setType(BodyType.StaticBody);
@@ -425,12 +464,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		setScreen(new ScreenImpl(new SuperSheepGameState()));
+
+		Gdx.input.setCatchBackKey(true);
 	}
 
 	@Override
 	public void render() {
 		super.render();
-		if (Gdx.input.isKeyPressed(Keys.R)) {
+		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.BACK)) {
 			getScreen().dispose();
 			setScreen(new ScreenImpl(new SuperSheepGameState()));
 		}
