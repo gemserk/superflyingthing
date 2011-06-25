@@ -17,6 +17,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
@@ -37,6 +38,14 @@ import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 
 public class Game extends com.gemserk.commons.gdx.Game {
+
+	public static short AllCategoryBits = 0xFF;
+
+	public static short ShipCategoryBits = 1;
+
+	public static short DeadShipCategoryBits = 2;
+
+	public static short MiniPlanetCategoryBits = 4;
 
 	interface SpatialComponent {
 
@@ -93,7 +102,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.build();
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~DeadShipCategoryBits & ~MiniPlanetCategoryBits)).build();
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
@@ -102,7 +111,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void update(int delta) {
 				direction.nor();
-				
+
 				Vector2 position = body.getTransform().getPosition();
 				float desiredAngle = direction.angle();
 
@@ -170,7 +179,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
-						.build();
+						.categoryBits(MiniPlanetCategoryBits).build();
 				this.radius = radius;
 				this.superSheeps = new ArrayList<SuperSheep>();
 				this.joint = null;
@@ -304,11 +313,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			MiniPlanet miniPlanet = new MiniPlanet(95f, 7.5f, 1f);
 			miniPlanets.add(miniPlanet);
 
-			// templates.createBorder((worldWidth * 0.5f), 0, worldWidth, 0.1f);
-			// templates.createBorder((worldWidth * 0.5f), worldHeight, worldWidth, 1f);
-			// templates.createBorder(0, (worldHeight * 0.5f), 0.1f, worldHeight);
-			// templates.createBorder(worldWidth, (worldHeight * 0.5f), 0.1f, worldHeight);
-
 			float worldWidth = 100f;
 			float worldHeight = 20f;
 
@@ -424,6 +428,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				toRemove.add(superSheep);
 
 				superSheep.body.setType(BodyType.StaticBody);
+
+				// create a new body?
+				Filter filterData = superSheep.body.getFixtureList().get(0).getFilterData();
+				filterData.categoryBits = DeadShipCategoryBits;
+				superSheep.body.getFixtureList().get(0).setFilterData(filterData);
+
 				superSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
 				startMiniPlanet.attachSuperSheep(superSheep);
 				superSheeps.add(superSheep);
