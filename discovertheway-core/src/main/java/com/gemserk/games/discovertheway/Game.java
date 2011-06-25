@@ -17,7 +17,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Filter;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
@@ -33,6 +32,7 @@ import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
@@ -144,7 +144,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void draw(SpriteBatch spriteBatch) {
 				Vector2 position = body.getTransform().getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, body.getAngle() * MathUtils.radiansToDegrees);
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
 
 			public void drawDebug() {
@@ -152,6 +152,42 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				float x = position.x + direction.tmp().mul(0.5f).x;
 				float y = position.y + direction.tmp().mul(0.5f).y;
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
+			}
+
+		}
+
+		class DeadSuperSheepEntity implements SpatialComponent {
+
+			Sprite sprite;
+			Spatial spatial;
+
+			public Spatial getSpatial() {
+				return spatial;
+			}
+
+			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
+
+//				body.setType(BodyType.StaticBody);
+//				Filter filterData = body.getFixtureList().get(0).getFilterData();
+//				filterData.categoryBits = DeadShipCategoryBits;
+//				body.getFixtureList().get(0).setFilterData(filterData);
+
+				this.spatial = new SpatialImpl(spatial);
+				this.sprite = new Sprite(sprite);
+			}
+
+			public void update(int delta) {
+
+			}
+
+			public void draw(SpriteBatch spriteBatch) {
+				sprite.setColor(0.7f, 0.7f, 0.7f, 1f);
+				Vector2 position = spatial.getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
+			}
+
+			public void drawDebug() {
+
 			}
 
 		}
@@ -257,12 +293,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private ArrayList<SuperSheep> superSheeps;
 		private CameraFollowEntity cameraFollowEntity;
 
+		private ArrayList<DeadSuperSheepEntity> deadSuperSheeps;
+
 		@Override
 		public void init() {
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
 			miniPlanets = new ArrayList<MiniPlanet>();
 			superSheeps = new ArrayList<SuperSheep>();
+			deadSuperSheeps = new ArrayList<DeadSuperSheepEntity>();
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
 
@@ -384,10 +423,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
 			spriteBatch.begin();
-			for (int i = 0; i < superSheeps.size(); i++) {
-				SuperSheep superSheep = superSheeps.get(i);
-				superSheep.draw(spriteBatch);
-			}
+
+			for (int i = 0; i < superSheeps.size(); i++)
+				superSheeps.get(i).draw(spriteBatch);
+
+			for (int i = 0; i < deadSuperSheeps.size(); i++)
+				deadSuperSheeps.get(i).draw(spriteBatch);
+
 			spriteBatch.end();
 
 			box2dCustomDebugRenderer.render();
@@ -413,6 +455,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				superSheep.update(delta);
 			}
 
+			for (int i = 0; i < deadSuperSheeps.size(); i++)
+				deadSuperSheeps.get(i).update(delta);
+
 			for (int i = 0; i < miniPlanets.size(); i++)
 				miniPlanets.get(i).update(delta);
 
@@ -425,18 +470,25 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (!superSheep.dead)
 					continue;
 
+				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheep.getSpatial(), superSheep.sprite);
+				deadSuperSheeps.add(deadSuperSheepEntity);
+
 				toRemove.add(superSheep);
+				
+				// superSheep.body.setType(BodyType.StaticBody);
+				//
+				// // create a new body?
+				// Filter filterData = superSheep.body.getFixtureList().get(0).getFilterData();
+				// filterData.categoryBits = DeadShipCategoryBits;
+				// superSheep.body.getFixtureList().get(0).setFilterData(filterData);
 
-				superSheep.body.setType(BodyType.StaticBody);
+				// should call something like superSheep.destroy()
+				world.destroyBody(superSheep.body);
 
-				// create a new body?
-				Filter filterData = superSheep.body.getFixtureList().get(0).getFilterData();
-				filterData.categoryBits = DeadShipCategoryBits;
-				superSheep.body.getFixtureList().get(0).setFilterData(filterData);
+				SuperSheep newSuperSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
+				startMiniPlanet.attachSuperSheep(newSuperSheep);
+				superSheeps.add(newSuperSheep);
 
-				superSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
-				startMiniPlanet.attachSuperSheep(superSheep);
-				superSheeps.add(superSheep);
 			}
 			superSheeps.removeAll(toRemove);
 
