@@ -101,12 +101,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
+				direction.nor();
+				
 				Vector2 position = body.getTransform().getPosition();
-				body.setTransform(position, direction.angle() * MathUtils.degreesToRadians);
+				float desiredAngle = direction.angle();
+
+				body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
 				body.applyForce(direction.tmp().mul(5000f), position);
 
 				Vector2 linearVelocity = body.getLinearVelocity();
+
 				float speed = linearVelocity.len();
+
+				linearVelocity.set(direction.tmp().mul(speed));
+
 				float maxSpeed = 6f;
 				if (speed > maxSpeed) {
 					linearVelocity.mul(maxSpeed / speed);
@@ -332,7 +340,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					.build();
 
 			bodyBuilder.type(BodyType.StaticBody) //
-					.boxShape(0.1f * 0.5f, worldHeight  * 0.5f) //
+					.boxShape(0.1f * 0.5f, worldHeight * 0.5f) //
 					.restitution(1f) //
 					.mass(1f)//
 					.friction(0f) //
