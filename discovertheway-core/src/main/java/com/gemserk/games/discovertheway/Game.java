@@ -43,13 +43,33 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public static short ShipCategoryBits = 1;
 
-	public static short DeadShipCategoryBits = 2;
-
-	public static short MiniPlanetCategoryBits = 4;
+	public static short MiniPlanetCategoryBits = 2;
 
 	interface SpatialComponent {
 
 		Spatial getSpatial();
+
+	}
+
+	interface Entity {
+
+		/**
+		 * Called before the first world update and after the Entity was added to the world.
+		 */
+		void init();
+
+		/**
+		 * Called in each world update iteration.
+		 * 
+		 * @param delta
+		 *            The time since the last update call.
+		 */
+		void update(int delta);
+
+		/**
+		 * Called before the entity is removed from the world.
+		 */
+		void destroy();
 
 	}
 
@@ -102,7 +122,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~DeadShipCategoryBits & ~MiniPlanetCategoryBits)).build();
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
@@ -154,6 +174,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 			}
 
+			public void dispose() {
+				world.destroyBody(body);
+			}
+
 		}
 
 		class DeadSuperSheepEntity implements SpatialComponent {
@@ -166,12 +190,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
-
-//				body.setType(BodyType.StaticBody);
-//				Filter filterData = body.getFixtureList().get(0).getFilterData();
-//				filterData.categoryBits = DeadShipCategoryBits;
-//				body.getFixtureList().get(0).setFilterData(filterData);
-
 				this.spatial = new SpatialImpl(spatial);
 				this.sprite = new Sprite(sprite);
 			}
@@ -294,6 +312,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private CameraFollowEntity cameraFollowEntity;
 
 		private ArrayList<DeadSuperSheepEntity> deadSuperSheeps;
+		private ArrayList<SuperSheep> superSheepsToRemove;
 
 		@Override
 		public void init() {
@@ -301,6 +320,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			camera = new Libgdx2dCameraTransformImpl();
 			miniPlanets = new ArrayList<MiniPlanet>();
 			superSheeps = new ArrayList<SuperSheep>();
+			superSheepsToRemove = new ArrayList<SuperSheep>();
 			deadSuperSheeps = new ArrayList<DeadSuperSheepEntity>();
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
@@ -463,7 +483,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			cameraFollowEntity.update(delta);
 
-			ArrayList<SuperSheep> toRemove = new ArrayList<SuperSheep>();
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
 
@@ -473,8 +492,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheep.getSpatial(), superSheep.sprite);
 				deadSuperSheeps.add(deadSuperSheepEntity);
 
-				toRemove.add(superSheep);
-				
+				superSheepsToRemove.add(superSheep);
+
 				// superSheep.body.setType(BodyType.StaticBody);
 				//
 				// // create a new body?
@@ -482,15 +501,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				// filterData.categoryBits = DeadShipCategoryBits;
 				// superSheep.body.getFixtureList().get(0).setFilterData(filterData);
 
-				// should call something like superSheep.destroy()
-				world.destroyBody(superSheep.body);
+				// world.destroyBody(superSheep.body);
+				superSheep.dispose();
 
 				SuperSheep newSuperSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
 				startMiniPlanet.attachSuperSheep(newSuperSheep);
 				superSheeps.add(newSuperSheep);
 
 			}
-			superSheeps.removeAll(toRemove);
+			superSheeps.removeAll(superSheepsToRemove);
+			superSheepsToRemove.clear();
 
 			// cameraFollowEntity.follow(startMiniPlanet);
 		}
