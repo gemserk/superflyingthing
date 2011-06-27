@@ -38,7 +38,6 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
-import com.gemserk.games.superflyingthing.Game.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
@@ -195,7 +194,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class AttachableEntityComponent implements Component {
+	class AttachableComponent implements Component {
+		
+		Entity owner;
 
 	}
 
@@ -252,15 +253,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 	
-	class Behavior {
+	interface Behavior {
 		
-		public void update(int delta, Entity entity) {
-			
-		}
+		void update(int delta, Entity entity);
 		
 	}
 	
-	class CameraFollowBehavior extends Behavior {
+	class CameraFollowBehavior implements Behavior {
 		
 		@Override
 		public void update(int delta, Entity entity) {
@@ -273,6 +272,39 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return;
 			Camera camera = ComponentWrapper.getCamera(entity);
 			camera.setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
+		}
+		
+	}
+	
+
+	class FixMovementBehavior implements Behavior {
+
+		@Override
+		public void update(int delta, Entity e) {
+			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
+			Vector2 direction = movementComponent.direction;
+
+			direction.nor();
+
+			Body body = ComponentWrapper.getBody(e);
+
+			Vector2 position = body.getTransform().getPosition();
+			float desiredAngle = direction.angle();
+
+			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
+			body.applyForce(direction.tmp().mul(5000f), position);
+
+			Vector2 linearVelocity = body.getLinearVelocity();
+
+			float speed = linearVelocity.len();
+
+			linearVelocity.set(direction.tmp().mul(speed));
+
+			float maxSpeed = 6f;
+			if (speed > maxSpeed) {
+				linearVelocity.mul(maxSpeed / speed);
+				body.setLinearVelocity(linearVelocity);
+			}
 		}
 		
 	}
@@ -295,6 +327,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		class SuperSheep extends Entity {
+			
+			FixMovementBehavior fixMovementBehavior = new FixMovementBehavior();
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
@@ -310,49 +344,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				addComponent(new PhysicsComponent(body));
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 				addComponent(new SpriteComponent(sprite));
-
 				addComponent(new MovementComponent(direction.x, direction.y));
 				addComponent(new AliveComponent(false));
-
-				addComponent(new AttachableEntityComponent());
+				addComponent(new AttachableComponent());
 			}
 
 			public void update(int delta) {
-				MovementComponent movementComponent = this.getComponent(MovementComponent.class);
-				Vector2 direction = movementComponent.direction;
-
-				direction.nor();
-
-				Body body = ComponentWrapper.getBody(this);
-
-				Vector2 position = body.getTransform().getPosition();
-				float desiredAngle = direction.angle();
-
-				body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
-				body.applyForce(direction.tmp().mul(5000f), position);
-
-				Vector2 linearVelocity = body.getLinearVelocity();
-
-				float speed = linearVelocity.len();
-
-				linearVelocity.set(direction.tmp().mul(speed));
-
-				float maxSpeed = 6f;
-				if (speed > maxSpeed) {
-					linearVelocity.mul(maxSpeed / speed);
-					body.setLinearVelocity(linearVelocity);
-				}
-
-				Spatial spatial = ComponentWrapper.getSpatial(this);
-				Sprite sprite = ComponentWrapper.getSprite(this);
-
-				sprite.setPosition(position.x, position.y);
-				sprite.setSize(spatial.getWidth(), spatial.getHeight());
+				fixMovementBehavior.update(delta, this);
 			}
 
 			public void render(SpriteBatch spriteBatch) {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				Sprite sprite = ComponentWrapper.getSprite(this);
+				sprite.setSize(spatial.getWidth(), spatial.getHeight());
 				Vector2 position = spatial.getPosition();
 				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
@@ -386,15 +390,61 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void render(SpriteBatch spriteBatch) {
 				Sprite sprite = ComponentWrapper.getSprite(this);
 				Spatial spatial = ComponentWrapper.getSpatial(this);
-				
 				Vector2 position = spatial.getPosition();
-				
 				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
 
 		}
+		
+		class AttachedEntityDirectionBehavior implements Behavior {
+
+			@Override
+			public void update(int delta, Entity e) {
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+
+				if (entityAttachment.entity == null)
+					return;
+
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				Vector2 position = spatial.getPosition();
+
+				Entity attachedEntity = entityAttachment.entity;
+				Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
+				MovementComponent movementComponent = ComponentWrapper.getComponent(attachedEntity, MovementComponent.class);
+
+				Vector2 superSheepPosition = attachedEntitySpatial.getPosition();
+
+				Vector2 diff = superSheepPosition.sub(position).nor();
+				diff.rotate(-90f);
+
+				movementComponent.direction.set(diff);
+			}
+			
+		}
+		
+		class AttachEntityBehavior implements Behavior {
+
+			@Override
+			public void update(int delta, Entity e) {
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+				if (entityAttachment.entity == null)
+					return;
+				if (entityAttachment.joint != null)
+					return;
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				entityAttachment.joint = jointBuilder.distanceJoint() //
+						.bodyA(ComponentWrapper.getBody(entityAttachment.entity)) //
+						.bodyB(ComponentWrapper.getBody(e)) //
+						.collideConnected(false) //
+						.length(spatial.getWidth() * 0.5f * 1.5f) //
+						.build();
+			}
+			
+		}
 
 		class MiniPlanet extends Entity {
+			
+			AttachedEntityDirectionBehavior attachedEntityDirectionBehavior = new AttachedEntityDirectionBehavior();
 
 			public MiniPlanet(float x, float y, float radius) {
 				Body body = bodyBuilder.mass(1000f) //
@@ -410,39 +460,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				processInput(delta);
-
-				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
-
-				if (entityAttachment.entity == null)
-					return;
-
-				updateAttachBehavior(entityAttachment);
-
-				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
-
-				if (releaseEntityComponent.releaseTime > 0)
-					releaseEntityComponent.releaseTime -= delta;
-
-				Spatial spatial = ComponentWrapper.getSpatial(this);
-				Vector2 position = spatial.getPosition();
-
-				Entity attachedEntity = entityAttachment.entity;
-				Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
-				MovementComponent movementComponent = ComponentWrapper.getComponent(attachedEntity, MovementComponent.class);
-
-				Vector2 superSheepPosition = attachedEntitySpatial.getPosition();
-
-				Vector2 diff = superSheepPosition.sub(position).nor();
-				diff.rotate(-90f);
-
-				movementComponent.direction.set(diff);
-
+				updateReleaseAttachmentBehavior(delta, this);
+				updateAttachBehavior(delta, this);
+				attachedEntityDirectionBehavior.update(delta, this);
 			}
 
-			private void updateAttachBehavior(EntityAttachment entityAttachment) {
+			private void updateAttachBehavior(int delta, Entity e) {
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+				if (entityAttachment.entity == null)
+					return;
 				if (entityAttachment.joint != null)
 					return;
+				
+				AttachableComponent attachableComponent = entityAttachment.entity.getComponent(AttachableComponent.class);
+				attachableComponent.owner = e;
 				
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				entityAttachment.joint = jointBuilder.distanceJoint() //
@@ -451,20 +482,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.collideConnected(false) //
 						.length(spatial.getWidth() * 0.5f * 1.5f) //
 						.build();
-				
-				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
-				releaseEntityComponent.releaseTime = 500;
-				
-				TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
-				targetComponent.target = this;
 			}
 
-			protected void processInput(int delta) {
-				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
+			protected void updateReleaseAttachmentBehavior(int delta, Entity e) {
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
 				Entity attachedEntity = entityAttachment.entity;
-
+ 
 				if (attachedEntity == null)
 					return;
+				
+				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
+
+				if (releaseEntityComponent.releaseTime > 0)
+					releaseEntityComponent.releaseTime -= delta;
 
 				if (Gdx.app.getType() == ApplicationType.Android) {
 					if (!Gdx.input.isTouched()) {
@@ -473,17 +503,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
 					return;
 
-				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
 				if (releaseEntityComponent.releaseTime > 0)
 					return;
 
-				TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
-				targetComponent.target = attachedEntity;
-
-				world.destroyJoint(entityAttachment.joint);
+				if (entityAttachment.joint != null)
+					world.destroyJoint(entityAttachment.joint);
+				
+				AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
+				attachableComponent.owner = null;
 
 				entityAttachment.joint = null;
 				entityAttachment.entity = null;
+				
+				releaseEntityComponent.releaseTime = 500;
 			}
 
 			public void drawDebug() {
@@ -512,8 +544,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				for (int i = 0; i < entities.size(); i++) {
 					Entity entity = entities.get(i);
-					AttachableEntityComponent attachableEntityComponent = entity.getComponent(AttachableEntityComponent.class);
-					if (attachableEntityComponent == null)
+					AttachableComponent attachableComponent = entity.getComponent(AttachableComponent.class);
+					if (attachableComponent == null)
 						continue;
 
 					Spatial attachableEntitySpatial = ComponentWrapper.getSpatial(entity);
@@ -521,7 +553,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					if (spatial.getPosition().dst(attachableEntitySpatial.getPosition()) < radius) {
 						EntityAttachmentComponent entityAttachmentComponent = getComponent(EntityAttachmentComponent.class);
 						entityAttachmentComponent.entityAttachment.entity = entity;
-						// attachSuperSheep(entity);
 					}
 
 				}
@@ -530,10 +561,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			@Override
-			protected void processInput(int delta) {
-
+			protected void updateReleaseAttachmentBehavior(int delta, Entity e) {
+				
 			}
-
+			
 		}
 
 		private SpriteBatch spriteBatch;
@@ -546,7 +577,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private Entity startMiniPlanet;
 
 		private Entity superSheep;
-		private CameraFollowEntity cameraFollowEntity;
+		private Entity cameraFollowEntity;
 
 		private ArrayList<Entity> entities;
 
@@ -703,7 +734,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			for (int i = 0; i < entities.size(); i++)
 				entities.get(i).update(delta);
-
+			
+			AttachableComponent attachableComponent = superSheep.getComponent(AttachableComponent.class);
+			TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
+			if (attachableComponent.owner != null) {
+				targetComponent.target = attachableComponent.owner;
+			} else {
+				targetComponent.target = superSheep;
+			}
+			
 			AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
 			if (!aliveComponent.dead)
 				return;
@@ -720,7 +759,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheepSpatial, deadSuperSheepSprite);
 			entities.add(deadSuperSheepEntity);
 
-			SuperSheep newSuperSheep = new SuperSheep(5f, 6f, deadSuperSheepSprite, new Vector2(1f, 0f));
+			SuperSheep newSuperSheep = new SuperSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
 			entities.add(newSuperSheep);
 
 			EntityAttachmentComponent entityAttachmentComponent = startMiniPlanet.getComponent(EntityAttachmentComponent.class);
