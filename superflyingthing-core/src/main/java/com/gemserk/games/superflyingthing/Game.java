@@ -78,7 +78,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 
 	// TODO: change it
-	interface SpatialComponent {
+	interface OldSpatialComponent {
 
 		Spatial getSpatial();
 
@@ -93,13 +93,23 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
+	
+	class SpatialComponent implements Component { 
+		
+		Spatial spatial;
+
+		public SpatialComponent(Spatial spatial) {
+			this.spatial = spatial;
+		}
+		
+	}
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class CameraFollowEntity extends Entity {
 
 			Camera camera;
-			SpatialComponent spatialComponent;
+			OldSpatialComponent oldSpatialComponent;
 
 			public Camera getCamera() {
 				return camera;
@@ -110,30 +120,29 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				if (spatialComponent == null)
+				if (oldSpatialComponent == null)
 					return;
-				Spatial spatial = spatialComponent.getSpatial();
+				Spatial spatial = oldSpatialComponent.getSpatial();
 				camera.setPosition(spatial.getX(), spatial.getY());
 			}
 
-			public void follow(SpatialComponent spatialComponent) {
-				this.spatialComponent = spatialComponent;
+			public void follow(OldSpatialComponent oldSpatialComponent) {
+				this.oldSpatialComponent = oldSpatialComponent;
 			}
 
 		}
 
-		class SuperSheep extends Entity implements SpatialComponent {
+		class SuperSheep extends Entity implements OldSpatialComponent {
 
 			PhysicsComponent physicsComponent;
+			SpatialComponent spatialComponent;
 
 			Sprite sprite;
 			Vector2 direction;
 			boolean dead;
 
-			Spatial spatial;
-
 			public Spatial getSpatial() {
-				return spatial;
+				return spatialComponent.spatial;
 			}
 
 			public Body getBody() {
@@ -152,12 +161,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
-				this.spatial = new SpatialPhysicsImpl(bodyBuilder.mass(50f) //
+				this.spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build(), width, height);
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build(), width, height));
 			}
 
 			public void update(int delta) {
@@ -184,7 +193,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				}
 
 				sprite.setPosition(position.x, position.y);
-				sprite.setSize(spatial.getWidth(), spatial.getHeight());
+				sprite.setSize(getSpatial().getWidth(), getSpatial().getHeight());
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
@@ -205,17 +214,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class DeadSuperSheepEntity extends Entity implements SpatialComponent {
+		class DeadSuperSheepEntity extends Entity implements OldSpatialComponent {
 
+			SpatialComponent spatialComponent;
 			Sprite sprite;
-			Spatial spatial;
 
 			public Spatial getSpatial() {
-				return spatial;
+				return spatialComponent.spatial;
 			}
 
 			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
-				this.spatial = new SpatialImpl(spatial);
+				this.spatialComponent = new SpatialComponent(new SpatialImpl(spatial));
 				this.sprite = new Sprite(sprite);
 			}
 
@@ -225,8 +234,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void draw(SpriteBatch spriteBatch) {
 				sprite.setColor(0.7f, 0.7f, 0.7f, 1f);
-				Vector2 position = spatial.getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
+				Vector2 position = getSpatial().getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, getSpatial().getAngle());
 			}
 
 			public void drawDebug() {
@@ -235,20 +244,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class MiniPlanet extends Entity implements SpatialComponent {
+		class MiniPlanet extends Entity implements OldSpatialComponent {
 
 			PhysicsComponent physicsComponent;
+			SpatialComponent spatialComponent;
 
 			float radius;
 			ArrayList<SuperSheep> superSheeps;
 			Joint joint;
 
-			Spatial spatial;
-
 			int releaseTime = 0;
 
 			public Spatial getSpatial() {
-				return spatial;
+				return spatialComponent.spatial;
 			}
 
 			public MiniPlanet(float x, float y, float radius) {
@@ -261,7 +269,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.radius = radius;
 				this.superSheeps = new ArrayList<SuperSheep>();
 				this.joint = null;
-				this.spatial = new SpatialPhysicsImpl(getBody(), radius * 2, radius * 2);
+				this.spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(getBody(), radius * 2, radius * 2));
 			}
 
 			public void update(int delta) {
