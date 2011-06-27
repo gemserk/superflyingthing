@@ -152,14 +152,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				sprite.setPosition(position.x, position.y);
 				sprite.setSize(spatial.getWidth(), spatial.getHeight());
-
-				// for (int i = 0; i < miniPlanets.size(); i++) {
-				// MiniPlanet miniPlanet = miniPlanets.get(i);
-				// if (miniPlanet.getPosition().dst(position) < 1.5f && !miniPlanet.containsSuperSheep(this)) {
-				// miniPlanet.attachSuperSheep(this);
-				// break;
-				// }
-				// }
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
@@ -241,14 +233,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void update(int delta) {
 				processInput(delta);
 
-				for (int i = 0; i < SuperSheepGameState.this.superSheeps.size(); i++) {
-					SuperSheep superSheep = SuperSheepGameState.this.superSheeps.get(i);
-					if (getSpatial().getPosition().dst(superSheep.getSpatial().getPosition()) < 1.2f && !containsSuperSheep(superSheep)) {
-						attachSuperSheep(superSheep);
-						break;
-					}
-				}
-
 				if (this.superSheeps.isEmpty())
 					return;
 
@@ -268,7 +252,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			}
 
-			private void processInput(int delta) {
+			protected void processInput(int delta) {
 				if (this.superSheeps.isEmpty())
 					return;
 
@@ -303,13 +287,38 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				jointDef.length = 1.5f;
 				joint = world.createJoint(jointDef);
 				cameraFollowEntity.follow(this);
-				releaseTime = 1000;
+				releaseTime = 500;
 			}
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
 				return this.superSheeps.contains(superSheep);
 			}
 
+		}
+		
+		class DestinationPlanet extends MiniPlanet {
+			
+			public DestinationPlanet(float x, float y, float radius) {
+				super(x, y, radius);
+			}
+
+			@Override
+			public void update(int delta) {
+				for (int i = 0; i < SuperSheepGameState.this.superSheeps.size(); i++) {
+					SuperSheep superSheep = SuperSheepGameState.this.superSheeps.get(i);
+					if (getSpatial().getPosition().dst(superSheep.getSpatial().getPosition()) < 1.2f && !containsSuperSheep(superSheep)) {
+						attachSuperSheep(superSheep);
+						break;
+					}
+				}
+				super.update(delta);
+			}
+			
+			@Override
+			protected void processInput(int delta) {
+
+			}
+			
 		}
 
 		private SpriteBatch spriteBatch;
@@ -382,7 +391,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			startMiniPlanet.attachSuperSheep(superSheep);
 			miniPlanets.add(startMiniPlanet);
 
-			MiniPlanet miniPlanet = new MiniPlanet(95f, 7.5f, 1f);
+			MiniPlanet miniPlanet = new DestinationPlanet(95f, 7.5f, 1f);
 			miniPlanets.add(miniPlanet);
 
 			float worldWidth = 100f;
