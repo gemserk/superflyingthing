@@ -153,13 +153,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				sprite.setPosition(position.x, position.y);
 				sprite.setSize(spatial.getWidth(), spatial.getHeight());
 
-				for (int i = 0; i < miniPlanets.size(); i++) {
-					MiniPlanet miniPlanet = miniPlanets.get(i);
-					if (miniPlanet.getPosition().dst(position) < 1.5f && !miniPlanet.containsSuperSheep(this)) {
-						miniPlanet.attachSuperSheep(this);
-						break;
-					}
-				}
+				// for (int i = 0; i < miniPlanets.size(); i++) {
+				// MiniPlanet miniPlanet = miniPlanets.get(i);
+				// if (miniPlanet.getPosition().dst(position) < 1.5f && !miniPlanet.containsSuperSheep(this)) {
+				// miniPlanet.attachSuperSheep(this);
+				// break;
+				// }
+				// }
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
@@ -218,15 +218,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Joint joint;
 
 			Spatial spatial;
-			
+
 			int releaseTime = 0;
 
 			public Spatial getSpatial() {
 				return spatial;
-			}
-
-			public Vector2 getPosition() {
-				return body.getTransform().getPosition();
 			}
 
 			public MiniPlanet(float x, float y, float radius) {
@@ -245,9 +241,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void update(int delta) {
 				processInput(delta);
 
+				for (int i = 0; i < SuperSheepGameState.this.superSheeps.size(); i++) {
+					SuperSheep superSheep = SuperSheepGameState.this.superSheeps.get(i);
+					if (getSpatial().getPosition().dst(superSheep.getSpatial().getPosition()) < 1.2f && !containsSuperSheep(superSheep)) {
+						attachSuperSheep(superSheep);
+						break;
+					}
+				}
+
 				if (this.superSheeps.isEmpty())
 					return;
-				
+
 				if (releaseTime > 0)
 					releaseTime -= delta;
 
@@ -263,7 +267,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				}
 
 			}
-			
+
 			private void processInput(int delta) {
 				if (this.superSheeps.isEmpty())
 					return;
@@ -272,9 +276,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					if (!Gdx.input.isTouched()) {
 						return;
 					}
-				} else if (!Gdx.input.isKeyPressed(Keys.SPACE)) 
+				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
 					return;
-				
+
 				if (releaseTime > 0)
 					return;
 
@@ -538,7 +542,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			float acceleration = 1f;
 
 			float minimumAngularVelocity = 100f;
-			
+
 			if (movementDirection > 0) {
 				if (angularVelocity < 0)
 					angularVelocity = minimumAngularVelocity;
@@ -562,7 +566,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			direction.rotate(rotationAngle);
 		}
-		
+
 		private float getMovementDirection() {
 			if (Gdx.app.getType() == ApplicationType.Android)
 				return getMovementDirectionAndroid();
@@ -578,7 +582,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			if (Gdx.input.isKeyPressed(Keys.RIGHT))
 				movementDirection -= 1f;
-			
+
 			return movementDirection;
 		}
 
@@ -594,10 +598,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				else
 					movementDirection -= 1f;
 			}
-			
+
 			return movementDirection;
 		}
-
 
 		@Override
 		public void dispose() {
