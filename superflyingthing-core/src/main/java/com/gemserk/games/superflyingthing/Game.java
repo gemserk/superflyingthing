@@ -185,6 +185,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
+	
+	class ReleaseEntityComponent implements Component {
+		
+		int releaseTime;
+		
+	}
 
 	// custom for this game, only works fine if each component has only one value.
 
@@ -357,10 +363,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 		}
-
+		
 		class MiniPlanet extends Entity {
-
-			int releaseTime = 0;
 
 			public MiniPlanet(float x, float y, float radius) {
 				Body body = bodyBuilder.mass(1000f) //
@@ -372,6 +376,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				addComponent(new PhysicsComponent(body));
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				addComponent(new EntityAttachmentComponent());
+				addComponent(new ReleaseEntityComponent());
 			}
 
 			public void update(int delta) {
@@ -382,8 +387,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (entityAttachment.entity == null)
 					return;
 
-				if (releaseTime > 0)
-					releaseTime -= delta;
+				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
+				
+				if (releaseEntityComponent.releaseTime > 0)
+					releaseEntityComponent.releaseTime -= delta;
 
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				Vector2 position = spatial.getPosition();
@@ -415,7 +422,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
 					return;
 
-				if (releaseTime > 0)
+				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
+				if (releaseEntityComponent.releaseTime > 0)
 					return;
 
 				cameraFollowEntity.follow(attachedEntity);
@@ -445,7 +453,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.build();
 
 				cameraFollowEntity.follow(this);
-				releaseTime = 500;
+				
+				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
+				releaseEntityComponent.releaseTime = 500;
 			}
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
