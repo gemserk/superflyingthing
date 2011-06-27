@@ -168,6 +168,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
+	class EntityAttachment {
+
+		Entity entity;
+
+		Joint joint;
+
+	}
+
+	class EntityAttachmentComponent implements Component {
+
+		EntityAttachment entityAttachment;
+
+		public EntityAttachmentComponent() {
+			entityAttachment = new EntityAttachment();
+		}
+
+	}
+
 	// custom for this game, only works fine if each component has only one value.
 
 	static class ComponentWrapper {
@@ -355,30 +373,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class ShipHolderComponent implements Component {
-
-			SuperSheep superSheep;
-
-			Joint joint;
-
-			public ShipHolderComponent() {
-
-			}
-
-		}
-
 		class MiniPlanet extends Entity {
 
-			SuperSheep superSheep;
 			float radius;
-			Joint joint;
 
 			int releaseTime = 0;
 
+			private EntityAttachment getEntityAttachment() {
+				EntityAttachmentComponent entityAttachmentComponent = getComponent(EntityAttachmentComponent.class);
+				return entityAttachmentComponent.entityAttachment;
+			}
+
 			public MiniPlanet(float x, float y, float radius) {
 				this.radius = radius;
-				this.superSheep = null;
-				this.joint = null;
 
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
@@ -389,12 +396,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				addComponent(new PhysicsComponent(body));
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+				addComponent(new EntityAttachmentComponent());
 			}
 
 			public void update(int delta) {
 				processInput(delta);
 
-				if (this.superSheep == null)
+				if (getEntityAttachment().entity == null)
 					return;
 
 				if (releaseTime > 0)
@@ -403,17 +411,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				Vector2 position = spatial.getPosition();
 
-				Vector2 superSheepPosition = superSheep.getSpatial().getPosition();
+				Entity attachedEntity = getEntityAttachment().entity;
+				Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
+				MovementComponent movementComponent = ComponentWrapper.getComponent(attachedEntity, MovementComponent.class);
+
+				Vector2 superSheepPosition = attachedEntitySpatial.getPosition();
 
 				Vector2 diff = superSheepPosition.sub(position).nor();
 				diff.rotate(-90f);
 
-				superSheep.getDirection().set(diff);
+				movementComponent.direction.set(diff);
 
 			}
 
 			protected void processInput(int delta) {
-				if (this.superSheep == null)
+				EntityAttachment entityAttachment = getEntityAttachment();
+				Entity attachedEntity = entityAttachment.entity;
+
+				if (attachedEntity == null)
 					return;
 
 				if (Gdx.app.getType() == ApplicationType.Android) {
@@ -426,12 +441,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (releaseTime > 0)
 					return;
 
+				cameraFollowEntity.follow(attachedEntity);
 
-				cameraFollowEntity.follow(superSheep);
+				world.destroyJoint(entityAttachment.joint);
 
-				world.destroyJoint(joint);
-				joint = null;
-				superSheep = null;
+				entityAttachment.joint = null;
+				entityAttachment.entity = null;
 			}
 
 			public void drawDebug() {
@@ -441,9 +456,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void attachSuperSheep(SuperSheep superSheep) {
-				this.superSheep = superSheep;
+				EntityAttachment entityAttachment = getEntityAttachment();
 
-				joint = jointBuilder.distanceJoint() //
+				entityAttachment.entity = superSheep;
+				entityAttachment.joint = jointBuilder.distanceJoint() //
 						.bodyA(superSheep.getBody()) //
 						.bodyB(ComponentWrapper.getBody(this)) //
 						.collideConnected(false) //
@@ -455,7 +471,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
-				return this.superSheep == superSheep;
+				EntityAttachment entityAttachment = getEntityAttachment();
+				return entityAttachment.entity == superSheep;
 			}
 
 		}
