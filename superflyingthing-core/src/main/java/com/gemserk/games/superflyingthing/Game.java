@@ -84,6 +84,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		void update(int delta) {
 
 		}
+		
+		void draw(SpriteBatch spriteBatch) {
+			
+		}
+		
+		void drawDebug() {
+			
+		}
 
 		/**
 		 * Called before the entity is removed from the world.
@@ -501,23 +509,25 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private BodyBuilder bodyBuilder;
 		private JointBuilder jointBuilder;
 
-		private ArrayList<MiniPlanet> miniPlanets;
 		private MiniPlanet startMiniPlanet;
 
 		private ArrayList<SuperSheep> superSheeps;
 		private CameraFollowEntity cameraFollowEntity;
 
-		private ArrayList<DeadSuperSheepEntity> deadSuperSheeps;
 		private ArrayList<SuperSheep> superSheepsToRemove;
+		
+		private ArrayList<Entity> entities;
 
 		@Override
 		public void init() {
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
-			miniPlanets = new ArrayList<MiniPlanet>();
+			
+			entities = new ArrayList<Entity>();
+			
 			superSheeps = new ArrayList<SuperSheep>();
 			superSheepsToRemove = new ArrayList<SuperSheep>();
-			deadSuperSheeps = new ArrayList<DeadSuperSheepEntity>();
+			
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
 
@@ -564,10 +574,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			startMiniPlanet = new MiniPlanet(5f, 7.5f, 1f);
 			startMiniPlanet.attachSuperSheep(superSheep);
-			miniPlanets.add(startMiniPlanet);
+			entities.add(startMiniPlanet);
 
 			MiniPlanet miniPlanet = new DestinationPlanet(95f, 7.5f, 1f);
-			miniPlanets.add(miniPlanet);
+			entities.add(miniPlanet);
 
 			float worldWidth = 100f;
 			float worldHeight = 20f;
@@ -644,9 +654,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			for (int i = 0; i < superSheeps.size(); i++)
 				superSheeps.get(i).draw(spriteBatch);
-
-			for (int i = 0; i < deadSuperSheeps.size(); i++)
-				deadSuperSheeps.get(i).draw(spriteBatch);
+			
+			for (int i = 0; i < entities.size(); i++)
+				entities.get(i).draw(spriteBatch);
 
 			spriteBatch.end();
 
@@ -657,8 +667,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				superSheep.drawDebug();
 			}
 
-			for (int i = 0; i < miniPlanets.size(); i++)
-				miniPlanets.get(i).drawDebug();
+			for (int i = 0; i < entities.size(); i++)
+				entities.get(i).drawDebug();
 		}
 
 		@Override
@@ -675,11 +685,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				superSheep.update(delta);
 			}
 
-			for (int i = 0; i < deadSuperSheeps.size(); i++)
-				deadSuperSheeps.get(i).update(delta);
-
-			for (int i = 0; i < miniPlanets.size(); i++)
-				miniPlanets.get(i).update(delta);
+			for (int i = 0; i < entities.size(); i++)
+				entities.get(i).update(delta);
 
 			cameraFollowEntity.update(delta);
 
@@ -691,7 +698,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					continue;
 
 				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(ComponentWrapper.getSpatial(superSheep), ComponentWrapper.getSprite(superSheep));
-				deadSuperSheeps.add(deadSuperSheepEntity);
+				entities.add(deadSuperSheepEntity);
 
 				superSheepsToRemove.add(superSheep);
 
