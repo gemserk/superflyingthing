@@ -193,6 +193,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
+	
+	class AttachableEntityComponent implements Component {
+		
+	}
 
 	class ReleaseEntityComponent implements Component {
 
@@ -294,6 +298,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				addComponent(new MovementComponent(direction.x, direction.y));
 				addComponent(new AliveComponent(false));
+				
+				addComponent(new AttachableEntityComponent());
 			}
 
 			public void update(int delta) {
@@ -448,13 +454,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
 			}
 
-			public void attachSuperSheep(SuperSheep superSheep) {
+			public void attachSuperSheep(Entity entity) {
+				if (containsEntity(entity))
+					return;
+				
 				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 
-				entityAttachment.entity = superSheep;
+				entityAttachment.entity = entity;
 				entityAttachment.joint = jointBuilder.distanceJoint() //
-						.bodyA(ComponentWrapper.getBody(superSheep)) //
+						.bodyA(ComponentWrapper.getBody(entity)) //
 						.bodyB(ComponentWrapper.getBody(this)) //
 						.collideConnected(false) //
 						.length(spatial.getWidth() * 0.5f * 1.5f) //
@@ -466,9 +475,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				releaseEntityComponent.releaseTime = 500;
 			}
 
-			public boolean containsSuperSheep(SuperSheep superSheep) {
+			public boolean containsEntity(Entity entity) {
 				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
-				return entityAttachment.entity == superSheep;
+				return entityAttachment.entity == entity;
 			}
 
 		}
@@ -483,11 +492,21 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void update(int delta) {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				float radius = ComponentWrapper.getSpatial(this).getWidth() * 0.5f;
+				
+				for (int i = 0; i < entities.size(); i++) {
+					Entity entity = entities.get(i);
+					AttachableEntityComponent attachableEntityComponent = entity.getComponent(AttachableEntityComponent.class);
+					if (attachableEntityComponent == null)
+						continue;
+					
+					Spatial attachableEntitySpatial = ComponentWrapper.getSpatial(entity);
+					
+					if (spatial.getPosition().dst(attachableEntitySpatial.getPosition()) < radius) 
+						attachSuperSheep(entity);
 
-				if (spatial.getPosition().dst(ComponentWrapper.getSpatial(superSheep).getPosition()) < radius && !containsSuperSheep(superSheep)) {
-					attachSuperSheep(superSheep);
 				}
-
+				
+			
 				super.update(delta);
 			}
 
@@ -567,8 +586,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			startMiniPlanet.attachSuperSheep(superSheep);
 			entities.add(startMiniPlanet);
 
-			MiniPlanet miniPlanet = new DestinationPlanet(95f, 7.5f, 1f);
-			entities.add(miniPlanet);
+			entities.add(new DestinationPlanet(95f, 7.5f, 1f));
 
 			float worldWidth = 100f;
 			float worldHeight = 20f;
