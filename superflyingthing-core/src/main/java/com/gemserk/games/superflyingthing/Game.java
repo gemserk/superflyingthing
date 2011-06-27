@@ -1,4 +1,4 @@
-package com.gemserk.games.discovertheway;
+package com.gemserk.games.superflyingthing;
 
 import java.util.ArrayList;
 

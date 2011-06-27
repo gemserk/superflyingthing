@@ -1,6 +1,7 @@
-package com.gemserk.games.discovertheway;
+package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.gemserk.games.superflyingthing.Game;
 
 public class DesktopApplication {
 

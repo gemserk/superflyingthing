@@ -1,10 +1,11 @@
-package com.gemserk.games.discovertheway;
+package com.gemserk.games.superflyingthing;
 
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.utils.GdxNativesLoader;
+import com.gemserk.games.superflyingthing.Game;
 
 public class Applet extends java.applet.Applet {
 
