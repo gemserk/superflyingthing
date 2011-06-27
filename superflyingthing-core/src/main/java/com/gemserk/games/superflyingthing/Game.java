@@ -48,15 +48,23 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short MiniPlanetCategoryBits = 2;
 
 	class Entity {
-		
+
 		Map<Class<? extends Component>, Component> components;
-		
+
 		<T extends Component> T getComponent(Class<T> clazz) {
 			return (T) components.get(clazz);
 		}
-		
+
 		public Entity() {
 			components = new HashMap<Class<? extends Component>, Component>();
+		}
+
+		void addComponent(Component component) {
+			addComponent(component.getClass(), component);
+		}
+
+		void addComponent(Class<? extends Component> clazz, Component component) {
+			components.put(clazz, component);
 		}
 
 		/**
@@ -105,25 +113,25 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-	
-	class SpatialComponent implements Component { 
-		
+
+	class SpatialComponent implements Component {
+
 		Spatial spatial;
 
 		public SpatialComponent(Spatial spatial) {
 			this.spatial = spatial;
 		}
-		
+
 	}
-	
+
 	class CameraComponent implements Component {
-		
+
 		Camera camera;
-		
+
 		public CameraComponent(Camera camera) {
 			this.camera = camera;
 		}
-		
+
 	}
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
@@ -131,7 +139,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		class CameraFollowEntity extends Entity {
 
 			CameraComponent cameraComponent;
-			OldSpatialComponent oldSpatialComponent;
+			Entity entity;
 
 			public Camera getCamera() {
 				return cameraComponent.camera;
@@ -142,55 +150,66 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				if (oldSpatialComponent == null)
+				if (entity == null)
 					return;
-				Spatial spatial = oldSpatialComponent.getSpatial();
-				getCamera().setPosition(spatial.getX(), spatial.getY());
+				SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
+				if (spatialComponent == null)
+					return;
+				getCamera().setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
 			}
 
-			public void follow(OldSpatialComponent oldSpatialComponent) {
-				this.oldSpatialComponent = oldSpatialComponent;
+			public void follow(Entity entity) {
+				this.entity = entity;
 			}
 
 		}
 
-		class SuperSheep extends Entity implements OldSpatialComponent {
-
-			PhysicsComponent physicsComponent;
-			SpatialComponent spatialComponent;
+		class SuperSheep extends Entity {
 
 			Sprite sprite;
 			Vector2 direction;
 			boolean dead;
 
 			public Spatial getSpatial() {
-				return spatialComponent.spatial;
+				return getSpatialComponent().spatial;
 			}
 
 			public Body getBody() {
-				return physicsComponent.body;
+				return getPhysicsComponent().body;
+			}
+
+			public SpatialComponent getSpatialComponent() {
+				return getComponent(SpatialComponent.class);
+			}
+
+			public PhysicsComponent getPhysicsComponent() {
+				return getComponent(PhysicsComponent.class);
 			}
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-				Body body = bodyBuilder.mass(50f) //
+
+				this.sprite = sprite;
+				this.direction = direction;
+				this.dead = false;
+
+				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
-				this.physicsComponent = new PhysicsComponent(body);
-				this.sprite = sprite;
-				this.direction = direction;
-				this.dead = false;
-				this.spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(body, width, height));
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
+				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, width, height));
+
+				addComponent(physicsComponent);
+				addComponent(spatialComponent);
 			}
 
 			public void update(int delta) {
 				direction.nor();
 
-				Body body = physicsComponent.body;
+				Body body = getPhysicsComponent().body;
 
 				Vector2 position = body.getTransform().getPosition();
 				float desiredAngle = direction.angle();
@@ -227,23 +246,28 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void dispose() {
-				world.destroyBody(physicsComponent.body);
+				world.destroyBody(getPhysicsComponent().body);
 			}
 
 		}
 
-		class DeadSuperSheepEntity extends Entity implements OldSpatialComponent {
+		class DeadSuperSheepEntity extends Entity {
 
-			SpatialComponent spatialComponent;
 			Sprite sprite;
 
 			public Spatial getSpatial() {
-				return spatialComponent.spatial;
+				return getSpatialComponent().spatial;
+			}
+			
+			public SpatialComponent getSpatialComponent() {
+				return getComponent(SpatialComponent.class);
 			}
 
 			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
-				this.spatialComponent = new SpatialComponent(new SpatialImpl(spatial));
 				this.sprite = new Sprite(sprite);
+				
+				SpatialComponent spatialComponent = new SpatialComponent(new SpatialImpl(spatial));
+				addComponent(spatialComponent);
 			}
 
 			public void update(int delta) {
@@ -262,10 +286,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class MiniPlanet extends Entity implements OldSpatialComponent {
-
-			PhysicsComponent physicsComponent;
-			SpatialComponent spatialComponent;
+		class MiniPlanet extends Entity {
 
 			float radius;
 			ArrayList<SuperSheep> superSheeps;
@@ -274,20 +295,36 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			int releaseTime = 0;
 
 			public Spatial getSpatial() {
-				return spatialComponent.spatial;
+				return getSpatialComponent().spatial;
+			}
+			
+			public Body getBody() {
+				return getPhysicsComponent().body;
+			}
+			
+			public SpatialComponent getSpatialComponent() {
+				return getComponent(SpatialComponent.class);
+			}
+
+			public PhysicsComponent getPhysicsComponent() {
+				return getComponent(PhysicsComponent.class);
 			}
 
 			public MiniPlanet(float x, float y, float radius) {
-				this.physicsComponent = new PhysicsComponent(bodyBuilder.mass(1000f) //
+				this.radius = radius;
+				this.superSheeps = new ArrayList<SuperSheep>();
+				this.joint = null;
+				
+				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.categoryBits(MiniPlanetCategoryBits).build());
-				this.radius = radius;
-				this.superSheeps = new ArrayList<SuperSheep>();
-				this.joint = null;
-				this.spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(getBody(), radius * 2, radius * 2));
+				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, radius * 2, radius * 2));
+				
+				addComponent(physicsComponent);
+				addComponent(spatialComponent);
 			}
 
 			public void update(int delta) {
@@ -354,10 +391,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
 				return this.superSheeps.contains(superSheep);
-			}
-
-			Body getBody() {
-				return physicsComponent.body;
 			}
 
 		}
