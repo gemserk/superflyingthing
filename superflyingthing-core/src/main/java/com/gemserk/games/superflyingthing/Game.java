@@ -51,6 +51,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		Map<Class<? extends Component>, Component> components;
 
+		@SuppressWarnings("unchecked")
 		<T extends Component> T getComponent(Class<T> clazz) {
 			return (T) components.get(clazz);
 		}
@@ -147,17 +148,48 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	// custom for this game
+	class AliveComponent implements Component {
+
+		boolean dead;
+
+		public AliveComponent(boolean dead) {
+			this.dead = dead;
+		}
+
+	}
+
+	class TargetComponent implements Component {
+
+		Entity target;
+		
+		public TargetComponent(Entity target) {
+			this.target = target;
+		}
+
+	}
+
+	// custom for this game, only works fine if each component has only one value.
 
 	static class ComponentWrapper {
 
 		public static Sprite getSprite(Entity e) {
+			SpriteComponent component = getComponent(e, SpriteComponent.class);
+			if (component == null)
+				return null;
+			return component.sprite;
+		}
+
+		public static Camera getCamera(Entity e) {
+			CameraComponent component = getComponent(e, CameraComponent.class);
+			if (component == null)
+				return null;
+			return component.camera;
+		}
+
+		private static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
 			if (e == null)
 				return null;
-			SpriteComponent spriteComponent = e.getComponent(SpriteComponent.class);
-			if (spriteComponent == null)
-				return null;
-			return spriteComponent.sprite;
+			return (T) e.getComponent(clazz);
 		}
 
 	}
@@ -166,18 +198,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class CameraFollowEntity extends Entity {
 
-			CameraComponent cameraComponent;
-			Entity entity;
-
 			public Camera getCamera() {
-				return cameraComponent.camera;
+				return ComponentWrapper.getCamera(this);
 			}
 
 			public CameraFollowEntity(Camera camera) {
-				this.cameraComponent = new CameraComponent(camera);
+				addComponent(new CameraComponent(camera));
+				addComponent(new TargetComponent(null));
 			}
 
 			public void update(int delta) {
+				TargetComponent targetComponent = getComponent(TargetComponent.class);
+				Entity entity = targetComponent.target;
 				if (entity == null)
 					return;
 				SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
@@ -187,14 +219,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void follow(Entity entity) {
-				this.entity = entity;
+				TargetComponent targetComponent = getComponent(TargetComponent.class);
+				targetComponent.target = entity;
 			}
 
 		}
 
 		class SuperSheep extends Entity {
-			
-			boolean dead;
 
 			public Spatial getSpatial() {
 				return getSpatialComponent().spatial;
@@ -207,11 +238,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Sprite getSprite() {
 				return ComponentWrapper.getSprite(this);
 			}
-			
+
 			Vector2 getDirection() {
 				return getMovementComponent().direction;
 			}
-			
+
+			void setDead(boolean dead) {
+				getAliveComponent().dead = dead;
+			}
+
+			boolean isDead() {
+				return getAliveComponent().dead;
+			}
+
 			public SpatialComponent getSpatialComponent() {
 				return getComponent(SpatialComponent.class);
 			}
@@ -219,17 +258,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public PhysicsComponent getPhysicsComponent() {
 				return getComponent(PhysicsComponent.class);
 			}
-			
+
 			public MovementComponent getMovementComponent() {
 				return getComponent(MovementComponent.class);
 			}
 
+			public AliveComponent getAliveComponent() {
+				return getComponent(AliveComponent.class);
+			}
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-				
-				this.dead = false;
 
 				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
@@ -238,12 +278,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.DynamicBody) //
 						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
 				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, width, height));
-				
+
 				addComponent(physicsComponent);
 				addComponent(spatialComponent);
 				addComponent(new SpriteComponent(sprite));
-				
+
 				addComponent(new MovementComponent(direction.x, direction.y));
+				addComponent(new AliveComponent(false));
 			}
 
 			public void update(int delta) {
@@ -582,7 +623,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (fixture.getBody() != superSheep.getBody())
 					return;
 				Gdx.app.log("SuperSheep", "die!");
-				superSheep.dead = true;
+				superSheep.setDead(true);
 			}
 		}
 
@@ -645,7 +686,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
 
-				if (!superSheep.dead)
+				if (!superSheep.isDead())
 					continue;
 
 				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheep.getSpatial(), superSheep.getSprite());

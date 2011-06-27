@@ -47,6 +47,57 @@ public class DataDrivenTest {
 	 * what is the difference now of an Obstacle entity and a Ship entity? only the components and behaviors they have. So we could define them outside.
 	 * 
 	 */
+	
+	/**
+	 * Try encapsulating the component data and treat all components as the same class, registering them with a name...
+	 * 
+	 * something like this:
+	 * 
+	 * interface Health {
+	 * 
+	 * 	  float current, total;
+	 * 
+	 *    isAlive() : boolean
+	 *  
+	 * }
+	 * 
+	 * class Component {
+	 *  
+	 *   private Object object;
+	 *   
+	 *   <T> T get() {
+	 *   	if (object == null)
+	 *   		return null;
+	 *   	return (T) object;
+	 *   }
+	 * 
+	 * }
+	 * 
+	 * Then on the game ->
+	 * 
+	 * Health health = entity.getComponent("health").get();
+	 * 
+	 * going further, we could create a custom wrapper for our game: 
+	 * 
+	 * class ComponentWrapper {
+	 * 
+	 *   static <T> T getHealth(e) {
+	 *   	return e.getComponent("health").get();
+	 *   }
+	 * 
+	 * }
+	 * 
+	 * Health health = ComponentWrapper.getHealth(e);
+	 * 
+	 * Same for other components.
+	 * 
+	 * So Health ends up being the real component and Component only a holder. 
+	 * 
+	 * With this approach, how to make stuff like "if e has HealthComponent then ..."?
+	 * 
+	 * I could assume health component is registered with "health" string (or some other key type), and only that, if a sprite component is registered with that name, then it will fail.
+	 *  
+	 */
 
 	class Entity {
 
