@@ -375,8 +375,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class MiniPlanet extends Entity {
 
-			float radius;
-
 			int releaseTime = 0;
 
 			private EntityAttachment getEntityAttachment() {
@@ -385,15 +383,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public MiniPlanet(float x, float y, float radius) {
-				this.radius = radius;
-
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-
 				addComponent(new PhysicsComponent(body));
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				addComponent(new EntityAttachmentComponent());
@@ -452,18 +447,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void drawDebug() {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				Vector2 position = spatial.getPosition();
-				ImmediateModeRendererUtils.drawSolidCircle(position, radius, Color.BLUE);
+				ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
 			}
 
 			public void attachSuperSheep(SuperSheep superSheep) {
 				EntityAttachment entityAttachment = getEntityAttachment();
-
+				Spatial spatial = ComponentWrapper.getSpatial(this);
+				
 				entityAttachment.entity = superSheep;
 				entityAttachment.joint = jointBuilder.distanceJoint() //
 						.bodyA(superSheep.getBody()) //
 						.bodyB(ComponentWrapper.getBody(this)) //
 						.collideConnected(false) //
-						.length(1.5f) //
+						.length(spatial.getWidth() * 0.5f * 1.5f) //
 						.build();
 
 				cameraFollowEntity.follow(this);
@@ -486,13 +482,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			@Override
 			public void update(int delta) {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
+				float radius = ComponentWrapper.getSpatial(this).getWidth() * 0.5f;
+				
 				for (int i = 0; i < SuperSheepGameState.this.superSheeps.size(); i++) {
 					SuperSheep superSheep = SuperSheepGameState.this.superSheeps.get(i);
-					if (spatial.getPosition().dst(superSheep.getSpatial().getPosition()) < 1.2f && !containsSuperSheep(superSheep)) {
+					if (spatial.getPosition().dst(superSheep.getSpatial().getPosition()) < radius && !containsSuperSheep(superSheep)) {
 						attachSuperSheep(superSheep);
 						break;
 					}
 				}
+				
 				super.update(delta);
 			}
 
