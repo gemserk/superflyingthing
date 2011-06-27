@@ -26,7 +26,7 @@
 
 	<build>
 		<sourceDirectory>src</sourceDirectory>
-		<finalName>discovertheway-android</finalName>
+		<finalName>superflyingthing-android</finalName>
 
 		<plugins>
 			<plugin>
