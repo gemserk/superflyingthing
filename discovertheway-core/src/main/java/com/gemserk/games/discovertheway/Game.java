@@ -218,6 +218,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Joint joint;
 
 			Spatial spatial;
+			
+			int releaseTime = 0;
 
 			public Spatial getSpatial() {
 				return spatial;
@@ -241,10 +243,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				processInput();
+				processInput(delta);
 
 				if (this.superSheeps.isEmpty())
 					return;
+				
+				if (releaseTime > 0)
+					releaseTime -= delta;
 
 				for (int i = 0; i < superSheeps.size(); i++) {
 					SuperSheep superSheep = superSheeps.get(i);
@@ -258,15 +263,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				}
 
 			}
-
-			private void processInput() {
+			
+			private void processInput(int delta) {
 				if (this.superSheeps.isEmpty())
 					return;
 
 				if (Gdx.app.getType() == ApplicationType.Android) {
-					if (!Gdx.input.isTouched())
+					if (!Gdx.input.isTouched()) {
 						return;
-				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
+					}
+				} else if (!Gdx.input.isKeyPressed(Keys.SPACE)) 
+					return;
+				
+				if (releaseTime > 0)
 					return;
 
 				SuperSheep superSheep = this.superSheeps.remove(0);
@@ -289,8 +298,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				jointDef.collideConnected = false;
 				jointDef.length = 1.5f;
 				joint = world.createJoint(jointDef);
-
 				cameraFollowEntity.follow(this);
+				releaseTime = 1000;
 			}
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
