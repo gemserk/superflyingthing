@@ -171,6 +171,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	// custom for this game, only works fine if each component has only one value.
 
 	static class ComponentWrapper {
+		
+		public static Body getBody(Entity e) {
+			PhysicsComponent component = getComponent(e, PhysicsComponent.class);
+			if (component == null)
+				return null;
+			return component.body;
+		}
+		
+		public static Spatial getSpatial(Entity e) {
+			SpatialComponent component = getComponent(e, SpatialComponent.class);
+			if (component == null)
+				return null;
+			return component.spatial;
+		}
 
 		public static Sprite getSprite(Entity e) {
 			SpriteComponent component = getComponent(e, SpriteComponent.class);
@@ -228,11 +242,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		class SuperSheep extends Entity {
 
 			public Spatial getSpatial() {
-				return getSpatialComponent().spatial;
+				return ComponentWrapper.getSpatial(this);
 			}
 
 			public Body getBody() {
-				return getPhysicsComponent().body;
+				return ComponentWrapper.getBody(this);
 			}
 
 			Sprite getSprite() {
@@ -249,14 +263,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			boolean isDead() {
 				return getAliveComponent().dead;
-			}
-
-			public SpatialComponent getSpatialComponent() {
-				return getComponent(SpatialComponent.class);
-			}
-
-			public PhysicsComponent getPhysicsComponent() {
-				return getComponent(PhysicsComponent.class);
 			}
 
 			public MovementComponent getMovementComponent() {
@@ -290,7 +296,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void update(int delta) {
 				getDirection().nor();
 
-				Body body = getPhysicsComponent().body;
+				Body body = getBody();
 
 				Vector2 position = body.getTransform().getPosition();
 				float desiredAngle = getDirection().angle();
@@ -327,7 +333,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void dispose() {
-				world.destroyBody(getPhysicsComponent().body);
+				world.destroyBody(getBody());
 			}
 
 		}
@@ -335,19 +341,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		class DeadSuperSheepEntity extends Entity {
 
 			Sprite getSprite() {
-				return getSpriteComponent().sprite;
+				return ComponentWrapper.getSprite(this);
 			}
 
 			public Spatial getSpatial() {
-				return getSpatialComponent().spatial;
-			}
-
-			public SpatialComponent getSpatialComponent() {
-				return getComponent(SpatialComponent.class);
-			}
-
-			public SpriteComponent getSpriteComponent() {
-				return getComponent(SpriteComponent.class);
+				return ComponentWrapper.getSpatial(this);
 			}
 
 			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
@@ -365,26 +363,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class MiniPlanet extends Entity {
 
-			float radius;
 			ArrayList<SuperSheep> superSheeps;
+			float radius;
 			Joint joint;
 
 			int releaseTime = 0;
 
 			public Spatial getSpatial() {
-				return getSpatialComponent().spatial;
+				return ComponentWrapper.getSpatial(this);
 			}
 
 			public Body getBody() {
-				return getPhysicsComponent().body;
-			}
-
-			public SpatialComponent getSpatialComponent() {
-				return getComponent(SpatialComponent.class);
-			}
-
-			public PhysicsComponent getPhysicsComponent() {
-				return getComponent(PhysicsComponent.class);
+				return ComponentWrapper.getBody(this);
 			}
 
 			public MiniPlanet(float x, float y, float radius) {
