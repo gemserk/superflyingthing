@@ -382,16 +382,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.superSheeps = new ArrayList<SuperSheep>();
 				this.joint = null;
 
-				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(1000f) //
+				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
-						.categoryBits(MiniPlanetCategoryBits).build());
-				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, radius * 2, radius * 2));
-
-				addComponent(physicsComponent);
-				addComponent(spatialComponent);
+						.categoryBits(MiniPlanetCategoryBits).build();
+				
+				addComponent(new PhysicsComponent(body));
+				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 			}
 
 			public void update(int delta) {
