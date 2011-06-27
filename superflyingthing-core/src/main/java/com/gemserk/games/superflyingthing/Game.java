@@ -51,12 +51,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	interface Entity {
+	class Entity {
 
 		/**
 		 * Called before the first world update and after the Entity was added to the world.
 		 */
-		void init();
+		void init() {
+		}
 
 		/**
 		 * Called in each world update iteration.
@@ -64,18 +65,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		 * @param delta
 		 *            The time since the last update call.
 		 */
-		void update(int delta);
+		void update(int delta) {
+		}
 
 		/**
 		 * Called before the entity is removed from the world.
 		 */
-		void destroy();
+		void dispose() {
+		}
 
 	}
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
-		class CameraFollowEntity {
+		class CameraFollowEntity extends Entity {
 
 			Camera camera;
 			SpatialComponent spatialComponent;
@@ -101,7 +104,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class SuperSheep implements SpatialComponent {
+		class SuperSheep extends Entity implements SpatialComponent {
 
 			Body body;
 			Sprite sprite;
@@ -172,7 +175,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class DeadSuperSheepEntity implements SpatialComponent {
+		class DeadSuperSheepEntity extends Entity implements SpatialComponent {
 
 			Sprite sprite;
 			Spatial spatial;
@@ -202,7 +205,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class MiniPlanet implements SpatialComponent {
+		class MiniPlanet extends Entity implements SpatialComponent {
 
 			float radius;
 			Body body;
@@ -282,12 +285,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.superSheeps.add(superSheep);
 
 				joint = jointBuilder.distanceJoint() //
-					.bodyA(superSheep.body) //
-					.bodyB(this.body) //
-					.collideConnected(false) //
-					.length(1.5f) //
-					.build();
-				
+						.bodyA(superSheep.body) //
+						.bodyB(this.body) //
+						.collideConnected(false) //
+						.length(1.5f) //
+						.build();
+
 				cameraFollowEntity.follow(this);
 				releaseTime = 500;
 			}
@@ -297,9 +300,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 		}
-		
+
 		class DestinationPlanet extends MiniPlanet {
-			
+
 			public DestinationPlanet(float x, float y, float radius) {
 				super(x, y, radius);
 			}
@@ -315,12 +318,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				}
 				super.update(delta);
 			}
-			
+
 			@Override
 			protected void processInput(int delta) {
 
 			}
-			
+
 		}
 
 		private SpriteBatch spriteBatch;
