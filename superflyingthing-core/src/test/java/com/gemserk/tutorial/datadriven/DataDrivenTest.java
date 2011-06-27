@@ -476,11 +476,11 @@ public class DataDrivenTest {
 
 	@Test
 	public void mainTest() {
-		Game game = new Game();
-		game.init();
-		while (!game.done)
-			game.update(getDeltaTime());
-		game.dispose();
+//		Game game = new Game();
+//		game.init();
+//		while (!game.done)
+//			game.update(getDeltaTime());
+//		game.dispose();
 	}
 
 }
