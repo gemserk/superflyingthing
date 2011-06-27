@@ -97,13 +97,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	// TODO: change it
-	interface OldSpatialComponent {
-
-		Spatial getSpatial();
-
-	}
-
 	class PhysicsComponent implements Component {
 
 		Body body;
@@ -130,6 +123,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		public CameraComponent(Camera camera) {
 			this.camera = camera;
+		}
+
+	}
+
+	class SpriteComponent implements Component {
+
+		Sprite sprite;
+
+		public SpriteComponent(Sprite sprite) {
+			this.sprite = sprite;
 		}
 
 	}
@@ -166,7 +169,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class SuperSheep extends Entity {
 
-			Sprite sprite;
 			Vector2 direction;
 			boolean dead;
 
@@ -178,6 +180,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return getPhysicsComponent().body;
 			}
 
+			Sprite getSprite() {
+				return getSpriteComponent().sprite;
+			}
+
 			public SpatialComponent getSpatialComponent() {
 				return getComponent(SpatialComponent.class);
 			}
@@ -186,11 +192,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return getComponent(PhysicsComponent.class);
 			}
 
+			public SpriteComponent getSpriteComponent() {
+				return getComponent(SpriteComponent.class);
+			}
+
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
 
-				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
 
@@ -201,9 +210,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.DynamicBody) //
 						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
 				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, width, height));
+				SpriteComponent spriteComponent = new SpriteComponent(sprite);
 
 				addComponent(physicsComponent);
 				addComponent(spatialComponent);
+				addComponent(spriteComponent);
 			}
 
 			public void update(int delta) {
@@ -229,13 +240,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					body.setLinearVelocity(linearVelocity);
 				}
 
-				sprite.setPosition(position.x, position.y);
-				sprite.setSize(getSpatial().getWidth(), getSpatial().getHeight());
+				getSprite().setPosition(position.x, position.y);
+				getSprite().setSize(getSpatial().getWidth(), getSpatial().getHeight());
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
 				Vector2 position = getSpatial().getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, getSpatial().getAngle());
+				SpriteBatchUtils.drawCentered(spriteBatch, getSprite(), position.x, position.y, getSpatial().getAngle());
 			}
 
 			public void drawDebug() {
@@ -253,35 +264,31 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class DeadSuperSheepEntity extends Entity {
 
-			Sprite sprite;
+			Sprite getSprite() {
+				return getSpriteComponent().sprite;
+			}
 
 			public Spatial getSpatial() {
 				return getSpatialComponent().spatial;
 			}
-			
+
 			public SpatialComponent getSpatialComponent() {
 				return getComponent(SpatialComponent.class);
 			}
-
-			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
-				this.sprite = new Sprite(sprite);
-				
-				SpatialComponent spatialComponent = new SpatialComponent(new SpatialImpl(spatial));
-				addComponent(spatialComponent);
+			
+			public SpriteComponent getSpriteComponent() {
+				return getComponent(SpriteComponent.class);
 			}
 
-			public void update(int delta) {
-
+			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
+				addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+				addComponent(new SpriteComponent(sprite));
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
-				sprite.setColor(0.7f, 0.7f, 0.7f, 1f);
+				getSprite().setColor(0.7f, 0.7f, 0.7f, 1f);
 				Vector2 position = getSpatial().getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, getSpatial().getAngle());
-			}
-
-			public void drawDebug() {
-
+				SpriteBatchUtils.drawCentered(spriteBatch, getSprite(), position.x, position.y, getSpatial().getAngle());
 			}
 
 		}
@@ -297,11 +304,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public Spatial getSpatial() {
 				return getSpatialComponent().spatial;
 			}
-			
+
 			public Body getBody() {
 				return getPhysicsComponent().body;
 			}
-			
+
 			public SpatialComponent getSpatialComponent() {
 				return getComponent(SpatialComponent.class);
 			}
@@ -314,7 +321,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.radius = radius;
 				this.superSheeps = new ArrayList<SuperSheep>();
 				this.joint = null;
-				
+
 				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
@@ -322,7 +329,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.StaticBody) //
 						.categoryBits(MiniPlanetCategoryBits).build());
 				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, radius * 2, radius * 2));
-				
+
 				addComponent(physicsComponent);
 				addComponent(spatialComponent);
 			}
@@ -612,7 +619,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (!superSheep.dead)
 					continue;
 
-				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheep.getSpatial(), superSheep.sprite);
+				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheep.getSpatial(), superSheep.getSprite());
 				deadSuperSheeps.add(deadSuperSheepEntity);
 
 				superSheepsToRemove.add(superSheep);
@@ -627,7 +634,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				// world.destroyBody(superSheep.body);
 				superSheep.dispose();
 
-				SuperSheep newSuperSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.sprite), new Vector2(1f, 0f));
+				SuperSheep newSuperSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.getSprite()), new Vector2(1f, 0f));
 				startMiniPlanet.attachSuperSheep(newSuperSheep);
 				superSheeps.add(newSuperSheep);
 
