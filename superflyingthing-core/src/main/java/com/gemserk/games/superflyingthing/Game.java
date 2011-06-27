@@ -1,6 +1,8 @@
 package com.gemserk.games.superflyingthing;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -46,6 +48,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short MiniPlanetCategoryBits = 2;
 
 	class Entity {
+		
+		Map<Class<? extends Component>, Component> components;
+		
+		<T extends Component> T getComponent(Class<T> clazz) {
+			return (T) components.get(clazz);
+		}
+		
+		public Entity() {
+			components = new HashMap<Class<? extends Component>, Component>();
+		}
 
 		/**
 		 * Called before the first world update and after the Entity was added to the world.
@@ -103,27 +115,37 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 		
 	}
+	
+	class CameraComponent implements Component {
+		
+		Camera camera;
+		
+		public CameraComponent(Camera camera) {
+			this.camera = camera;
+		}
+		
+	}
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class CameraFollowEntity extends Entity {
 
-			Camera camera;
+			CameraComponent cameraComponent;
 			OldSpatialComponent oldSpatialComponent;
 
 			public Camera getCamera() {
-				return camera;
+				return cameraComponent.camera;
 			}
 
 			public CameraFollowEntity(Camera camera) {
-				this.camera = camera;
+				this.cameraComponent = new CameraComponent(camera);
 			}
 
 			public void update(int delta) {
 				if (oldSpatialComponent == null)
 					return;
 				Spatial spatial = oldSpatialComponent.getSpatial();
-				camera.setPosition(spatial.getX(), spatial.getY());
+				getCamera().setPosition(spatial.getX(), spatial.getY());
 			}
 
 			public void follow(OldSpatialComponent oldSpatialComponent) {
@@ -152,21 +174,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-				physicsComponent = new PhysicsComponent(bodyBuilder.mass(50f) //
+				Body body = bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
+				this.physicsComponent = new PhysicsComponent(body);
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
-				this.spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(bodyBuilder.mass(50f) //
-						.boxShape(width * 0.3f, height * 0.3f) //
-						.position(x, y) //
-						.restitution(0f) //
-						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build(), width, height));
+				this.spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(body, width, height));
 			}
 
 			public void update(int delta) {
