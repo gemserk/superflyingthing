@@ -137,6 +137,31 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
+	class MovementComponent implements Component {
+
+		final Vector2 direction = new Vector2();
+
+		public MovementComponent(float dx, float dy) {
+			direction.set(dx, dy);
+		}
+
+	}
+
+	// custom for this game
+
+	static class ComponentWrapper {
+
+		public static Sprite getSprite(Entity e) {
+			if (e == null)
+				return null;
+			SpriteComponent spriteComponent = e.getComponent(SpriteComponent.class);
+			if (spriteComponent == null)
+				return null;
+			return spriteComponent.sprite;
+		}
+
+	}
+
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class CameraFollowEntity extends Entity {
@@ -168,8 +193,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		class SuperSheep extends Entity {
-
-			Vector2 direction;
+			
 			boolean dead;
 
 			public Spatial getSpatial() {
@@ -181,9 +205,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			Sprite getSprite() {
-				return getSpriteComponent().sprite;
+				return ComponentWrapper.getSprite(this);
 			}
-
+			
+			Vector2 getDirection() {
+				return getMovementComponent().direction;
+			}
+			
 			public SpatialComponent getSpatialComponent() {
 				return getComponent(SpatialComponent.class);
 			}
@@ -191,16 +219,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public PhysicsComponent getPhysicsComponent() {
 				return getComponent(PhysicsComponent.class);
 			}
-
-			public SpriteComponent getSpriteComponent() {
-				return getComponent(SpriteComponent.class);
+			
+			public MovementComponent getMovementComponent() {
+				return getComponent(MovementComponent.class);
 			}
+
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-
-				this.direction = direction;
+				
 				this.dead = false;
 
 				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(50f) //
@@ -210,29 +238,30 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.DynamicBody) //
 						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
 				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, width, height));
-				SpriteComponent spriteComponent = new SpriteComponent(sprite);
-
+				
 				addComponent(physicsComponent);
 				addComponent(spatialComponent);
-				addComponent(spriteComponent);
+				addComponent(new SpriteComponent(sprite));
+				
+				addComponent(new MovementComponent(direction.x, direction.y));
 			}
 
 			public void update(int delta) {
-				direction.nor();
+				getDirection().nor();
 
 				Body body = getPhysicsComponent().body;
 
 				Vector2 position = body.getTransform().getPosition();
-				float desiredAngle = direction.angle();
+				float desiredAngle = getDirection().angle();
 
 				body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
-				body.applyForce(direction.tmp().mul(5000f), position);
+				body.applyForce(getDirection().tmp().mul(5000f), position);
 
 				Vector2 linearVelocity = body.getLinearVelocity();
 
 				float speed = linearVelocity.len();
 
-				linearVelocity.set(direction.tmp().mul(speed));
+				linearVelocity.set(getDirection().tmp().mul(speed));
 
 				float maxSpeed = 6f;
 				if (speed > maxSpeed) {
@@ -251,8 +280,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void drawDebug() {
 				Vector2 position = getSpatial().getPosition();
-				float x = position.x + direction.tmp().mul(0.5f).x;
-				float y = position.y + direction.tmp().mul(0.5f).y;
+				float x = position.x + getDirection().tmp().mul(0.5f).x;
+				float y = position.y + getDirection().tmp().mul(0.5f).y;
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 			}
 
@@ -275,7 +304,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public SpatialComponent getSpatialComponent() {
 				return getComponent(SpatialComponent.class);
 			}
-			
+
 			public SpriteComponent getSpriteComponent() {
 				return getComponent(SpriteComponent.class);
 			}
@@ -351,7 +380,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					Vector2 diff = superSheepPosition.sub(position).nor();
 					diff.rotate(-90f);
 
-					superSheep.direction.set(diff);
+					superSheep.getDirection().set(diff);
 				}
 
 			}
@@ -601,7 +630,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
-				calculateDirectionFromInput(delta, superSheep.direction);
+				calculateDirectionFromInput(delta, superSheep.getDirection());
 				superSheep.update(delta);
 			}
 
@@ -634,7 +663,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				// world.destroyBody(superSheep.body);
 				superSheep.dispose();
 
-				SuperSheep newSuperSheep = new SuperSheep(5f, 2f, new Sprite(superSheep.getSprite()), new Vector2(1f, 0f));
+				SuperSheep newSuperSheep = new SuperSheep(5f, 7.5f, new Sprite(superSheep.getSprite()), new Vector2(1f, 0f));
 				startMiniPlanet.attachSuperSheep(newSuperSheep);
 				superSheeps.add(newSuperSheep);
 
