@@ -520,27 +520,71 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			processInputSuperSheepPC(delta, direction);
 		}
 
+		float angularVelocity = 100f;
+
 		private void processInputSuperSheepPC(int delta, Vector2 direction) {
 			if (Gdx.app.getType() == ApplicationType.Android)
 				return;
-			if (Gdx.input.isKeyPressed(Keys.LEFT))
-				direction.rotate(400f * delta * 0.001f);
-			else if (Gdx.input.isKeyPressed(Keys.RIGHT))
-				direction.rotate(-400f * delta * 0.001f);
+
+			float rotationAngle = 0f;
+			float maxAngularVelocity = 600f;
+
+			if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+				if (angularVelocity < 0)
+					angularVelocity = 150f;
+				angularVelocity += 1f * delta;
+				if (angularVelocity > maxAngularVelocity)
+					angularVelocity = maxAngularVelocity;
+				System.out.println(angularVelocity);
+				rotationAngle = angularVelocity * delta * 0.001f;
+			} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+				if (angularVelocity > 0)
+					angularVelocity = -150f;
+				angularVelocity -= 1f * delta;
+				if (angularVelocity < -maxAngularVelocity)
+					angularVelocity = -maxAngularVelocity;
+				System.out.println(angularVelocity);
+				rotationAngle = angularVelocity * delta * 0.001f;
+			} else {
+				if (angularVelocity > 0)
+					angularVelocity = 150f;
+				if (angularVelocity < 0)
+					angularVelocity = -150f;
+			}
+			
+			direction.rotate(rotationAngle);
 		}
 
 		private void processInputSuperSheepAndroid(int delta, Vector2 direction) {
 			if (Gdx.app.getType() != ApplicationType.Android)
 				return;
+			
+			float touchDirection = 0f;
+			float rotationAngle = 0f;
+			float maxAngularVelocity = 600f;
+			
 			for (int i = 0; i < 5; i++) {
 				if (!Gdx.input.isTouched(i))
 					continue;
 				float x = Gdx.input.getX(i);
-				if (x < Gdx.graphics.getWidth() / 2)
-					direction.rotate(400f * delta * 0.001f);
-				else
-					direction.rotate(-400f * delta * 0.001f);
+				if (x < Gdx.graphics.getWidth() / 2) 
+					touchDirection += 1f;
+				else 
+					touchDirection -= 1f;
 			}
+			
+			if (touchDirection == 0f) {
+				angularVelocity = 150f;
+				return;
+			}
+
+			angularVelocity = angularVelocity + 1f * delta;
+			
+			if (angularVelocity > maxAngularVelocity)
+				angularVelocity = maxAngularVelocity;
+			
+			rotationAngle = angularVelocity * delta * 0.001f * touchDirection;
+			direction.rotate(rotationAngle);
 		}
 
 		@Override
