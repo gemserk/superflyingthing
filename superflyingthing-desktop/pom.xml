@@ -18,21 +18,21 @@
 	<url>http://blog.gemserk.com</url>
 
 	<properties>
-		<webstartName>Discover the way</webstartName>
-		<webstartDescription>Discover the way</webstartDescription>
+		<webstartName>Super Flying Thing Prototype</webstartName>
+		<webstartDescription>Super Flying Thing Prototype</webstartDescription>
 		<webstartCodebase>http://www.gemserk.com/prototipos/${project.parent.artifactId}-latest/</webstartCodebase>
 
 		<!-- finalName>${project.artifactId}-${project.version}</finalName -->
 		<finalName>${project.artifactId}-${project.version}</finalName>
 
-		<webstartMain>com.gemserk.games.discovertheway.DesktopApplication</webstartMain>
-		<appletMain>com.gemserk.games.discovertheway.Applet</appletMain>
+		<webstartMain>com.gemserk.games.superflyingthing.DesktopApplication</webstartMain>
+		<appletMain>com.gemserk.games.superflyingthing.Applet</appletMain>
 
-		<appletGameParameter>com.gemserk.games.discovertheway.Applet</appletGameParameter>
+		<appletGameParameter>com.gemserk.games.superflyingthing.Applet</appletGameParameter>
 		
 		<mainClass>${webstartMain}</mainClass>
 		
-		<jnlp.applet.mainClass>com.gemserk.games.discovertheway.Applet</jnlp.applet.mainClass>
+		<jnlp.applet.mainClass>com.gemserk.games.superflyingthing.Applet</jnlp.applet.mainClass>
 
 		<natives>${basedir}/target/natives/</natives>
 
