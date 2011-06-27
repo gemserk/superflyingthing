@@ -161,7 +161,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	class TargetComponent implements Component {
 
 		Entity target;
-		
+
 		public TargetComponent(Entity target) {
 			this.target = target;
 		}
@@ -171,14 +171,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	// custom for this game, only works fine if each component has only one value.
 
 	static class ComponentWrapper {
-		
+
 		public static Body getBody(Entity e) {
 			PhysicsComponent component = getComponent(e, PhysicsComponent.class);
 			if (component == null)
 				return null;
 			return component.body;
 		}
-		
+
 		public static Spatial getSpatial(Entity e) {
 			SpatialComponent component = getComponent(e, SpatialComponent.class);
 			if (component == null)
@@ -340,46 +340,44 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class DeadSuperSheepEntity extends Entity {
 
-			Sprite getSprite() {
-				return ComponentWrapper.getSprite(this);
-			}
-
-			public Spatial getSpatial() {
-				return ComponentWrapper.getSpatial(this);
-			}
-
 			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
 				addComponent(new SpatialComponent(new SpatialImpl(spatial)));
 				addComponent(new SpriteComponent(sprite));
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
-				getSprite().setColor(0.7f, 0.7f, 0.7f, 1f);
-				Vector2 position = getSpatial().getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, getSprite(), position.x, position.y, getSpatial().getAngle());
+				Sprite sprite = ComponentWrapper.getSprite(this);
+				Spatial spatial = ComponentWrapper.getSpatial(this);
+				sprite.setColor(0.7f, 0.7f, 0.7f, 1f);
+				Vector2 position = spatial.getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
+			}
+
+		}
+
+		class ShipHolderComponent implements Component {
+
+			SuperSheep superSheep;
+
+			Joint joint;
+
+			public ShipHolderComponent() {
+
 			}
 
 		}
 
 		class MiniPlanet extends Entity {
 
-			ArrayList<SuperSheep> superSheeps;
+			SuperSheep superSheep;
 			float radius;
 			Joint joint;
 
 			int releaseTime = 0;
 
-			public Spatial getSpatial() {
-				return ComponentWrapper.getSpatial(this);
-			}
-
-			public Body getBody() {
-				return ComponentWrapper.getBody(this);
-			}
-
 			public MiniPlanet(float x, float y, float radius) {
 				this.radius = radius;
-				this.superSheeps = new ArrayList<SuperSheep>();
+				this.superSheep = null;
 				this.joint = null;
 
 				Body body = bodyBuilder.mass(1000f) //
@@ -388,7 +386,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-				
+
 				addComponent(new PhysicsComponent(body));
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 			}
@@ -396,27 +394,26 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void update(int delta) {
 				processInput(delta);
 
-				if (this.superSheeps.isEmpty())
+				if (this.superSheep == null)
 					return;
 
 				if (releaseTime > 0)
 					releaseTime -= delta;
 
-				for (int i = 0; i < superSheeps.size(); i++) {
-					SuperSheep superSheep = superSheeps.get(i);
-					Vector2 superSheepPosition = superSheep.getSpatial().getPosition();
-					Vector2 position = getBody().getTransform().getPosition();
+				Spatial spatial = ComponentWrapper.getSpatial(this);
+				Vector2 position = spatial.getPosition();
 
-					Vector2 diff = superSheepPosition.sub(position).nor();
-					diff.rotate(-90f);
+				Vector2 superSheepPosition = superSheep.getSpatial().getPosition();
 
-					superSheep.getDirection().set(diff);
-				}
+				Vector2 diff = superSheepPosition.sub(position).nor();
+				diff.rotate(-90f);
+
+				superSheep.getDirection().set(diff);
 
 			}
 
 			protected void processInput(int delta) {
-				if (this.superSheeps.isEmpty())
+				if (this.superSheep == null)
 					return;
 
 				if (Gdx.app.getType() == ApplicationType.Android) {
@@ -429,24 +426,26 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (releaseTime > 0)
 					return;
 
-				SuperSheep superSheep = this.superSheeps.remove(0);
+
 				cameraFollowEntity.follow(superSheep);
 
 				world.destroyJoint(joint);
 				joint = null;
+				superSheep = null;
 			}
 
 			public void drawDebug() {
-				Vector2 position = getBody().getTransform().getPosition();
+				Spatial spatial = ComponentWrapper.getSpatial(this);
+				Vector2 position = spatial.getPosition();
 				ImmediateModeRendererUtils.drawSolidCircle(position, radius, Color.BLUE);
 			}
 
 			public void attachSuperSheep(SuperSheep superSheep) {
-				this.superSheeps.add(superSheep);
+				this.superSheep = superSheep;
 
 				joint = jointBuilder.distanceJoint() //
 						.bodyA(superSheep.getBody()) //
-						.bodyB(this.getBody()) //
+						.bodyB(ComponentWrapper.getBody(this)) //
 						.collideConnected(false) //
 						.length(1.5f) //
 						.build();
@@ -456,7 +455,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
-				return this.superSheeps.contains(superSheep);
+				return this.superSheep == superSheep;
 			}
 
 		}
@@ -469,9 +468,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			@Override
 			public void update(int delta) {
+				Spatial spatial = ComponentWrapper.getSpatial(this);
 				for (int i = 0; i < SuperSheepGameState.this.superSheeps.size(); i++) {
 					SuperSheep superSheep = SuperSheepGameState.this.superSheeps.get(i);
-					if (getSpatial().getPosition().dst(superSheep.getSpatial().getPosition()) < 1.2f && !containsSuperSheep(superSheep)) {
+					if (spatial.getPosition().dst(superSheep.getSpatial().getPosition()) < 1.2f && !containsSuperSheep(superSheep)) {
 						attachSuperSheep(superSheep);
 						break;
 					}
