@@ -38,6 +38,7 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.games.superflyingthing.Game.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
@@ -85,7 +86,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		void draw(SpriteBatch spriteBatch) {
+		void render(SpriteBatch spriteBatch) {
 
 		}
 
@@ -250,10 +251,37 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
+	
+	class Behavior {
+		
+		public void update(int delta, Entity entity) {
+			
+		}
+		
+	}
+	
+	class CameraFollowBehavior extends Behavior {
+		
+		@Override
+		public void update(int delta, Entity entity) {
+			TargetComponent targetComponent = entity.getComponent(TargetComponent.class);
+			Entity target = targetComponent.target;
+			if (target == null)
+				return;
+			SpatialComponent spatialComponent = target.getComponent(SpatialComponent.class);
+			if (spatialComponent == null)
+				return;
+			Camera camera = ComponentWrapper.getCamera(entity);
+			camera.setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
+		}
+		
+	}
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class CameraFollowEntity extends Entity {
+			
+			CameraFollowBehavior cameraFollowBehavior = new CameraFollowBehavior();
 
 			public CameraFollowEntity(Camera camera) {
 				addComponent(new CameraComponent(camera));
@@ -261,20 +289,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				TargetComponent targetComponent = getComponent(TargetComponent.class);
-				Entity entity = targetComponent.target;
-				if (entity == null)
-					return;
-				SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
-				if (spatialComponent == null)
-					return;
-				Camera camera = ComponentWrapper.getCamera(this);
-				camera.setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
-			}
-
-			public void follow(Entity entity) {
-				TargetComponent targetComponent = getComponent(TargetComponent.class);
-				targetComponent.target = entity;
+				cameraFollowBehavior.update(delta, this);
 			}
 
 		}
@@ -335,7 +350,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				sprite.setSize(spatial.getWidth(), spatial.getHeight());
 			}
 
-			public void draw(SpriteBatch spriteBatch) {
+			public void render(SpriteBatch spriteBatch) {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				Sprite sprite = ComponentWrapper.getSprite(this);
 				Vector2 position = spatial.getPosition();
@@ -368,11 +383,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				addComponent(new SpriteComponent(sprite));
 			}
 
-			public void draw(SpriteBatch spriteBatch) {
+			public void render(SpriteBatch spriteBatch) {
 				Sprite sprite = ComponentWrapper.getSprite(this);
 				Spatial spatial = ComponentWrapper.getSpatial(this);
-				sprite.setColor(0.7f, 0.7f, 0.7f, 1f);
+				
 				Vector2 position = spatial.getPosition();
+				
 				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
 
@@ -439,7 +455,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				ReleaseEntityComponent releaseEntityComponent = getComponent(ReleaseEntityComponent.class);
 				releaseEntityComponent.releaseTime = 500;
 				
-				cameraFollowEntity.follow(this);
+				TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
+				targetComponent.target = this;
 			}
 
 			protected void processInput(int delta) {
@@ -460,7 +477,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (releaseEntityComponent.releaseTime > 0)
 					return;
 
-				cameraFollowEntity.follow(attachedEntity);
+				TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
+				targetComponent.target = attachedEntity;
 
 				world.destroyJoint(entityAttachment.joint);
 
@@ -664,7 +682,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			spriteBatch.begin();
 			for (int i = 0; i < entities.size(); i++)
-				entities.get(i).draw(spriteBatch);
+				entities.get(i).render(spriteBatch);
 			spriteBatch.end();
 
 			box2dCustomDebugRenderer.render();
@@ -696,10 +714,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Spatial superSheepSpatial = ComponentWrapper.getSpatial(superSheep);
 			Sprite superSheepSprite = ComponentWrapper.getSprite(superSheep);
 
-			DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheepSpatial, superSheepSprite);
+			Sprite deadSuperSheepSprite = new Sprite(superSheepSprite);
+			deadSuperSheepSprite.setColor(0.7f, 0.7f, 0.7f, 1f);
+			
+			DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheepSpatial, deadSuperSheepSprite);
 			entities.add(deadSuperSheepEntity);
 
-			SuperSheep newSuperSheep = new SuperSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
+			SuperSheep newSuperSheep = new SuperSheep(5f, 6f, deadSuperSheepSprite, new Vector2(1f, 0f));
 			entities.add(newSuperSheep);
 
 			EntityAttachmentComponent entityAttachmentComponent = startMiniPlanet.getComponent(EntityAttachmentComponent.class);
