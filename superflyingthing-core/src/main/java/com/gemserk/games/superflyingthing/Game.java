@@ -20,13 +20,13 @@ import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
-import com.badlogic.gdx.physics.box2d.joints.DistanceJointDef;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
+import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -219,7 +219,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public MiniPlanet(float x, float y, float radius) {
 				this.body = bodyBuilder.mass(1000f) //
-						.circleShape(radius) //
+						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
@@ -280,12 +280,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public void attachSuperSheep(SuperSheep superSheep) {
 				this.superSheeps.add(superSheep);
-				DistanceJointDef jointDef = new DistanceJointDef();
-				jointDef.bodyA = superSheep.body;
-				jointDef.bodyB = this.body;
-				jointDef.collideConnected = false;
-				jointDef.length = 1.5f;
-				joint = world.createJoint(jointDef);
+
+				joint = jointBuilder.distanceJoint() //
+					.bodyA(superSheep.body) //
+					.bodyB(this.body) //
+					.collideConnected(false) //
+					.length(1.5f) //
+					.build();
+				
 				cameraFollowEntity.follow(this);
 				releaseTime = 500;
 			}
@@ -326,6 +328,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private World world;
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 		private BodyBuilder bodyBuilder;
+		private JointBuilder jointBuilder;
 
 		private ArrayList<MiniPlanet> miniPlanets;
 		private MiniPlanet startMiniPlanet;
@@ -360,6 +363,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			sprite.setSize(0.5f, 0.5f);
 
 			bodyBuilder = new BodyBuilder(world);
+			jointBuilder = new JointBuilder(world);
 
 			for (int i = 0; i < 10; i++) {
 				float randomY = MathUtils.random(0f, 15f);
@@ -384,7 +388,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			cameraFollowEntity = new CameraFollowEntity(cameraData);
 
-			SuperSheep superSheep = new SuperSheep(5f, 5f, sprite, new Vector2(1f, 0f));
+			SuperSheep superSheep = new SuperSheep(5f, 7.5f, sprite, new Vector2(1f, 0f));
 			superSheeps.add(superSheep);
 
 			startMiniPlanet = new MiniPlanet(5f, 7.5f, 1f);
