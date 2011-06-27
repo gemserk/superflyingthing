@@ -2,18 +2,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.gemserk.games.discovertheway</groupId>
-		<artifactId>discovertheway</artifactId>
+		<groupId>com.gemserk.games.superflyingthing</groupId>
+		<artifactId>superflyingthing</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.gemserk.games.discovertheway</groupId>
-	<artifactId>discovertheway-android</artifactId>
+	<groupId>com.gemserk.games.superflyingthing</groupId>
+	<artifactId>superflyingthing-android</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>apk</packaging>
 
-	<name>Discover the way - Android Version</name>
-	<description>Android version of Discover the way game</description>
+	<name>Super Flying Thing Prototype - Android Version</name>
+	<description>Android version of Super Flying Thing Prototype</description>
 
 	<properties>
 		<!-- set a custom format that is guaranteed to grow as a Long number, so 
@@ -75,7 +75,7 @@
 					<deleteConflictingFiles>true</deleteConflictingFiles>
 					<extractDuplicates>true</extractDuplicates>
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
-					<assetsDirectory>../discovertheway-desktop/src/main/resources</assetsDirectory>
+					<assetsDirectory>../superflyingthing-desktop/src/main/resources</assetsDirectory>
 				</configuration>
 				<extensions>true</extensions>
 				<executions>
@@ -207,7 +207,7 @@
 
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>discovertheway-core</artifactId>
+			<artifactId>superflyingthing-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
@@ -215,12 +215,6 @@
 			<groupId>com.badlogic.gdx</groupId>
 			<artifactId>gdx-backend-android</artifactId>
 			<version>${libgdxversion}</version>
-		</dependency>
-
-		<dependency>
-			<groupId>com.gemserk.datastore</groupId>
-			<artifactId>datastore-android</artifactId>
-			<version>${datastore.version}</version>
 		</dependency>
 
 	</dependencies>

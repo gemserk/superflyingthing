@@ -2,18 +2,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.gemserk.games.discovertheway</groupId>
-		<artifactId>discovertheway</artifactId>
+		<groupId>com.gemserk.games.superflyingthing</groupId>
+		<artifactId>superflyingthing</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
 
-	<groupId>com.gemserk.games.discovertheway</groupId>
-	<artifactId>discovertheway-desktop</artifactId>
+	<groupId>com.gemserk.games.superflyingthing</groupId>
+	<artifactId>superflyingthing-desktop</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Discover the way - Desktop Version</name>
-	<description>Desktop version of Discover the way game</description>
+	<name>Super Flying Thing Prototype - Desktop Version</name>
+	<description>Desktop version of Super Flying Thing Prototype</description>
 
 	<url>http://blog.gemserk.com</url>
 
@@ -68,18 +68,13 @@
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>discovertheway-core</artifactId>
+			<artifactId>superflyingthing-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.badlogic.gdx</groupId>
 			<artifactId>gdx-backend-lwjgl</artifactId>
 			<version>${libgdxversion}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.gemserk.datastore</groupId>
-			<artifactId>datastore-desktop</artifactId>
-			<version>${datastore.version}</version>
 		</dependency>
 	</dependencies>
 

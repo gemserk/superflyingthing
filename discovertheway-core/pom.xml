@@ -2,17 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	<parent>
-		<groupId>com.gemserk.games.discovertheway</groupId>
-		<artifactId>discovertheway</artifactId>
+		<groupId>com.gemserk.games.superflyingthing</groupId>
+		<artifactId>superflyingthing</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</parent>
-	<groupId>com.gemserk.games.discovertheway</groupId>
-	<artifactId>discovertheway-core</artifactId>
+	<groupId>com.gemserk.games.superflyingthing</groupId>
+	<artifactId>superflyingthing-core</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>Discover the way - Core</name>
-	<description>Discover the way - Core</description>
+	<name>Super Flying Thing Prototype - Core</name>
+	<description>Super Flying Thing Prototype - Core</description>
 
 	<properties>
 		<commons.gdx.version>0.0.3-SNAPSHOT</commons.gdx.version>

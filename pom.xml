@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.gemserk.games.discovertheway</groupId>
-	<artifactId>discovertheway</artifactId>
+	<groupId>com.gemserk.games.superflyingthing</groupId>
+	<artifactId>superflyingthing</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
-	<name>Discover The Way</name>
-	<description>Discover The Way</description>
+	<name>Super Flying Thing Prototype</name>
+	<description>Super Flying Thing Prototype</description>
 
 	<organization>
 		<name>Gemserk</name>
@@ -44,9 +44,9 @@
 
 
 	<modules>
-		<module>discovertheway-core</module>
-		<module>discovertheway-android</module>
-		<module>discovertheway-desktop</module>
+		<module>superflyingthing-core</module>
+		<module>superflyingthing-android</module>
+		<module>superflyingthing-desktop</module>
 	</modules>
 
 	<properties>
