@@ -45,18 +45,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public static short MiniPlanetCategoryBits = 2;
 
-	interface SpatialComponent {
-
-		Spatial getSpatial();
-
-	}
-
 	class Entity {
 
 		/**
 		 * Called before the first world update and after the Entity was added to the world.
 		 */
 		void init() {
+
 		}
 
 		/**
@@ -66,12 +61,35 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		 *            The time since the last update call.
 		 */
 		void update(int delta) {
+
 		}
 
 		/**
 		 * Called before the entity is removed from the world.
 		 */
 		void dispose() {
+
+		}
+
+	}
+
+	interface Component {
+
+	}
+
+	// TODO: change it
+	interface SpatialComponent {
+
+		Spatial getSpatial();
+
+	}
+
+	class PhysicsComponent implements Component {
+
+		Body body;
+
+		public PhysicsComponent(Body body) {
+			this.body = body;
 		}
 
 	}
@@ -106,7 +124,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class SuperSheep extends Entity implements SpatialComponent {
 
-			Body body;
+			PhysicsComponent physicsComponent;
+			
 			Sprite sprite;
 			Vector2 direction;
 			boolean dead;
@@ -116,25 +135,36 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public Spatial getSpatial() {
 				return spatial;
 			}
+			
+			public Body getBody() {
+				return physicsComponent.body;
+			}
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-				this.body = bodyBuilder.mass(50f) //
+				physicsComponent = new PhysicsComponent(bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
 				this.sprite = sprite;
 				this.direction = direction;
 				this.dead = false;
-				this.spatial = new SpatialPhysicsImpl(body, width, height);
+				this.spatial = new SpatialPhysicsImpl(bodyBuilder.mass(50f) //
+						.boxShape(width * 0.3f, height * 0.3f) //
+						.position(x, y) //
+						.restitution(0f) //
+						.type(BodyType.DynamicBody) //
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build(), width, height);
 			}
 
 			public void update(int delta) {
 				direction.nor();
 
+				Body body = physicsComponent.body;
+				
 				Vector2 position = body.getTransform().getPosition();
 				float desiredAngle = direction.angle();
 
@@ -158,19 +188,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
-				Vector2 position = body.getTransform().getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
+				Vector2 position = getSpatial().getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, getSpatial().getAngle());
 			}
 
 			public void drawDebug() {
-				Vector2 position = body.getTransform().getPosition();
+				Vector2 position = getSpatial().getPosition();
 				float x = position.x + direction.tmp().mul(0.5f).x;
 				float y = position.y + direction.tmp().mul(0.5f).y;
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 			}
 
 			public void dispose() {
-				world.destroyBody(body);
+				world.destroyBody(physicsComponent.body);
 			}
 
 		}
@@ -244,7 +274,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				for (int i = 0; i < superSheeps.size(); i++) {
 					SuperSheep superSheep = superSheeps.get(i);
-					Vector2 superSheepPosition = superSheep.body.getTransform().getPosition();
+					Vector2 superSheepPosition = superSheep.getSpatial().getPosition();
 					Vector2 position = body.getTransform().getPosition();
 
 					Vector2 diff = superSheepPosition.sub(position).nor();
@@ -285,7 +315,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				this.superSheeps.add(superSheep);
 
 				joint = jointBuilder.distanceJoint() //
-						.bodyA(superSheep.body) //
+						.bodyA(superSheep.getBody()) //
 						.bodyB(this.body) //
 						.collideConnected(false) //
 						.length(1.5f) //
@@ -449,7 +479,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private void checkContactSuperSheep(Fixture fixture) {
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
-				if (fixture.getBody() != superSheep.body)
+				if (fixture.getBody() != superSheep.getBody())
 					return;
 				Gdx.app.log("SuperSheep", "die!");
 				superSheep.dead = true;
