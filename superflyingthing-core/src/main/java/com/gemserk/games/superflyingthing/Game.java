@@ -89,10 +89,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		void drawDebug() {
-
-		}
-
 		/**
 		 * Called before the entity is removed from the world.
 		 */
@@ -184,11 +180,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class EntityAttachmentComponent implements Component {
+	class AttachmentComponent implements Component {
 
 		EntityAttachment entityAttachment;
 
-		public EntityAttachmentComponent() {
+		public AttachmentComponent() {
 			entityAttachment = new EntityAttachment();
 		}
 
@@ -239,7 +235,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		public static EntityAttachment getEntityAttachment(Entity e) {
-			EntityAttachmentComponent component = getComponent(e, EntityAttachmentComponent.class);
+			AttachmentComponent component = getComponent(e, AttachmentComponent.class);
 			if (component == null)
 				return null;
 			return component.entityAttachment;
@@ -363,7 +359,52 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-	
+
+	class ReleaseAttachmentBehavior implements Behavior {
+
+		private final World world;
+
+		public ReleaseAttachmentBehavior(World world) {
+			this.world = world;
+		}
+
+		@Override
+		public void update(int delta, Entity e) {
+			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			Entity attachedEntity = entityAttachment.entity;
+
+			if (attachedEntity == null)
+				return;
+
+			ReleaseEntityComponent releaseEntityComponent = e.getComponent(ReleaseEntityComponent.class);
+
+			if (releaseEntityComponent.releaseTime > 0)
+				releaseEntityComponent.releaseTime -= delta;
+
+			if (Gdx.app.getType() == ApplicationType.Android) {
+				if (!Gdx.input.isTouched()) {
+					return;
+				}
+			} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
+				return;
+
+			if (releaseEntityComponent.releaseTime > 0)
+				return;
+
+			if (entityAttachment.joint != null)
+				world.destroyJoint(entityAttachment.joint);
+
+			AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
+			attachableComponent.owner = null;
+
+			entityAttachment.joint = null;
+			entityAttachment.entity = null;
+
+			releaseEntityComponent.releaseTime = 500;
+		}
+
+	}
+
 	class NullBehavior implements Behavior {
 
 		@Override
@@ -372,12 +413,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-	
-	
+
 	class AttachNearEntityBehavior implements Behavior {
 
 		// to be later encapsulated in the world class...
-		
+
 		private final ArrayList<Entity> entities;
 
 		public AttachNearEntityBehavior(ArrayList<Entity> entities) {
@@ -398,15 +438,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Spatial attachableEntitySpatial = ComponentWrapper.getSpatial(entity);
 
 				if (spatial.getPosition().dst(attachableEntitySpatial.getPosition()) < radius) {
-					EntityAttachmentComponent entityAttachmentComponent = e.getComponent(EntityAttachmentComponent.class);
-					entityAttachmentComponent.entityAttachment.entity = entity;
+					AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+					attachmentComponent.entityAttachment.entity = entity;
 				}
 
 			}
 		}
-		
+
 	}
-	
+
 	// starts the game...
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
@@ -461,18 +501,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
 
-			public void drawDebug() {
-				Spatial sprite = ComponentWrapper.getSpatial(this);
-				Vector2 position = sprite.getPosition();
-
-				MovementComponent movementComponent = this.getComponent(MovementComponent.class);
-				Vector2 direction = movementComponent.direction;
-
-				float x = position.x + direction.tmp().mul(0.5f).x;
-				float y = position.y + direction.tmp().mul(0.5f).y;
-				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
-			}
-
 			public void dispose() {
 				Body body = ComponentWrapper.getBody(this);
 				world.destroyBody(body);
@@ -496,52 +524,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class ReleaseAttachmentBehavior implements Behavior {
-
-			@Override
-			public void update(int delta, Entity e) {
-				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
-				Entity attachedEntity = entityAttachment.entity;
-
-				if (attachedEntity == null)
-					return;
-
-				ReleaseEntityComponent releaseEntityComponent = e.getComponent(ReleaseEntityComponent.class);
-
-				if (releaseEntityComponent.releaseTime > 0)
-					releaseEntityComponent.releaseTime -= delta;
-
-				if (Gdx.app.getType() == ApplicationType.Android) {
-					if (!Gdx.input.isTouched()) {
-						return;
-					}
-				} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
-					return;
-
-				if (releaseEntityComponent.releaseTime > 0)
-					return;
-
-				if (entityAttachment.joint != null)
-					world.destroyJoint(entityAttachment.joint);
-
-				AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
-				attachableComponent.owner = null;
-
-				entityAttachment.joint = null;
-				entityAttachment.entity = null;
-
-				releaseEntityComponent.releaseTime = 500;
-			}
-
-		}
-
 		class MiniPlanet extends Entity {
 
 			Behavior attachedEntityDirectionBehavior = new AttachedEntityDirectionBehavior();
-
 			Behavior attachEntityBehavior = new AttachEntityBehavior(jointBuilder);
-
-			Behavior releaseAttachmentBehavior = new ReleaseAttachmentBehavior();
+			Behavior releaseAttachmentBehavior = new ReleaseAttachmentBehavior(world);
 
 			public MiniPlanet(float x, float y, float radius) {
 				Body body = bodyBuilder.mass(1000f) //
@@ -552,7 +539,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.categoryBits(MiniPlanetCategoryBits).build();
 				addComponent(new PhysicsComponent(body));
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				addComponent(new EntityAttachmentComponent());
+				addComponent(new AttachmentComponent());
 				addComponent(new ReleaseEntityComponent());
 			}
 
@@ -562,21 +549,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				attachedEntityDirectionBehavior.update(delta, this);
 			}
 
-			public void drawDebug() {
-				Spatial spatial = ComponentWrapper.getSpatial(this);
-				Vector2 position = spatial.getPosition();
-				ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
-			}
-
-			public boolean containsEntity(Entity entity) {
-				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
-				return entityAttachment.entity == entity;
-			}
-
 		}
 
 		class DestinationPlanet extends MiniPlanet {
-			
+
 			Behavior attachNearEntityBehavior = new AttachNearEntityBehavior(entities);
 
 			public DestinationPlanet(float x, float y, float radius) {
@@ -659,8 +635,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			startMiniPlanet = new MiniPlanet(5f, 7.5f, 1f);
 
-			EntityAttachmentComponent entityAttachmentComponent = startMiniPlanet.getComponent(EntityAttachmentComponent.class);
-			entityAttachmentComponent.entityAttachment.entity = superSheep;
+			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
+			attachmentComponent.entityAttachment.entity = superSheep;
 			// startMiniPlanet.attachSuperSheep(superSheep);
 
 			entities.add(startMiniPlanet);
@@ -743,8 +719,37 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			box2dCustomDebugRenderer.render();
 
-			for (int i = 0; i < entities.size(); i++)
-				entities.get(i).drawDebug();
+			for (int i = 0; i < entities.size(); i++) {
+				Entity e = entities.get(i);
+				drawMovementDebug(e);
+				drawAttachmentDebug(e);
+			}
+
+		}
+		
+		private void drawAttachmentDebug(Entity e) {
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			if (spatial == null)
+				return;
+			AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+			if (attachmentComponent == null)
+				return;
+			Vector2 position = spatial.getPosition();
+			ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
+		}
+
+		private void drawMovementDebug(Entity e) {
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			if (spatial == null)
+				return;
+			Vector2 position = spatial.getPosition();
+			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
+			if (movementComponent == null)
+				return;
+			Vector2 direction = movementComponent.direction;
+			float x = position.x + direction.tmp().mul(0.5f).x;
+			float y = position.y + direction.tmp().mul(0.5f).y;
+			ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 		}
 
 		@Override
@@ -787,8 +792,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			SuperSheep newSuperSheep = new SuperSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
 			entities.add(newSuperSheep);
 
-			EntityAttachmentComponent entityAttachmentComponent = startMiniPlanet.getComponent(EntityAttachmentComponent.class);
-			entityAttachmentComponent.entityAttachment.entity = newSuperSheep;
+			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
+			attachmentComponent.entityAttachment.entity = newSuperSheep;
 			// startMiniPlanet.attachSuperSheep(newSuperSheep);
 
 			this.superSheep = newSuperSheep;
