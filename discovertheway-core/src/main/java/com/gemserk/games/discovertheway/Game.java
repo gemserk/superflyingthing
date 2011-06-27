@@ -516,76 +516,79 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		private void calculateDirectionFromInput(int delta, Vector2 direction) {
-			processInputSuperSheepAndroid(delta, direction);
-			processInputSuperSheepPC(delta, direction);
+			processInputSuperSheep(delta, direction);
 		}
 
 		float angularVelocity = 100f;
 
-		private void processInputSuperSheepPC(int delta, Vector2 direction) {
-			if (Gdx.app.getType() == ApplicationType.Android)
-				return;
+		private void processInputSuperSheep(int delta, Vector2 direction) {
 
 			float rotationAngle = 0f;
 			float maxAngularVelocity = 600f;
+			float movementDirection = getMovementDirection();
+			float acceleration = 1f;
 
-			if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+			float minimumAngularVelocity = 100f;
+			
+			if (movementDirection > 0) {
 				if (angularVelocity < 0)
-					angularVelocity = 150f;
-				angularVelocity += 1f * delta;
+					angularVelocity = minimumAngularVelocity;
+				angularVelocity += acceleration * delta;
 				if (angularVelocity > maxAngularVelocity)
 					angularVelocity = maxAngularVelocity;
-				System.out.println(angularVelocity);
 				rotationAngle = angularVelocity * delta * 0.001f;
-			} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			} else if (movementDirection < 0) {
 				if (angularVelocity > 0)
-					angularVelocity = -150f;
-				angularVelocity -= 1f * delta;
+					angularVelocity = -minimumAngularVelocity;
+				angularVelocity -= acceleration * delta;
 				if (angularVelocity < -maxAngularVelocity)
 					angularVelocity = -maxAngularVelocity;
-				System.out.println(angularVelocity);
 				rotationAngle = angularVelocity * delta * 0.001f;
 			} else {
 				if (angularVelocity > 0)
-					angularVelocity = 150f;
+					angularVelocity = minimumAngularVelocity;
 				if (angularVelocity < 0)
-					angularVelocity = -150f;
+					angularVelocity = -minimumAngularVelocity;
 			}
-			
+
 			direction.rotate(rotationAngle);
 		}
+		
+		private float getMovementDirection() {
+			if (Gdx.app.getType() == ApplicationType.Android)
+				return getMovementDirectionAndroid();
+			else
+				return getMovementDirectionPC();
+		}
 
-		private void processInputSuperSheepAndroid(int delta, Vector2 direction) {
-			if (Gdx.app.getType() != ApplicationType.Android)
-				return;
+		private float getMovementDirectionPC() {
+			float movementDirection = 0f;
+
+			if (Gdx.input.isKeyPressed(Keys.LEFT))
+				movementDirection += 1f;
+
+			if (Gdx.input.isKeyPressed(Keys.RIGHT))
+				movementDirection -= 1f;
 			
-			float touchDirection = 0f;
-			float rotationAngle = 0f;
-			float maxAngularVelocity = 600f;
-			
+			return movementDirection;
+		}
+
+		private float getMovementDirectionAndroid() {
+			float movementDirection = 0f;
+
 			for (int i = 0; i < 5; i++) {
 				if (!Gdx.input.isTouched(i))
 					continue;
 				float x = Gdx.input.getX(i);
-				if (x < Gdx.graphics.getWidth() / 2) 
-					touchDirection += 1f;
-				else 
-					touchDirection -= 1f;
+				if (x < Gdx.graphics.getWidth() / 2)
+					movementDirection += 1f;
+				else
+					movementDirection -= 1f;
 			}
 			
-			if (touchDirection == 0f) {
-				angularVelocity = 150f;
-				return;
-			}
-
-			angularVelocity = angularVelocity + 1f * delta;
-			
-			if (angularVelocity > maxAngularVelocity)
-				angularVelocity = maxAngularVelocity;
-			
-			rotationAngle = angularVelocity * delta * 0.001f * touchDirection;
-			direction.rotate(rotationAngle);
+			return movementDirection;
 		}
+
 
 		@Override
 		public void dispose() {
