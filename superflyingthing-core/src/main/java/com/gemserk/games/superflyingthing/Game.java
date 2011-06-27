@@ -217,6 +217,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return null;
 			return component.camera;
 		}
+		
+		public static EntityAttachment getEntityAttachment(Entity e) {
+			EntityAttachmentComponent component = getComponent(e, EntityAttachmentComponent.class);
+			if (component == null)
+				return null;
+			return component.entityAttachment;
+		}
 
 		private static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
 			if (e == null)
@@ -229,10 +236,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class CameraFollowEntity extends Entity {
-
-			public Camera getCamera() {
-				return ComponentWrapper.getCamera(this);
-			}
 
 			public CameraFollowEntity(Camera camera) {
 				addComponent(new CameraComponent(camera));
@@ -247,7 +250,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				SpatialComponent spatialComponent = entity.getComponent(SpatialComponent.class);
 				if (spatialComponent == null)
 					return;
-				getCamera().setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
+				Camera camera = ComponentWrapper.getCamera(this);
+				camera.setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
 			}
 
 			public void follow(Entity entity) {
@@ -259,52 +263,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class SuperSheep extends Entity {
 
-			public Spatial getSpatial() {
-				return ComponentWrapper.getSpatial(this);
-			}
-
-			public Body getBody() {
-				return ComponentWrapper.getBody(this);
-			}
-
-			Sprite getSprite() {
-				return ComponentWrapper.getSprite(this);
-			}
-
-			Vector2 getDirection() {
-				return getMovementComponent().direction;
-			}
-
-			void setDead(boolean dead) {
-				getAliveComponent().dead = dead;
-			}
-
-			boolean isDead() {
-				return getAliveComponent().dead;
-			}
-
-			public MovementComponent getMovementComponent() {
-				return getComponent(MovementComponent.class);
-			}
-
-			public AliveComponent getAliveComponent() {
-				return getComponent(AliveComponent.class);
-			}
-
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
 
-				PhysicsComponent physicsComponent = new PhysicsComponent(bodyBuilder.mass(50f) //
+				Body body = bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build());
-				SpatialComponent spatialComponent = new SpatialComponent(new SpatialPhysicsImpl(physicsComponent.body, width, height));
-
-				addComponent(physicsComponent);
-				addComponent(spatialComponent);
+						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
+				
+				addComponent(new PhysicsComponent(body));
+				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 				addComponent(new SpriteComponent(sprite));
 
 				addComponent(new MovementComponent(direction.x, direction.y));
@@ -312,21 +283,24 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void update(int delta) {
-				getDirection().nor();
+				MovementComponent movementComponent = this.getComponent(MovementComponent.class);
+				Vector2 direction = movementComponent.direction;
+				
+				direction.nor();
 
-				Body body = getBody();
+				Body body = ComponentWrapper.getBody(this);
 
 				Vector2 position = body.getTransform().getPosition();
-				float desiredAngle = getDirection().angle();
+				float desiredAngle = direction.angle();
 
 				body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
-				body.applyForce(getDirection().tmp().mul(5000f), position);
+				body.applyForce(direction.tmp().mul(5000f), position);
 
 				Vector2 linearVelocity = body.getLinearVelocity();
 
 				float speed = linearVelocity.len();
 
-				linearVelocity.set(getDirection().tmp().mul(speed));
+				linearVelocity.set(direction.tmp().mul(speed));
 
 				float maxSpeed = 6f;
 				if (speed > maxSpeed) {
@@ -334,24 +308,35 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					body.setLinearVelocity(linearVelocity);
 				}
 
-				getSprite().setPosition(position.x, position.y);
-				getSprite().setSize(getSpatial().getWidth(), getSpatial().getHeight());
+				Spatial spatial = ComponentWrapper.getSpatial(this);
+				Sprite sprite = ComponentWrapper.getSprite(this);
+
+				sprite.setPosition(position.x, position.y);
+				sprite.setSize(spatial.getWidth(), spatial.getHeight());
 			}
 
 			public void draw(SpriteBatch spriteBatch) {
-				Vector2 position = getSpatial().getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, getSprite(), position.x, position.y, getSpatial().getAngle());
+				Spatial spatial = ComponentWrapper.getSpatial(this);
+				Sprite sprite = ComponentWrapper.getSprite(this);
+				Vector2 position = spatial.getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
 
 			public void drawDebug() {
-				Vector2 position = getSpatial().getPosition();
-				float x = position.x + getDirection().tmp().mul(0.5f).x;
-				float y = position.y + getDirection().tmp().mul(0.5f).y;
+				Spatial sprite = ComponentWrapper.getSpatial(this);
+				Vector2 position = sprite.getPosition();
+				
+				MovementComponent movementComponent = this.getComponent(MovementComponent.class);
+				Vector2 direction = movementComponent.direction;
+				
+				float x = position.x + direction.tmp().mul(0.5f).x;
+				float y = position.y + direction.tmp().mul(0.5f).y;
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 			}
 
 			public void dispose() {
-				world.destroyBody(getBody());
+				Body body = ComponentWrapper.getBody(this);
+				world.destroyBody(body);
 			}
 
 		}
@@ -377,11 +362,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			int releaseTime = 0;
 
-			private EntityAttachment getEntityAttachment() {
-				EntityAttachmentComponent entityAttachmentComponent = getComponent(EntityAttachmentComponent.class);
-				return entityAttachmentComponent.entityAttachment;
-			}
-
 			public MiniPlanet(float x, float y, float radius) {
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
@@ -397,7 +377,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public void update(int delta) {
 				processInput(delta);
 
-				if (getEntityAttachment().entity == null)
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
+				
+				if (entityAttachment.entity == null)
 					return;
 
 				if (releaseTime > 0)
@@ -406,7 +388,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				Vector2 position = spatial.getPosition();
 
-				Entity attachedEntity = getEntityAttachment().entity;
+				Entity attachedEntity = entityAttachment.entity;
 				Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
 				MovementComponent movementComponent = ComponentWrapper.getComponent(attachedEntity, MovementComponent.class);
 
@@ -420,7 +402,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			protected void processInput(int delta) {
-				EntityAttachment entityAttachment = getEntityAttachment();
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
 				Entity attachedEntity = entityAttachment.entity;
 
 				if (attachedEntity == null)
@@ -451,12 +433,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public void attachSuperSheep(SuperSheep superSheep) {
-				EntityAttachment entityAttachment = getEntityAttachment();
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
 				Spatial spatial = ComponentWrapper.getSpatial(this);
 				
 				entityAttachment.entity = superSheep;
 				entityAttachment.joint = jointBuilder.distanceJoint() //
-						.bodyA(superSheep.getBody()) //
+						.bodyA(ComponentWrapper.getBody(superSheep)) //
 						.bodyB(ComponentWrapper.getBody(this)) //
 						.collideConnected(false) //
 						.length(spatial.getWidth() * 0.5f * 1.5f) //
@@ -467,7 +449,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public boolean containsSuperSheep(SuperSheep superSheep) {
-				EntityAttachment entityAttachment = getEntityAttachment();
+				EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(this);
 				return entityAttachment.entity == superSheep;
 			}
 
@@ -486,7 +468,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				
 				for (int i = 0; i < SuperSheepGameState.this.superSheeps.size(); i++) {
 					SuperSheep superSheep = SuperSheepGameState.this.superSheeps.get(i);
-					if (spatial.getPosition().dst(superSheep.getSpatial().getPosition()) < radius && !containsSuperSheep(superSheep)) {
+					if (spatial.getPosition().dst(ComponentWrapper.getSpatial(superSheep).getPosition()) < radius && !containsSuperSheep(superSheep)) {
 						attachSuperSheep(superSheep);
 						break;
 					}
@@ -625,10 +607,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private void checkContactSuperSheep(Fixture fixture) {
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
-				if (fixture.getBody() != superSheep.getBody())
+				if (fixture.getBody() != ComponentWrapper.getBody(superSheep))
 					return;
 				Gdx.app.log("SuperSheep", "die!");
-				superSheep.setDead(true);
+				AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
+				aliveComponent.dead = true;
 			}
 		}
 
@@ -639,7 +622,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void render(int delta) {
-			Camera cameraData = cameraFollowEntity.getCamera();
+			Camera cameraData = ComponentWrapper.getCamera(cameraFollowEntity);
 
 			camera.move(cameraData.getX(), cameraData.getY());
 			camera.zoom(cameraData.getZoom());
@@ -676,7 +659,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
-				calculateDirectionFromInput(delta, superSheep.getDirection());
+				MovementComponent movementComponent = superSheep.getComponent(MovementComponent.class);
+				
+				calculateDirectionFromInput(delta, movementComponent.direction);
 				superSheep.update(delta);
 			}
 
@@ -691,10 +676,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			for (int i = 0; i < superSheeps.size(); i++) {
 				SuperSheep superSheep = superSheeps.get(i);
 
-				if (!superSheep.isDead())
+				AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
+				if (!aliveComponent.dead)
 					continue;
 
-				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheep.getSpatial(), superSheep.getSprite());
+				DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(ComponentWrapper.getSpatial(superSheep), ComponentWrapper.getSprite(superSheep));
 				deadSuperSheeps.add(deadSuperSheepEntity);
 
 				superSheepsToRemove.add(superSheep);
@@ -709,7 +695,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				// world.destroyBody(superSheep.body);
 				superSheep.dispose();
 
-				SuperSheep newSuperSheep = new SuperSheep(5f, 7.5f, new Sprite(superSheep.getSprite()), new Vector2(1f, 0f));
+				SuperSheep newSuperSheep = new SuperSheep(5f, 7.5f, new Sprite(ComponentWrapper.getSprite(superSheep)), new Vector2(1f, 0f));
 				startMiniPlanet.attachSuperSheep(newSuperSheep);
 				superSheeps.add(newSuperSheep);
 
