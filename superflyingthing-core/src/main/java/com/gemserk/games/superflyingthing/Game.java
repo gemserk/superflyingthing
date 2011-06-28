@@ -33,16 +33,19 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
-import com.gemserk.games.entities.Behavior;
-import com.gemserk.games.entities.Component;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.entities.EntityManagerImpl;
+import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.AttachedEntityDirectionBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.FixMovementBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.ReleaseAttachmentBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.RemoveWhenGrabbedBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
-import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
@@ -59,229 +62,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short ShipCategoryBits = 1;
 
 	public static short MiniPlanetCategoryBits = 2;
-
-	static class ComponentWrapper {
-
-		public static Body getBody(Entity e) {
-			PhysicsComponent component = getComponent(e, PhysicsComponent.class);
-			if (component == null)
-				return null;
-			return component.body;
-		}
-
-		public static Spatial getSpatial(Entity e) {
-			SpatialComponent component = getComponent(e, SpatialComponent.class);
-			if (component == null)
-				return null;
-			return component.spatial;
-		}
-
-		public static Sprite getSprite(Entity e) {
-			SpriteComponent component = getComponent(e, SpriteComponent.class);
-			if (component == null)
-				return null;
-			return component.sprite;
-		}
-
-		public static Camera getCamera(Entity e) {
-			CameraComponent component = getComponent(e, CameraComponent.class);
-			if (component == null)
-				return null;
-			return component.camera;
-		}
-
-		public static EntityAttachment getEntityAttachment(Entity e) {
-			AttachmentComponent component = getComponent(e, AttachmentComponent.class);
-			if (component == null)
-				return null;
-			return component.entityAttachment;
-		}
-
-		@SuppressWarnings("unchecked")
-		private static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
-			if (e == null)
-				return null;
-			return (T) e.getComponent(clazz);
-		}
-
-	}
-
-	class CameraFollowBehavior extends Behavior {
-
-		@Override
-		public void update(int delta, Entity entity) {
-			TargetComponent targetComponent = entity.getComponent(TargetComponent.class);
-			Entity target = targetComponent.target;
-			if (target == null)
-				return;
-			SpatialComponent spatialComponent = target.getComponent(SpatialComponent.class);
-			if (spatialComponent == null)
-				return;
-			Camera camera = ComponentWrapper.getCamera(entity);
-			camera.setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
-		}
-
-	}
-
-	class FixMovementBehavior extends Behavior {
-
-		@Override
-		public void update(int delta, Entity e) {
-			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-			Vector2 direction = movementComponent.direction;
-
-			direction.nor();
-
-			Body body = ComponentWrapper.getBody(e);
-
-			Vector2 position = body.getTransform().getPosition();
-			float desiredAngle = direction.angle();
-
-			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
-			body.applyForce(direction.tmp().mul(5000f), position);
-
-			Vector2 linearVelocity = body.getLinearVelocity();
-
-			float speed = linearVelocity.len();
-
-			linearVelocity.set(direction.tmp().mul(speed));
-
-			float maxSpeed = 6f;
-			if (speed > maxSpeed) {
-				linearVelocity.mul(maxSpeed / speed);
-				body.setLinearVelocity(linearVelocity);
-			}
-		}
-
-	}
-
-	class AttachedEntityDirectionBehavior extends Behavior {
-
-		@Override
-		public void update(int delta, Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
-
-			if (entityAttachment.entity == null)
-				return;
-
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			Vector2 position = spatial.getPosition();
-
-			Entity attachedEntity = entityAttachment.entity;
-			Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
-			MovementComponent movementComponent = ComponentWrapper.getComponent(attachedEntity, MovementComponent.class);
-
-			Vector2 superSheepPosition = attachedEntitySpatial.getPosition();
-
-			Vector2 diff = superSheepPosition.sub(position).nor();
-			diff.rotate(-90f);
-
-			movementComponent.direction.set(diff);
-		}
-
-	}
-
-	class AttachEntityBehavior extends Behavior {
-
-		private final JointBuilder jointBuilder;
-
-		public AttachEntityBehavior(JointBuilder jointBuilder) {
-			this.jointBuilder = jointBuilder;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
-			if (entityAttachment.entity == null)
-				return;
-			if (entityAttachment.joint != null)
-				return;
-
-			AttachableComponent attachableComponent = entityAttachment.entity.getComponent(AttachableComponent.class);
-			attachableComponent.owner = e;
-
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			entityAttachment.joint = jointBuilder.distanceJoint() //
-					.bodyA(ComponentWrapper.getBody(entityAttachment.entity)) //
-					.bodyB(ComponentWrapper.getBody(e)) //
-					.collideConnected(false) //
-					.length(spatial.getWidth() * 0.5f * 1.5f) //
-					.build();
-		}
-
-	}
-
-	class ReleaseAttachmentBehavior extends Behavior {
-
-		private final World world;
-
-		public ReleaseAttachmentBehavior(World world) {
-			this.world = world;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
-			Entity attachedEntity = entityAttachment.entity;
-
-			if (attachedEntity == null)
-				return;
-
-			ReleaseEntityComponent releaseEntityComponent = e.getComponent(ReleaseEntityComponent.class);
-
-			if (releaseEntityComponent.releaseTime > 0)
-				releaseEntityComponent.releaseTime -= delta;
-
-			if (Gdx.app.getType() == ApplicationType.Android) {
-				if (!Gdx.input.isTouched()) {
-					return;
-				}
-			} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
-				return;
-
-			if (releaseEntityComponent.releaseTime > 0)
-				return;
-
-			if (entityAttachment.joint != null)
-				world.destroyJoint(entityAttachment.joint);
-
-			AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
-			attachableComponent.owner = null;
-
-			entityAttachment.joint = null;
-			entityAttachment.entity = null;
-
-			releaseEntityComponent.releaseTime = 300;
-		}
-
-	}
-
-	class NullBehavior extends Behavior {
-
-		@Override
-		public void update(int delta, Entity entity) {
-
-		}
-
-	}
-
-	class RemoveWhenGrabbedBehavior extends Behavior {
-
-		private final EntityManager entityManager;
-
-		public RemoveWhenGrabbedBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
-			if (grabbableComponent.grabbed)
-				entityManager.remove(e);
-		}
-	}
-
-	// starts the game...
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
 
