@@ -1,5 +1,11 @@
 package com.gemserk.games.entities;
 
+/**
+ * Manages all entities of the world.
+ * 
+ * @author acoppes
+ * 
+ */
 public interface EntityManager {
 
 	/**
@@ -35,5 +41,10 @@ public interface EntityManager {
 	 * Returns an entity given an index.
 	 */
 	Entity get(int index);
+
+	/**
+	 * Removes all entities from the world and call corresponding handlers.
+	 */
+	void dispose();
 
 }
