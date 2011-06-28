@@ -3,7 +3,6 @@ package com.gemserk.games.superflyingthing;
 import android.os.Bundle;
 
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
-import com.gemserk.games.superflyingthing.Game;
 
 public class AndroidApplication extends com.badlogic.gdx.backends.android.AndroidApplication {
 

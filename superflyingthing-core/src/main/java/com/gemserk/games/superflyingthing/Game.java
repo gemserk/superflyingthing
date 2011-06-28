@@ -278,14 +278,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			entityManager.update(delta);
 
-			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-			TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
-
-			if (attachableComponent.owner != null) {
-				targetComponent.target = attachableComponent.owner;
-			} else {
-				targetComponent.target = ship;
-			}
+			updateCameraTarget(delta);
 
 			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
 
@@ -313,6 +306,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			attachmentComponent.entityAttachment.entity = newSuperSheep;
 
 			this.ship = newSuperSheep;
+		}
+
+		private void updateCameraTarget(int delta) {
+			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+			TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
+
+			if (attachableComponent.owner != null) {
+				targetComponent.target = attachableComponent.owner;
+			} else {
+				targetComponent.target = ship;
+			}
 		}
 
 		@Override
