@@ -109,9 +109,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		void remove(Entity e);
 
 		void update(int delta);
-		
+
 		int entitiesCount();
-		
+
 		Entity get(int index);
 
 	}
@@ -536,34 +536,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class GrabGrabbablesBehavior extends Behavior {
-
-		private final EntityManager entityManager;
-
-		public GrabGrabbablesBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
-			// float radius = 2f;
-
-			for (int i = 0; i < entityManager.entitiesCount(); i++) {
-				Entity entity = entityManager.get(i);
-				GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
-				if (grabbableComponent == null)
-					continue;
-				if (grabbableComponent.grabbed)
-					continue;
-				Spatial grabbableEntitySpatial = ComponentWrapper.getSpatial(entity);
-				if (spatial.getPosition().dst(grabbableEntitySpatial.getPosition()) < radius)
-					grabbableComponent.grabbed = true;
-			}
-		}
-	}
-
 	class RemoveWhenGrabbedBehavior extends Behavior {
 
 		private final EntityManager entityManager;
@@ -597,14 +569,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public Entity superSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-
-				Body body = bodyBuilder.mass(50f) //
-						.boxShape(width * 0.3f, height * 0.3f) //
-						.position(x, y) //
-						.restitution(0f) //
-						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
-
+				
 				Entity e = new Entity() {
 					@Override
 					void dispose() {
@@ -613,6 +578,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					}
 				};
 
+				Body body = bodyBuilder.mass(50f) //
+						.boxShape(width * 0.3f, height * 0.3f) //
+						.position(x, y) //
+						.restitution(0f) //
+						.type(BodyType.DynamicBody) //
+						.categoryBits(ShipCategoryBits) //
+						.maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)) //
+						.userData(e) //
+						.build();
+
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 				e.addComponent(new SpriteComponent(sprite));
@@ -620,13 +595,30 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addComponent(new AliveComponent(false));
 				e.addComponent(new AttachableComponent());
 				e.addBehavior(new FixMovementBehavior());
-				e.addBehavior(new GrabGrabbablesBehavior(entityManager));
 				return e;
 			}
 
 			public Entity grabbableDiamond(float x, float y, float radius, Sprite sprite) {
-				Entity e = new Entity();
-				e.addComponent(new SpatialComponent(new SpatialImpl(x, y, radius * 2, radius * 2, 0f)));
+				Entity e = new Entity() {
+					@Override
+					void dispose() {
+						Body body = ComponentWrapper.getBody(this);
+						world.destroyBody(body);
+					}
+				};
+
+				Body body = bodyBuilder.mass(50f) //
+						.circleShape(radius) //
+						.sensor() //
+						.position(x, y) //
+						.restitution(0f) //
+						.type(BodyType.StaticBody) //
+						.userData(e) //
+						.build();
+
+				e.addComponent(new PhysicsComponent(body));
+				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+				// e.addComponent(new SpatialComponent(new SpatialImpl(x, y, radius * 2, radius * 2, 0f)));
 				e.addComponent(new SpriteComponent(sprite));
 				e.addComponent(new GrabbableComponent());
 				e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
@@ -814,16 +806,27 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void beginContact(Contact contact) {
-			checkContactSuperSheep(contact.getFixtureA());
-			checkContactSuperSheep(contact.getFixtureB());
+			checkContactSuperSheep(contact.getFixtureA(), contact.getFixtureB());
+			checkContactSuperSheep(contact.getFixtureB(), contact.getFixtureA());
 		}
 
-		private void checkContactSuperSheep(Fixture fixture) {
-			if (fixture.getBody() != ComponentWrapper.getBody(superSheep))
+		private void checkContactSuperSheep(Fixture fixtureA, Fixture fixtureB) {
+			if (fixtureA.getBody() != ComponentWrapper.getBody(superSheep))
 				return;
-			Gdx.app.log("SuperSheep", "die!");
-			AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
-			aliveComponent.dead = true;
+			Entity e = (Entity) fixtureB.getBody().getUserData();
+			if (e != null) {
+				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+				if (grabbableComponent == null)
+					return;
+				if (grabbableComponent.grabbed)
+					return;
+				grabbableComponent.grabbed = true;
+				Gdx.app.log("SuperSheep", "grabbed diamond!");
+			} else {
+				Gdx.app.log("SuperSheep", "die!");
+				AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
+				aliveComponent.dead = true;
+			}
 		}
 
 		@Override
