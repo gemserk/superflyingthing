@@ -102,6 +102,70 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
+	interface EntityManager {
+
+		void add(Entity e);
+
+		void remove(Entity e);
+
+		void update(int delta);
+
+	}
+
+	class EntityManagerImpl implements EntityManager {
+
+		ArrayList<Entity> entities, entitiesToAdd, entitiesToRemove;
+
+		public EntityManagerImpl() {
+			entities = new ArrayList<Entity>();
+			entitiesToAdd = new ArrayList<Entity>();
+			entitiesToRemove = new ArrayList<Entity>();
+		}
+
+		@Override
+		public void add(Entity e) {
+			entitiesToAdd.add(e);
+		}
+
+		@Override
+		public void remove(Entity e) {
+			entitiesToRemove.add(e);
+		}
+
+		@Override
+		public void update(int delta) {
+			updateAdd(delta);
+			updateEntities(delta);
+			updateRemove(delta);
+		}
+
+		private void updateAdd(int delta) {
+			for (int i = 0; i < entitiesToAdd.size(); i++) {
+				Entity e = entitiesToAdd.get(i);
+				e.init();
+				entities.add(e);
+			}
+			entitiesToAdd.clear();
+		}
+
+		private void updateEntities(int delta) {
+			for (int i = 0; i < entities.size(); i++) {
+				Entity e = entities.get(i);
+				e.update(delta);
+			}
+		}
+
+		private void updateRemove(int delta) {
+			for (int i = 0; i < entitiesToRemove.size(); i++) {
+				Entity e = entitiesToRemove.get(i);
+				entities.remove(e);
+				e.dispose();
+			}
+			entitiesToRemove.clear();
+		}
+
+	}
+
 	interface Component {
 
 	}
@@ -261,7 +325,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	class Behavior {
 
-		void update(int delta, Entity entity) { }
+		void update(int delta, Entity entity) {
+		}
 
 	}
 
@@ -456,15 +521,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-	
+
 	class GrabGrabbablesBehavior extends Behavior {
-		
+
 		private final ArrayList<Entity> entities;
 
 		public GrabGrabbablesBehavior(ArrayList<Entity> entities) {
 			this.entities = entities;
 		}
-		
+
 		@Override
 		public void update(int delta, Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
@@ -486,13 +551,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 
 	class RemoveWhenGrabbedBehavior extends Behavior {
-		
+
 		private final ArrayList<Entity> entities;
 
-		public RemoveWhenGrabbedBehavior(ArrayList<Entity> entities)  {
+		public RemoveWhenGrabbedBehavior(ArrayList<Entity> entities) {
 			this.entities = entities;
 		}
-		
+
 		@Override
 		public void update(int delta, Entity entity) {
 			GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
