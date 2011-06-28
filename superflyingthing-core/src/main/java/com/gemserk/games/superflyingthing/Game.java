@@ -50,7 +50,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public static short MiniPlanetCategoryBits = 2;
 	
-	class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
+	public static class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
 
 		private SpriteBatch spriteBatch;
 		private Libgdx2dCamera camera;
@@ -186,9 +186,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				updateGrabbableEntity(e);
 				updateAttachEntity(e);
 			} else {
-				Gdx.app.log("SuperSheep", "die!");
 				AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
+				if (aliveComponent == null)
+					return;
 				aliveComponent.dead = true;
+				Gdx.app.log("SuperSheep", "die!");
 			}
 		}
 
@@ -317,6 +319,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
+			
+			if (aliveComponent == null)
+				return;
+			
 			if (!aliveComponent.dead)
 				return;
 
