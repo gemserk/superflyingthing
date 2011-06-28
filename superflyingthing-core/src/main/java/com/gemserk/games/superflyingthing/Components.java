@@ -10,6 +10,28 @@ import com.gemserk.games.entities.Component;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
+	
+	// the real component ->
+	
+	public static class EntityAttachment {
+
+		Entity entity;
+
+		Joint joint;
+
+	}
+	
+	// the classes to use to abstract access to the real components :s, similar to Spatial stuff.
+	
+	public static class SpatialComponent implements Component {
+
+		Spatial spatial;
+
+		public SpatialComponent(Spatial spatial) {
+			this.spatial = spatial;
+		}
+
+	}
 
 	public static class PhysicsComponent implements Component {
 
@@ -17,16 +39,6 @@ public class Components {
 
 		public PhysicsComponent(Body body) {
 			this.body = body;
-		}
-
-	}
-
-	public static class SpatialComponent implements Component {
-
-		Spatial spatial;
-
-		public SpatialComponent(Spatial spatial) {
-			this.spatial = spatial;
 		}
 
 	}
@@ -78,14 +90,6 @@ public class Components {
 		public TargetComponent(Entity target) {
 			this.target = target;
 		}
-
-	}
-
-	public static class EntityAttachment {
-
-		Entity entity;
-
-		Joint joint;
 
 	}
 
