@@ -109,6 +109,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		void remove(Entity e);
 
 		void update(int delta);
+		
+		int entitiesCount();
+		
+		Entity get(int index);
 
 	}
 
@@ -162,6 +166,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.dispose();
 			}
 			entitiesToRemove.clear();
+		}
+
+		@Override
+		public int entitiesCount() {
+			return entities.size();
+		}
+
+		@Override
+		public Entity get(int index) {
+			return entities.get(index);
 		}
 
 	}
@@ -325,7 +339,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	class Behavior {
 
-		void update(int delta, Entity entity) {
+		void update(int delta, Entity e) {
 		}
 
 	}
@@ -491,12 +505,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	class AttachNearEntityBehavior extends Behavior {
 
+		private final EntityManager entityManager;
+
 		// to be later encapsulated in the world class...
 
-		private final ArrayList<Entity> entities;
-
-		public AttachNearEntityBehavior(ArrayList<Entity> entities) {
-			this.entities = entities;
+		public AttachNearEntityBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
 		}
 
 		@Override
@@ -504,8 +518,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
 
-			for (int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
+			for (int i = 0; i < entityManager.entitiesCount(); i++) {
+				Entity entity = entityManager.get(i);
 				AttachableComponent attachableComponent = entity.getComponent(AttachableComponent.class);
 				if (attachableComponent == null)
 					continue;
@@ -524,10 +538,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	class GrabGrabbablesBehavior extends Behavior {
 
-		private final ArrayList<Entity> entities;
+		private final EntityManager entityManager;
 
-		public GrabGrabbablesBehavior(ArrayList<Entity> entities) {
-			this.entities = entities;
+		public GrabGrabbablesBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
 		}
 
 		@Override
@@ -536,8 +550,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
 			// float radius = 2f;
 
-			for (int i = 0; i < entities.size(); i++) {
-				Entity entity = entities.get(i);
+			for (int i = 0; i < entityManager.entitiesCount(); i++) {
+				Entity entity = entityManager.get(i);
 				GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
 				if (grabbableComponent == null)
 					continue;
@@ -552,17 +566,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	class RemoveWhenGrabbedBehavior extends Behavior {
 
-		private final ArrayList<Entity> entities;
+		private final EntityManager entityManager;
 
-		public RemoveWhenGrabbedBehavior(ArrayList<Entity> entities) {
-			this.entities = entities;
+		public RemoveWhenGrabbedBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
 		}
 
 		@Override
-		public void update(int delta, Entity entity) {
-			GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
+		public void update(int delta, Entity e) {
+			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 			if (grabbableComponent.grabbed)
-				entities.add(entity);
+				entityManager.remove(e);
 		}
 	}
 
@@ -606,7 +620,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addComponent(new AliveComponent(false));
 				e.addComponent(new AttachableComponent());
 				e.addBehavior(new FixMovementBehavior());
-				e.addBehavior(new GrabGrabbablesBehavior(entities));
+				e.addBehavior(new GrabGrabbablesBehavior(entityManager));
 				return e;
 			}
 
@@ -615,7 +629,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addComponent(new SpatialComponent(new SpatialImpl(x, y, radius * 2, radius * 2, 0f)));
 				e.addComponent(new SpriteComponent(sprite));
 				e.addComponent(new GrabbableComponent());
-				e.addBehavior(new RemoveWhenGrabbedBehavior(entitiesToRemove));
+				e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
 				return e;
 			}
 
@@ -672,7 +686,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				e.addBehavior(new AttachEntityBehavior(jointBuilder));
 				e.addBehavior(new AttachedEntityDirectionBehavior());
-				e.addBehavior(new AttachNearEntityBehavior(entities));
+				e.addBehavior(new AttachNearEntityBehavior(entityManager));
 				return e;
 			}
 
@@ -686,21 +700,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private JointBuilder jointBuilder;
 
 		EntityFactory entityFactory;
+		EntityManager entityManager;
 
 		private Entity startMiniPlanet;
 		private Entity superSheep;
 		private Entity cameraFollowEntity;
 
-		private ArrayList<Entity> entities;
-		private ArrayList<Entity> entitiesToRemove;
-
 		@Override
 		public void init() {
+			entityManager = new EntityManagerImpl();
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
 			entityFactory = new EntityFactory();
-			entities = new ArrayList<Entity>();
-			entitiesToRemove = new ArrayList<Entity>();
 
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
@@ -744,14 +755,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, 90f);
 				float y = MathUtils.random(2f, 13f);
-				entities.add(entityFactory.grabbableDiamond(x, y, 0.1f, sprite));
+				entityManager.add(entityFactory.grabbableDiamond(x, y, 0.1f, sprite));
 			}
 
 			cameraFollowEntity = entityFactory.cameraFollowEntity(cameraData);
-			entities.add(cameraFollowEntity);
+			entityManager.add(cameraFollowEntity);
 
 			superSheep = entityFactory.superSheep(5f, 7.5f, sprite, new Vector2(1f, 0f));
-			entities.add(superSheep);
+			entityManager.add(superSheep);
 
 			startMiniPlanet = entityFactory.miniPlanet(5f, 7.5f, 1f);
 
@@ -759,8 +770,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			attachmentComponent.entityAttachment.entity = superSheep;
 			// startMiniPlanet.attachSuperSheep(superSheep);
 
-			entities.add(startMiniPlanet);
-			entities.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
+			entityManager.add(startMiniPlanet);
+			entityManager.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
 
 			float worldWidth = 100f;
 			float worldHeight = 20f;
@@ -831,22 +842,22 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
 
-			renderEntities(entities);
+			renderEntities();
 
 			box2dCustomDebugRenderer.render();
 
-			for (int i = 0; i < entities.size(); i++) {
-				Entity e = entities.get(i);
+			for (int i = 0; i < entityManager.entitiesCount(); i++) {
+				Entity e = entityManager.get(i);
 				renderMovementDebug(e);
 				renderAttachmentDebug(e);
 			}
 
 		}
 
-		private void renderEntities(ArrayList<Entity> entities) {
+		private void renderEntities() {
 			spriteBatch.begin();
-			for (int i = 0; i < entities.size(); i++) {
-				Entity e = entities.get(i);
+			for (int i = 0; i < entityManager.entitiesCount(); i++) {
+				Entity e = entityManager.get(i);
 				Spatial spatial = ComponentWrapper.getSpatial(e);
 				if (spatial == null)
 					continue;
@@ -889,16 +900,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 
-			// inputReleaseSheep(delta);
-
 			MovementComponent movementComponent = superSheep.getComponent(MovementComponent.class);
 			calculateDirectionFromInput(delta, movementComponent.direction);
-			// superSheep.update(delta);
 
-			entitiesToRemove.clear();
-			for (int i = 0; i < entities.size(); i++)
-				entities.get(i).update(delta);
-			entities.removeAll(entitiesToRemove);
+			entityManager.update(delta);
 
 			AttachableComponent attachableComponent = superSheep.getComponent(AttachableComponent.class);
 			TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
@@ -913,8 +918,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			if (!aliveComponent.dead)
 				return;
 
-			entities.remove(superSheep);
-			superSheep.dispose();
+			entityManager.remove(superSheep);
 
 			Spatial superSheepSpatial = ComponentWrapper.getSpatial(superSheep);
 			Sprite superSheepSprite = ComponentWrapper.getSprite(superSheep);
@@ -923,18 +927,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			deadSuperSheepSprite.setColor(0.7f, 0.7f, 0.7f, 1f);
 
 			Entity deadSuperSheepEntity = entityFactory.deadSuperSheepEntity(superSheepSpatial, deadSuperSheepSprite);
-			entities.add(deadSuperSheepEntity);
+			entityManager.add(deadSuperSheepEntity);
 
 			Entity newSuperSheep = entityFactory.superSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
-			entities.add(newSuperSheep);
+			entityManager.add(newSuperSheep);
 
 			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
 			attachmentComponent.entityAttachment.entity = newSuperSheep;
-			// startMiniPlanet.attachSuperSheep(newSuperSheep);
 
 			this.superSheep = newSuperSheep;
-
-			// cameraFollowEntity.follow(startMiniPlanet);
 		}
 
 		private void calculateDirectionFromInput(int delta, Vector2 direction) {
