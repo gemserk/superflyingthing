@@ -16,8 +16,6 @@ import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.AttachedEntityDirectionBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.FixDirectionFromInputBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.FixMovementBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.ReleaseAttachmentBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.RemoveWhenGrabbedBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
@@ -77,9 +75,12 @@ public class EntityFactory {
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new InputDirectionComponent());
-		e.addBehavior(new FixMovementBehavior());
-		e.addBehavior(new FixDirectionFromInputBehavior());
+
+		e.addBehavior(new Behaviors.FixMovementBehavior());
+		e.addBehavior(new Behaviors.FixDirectionFromInputBehavior());
 		e.addBehavior(new Behaviors.CalculateInputDirectionBehavior());
+		e.addBehavior(new Behaviors.CollisionHandlerBehavior());
+
 		return e;
 	}
 
@@ -100,6 +101,24 @@ public class EntityFactory {
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new GrabbableComponent());
 		e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
+
+		// e.addBehavior(new Behavior() {
+		//
+		// @Override
+		// public void update(int delta, Entity e) {
+		// GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+		// if (grabbableComponent == null)
+		// return;
+		// PhysicsComponent physicsComponent = e.getComponent(PhysicsComponent.class);
+		// if (physicsComponent == null)
+		// return;
+		//
+		// if (physicsComponent.getContact().isInContact())
+		// grabbableComponent.grabbed = true;
+		// }
+		//
+		// });
+
 		return e;
 	}
 

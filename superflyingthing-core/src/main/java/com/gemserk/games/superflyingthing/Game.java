@@ -13,7 +13,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
-import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
@@ -36,8 +35,8 @@ import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
-import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -131,51 +130,40 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void beginContact(Contact contact) {
-			checkContactSuperSheep(contact.getFixtureA(), contact.getFixtureB());
-			checkContactSuperSheep(contact.getFixtureB(), contact.getFixtureA());
-		}
+			Body bodyA = contact.getFixtureA().getBody();
+			Body bodyB = contact.getFixtureB().getBody();
 
-		private void checkContactSuperSheep(Fixture fixtureA, Fixture fixtureB) {
-			if (fixtureA.getBody() != ComponentWrapper.getBody(ship))
-				return;
-			Entity e = (Entity) fixtureB.getBody().getUserData();
-			if (e != null) {
-				updateGrabbableEntity(e);
-				updateAttachEntity(e);
-			} else {
-				AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-				if (aliveComponent == null)
-					return;
-				aliveComponent.dead = true;
-				Gdx.app.log("SuperSheep", "die!");
+			Entity entityA = (Entity) bodyA.getUserData();
+			Entity entityB = (Entity) bodyB.getUserData();
+
+			if (entityA != null) {
+				PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
+				physicsComponent.getContact().addContact(contact, bodyB);
 			}
-		}
 
-		private void updateAttachEntity(Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
-			if (entityAttachment == null)
-				return;
-			if (entityAttachment.entity != null)
-				return;
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			if (spatial == null)
-				return;
-			entityAttachment.entity = ship;
-		}
-
-		private void updateGrabbableEntity(Entity e) {
-			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
-			if (grabbableComponent == null)
-				return;
-			if (grabbableComponent.grabbed)
-				return;
-			grabbableComponent.grabbed = true;
-			Gdx.app.log("SuperSheep", "grabbed diamond!");
+			if (entityB != null) {
+				PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
+				physicsComponent.getContact().addContact(contact, bodyA);
+			}
 		}
 
 		@Override
 		public void endContact(Contact contact) {
+			Body bodyA = contact.getFixtureA().getBody();
+			Body bodyB = contact.getFixtureB().getBody();
 
+			Entity entityA = (Entity) bodyA.getUserData();
+			Entity entityB = (Entity) bodyB.getUserData();
+
+			if (entityA != null) {
+				PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
+				physicsComponent.getContact().removeContact(bodyB);
+			}
+
+			if (entityB != null) {
+				PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
+				physicsComponent.getContact().removeContact(bodyA);
+			}
 		}
 
 		@Override
@@ -193,6 +181,30 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Body body = ComponentWrapper.getBody(e);
 			if (body == null)
 				return;
+
+			PhysicsComponent component = e.getComponent(PhysicsComponent.class);
+
+			body.setUserData(null);
+
+			com.gemserk.commons.gdx.box2d.Contact contact = component.getContact();
+
+			// removes contact from the other entity
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+
+				Body otherBody = contact.getBody(i);
+				if (otherBody == null)
+					continue;
+
+				Entity otherEntity = (Entity) otherBody.getUserData();
+				if (otherEntity == null)
+					continue;
+
+				PhysicsComponent otherPhyiscsComponent = otherEntity.getComponent(PhysicsComponent.class);
+				otherPhyiscsComponent.getContact().removeContact(body);
+			}
+
 			world.destroyBody(body);
 			Gdx.app.log("SuperSheep", "removing body from physics world");
 		}

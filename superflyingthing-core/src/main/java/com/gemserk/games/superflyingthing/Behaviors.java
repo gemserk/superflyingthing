@@ -13,11 +13,13 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityManager;
+import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
@@ -284,6 +286,54 @@ public class Behaviors {
 			return movementDirection;
 		}
 
+	}
+
+	public static class CollisionHandlerBehavior extends Behavior {
+		@Override
+		public void update(int delta, Entity e1) {
+			PhysicsComponent physicsComponent = e1.getComponent(PhysicsComponent.class);
+			if (physicsComponent == null)
+				return;
+			if (!physicsComponent.getContact().isInContact())
+				return;
+			Entity e2 = (Entity) physicsComponent.getContact().getUserData();
+			updateGrabGrabbable(e1, e2);
+			updateAttachToAttachable(e1, e2);
+			updateAliveCollision(e1, e2);
+		}
+
+		private void updateGrabGrabbable(Entity e1, Entity e2) {
+			if (e2 == null)
+				return;
+			GrabbableComponent grabbableComponent = e2.getComponent(GrabbableComponent.class);
+			if (grabbableComponent == null)
+				return;
+			if (grabbableComponent.grabbed)
+				return;
+			grabbableComponent.grabbed = true;
+		}
+
+		private void updateAttachToAttachable(Entity e1, Entity e2) {
+			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e2);
+			if (entityAttachment == null)
+				return;
+			if (entityAttachment.entity != null)
+				return;
+			Spatial spatial = ComponentWrapper.getSpatial(e2);
+			if (spatial == null)
+				return;
+			entityAttachment.entity = e1;
+		}
+
+		private void updateAliveCollision(Entity e, Entity e2) {
+			if (e2 != null)
+				return;
+			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
+			if (aliveComponent == null)
+				return;
+			aliveComponent.dead = true;
+			Gdx.app.log("SuperSheep", "die!");
+		}
 	}
 
 }
