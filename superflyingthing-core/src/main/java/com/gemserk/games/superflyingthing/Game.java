@@ -1,8 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
@@ -38,6 +35,12 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.entities.Component;
+import com.gemserk.games.entities.Entity;
+import com.gemserk.games.entities.EntityLifeCycleHandler;
+import com.gemserk.games.entities.EntityManager;
+import com.gemserk.games.entities.EntityManagerImpl;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
@@ -46,162 +49,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short ShipCategoryBits = 1;
 
 	public static short MiniPlanetCategoryBits = 2;
-
-	class Entity {
-
-		Map<Class<? extends Component>, Component> components;
-
-		ArrayList<Behavior> behaviors;
-
-		@SuppressWarnings("unchecked")
-		<T extends Component> T getComponent(Class<T> clazz) {
-			return (T) components.get(clazz);
-		}
-
-		public Entity() {
-			components = new HashMap<Class<? extends Component>, Component>();
-			behaviors = new ArrayList<Behavior>();
-		}
-
-		void addComponent(Component component) {
-			addComponent(component.getClass(), component);
-		}
-
-		void addComponent(Class<? extends Component> clazz, Component component) {
-			components.put(clazz, component);
-		}
-
-		void addBehavior(Behavior behavior) {
-			behaviors.add(behavior);
-		}
-		
-	}
-
-	interface EntityLifeCycleHandler {
-
-		/**
-		 * Called after the entity was added to the world.
-		 * 
-		 * @param e
-		 *            The entity added to the world.
-		 */
-		void init(Entity e);
-
-		/**
-		 * Called after the entity was removed from the world.
-		 * 
-		 * @param e
-		 *            The entity removed from the world.
-		 */
-		void dispose(Entity e);
-
-	}
-
-	class EntityLifeCycleHandlerNullImpl implements EntityLifeCycleHandler {
-		@Override
-		public void init(Entity e) {
-		}
-
-		@Override
-		public void dispose(Entity e) {
-		}
-	}
-
-	interface EntityManager {
-
-		void add(Entity e);
-
-		void remove(Entity e);
-
-		void update(int delta);
-
-		int entitiesCount();
-
-		Entity get(int index);
-
-	}
-
-	class EntityManagerImpl implements EntityManager {
-
-		ArrayList<Entity> entities, entitiesToAdd, entitiesToRemove;
-
-		EntityLifeCycleHandler entityLifeCycleHandler;
-
-		public EntityManagerImpl() {
-			this(new EntityLifeCycleHandlerNullImpl());
-		}
-		
-		public EntityManagerImpl(EntityLifeCycleHandler entityLifeCycleHandler) {
-			entities = new ArrayList<Entity>();
-			entitiesToAdd = new ArrayList<Entity>();
-			entitiesToRemove = new ArrayList<Entity>();
-			this.entityLifeCycleHandler = entityLifeCycleHandler;
-		}
-
-		@Override
-		public void add(Entity e) {
-			entitiesToAdd.add(e);
-		}
-
-		@Override
-		public void remove(Entity e) {
-			entitiesToRemove.add(e);
-		}
-
-		@Override
-		public void update(int delta) {
-			updateAdd(delta);
-			updateEntities(delta);
-			updateRemove(delta);
-		}
-
-		private void updateAdd(int delta) {
-			for (int i = 0; i < entitiesToAdd.size(); i++) {
-				Entity e = entitiesToAdd.get(i);
-				entities.add(e);
-				// init entity
-				entityLifeCycleHandler.init(e);
-			}
-			entitiesToAdd.clear();
-		}
-
-		private void updateEntities(int delta) {
-			for (int i = 0; i < entities.size(); i++) {
-				Entity e = entities.get(i);
-				updateEntity(delta, e);
-			}
-		}
-
-		private void updateEntity(int delta, Entity e) {
-			for (int i = 0; i < e.behaviors.size(); i++)
-				e.behaviors.get(i).update(delta, e);
-		}
-
-		private void updateRemove(int delta) {
-			for (int i = 0; i < entitiesToRemove.size(); i++) {
-				Entity e = entitiesToRemove.get(i);
-				entities.remove(e);
-				// dispose entity
-				entityLifeCycleHandler.dispose(e);
-			}
-			entitiesToRemove.clear();
-		}
-
-		@Override
-		public int entitiesCount() {
-			return entities.size();
-		}
-
-		@Override
-		public Entity get(int index) {
-			return entities.get(index);
-		}
-
-	}
-
-	interface Component {
-
-	}
 
 	class PhysicsComponent implements Component {
 
@@ -353,13 +200,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			if (e == null)
 				return null;
 			return (T) e.getComponent(clazz);
-		}
-
-	}
-
-	class Behavior {
-
-		void update(int delta, Entity e) {
 		}
 
 	}
