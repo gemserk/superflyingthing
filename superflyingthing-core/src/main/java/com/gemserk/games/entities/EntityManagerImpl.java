@@ -78,11 +78,4 @@ public class EntityManagerImpl implements EntityManager {
 		return entities.get(index);
 	}
 
-	@Override
-	public void dispose() {
-		for (int i = 0; i < entitiesCount(); i++)
-			remove(get(i));
-		updateRemove(0);
-	}
-
 }

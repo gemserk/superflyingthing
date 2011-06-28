@@ -49,7 +49,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short ShipCategoryBits = 1;
 
 	public static short MiniPlanetCategoryBits = 2;
-	
+
 	public static class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
 
 		SpriteBatch spriteBatch;
@@ -227,11 +227,26 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void dispose(Entity e) {
+			diposeJoints(e);
+			disposeBody(e);
+		}
+
+		private void disposeBody(Entity e) {
 			Body body = ComponentWrapper.getBody(e);
 			if (body == null)
 				return;
 			world.destroyBody(body);
 			Gdx.app.log("SuperSheep", "removing body from physics world");
+		}
+
+		private void diposeJoints(Entity e) {
+			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			if (entityAttachment == null)
+				return;
+			if (entityAttachment.joint == null)
+				return;
+			world.destroyJoint(entityAttachment.joint);
+			Gdx.app.log("SuperSheep", "removing joints from physics world");
 		}
 
 		@Override
@@ -318,10 +333,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-			
+
 			if (aliveComponent == null)
 				return;
-			
+
 			if (!aliveComponent.dead)
 				return;
 
@@ -423,7 +438,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		public void dispose() {
 			spriteBatch.dispose();
 			world.dispose();
-			entityManager.dispose();
 		}
 	}
 

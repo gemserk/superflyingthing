@@ -42,9 +42,4 @@ public interface EntityManager {
 	 */
 	Entity get(int index);
 
-	/**
-	 * Removes all entities from the world and call corresponding handlers.
-	 */
-	void dispose();
-
 }
