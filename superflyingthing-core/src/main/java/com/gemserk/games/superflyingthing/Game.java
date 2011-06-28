@@ -93,10 +93,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				behaviors.get(i).update(delta, this);
 		}
 
-		void render(SpriteBatch spriteBatch) {
-
-		}
-
 		/**
 		 * Called before the entity is removed from the world.
 		 */
@@ -491,14 +487,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				addBehavior(new FixMovementBehavior());
 			}
 
-			public void render(SpriteBatch spriteBatch) {
-				Spatial spatial = ComponentWrapper.getSpatial(this);
-				Sprite sprite = ComponentWrapper.getSprite(this);
-				sprite.setSize(spatial.getWidth(), spatial.getHeight());
-				Vector2 position = spatial.getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
-			}
-
 			public void dispose() {
 				Body body = ComponentWrapper.getBody(this);
 				world.destroyBody(body);
@@ -511,13 +499,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
 				addComponent(new SpatialComponent(new SpatialImpl(spatial)));
 				addComponent(new SpriteComponent(sprite));
-			}
-
-			public void render(SpriteBatch spriteBatch) {
-				Sprite sprite = ComponentWrapper.getSprite(this);
-				Spatial spatial = ComponentWrapper.getSpatial(this);
-				Vector2 position = spatial.getPosition();
-				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 			}
 
 		}
@@ -563,7 +544,30 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 		}
-
+		
+//		class EntityFactory {
+//			
+//			public Entity destinationPlanet(float x, float y, float radius) {
+//				Entity e = new Entity();
+//				Body body = bodyBuilder.mass(1000f) //
+//						.circleShape(radius * 0.1f) //
+//						.position(x, y) //
+//						.restitution(0f) //
+//						.type(BodyType.StaticBody) //
+//						.categoryBits(MiniPlanetCategoryBits).build();
+//				e.addComponent(new PhysicsComponent(body));
+//				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+//				e.addComponent(new AttachmentComponent());
+//				e.addComponent(new ReleaseEntityComponent());
+//
+//				e.addBehavior(new AttachEntityBehavior(jointBuilder));
+//				e.addBehavior(new AttachedEntityDirectionBehavior());
+//				e.addBehavior(new AttachNearEntityBehavior(entities));
+//				return e;
+//			}
+//			
+//		}
+		
 		private SpriteBatch spriteBatch;
 		private Libgdx2dCamera camera;
 		private World world;
@@ -708,10 +712,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 			camera.apply(spriteBatch);
 
-			spriteBatch.begin();
-			for (int i = 0; i < entities.size(); i++)
-				entities.get(i).render(spriteBatch);
-			spriteBatch.end();
+			renderEntities(entities);
 
 			box2dCustomDebugRenderer.render();
 
@@ -721,6 +722,23 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				drawAttachmentDebug(e);
 			}
 
+		}
+
+		private void renderEntities(ArrayList<Entity> entities) {
+			spriteBatch.begin();
+			for (int i = 0; i < entities.size(); i++) {
+				Entity e = entities.get(i);
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				if (spatial == null)
+					continue;
+				Sprite sprite = ComponentWrapper.getSprite(e);
+				if (sprite == null)
+					continue;
+				sprite.setSize(spatial.getWidth(), spatial.getHeight());
+				Vector2 position = spatial.getPosition();
+				SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
+			}
+			spriteBatch.end();
 		}
 
 		private void drawAttachmentDebug(Entity e) {
