@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -17,7 +16,6 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.Joint;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
@@ -41,6 +39,18 @@ import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.entities.EntityManagerImpl;
+import com.gemserk.games.superflyingthing.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.Components.AttachableComponent;
+import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.Components.CameraComponent;
+import com.gemserk.games.superflyingthing.Components.EntityAttachment;
+import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
+import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
+import com.gemserk.games.superflyingthing.Components.SpatialComponent;
+import com.gemserk.games.superflyingthing.Components.SpriteComponent;
+import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
@@ -49,114 +59,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short ShipCategoryBits = 1;
 
 	public static short MiniPlanetCategoryBits = 2;
-
-	class PhysicsComponent implements Component {
-
-		Body body;
-
-		public PhysicsComponent(Body body) {
-			this.body = body;
-		}
-
-	}
-
-	class SpatialComponent implements Component {
-
-		Spatial spatial;
-
-		public SpatialComponent(Spatial spatial) {
-			this.spatial = spatial;
-		}
-
-	}
-
-	class CameraComponent implements Component {
-
-		Camera camera;
-
-		public CameraComponent(Camera camera) {
-			this.camera = camera;
-		}
-
-	}
-
-	class SpriteComponent implements Component {
-
-		Sprite sprite;
-
-		public SpriteComponent(Sprite sprite) {
-			this.sprite = sprite;
-		}
-
-	}
-
-	class MovementComponent implements Component {
-
-		final Vector2 direction = new Vector2();
-
-		public MovementComponent(float dx, float dy) {
-			direction.set(dx, dy);
-		}
-
-	}
-
-	class AliveComponent implements Component {
-
-		boolean dead;
-
-		public AliveComponent(boolean dead) {
-			this.dead = dead;
-		}
-
-	}
-
-	class TargetComponent implements Component {
-
-		Entity target;
-
-		public TargetComponent(Entity target) {
-			this.target = target;
-		}
-
-	}
-
-	class EntityAttachment {
-
-		Entity entity;
-
-		Joint joint;
-
-	}
-
-	class AttachmentComponent implements Component {
-
-		EntityAttachment entityAttachment;
-
-		public AttachmentComponent() {
-			entityAttachment = new EntityAttachment();
-		}
-
-	}
-
-	class AttachableComponent implements Component {
-
-		Entity owner;
-
-	}
-
-	class ReleaseEntityComponent implements Component {
-
-		int releaseTime;
-
-	}
-
-	class GrabbableComponent implements Component {
-
-		boolean grabbed;
-
-	}
-
-	// custom for this game, only works fine if each component has only one value.
 
 	static class ComponentWrapper {
 
@@ -387,7 +289,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			public Entity camera(Camera camera) {
 				Entity e = new Entity();
-				e.addComponent(new CameraComponent(camera));
+				e.addComponent(new Components.CameraComponent(camera));
 				e.addComponent(new TargetComponent(null));
 				e.addBehavior(new CameraFollowBehavior());
 				return e;
@@ -469,7 +371,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public Entity destinationPlanet(float x, float y, float radius) {
-				Entity e = new Entity() ;
+				Entity e = new Entity();
 
 				Body body = bodyBuilder.mass(1f) //
 						.circleShape(radius * 0.1f) //
