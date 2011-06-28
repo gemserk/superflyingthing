@@ -16,6 +16,7 @@ import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.AttachedEntityDirectionBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.FixDirectionFromInputBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixMovementBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.ReleaseAttachmentBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.RemoveWhenGrabbedBehavior;
@@ -23,6 +24,7 @@ import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
@@ -74,7 +76,10 @@ public class EntityFactory {
 		e.addComponent(new MovementComponent(direction.x, direction.y));
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
+		e.addComponent(new InputDirectionComponent());
 		e.addBehavior(new FixMovementBehavior());
+		e.addBehavior(new FixDirectionFromInputBehavior());
+		e.addBehavior(new Behaviors.CalculateInputDirectionBehavior());
 		return e;
 	}
 

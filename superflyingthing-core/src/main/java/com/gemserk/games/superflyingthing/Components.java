@@ -66,6 +66,8 @@ public class Components {
 	public static class MovementComponent implements Component {
 
 		final Vector2 direction = new Vector2();
+		
+		float angularVelocity = 0f;
 
 		public MovementComponent(float dx, float dy) {
 			direction.set(dx, dy);
@@ -121,4 +123,10 @@ public class Components {
 
 	}
 
+	public static class InputDirectionComponent implements Component {
+		
+		float direction;
+		
+	}
+	
 }

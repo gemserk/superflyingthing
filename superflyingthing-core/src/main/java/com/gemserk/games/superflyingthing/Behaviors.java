@@ -16,6 +16,7 @@ import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.SpatialComponent;
@@ -187,6 +188,102 @@ public class Behaviors {
 			if (grabbableComponent.grabbed)
 				entityManager.remove(e);
 		}
+	}
+
+	public static class FixDirectionFromInputBehavior extends Behavior {
+
+		@Override
+		public void update(int delta, Entity e) {
+			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
+			InputDirectionComponent inputDirectionComponent = e.getComponent(InputDirectionComponent.class);
+
+			if (movementComponent == null)
+				return;
+			if (inputDirectionComponent == null)
+				return;
+
+			float movementDirection = inputDirectionComponent.direction;
+			Vector2 direction = movementComponent.direction;
+
+			float rotationAngle = 0f;
+			float maxAngularVelocity = 600f;
+			float acceleration = 1f;
+			float angularVelocity = movementComponent.angularVelocity;
+
+			float minimumAngularVelocity = 100f;
+
+			if (movementDirection > 0) {
+				if (angularVelocity < 0)
+					angularVelocity = minimumAngularVelocity;
+				angularVelocity += acceleration * delta;
+				if (angularVelocity > maxAngularVelocity)
+					angularVelocity = maxAngularVelocity;
+				rotationAngle = angularVelocity * delta * 0.001f;
+			} else if (movementDirection < 0) {
+				if (angularVelocity > 0)
+					angularVelocity = -minimumAngularVelocity;
+				angularVelocity -= acceleration * delta;
+				if (angularVelocity < -maxAngularVelocity)
+					angularVelocity = -maxAngularVelocity;
+				rotationAngle = angularVelocity * delta * 0.001f;
+			} else {
+				if (angularVelocity > 0)
+					angularVelocity = minimumAngularVelocity;
+				if (angularVelocity < 0)
+					angularVelocity = -minimumAngularVelocity;
+			}
+
+			movementComponent.angularVelocity = angularVelocity;
+			direction.rotate(rotationAngle);
+		}
+
+	}
+
+	public static class CalculateInputDirectionBehavior extends Behavior {
+
+		@Override
+		public void update(int delta, Entity e) {
+			InputDirectionComponent inputDirectionComponent = e.getComponent(InputDirectionComponent.class);
+			if (inputDirectionComponent == null)
+				return;
+			inputDirectionComponent.direction = getMovementDirection();
+		}
+
+		private float getMovementDirection() {
+			if (Gdx.app.getType() == ApplicationType.Android)
+				return getMovementDirectionAndroid();
+			else
+				return getMovementDirectionPC();
+		}
+
+		private float getMovementDirectionPC() {
+			float movementDirection = 0f;
+
+			if (Gdx.input.isKeyPressed(Keys.LEFT))
+				movementDirection += 1f;
+
+			if (Gdx.input.isKeyPressed(Keys.RIGHT))
+				movementDirection -= 1f;
+
+			return movementDirection;
+		}
+
+		private float getMovementDirectionAndroid() {
+			float movementDirection = 0f;
+
+			for (int i = 0; i < 5; i++) {
+				if (!Gdx.input.isTouched(i))
+					continue;
+				float x = Gdx.input.getX(i);
+				if (x < Gdx.graphics.getWidth() / 2)
+					movementDirection += 1f;
+				else
+					movementDirection -= 1f;
+			}
+
+			return movementDirection;
+		}
+
 	}
 
 }

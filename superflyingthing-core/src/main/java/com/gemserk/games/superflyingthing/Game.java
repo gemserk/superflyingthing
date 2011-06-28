@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -277,9 +276,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 
-			MovementComponent movementComponent = ship.getComponent(MovementComponent.class);
-			calculateDirectionFromInput(delta, movementComponent.direction);
-
 			entityManager.update(delta);
 
 			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
@@ -317,80 +313,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			attachmentComponent.entityAttachment.entity = newSuperSheep;
 
 			this.ship = newSuperSheep;
-		}
-
-		private void calculateDirectionFromInput(int delta, Vector2 direction) {
-			processInputSuperSheep(delta, direction);
-		}
-
-		float angularVelocity = 100f;
-
-		private void processInputSuperSheep(int delta, Vector2 direction) {
-
-			float rotationAngle = 0f;
-			float maxAngularVelocity = 600f;
-			float movementDirection = getMovementDirection();
-			float acceleration = 1f;
-
-			float minimumAngularVelocity = 100f;
-
-			if (movementDirection > 0) {
-				if (angularVelocity < 0)
-					angularVelocity = minimumAngularVelocity;
-				angularVelocity += acceleration * delta;
-				if (angularVelocity > maxAngularVelocity)
-					angularVelocity = maxAngularVelocity;
-				rotationAngle = angularVelocity * delta * 0.001f;
-			} else if (movementDirection < 0) {
-				if (angularVelocity > 0)
-					angularVelocity = -minimumAngularVelocity;
-				angularVelocity -= acceleration * delta;
-				if (angularVelocity < -maxAngularVelocity)
-					angularVelocity = -maxAngularVelocity;
-				rotationAngle = angularVelocity * delta * 0.001f;
-			} else {
-				if (angularVelocity > 0)
-					angularVelocity = minimumAngularVelocity;
-				if (angularVelocity < 0)
-					angularVelocity = -minimumAngularVelocity;
-			}
-
-			direction.rotate(rotationAngle);
-		}
-
-		private float getMovementDirection() {
-			if (Gdx.app.getType() == ApplicationType.Android)
-				return getMovementDirectionAndroid();
-			else
-				return getMovementDirectionPC();
-		}
-
-		private float getMovementDirectionPC() {
-			float movementDirection = 0f;
-
-			if (Gdx.input.isKeyPressed(Keys.LEFT))
-				movementDirection += 1f;
-
-			if (Gdx.input.isKeyPressed(Keys.RIGHT))
-				movementDirection -= 1f;
-
-			return movementDirection;
-		}
-
-		private float getMovementDirectionAndroid() {
-			float movementDirection = 0f;
-
-			for (int i = 0; i < 5; i++) {
-				if (!Gdx.input.isTouched(i))
-					continue;
-				float x = Gdx.input.getX(i);
-				if (x < Gdx.graphics.getWidth() / 2)
-					movementDirection += 1f;
-				else
-					movementDirection -= 1f;
-			}
-
-			return movementDirection;
 		}
 
 		@Override
