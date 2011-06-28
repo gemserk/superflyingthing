@@ -76,13 +76,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		/**
-		 * Called before the first world update and after the Entity was added to the world.
-		 */
-		void init() {
-
-		}
-
-		/**
 		 * Called in each world update iteration.
 		 * 
 		 * @param delta
@@ -93,13 +86,36 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				behaviors.get(i).update(delta, this);
 		}
 
-		/**
-		 * Called before the entity is removed from the world.
-		 */
-		void dispose() {
+	}
 
+	interface EntityLifeCycleHandler {
+
+		/**
+		 * Called after the entity was added to the world.
+		 * 
+		 * @param e
+		 *            The entity added to the world.
+		 */
+		void init(Entity e);
+
+		/**
+		 * Called after the entity was removed from the world.
+		 * 
+		 * @param e
+		 *            The entity removed from the world.
+		 */
+		void dispose(Entity e);
+
+	}
+
+	class EntityLifeCycleHandlerNullImpl implements EntityLifeCycleHandler {
+		@Override
+		public void init(Entity e) {
 		}
 
+		@Override
+		public void dispose(Entity e) {
+		}
 	}
 
 	interface EntityManager {
@@ -120,10 +136,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		ArrayList<Entity> entities, entitiesToAdd, entitiesToRemove;
 
+		EntityLifeCycleHandler entityLifeCycleHandler;
+
 		public EntityManagerImpl() {
+			this(new EntityLifeCycleHandlerNullImpl());
+		}
+		
+		public EntityManagerImpl(EntityLifeCycleHandler entityLifeCycleHandler) {
 			entities = new ArrayList<Entity>();
 			entitiesToAdd = new ArrayList<Entity>();
 			entitiesToRemove = new ArrayList<Entity>();
+			this.entityLifeCycleHandler = entityLifeCycleHandler;
 		}
 
 		@Override
@@ -146,8 +169,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private void updateAdd(int delta) {
 			for (int i = 0; i < entitiesToAdd.size(); i++) {
 				Entity e = entitiesToAdd.get(i);
-				e.init();
 				entities.add(e);
+				// init entity
+				entityLifeCycleHandler.init(e);
 			}
 			entitiesToAdd.clear();
 		}
@@ -163,7 +187,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			for (int i = 0; i < entitiesToRemove.size(); i++) {
 				Entity e = entitiesToRemove.get(i);
 				entities.remove(e);
-				e.dispose();
+				// dispose entity
+				entityLifeCycleHandler.dispose(e);
 			}
 			entitiesToRemove.clear();
 		}
@@ -329,6 +354,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			return component.entityAttachment;
 		}
 
+		@SuppressWarnings("unchecked")
 		private static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
 			if (e == null)
 				return null;
@@ -521,7 +547,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	// starts the game...
 
-	class SuperSheepGameState extends GameStateImpl implements ContactListener {
+	class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
 
 		class EntityFactory {
 
@@ -536,14 +562,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			public Entity ship(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
-				
-				Entity e = new Entity() {
-					@Override
-					void dispose() {
-						Body body = ComponentWrapper.getBody(this);
-						world.destroyBody(body);
-					}
-				};
+
+				Entity e = new Entity();
 
 				Body body = bodyBuilder.mass(50f) //
 						.boxShape(width * 0.3f, height * 0.3f) //
@@ -566,13 +586,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public Entity diamond(float x, float y, float radius, Sprite sprite) {
-				Entity e = new Entity() {
-					@Override
-					void dispose() {
-						Body body = ComponentWrapper.getBody(this);
-						world.destroyBody(body);
-					}
-				};
+				Entity e = new Entity();
 
 				Body body = bodyBuilder.mass(50f) //
 						.circleShape(radius) //
@@ -599,13 +613,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 			public Entity startPlanet(float x, float y, float radius) {
-				Entity e = new Entity() {
-					@Override
-					void dispose() {
-						Body body = ComponentWrapper.getBody(this);
-						world.destroyBody(body);
-					}
-				};
+				Entity e = new Entity();
 
 				Body body = bodyBuilder.mass(1f) //
 						.circleShape(radius * 0.1f) //
@@ -614,7 +622,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.StaticBody) //
 						.userData(e) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-				
+
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				e.addComponent(new AttachmentComponent());
@@ -622,19 +630,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				e.addBehavior(new ReleaseAttachmentBehavior(world));
 				e.addBehavior(new AttachEntityBehavior(jointBuilder));
-			 	e.addBehavior(new AttachedEntityDirectionBehavior());
+				e.addBehavior(new AttachedEntityDirectionBehavior());
 				return e;
 			}
 
 			public Entity destinationPlanet(float x, float y, float radius) {
-				Entity e = new Entity() {
-					@Override
-					void dispose() {
-						Body body = ComponentWrapper.getBody(this);
-						world.destroyBody(body);
-					}
-				};
-				
+				Entity e = new Entity() ;
+
 				Body body = bodyBuilder.mass(1f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
@@ -642,13 +644,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.StaticBody) //
 						.userData(e) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-				
+
 				bodyBuilder.fixtureBuilder(body) //
-					.circleShape(radius) //
-					.categoryBits(AllCategoryBits) //
-					.sensor() //
-					.build();
-				
+						.circleShape(radius) //
+						.categoryBits(AllCategoryBits) //
+						.sensor() //
+						.build();
+
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				e.addComponent(new AttachmentComponent());
@@ -677,7 +679,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		@Override
 		public void init() {
-			entityManager = new EntityManagerImpl();
+			entityManager = new EntityManagerImpl(this);
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
 			entityFactory = new EntityFactory();
@@ -741,7 +743,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			entityManager.add(startMiniPlanet);
 			entityManager.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
-//			entityManager.add(entityFactory.destinationPlanet(15f, 7.5f, 1f));
+			// entityManager.add(entityFactory.destinationPlanet(15f, 7.5f, 1f));
 
 			float worldWidth = 100f;
 			float worldHeight = 20f;
@@ -827,6 +829,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		@Override
 		public void endContact(Contact contact) {
 
+		}
+
+		@Override
+		public void init(Entity e) {
+
+		}
+
+		@Override
+		public void dispose(Entity e) {
+			Body body = ComponentWrapper.getBody(e);
+			if (body == null)
+				return;
+			world.destroyBody(body);
+			Gdx.app.log("SuperSheep", "removing body from physics world");
 		}
 
 		@Override
@@ -1015,7 +1031,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			spriteBatch.dispose();
 			world.dispose();
 		}
-
 	}
 
 	@Override
