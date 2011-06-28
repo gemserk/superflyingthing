@@ -259,13 +259,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	interface Behavior {
+	class Behavior {
 
-		void update(int delta, Entity entity);
+		void update(int delta, Entity entity) { }
 
 	}
 
-	class CameraFollowBehavior implements Behavior {
+	class CameraFollowBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity entity) {
@@ -282,7 +282,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class FixMovementBehavior implements Behavior {
+	class FixMovementBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity e) {
@@ -314,7 +314,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class AttachedEntityDirectionBehavior implements Behavior {
+	class AttachedEntityDirectionBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity e) {
@@ -340,7 +340,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class AttachEntityBehavior implements Behavior {
+	class AttachEntityBehavior extends Behavior {
 
 		private final JointBuilder jointBuilder;
 
@@ -370,7 +370,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class ReleaseAttachmentBehavior implements Behavior {
+	class ReleaseAttachmentBehavior extends Behavior {
 
 		private final World world;
 
@@ -415,7 +415,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class NullBehavior implements Behavior {
+	class NullBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity entity) {
@@ -424,7 +424,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class AttachNearEntityBehavior implements Behavior {
+	class AttachNearEntityBehavior extends Behavior {
 
 		// to be later encapsulated in the world class...
 
@@ -457,7 +457,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 	
-	class GrabGrabbablesBehavior implements Behavior {
+	class GrabGrabbablesBehavior extends Behavior {
 		
 		private final ArrayList<Entity> entities;
 
@@ -485,7 +485,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 	}
 
-	class RemoveWhenGrabbedBehavior implements Behavior {
+	class RemoveWhenGrabbedBehavior extends Behavior {
 		
 		private final ArrayList<Entity> entities;
 
