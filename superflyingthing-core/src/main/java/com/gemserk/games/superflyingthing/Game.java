@@ -24,6 +24,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
@@ -36,7 +37,6 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -137,13 +137,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Entity entityB = (Entity) bodyB.getUserData();
 
 			if (entityA != null) {
-				PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
-				physicsComponent.getContact().addContact(contact, bodyB);
+				Physics physics = ComponentWrapper.getPhysics(entityA);
+				physics.getContact().addContact(contact, bodyB);
+				// PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
+				// physicsComponent.getContact().addContact(contact, bodyB);
 			}
 
 			if (entityB != null) {
-				PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
-				physicsComponent.getContact().addContact(contact, bodyA);
+				Physics physics = ComponentWrapper.getPhysics(entityB);
+				physics.getContact().addContact(contact, bodyA);
+				// PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
+				// physicsComponent.getContact().addContact(contact, bodyA);
 			}
 		}
 
@@ -156,13 +160,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Entity entityB = (Entity) bodyB.getUserData();
 
 			if (entityA != null) {
-				PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
-				physicsComponent.getContact().removeContact(bodyB);
+				Physics physics = ComponentWrapper.getPhysics(entityB);
+				physics.getContact().removeContact(bodyB);
+				// PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
+				// physicsComponent.getContact().removeContact(bodyB);
 			}
 
 			if (entityB != null) {
-				PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
-				physicsComponent.getContact().removeContact(bodyA);
+				Physics physics = ComponentWrapper.getPhysics(entityB);
+				physics.getContact().removeContact(bodyA);
+				// PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
+				// physicsComponent.getContact().removeContact(bodyA);
 			}
 		}
 
@@ -178,15 +186,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		private void disposeBody(Entity e) {
-			Body body = ComponentWrapper.getBody(e);
-			if (body == null)
+			Physics physics = ComponentWrapper.getPhysics(e);
+			if (physics == null)
 				return;
 
-			PhysicsComponent component = e.getComponent(PhysicsComponent.class);
-
+			Body body = physics.getBody();
 			body.setUserData(null);
 
-			com.gemserk.commons.gdx.box2d.Contact contact = component.getContact();
+			com.gemserk.commons.gdx.box2d.Contact contact = physics.getContact();
 
 			// removes contact from the other entity
 			for (int i = 0; i < contact.getContactCount(); i++) {
@@ -201,8 +208,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				if (otherEntity == null)
 					continue;
 
-				PhysicsComponent otherPhyiscsComponent = otherEntity.getComponent(PhysicsComponent.class);
-				otherPhyiscsComponent.getContact().removeContact(body);
+				Physics otherPhysics = ComponentWrapper.getPhysics(otherEntity);
+				otherPhysics.getContact().removeContact(body);
+				// PhysicsComponent otherPhyiscsComponent = otherEntity.getComponent(PhysicsComponent.class);
+				// otherPhyiscsComponent.getContact().removeContact(body);
 			}
 
 			world.destroyBody(body);

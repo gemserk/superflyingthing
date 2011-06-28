@@ -1,8 +1,8 @@
 package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Component;
 import com.gemserk.games.entities.Entity;
@@ -14,12 +14,12 @@ import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 
 public class ComponentWrapper {
-
-	public static Body getBody(Entity e) {
+	
+	public static Physics getPhysics(Entity e) {
 		PhysicsComponent component = getComponent(e, PhysicsComponent.class);
 		if (component == null)
 			return null;
-		return component.body;
+		return component.getPhysics();
 	}
 
 	public static Spatial getSpatial(Entity e) {

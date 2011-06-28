@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
@@ -19,7 +20,6 @@ import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
@@ -52,7 +52,7 @@ public class Behaviors {
 
 			direction.nor();
 
-			Body body = ComponentWrapper.getBody(e);
+			Body body = ComponentWrapper.getPhysics(e).getBody();
 
 			Vector2 position = body.getTransform().getPosition();
 			float desiredAngle = direction.angle();
@@ -122,8 +122,8 @@ public class Behaviors {
 
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			entityAttachment.joint = jointBuilder.distanceJoint() //
-					.bodyA(ComponentWrapper.getBody(entityAttachment.entity)) //
-					.bodyB(ComponentWrapper.getBody(e)) //
+					.bodyA(ComponentWrapper.getPhysics(entityAttachment.entity).getBody()) //
+					.bodyB(ComponentWrapper.getPhysics(e).getBody()) //
 					.collideConnected(false) //
 					.length(spatial.getWidth() * 0.5f * 1.5f) //
 					.build();
@@ -291,12 +291,12 @@ public class Behaviors {
 	public static class CollisionHandlerBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e1) {
-			PhysicsComponent physicsComponent = e1.getComponent(PhysicsComponent.class);
-			if (physicsComponent == null)
+			Physics physics = ComponentWrapper.getPhysics(e1);
+			if (physics == null)
 				return;
-			if (!physicsComponent.getContact().isInContact())
+			if (!physics.getContact().isInContact())
 				return;
-			Entity e2 = (Entity) physicsComponent.getContact().getUserData();
+			Entity e2 = (Entity) physics.getContact().getUserData();
 			updateGrabGrabbable(e1, e2);
 			updateAttachToAttachable(e1, e2);
 			updateAliveCollision(e1, e2);

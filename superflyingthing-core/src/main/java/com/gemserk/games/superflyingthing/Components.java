@@ -4,8 +4,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Joint;
-import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.games.Physics;
+import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Component;
 import com.gemserk.games.entities.Entity;
@@ -36,17 +37,14 @@ public class Components {
 
 	public static class PhysicsComponent implements Component {
 
-		Body body;
-		
-		Contact contact;
-		
-		public Contact getContact() {
-			return contact;
+		Physics physics;
+
+		public Physics getPhysics() {
+			return physics;
 		}
-		
+
 		public PhysicsComponent(Body body) {
-			this.body = body;
-			this.contact = new Contact();
+			physics = new PhysicsImpl(body);
 		}
 
 	}
