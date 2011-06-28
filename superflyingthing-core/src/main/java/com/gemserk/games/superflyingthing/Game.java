@@ -404,7 +404,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			entityAttachment.joint = null;
 			entityAttachment.entity = null;
 
-			releaseEntityComponent.releaseTime = 500;
+			releaseEntityComponent.releaseTime = 300;
 		}
 
 	}
@@ -465,9 +465,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		}
 
-		class SuperSheep extends Entity {
-
-			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
+		class EntityFactory {
+			
+			public Entity superSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
 
@@ -478,95 +478,70 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.type(BodyType.DynamicBody) //
 						.categoryBits(ShipCategoryBits).maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)).build();
 
-				addComponent(new PhysicsComponent(body));
-				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-				addComponent(new SpriteComponent(sprite));
-				addComponent(new MovementComponent(direction.x, direction.y));
-				addComponent(new AliveComponent(false));
-				addComponent(new AttachableComponent());
-				addBehavior(new FixMovementBehavior());
+				Entity e = new Entity() {
+					@Override
+					void dispose() {
+						Body body = ComponentWrapper.getBody(this);
+						world.destroyBody(body);
+					}
+				};
+				
+				e.addComponent(new PhysicsComponent(body));
+				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+				e.addComponent(new SpriteComponent(sprite));
+				e.addComponent(new MovementComponent(direction.x, direction.y));
+				e.addComponent(new AliveComponent(false));
+				e.addComponent(new AttachableComponent());
+				e.addBehavior(new FixMovementBehavior());
+				return e;
 			}
-
-			public void dispose() {
-				Body body = ComponentWrapper.getBody(this);
-				world.destroyBody(body);
+			
+			public Entity deadSuperSheepEntity(Spatial spatial, Sprite sprite) {
+				Entity e = new Entity();
+				e.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+				e.addComponent(new SpriteComponent(sprite));
+				return e;
 			}
-
-		}
-
-		class DeadSuperSheepEntity extends Entity {
-
-			public DeadSuperSheepEntity(Spatial spatial, Sprite sprite) {
-				addComponent(new SpatialComponent(new SpatialImpl(spatial)));
-				addComponent(new SpriteComponent(sprite));
-			}
-
-		}
-
-		class MiniPlanet extends Entity {
-
-			public MiniPlanet(float x, float y, float radius) {
+			
+			public Entity miniPlanet(float x, float y, float radius) {
+				Entity e = new Entity();
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-				addComponent(new PhysicsComponent(body));
-				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				addComponent(new AttachmentComponent());
-				addComponent(new ReleaseEntityComponent());
+				e.addComponent(new PhysicsComponent(body));
+				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+				e.addComponent(new AttachmentComponent());
+				e.addComponent(new ReleaseEntityComponent());
 
-				addBehavior(new ReleaseAttachmentBehavior(world));
-				addBehavior(new AttachEntityBehavior(jointBuilder));
-				addBehavior(new AttachedEntityDirectionBehavior());
+				e.addBehavior(new ReleaseAttachmentBehavior(world));
+				e.addBehavior(new AttachEntityBehavior(jointBuilder));
+				e.addBehavior(new AttachedEntityDirectionBehavior());
+				return e;
 			}
-
-		}
-
-		class DestinationPlanet extends Entity {
-
-			public DestinationPlanet(float x, float y, float radius) {
+			
+			public Entity destinationPlanet(float x, float y, float radius) {
+				Entity e = new Entity();
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-				addComponent(new PhysicsComponent(body));
-				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				addComponent(new AttachmentComponent());
-				addComponent(new ReleaseEntityComponent());
+				e.addComponent(new PhysicsComponent(body));
+				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+				e.addComponent(new AttachmentComponent());
+				e.addComponent(new ReleaseEntityComponent());
 
-				addBehavior(new AttachEntityBehavior(jointBuilder));
-				addBehavior(new AttachedEntityDirectionBehavior());
-				addBehavior(new AttachNearEntityBehavior(entities));
+				e.addBehavior(new AttachEntityBehavior(jointBuilder));
+				e.addBehavior(new AttachedEntityDirectionBehavior());
+				e.addBehavior(new AttachNearEntityBehavior(entities));
+				return e;
 			}
-
+			
 		}
-		
-//		class EntityFactory {
-//			
-//			public Entity destinationPlanet(float x, float y, float radius) {
-//				Entity e = new Entity();
-//				Body body = bodyBuilder.mass(1000f) //
-//						.circleShape(radius * 0.1f) //
-//						.position(x, y) //
-//						.restitution(0f) //
-//						.type(BodyType.StaticBody) //
-//						.categoryBits(MiniPlanetCategoryBits).build();
-//				e.addComponent(new PhysicsComponent(body));
-//				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-//				e.addComponent(new AttachmentComponent());
-//				e.addComponent(new ReleaseEntityComponent());
-//
-//				e.addBehavior(new AttachEntityBehavior(jointBuilder));
-//				e.addBehavior(new AttachedEntityDirectionBehavior());
-//				e.addBehavior(new AttachNearEntityBehavior(entities));
-//				return e;
-//			}
-//			
-//		}
 		
 		private SpriteBatch spriteBatch;
 		private Libgdx2dCamera camera;
@@ -574,9 +549,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 		private BodyBuilder bodyBuilder;
 		private JointBuilder jointBuilder;
+		
+		EntityFactory entityFactory;
 
 		private Entity startMiniPlanet;
-
 		private Entity superSheep;
 		private Entity cameraFollowEntity;
 
@@ -586,6 +562,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		public void init() {
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
+			entityFactory = new EntityFactory();
 			entities = new ArrayList<Entity>();
 
 			world = new World(new Vector2(), false);
@@ -630,18 +607,17 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			cameraFollowEntity = new CameraFollowEntity(cameraData);
 			entities.add(cameraFollowEntity);
 
-			superSheep = new SuperSheep(5f, 7.5f, sprite, new Vector2(1f, 0f));
+			superSheep = entityFactory.superSheep(5f, 7.5f, sprite, new Vector2(1f, 0f));
 			entities.add(superSheep);
 
-			startMiniPlanet = new MiniPlanet(5f, 7.5f, 1f);
+			startMiniPlanet = entityFactory.miniPlanet(5f, 7.5f, 1f);
 
 			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
 			attachmentComponent.entityAttachment.entity = superSheep;
 			// startMiniPlanet.attachSuperSheep(superSheep);
 
 			entities.add(startMiniPlanet);
-
-			entities.add(new DestinationPlanet(95f, 7.5f, 1f));
+			entities.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
 
 			float worldWidth = 100f;
 			float worldHeight = 20f;
@@ -800,10 +776,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Sprite deadSuperSheepSprite = new Sprite(superSheepSprite);
 			deadSuperSheepSprite.setColor(0.7f, 0.7f, 0.7f, 1f);
 
-			DeadSuperSheepEntity deadSuperSheepEntity = new DeadSuperSheepEntity(superSheepSpatial, deadSuperSheepSprite);
+			Entity deadSuperSheepEntity = entityFactory.deadSuperSheepEntity(superSheepSpatial, deadSuperSheepSprite);
 			entities.add(deadSuperSheepEntity);
 
-			SuperSheep newSuperSheep = new SuperSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
+			Entity newSuperSheep = entityFactory.superSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
 			entities.add(newSuperSheep);
 
 			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
