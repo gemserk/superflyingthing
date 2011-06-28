@@ -31,7 +31,7 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class EntityFactory {
-	
+
 	private final World world;
 	private final EntityManager entityManager;
 	private final BodyBuilder bodyBuilder;
@@ -151,6 +151,33 @@ public class EntityFactory {
 
 		e.addBehavior(new AttachEntityBehavior(jointBuilder));
 		e.addBehavior(new AttachedEntityDirectionBehavior());
+		return e;
+	}
+
+	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
+		Entity e = new Entity();
+		Body body = bodyBuilder.mass(1f) //
+				.polygonShape(vertices) //
+				.position(x, y) //
+				.restitution(0f) //
+				.type(BodyType.StaticBody) //
+				.angle(angle) //
+				.build();
+		e.addComponent(new PhysicsComponent(body));
+		return e;
+	}
+
+	public Entity boxObstacle(float x, float y, float w, float h, float angle) {
+		Entity e = new Entity();
+		Body body = bodyBuilder.type(BodyType.StaticBody) //
+				.boxShape(w * 0.5f, h * 0.5f) //
+				.restitution(1f) //
+				.mass(1f)//
+				.friction(0f) //
+				.position(x, y) //
+				.angle(angle) //
+				.build();
+		e.addComponent(new PhysicsComponent(body));
 		return e;
 	}
 

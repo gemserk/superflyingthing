@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Contact;
 import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -40,7 +39,6 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -91,10 +89,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			bodyBuilder = new BodyBuilder(world);
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
-			
+
 			for (int i = 0; i < 10; i++) {
-				entityManager.add(obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
-				entityManager.add(obstacle(vertices,12f + i * 8f, MathUtils.random(0f, 15f), 90f));
+				entityManager.add(entityFactory.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
+				entityManager.add(entityFactory.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
 			}
 
 			for (int i = 0; i < 10; i++) {
@@ -124,51 +122,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
-			
-			bodyBuilder.type(BodyType.StaticBody) //
-					.boxShape(worldWidth * 0.5f, 0.1f * 0.5f) //
-					.restitution(1f) //
-					.mass(1f)//
-					.friction(0f) //
-					.position(x, 0f) //
-					.build();
 
-			bodyBuilder.type(BodyType.StaticBody) //
-					.boxShape(worldWidth * 0.5f, 0.1f * 0.5f) //
-					.restitution(1f) //
-					.mass(1f)//
-					.friction(0f) //
-					.position(x, 15f) //
-					.build();
+			entityManager.add(entityFactory.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityFactory.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
-			bodyBuilder.type(BodyType.StaticBody) //
-					.boxShape(0.1f * 0.5f, worldHeight * 0.5f) //
-					.restitution(1f) //
-					.mass(1f)//
-					.friction(0f) //
-					.position(0f, y) //
-					.build();
-
-			bodyBuilder.type(BodyType.StaticBody) //
-					.boxShape(0.1f * 0.5f, worldHeight * 0.5f) //
-					.restitution(1f) //
-					.mass(1f)//
-					.friction(0f) //
-					.position(100f, y) //
-					.build();
-		}
-
-		private Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
-			Entity e = new Entity();
-			Body body = bodyBuilder.mass(1f) //
-					.polygonShape(vertices) //
-					.position(x, y) //
-					.restitution(0f) //
-					.type(BodyType.StaticBody) //
-					.angle(angle) //
-					.build();
-			e.addComponent(new PhysicsComponent(body));
-			return e;
 		}
 
 		@Override
