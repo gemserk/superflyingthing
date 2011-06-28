@@ -503,39 +503,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	class AttachNearEntityBehavior extends Behavior {
-
-		private final EntityManager entityManager;
-
-		// to be later encapsulated in the world class...
-
-		public AttachNearEntityBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
-
-			for (int i = 0; i < entityManager.entitiesCount(); i++) {
-				Entity entity = entityManager.get(i);
-				AttachableComponent attachableComponent = entity.getComponent(AttachableComponent.class);
-				if (attachableComponent == null)
-					continue;
-
-				Spatial attachableEntitySpatial = ComponentWrapper.getSpatial(entity);
-
-				if (spatial.getPosition().dst(attachableEntitySpatial.getPosition()) < radius) {
-					AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-					attachmentComponent.entityAttachment.entity = entity;
-				}
-
-			}
-		}
-
-	}
-
 	class RemoveWhenGrabbedBehavior extends Behavior {
 
 		private final EntityManager entityManager;
@@ -640,12 +607,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						world.destroyBody(body);
 					}
 				};
+
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
+						.userData(e) //
 						.categoryBits(MiniPlanetCategoryBits).build();
+
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				e.addComponent(new AttachmentComponent());
@@ -665,12 +635,21 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						world.destroyBody(body);
 					}
 				};
+				
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
+						.userData(e) //
 						.categoryBits(MiniPlanetCategoryBits).build();
+				
+				bodyBuilder.fixtureBuilder(body) //
+					.circleShape(radius) //
+					.categoryBits(AllCategoryBits) //
+					.sensor() //
+					.build();
+				
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				e.addComponent(new AttachmentComponent());
@@ -678,7 +657,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				e.addBehavior(new AttachEntityBehavior(jointBuilder));
 				e.addBehavior(new AttachedEntityDirectionBehavior());
-				e.addBehavior(new AttachNearEntityBehavior(entityManager));
 				return e;
 			}
 
@@ -764,6 +742,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			entityManager.add(startMiniPlanet);
 			entityManager.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
+//			entityManager.add(entityFactory.destinationPlanet(15f, 7.5f, 1f));
 
 			float worldWidth = 100f;
 			float worldHeight = 20f;
@@ -815,18 +794,35 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return;
 			Entity e = (Entity) fixtureB.getBody().getUserData();
 			if (e != null) {
-				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
-				if (grabbableComponent == null)
-					return;
-				if (grabbableComponent.grabbed)
-					return;
-				grabbableComponent.grabbed = true;
-				Gdx.app.log("SuperSheep", "grabbed diamond!");
+				updateGrabbableEntity(e);
+				updateAttachEntity(e);
 			} else {
 				Gdx.app.log("SuperSheep", "die!");
 				AliveComponent aliveComponent = superSheep.getComponent(AliveComponent.class);
 				aliveComponent.dead = true;
 			}
+		}
+
+		private void updateAttachEntity(Entity e) {
+			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			if (entityAttachment == null)
+				return;
+			if (entityAttachment.entity != null)
+				return;
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			if (spatial == null)
+				return;
+			entityAttachment.entity = superSheep;
+		}
+
+		private void updateGrabbableEntity(Entity e) {
+			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+			if (grabbableComponent == null)
+				return;
+			if (grabbableComponent.grabbed)
+				return;
+			grabbableComponent.grabbed = true;
+			Gdx.app.log("SuperSheep", "grabbed diamond!");
 		}
 
 		@Override
