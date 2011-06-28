@@ -40,6 +40,7 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -89,25 +90,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			bodyBuilder = new BodyBuilder(world);
 
+			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
+			
 			for (int i = 0; i < 10; i++) {
-				float randomY = MathUtils.random(0f, 15f);
-
-				bodyBuilder.mass(1000f) //
-						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
-						.position(17f + i * 8f, randomY) //
-						.restitution(0f) //
-						.type(BodyType.StaticBody) //
-						.build();
-
-				randomY = MathUtils.random(0f, 15f);
-
-				bodyBuilder.mass(1000f) //
-						.polygonShape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }) //
-						.restitution(0f) //
-						.type(BodyType.StaticBody) //
-						.position(12f + i * 8f, randomY) //
-						.angle(90f)//
-						.build();
+				entityManager.add(obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
+				entityManager.add(obstacle(vertices,12f + i * 8f, MathUtils.random(0f, 15f), 90f));
 			}
 
 			for (int i = 0; i < 10; i++) {
@@ -137,7 +124,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
-
+			
 			bodyBuilder.type(BodyType.StaticBody) //
 					.boxShape(worldWidth * 0.5f, 0.1f * 0.5f) //
 					.restitution(1f) //
@@ -169,6 +156,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					.friction(0f) //
 					.position(100f, y) //
 					.build();
+		}
+
+		private Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
+			Entity e = new Entity();
+			Body body = bodyBuilder.mass(1f) //
+					.polygonShape(vertices) //
+					.position(x, y) //
+					.restitution(0f) //
+					.type(BodyType.StaticBody) //
+					.angle(angle) //
+					.build();
+			e.addComponent(new PhysicsComponent(body));
+			return e;
 		}
 
 		@Override
