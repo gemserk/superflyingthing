@@ -74,18 +74,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		void addBehavior(Behavior behavior) {
 			behaviors.add(behavior);
 		}
-
-		/**
-		 * Called in each world update iteration.
-		 * 
-		 * @param delta
-		 *            The time since the last update call.
-		 */
-		void update(int delta) {
-			for (int i = 0; i < behaviors.size(); i++)
-				behaviors.get(i).update(delta, this);
-		}
-
+		
 	}
 
 	interface EntityLifeCycleHandler {
@@ -179,8 +168,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private void updateEntities(int delta) {
 			for (int i = 0; i < entities.size(); i++) {
 				Entity e = entities.get(i);
-				e.update(delta);
+				updateEntity(delta, e);
 			}
+		}
+
+		private void updateEntity(int delta, Entity e) {
+			for (int i = 0; i < e.behaviors.size(); i++)
+				e.behaviors.get(i).update(delta, e);
 		}
 
 		private void updateRemove(int delta) {
