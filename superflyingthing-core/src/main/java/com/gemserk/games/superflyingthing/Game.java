@@ -23,36 +23,23 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
-import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.games.SpatialImpl;
-import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.entities.EntityManagerImpl;
-import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.AttachedEntityDirectionBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.FixMovementBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.ReleaseAttachmentBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.RemoveWhenGrabbedBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
-import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
-import com.gemserk.games.superflyingthing.Components.SpatialComponent;
-import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -62,129 +49,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static short ShipCategoryBits = 1;
 
 	public static short MiniPlanetCategoryBits = 2;
-
+	
 	class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
-
-		class EntityFactory {
-
-			public Entity camera(Camera camera) {
-				Entity e = new Entity();
-				e.addComponent(new Components.CameraComponent(camera));
-				e.addComponent(new TargetComponent(null));
-				e.addBehavior(new CameraFollowBehavior());
-				return e;
-			}
-
-			public Entity ship(float x, float y, Sprite sprite, Vector2 direction) {
-				float width = 0.4f;
-				float height = 0.2f;
-
-				Entity e = new Entity();
-
-				Body body = bodyBuilder.mass(50f) //
-						.boxShape(width * 0.3f, height * 0.3f) //
-						.position(x, y) //
-						.restitution(0f) //
-						.type(BodyType.DynamicBody) //
-						.categoryBits(ShipCategoryBits) //
-						.maskBits((short) (AllCategoryBits & ~MiniPlanetCategoryBits)) //
-						.userData(e) //
-						.build();
-
-				e.addComponent(new PhysicsComponent(body));
-				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-				e.addComponent(new SpriteComponent(sprite));
-				e.addComponent(new MovementComponent(direction.x, direction.y));
-				e.addComponent(new AliveComponent(false));
-				e.addComponent(new AttachableComponent());
-				e.addBehavior(new FixMovementBehavior());
-				return e;
-			}
-
-			public Entity diamond(float x, float y, float radius, Sprite sprite) {
-				Entity e = new Entity();
-
-				Body body = bodyBuilder.mass(50f) //
-						.circleShape(radius) //
-						.sensor() //
-						.position(x, y) //
-						.restitution(0f) //
-						.type(BodyType.StaticBody) //
-						.userData(e) //
-						.build();
-
-				e.addComponent(new PhysicsComponent(body));
-				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				e.addComponent(new SpriteComponent(sprite));
-				e.addComponent(new GrabbableComponent());
-				e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
-				return e;
-			}
-
-			public Entity deadShip(Spatial spatial, Sprite sprite) {
-				Entity e = new Entity();
-				e.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
-				e.addComponent(new SpriteComponent(sprite));
-				return e;
-			}
-
-			public Entity startPlanet(float x, float y, float radius) {
-				Entity e = new Entity();
-
-				Body body = bodyBuilder.mass(1f) //
-						.circleShape(radius * 0.1f) //
-						.position(x, y) //
-						.restitution(0f) //
-						.type(BodyType.StaticBody) //
-						.userData(e) //
-						.categoryBits(MiniPlanetCategoryBits).build();
-
-				e.addComponent(new PhysicsComponent(body));
-				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				e.addComponent(new AttachmentComponent());
-				e.addComponent(new ReleaseEntityComponent());
-
-				e.addBehavior(new ReleaseAttachmentBehavior(world));
-				e.addBehavior(new AttachEntityBehavior(jointBuilder));
-				e.addBehavior(new AttachedEntityDirectionBehavior());
-				return e;
-			}
-
-			public Entity destinationPlanet(float x, float y, float radius) {
-				Entity e = new Entity();
-
-				Body body = bodyBuilder.mass(1f) //
-						.circleShape(radius * 0.1f) //
-						.position(x, y) //
-						.restitution(0f) //
-						.type(BodyType.StaticBody) //
-						.userData(e) //
-						.categoryBits(MiniPlanetCategoryBits).build();
-
-				bodyBuilder.fixtureBuilder(body) //
-						.circleShape(radius) //
-						.categoryBits(AllCategoryBits) //
-						.sensor() //
-						.build();
-
-				e.addComponent(new PhysicsComponent(body));
-				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				e.addComponent(new AttachmentComponent());
-				e.addComponent(new ReleaseEntityComponent());
-
-				e.addBehavior(new AttachEntityBehavior(jointBuilder));
-				e.addBehavior(new AttachedEntityDirectionBehavior());
-				return e;
-			}
-
-		}
 
 		private SpriteBatch spriteBatch;
 		private Libgdx2dCamera camera;
 		private World world;
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 		private BodyBuilder bodyBuilder;
-		private JointBuilder jointBuilder;
 
 		EntityFactory entityFactory;
 		EntityManager entityManager;
@@ -198,10 +70,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			entityManager = new EntityManagerImpl(this);
 			spriteBatch = new SpriteBatch();
 			camera = new Libgdx2dCameraTransformImpl();
-			entityFactory = new EntityFactory();
 
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
+
+			entityFactory = new EntityFactory(world, entityManager);
 
 			camera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 			// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
@@ -216,7 +89,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			sprite.setSize(0.5f, 0.5f);
 
 			bodyBuilder = new BodyBuilder(world);
-			jointBuilder = new JointBuilder(world);
 
 			for (int i = 0; i < 10; i++) {
 				float randomY = MathUtils.random(0f, 15f);
