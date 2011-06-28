@@ -525,7 +525,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class EntityFactory {
 
-			public Entity cameraFollowEntity(Camera camera) {
+			public Entity camera(Camera camera) {
 				Entity e = new Entity();
 				e.addComponent(new CameraComponent(camera));
 				e.addComponent(new TargetComponent(null));
@@ -533,7 +533,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return e;
 			}
 
-			public Entity superSheep(float x, float y, Sprite sprite, Vector2 direction) {
+			public Entity ship(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
 				
@@ -565,7 +565,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				return e;
 			}
 
-			public Entity grabbableDiamond(float x, float y, float radius, Sprite sprite) {
+			public Entity diamond(float x, float y, float radius, Sprite sprite) {
 				Entity e = new Entity() {
 					@Override
 					void dispose() {
@@ -585,21 +585,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-				// e.addComponent(new SpatialComponent(new SpatialImpl(x, y, radius * 2, radius * 2, 0f)));
 				e.addComponent(new SpriteComponent(sprite));
 				e.addComponent(new GrabbableComponent());
 				e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
 				return e;
 			}
 
-			public Entity deadSuperSheepEntity(Spatial spatial, Sprite sprite) {
+			public Entity deadShip(Spatial spatial, Sprite sprite) {
 				Entity e = new Entity();
 				e.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
 				e.addComponent(new SpriteComponent(sprite));
 				return e;
 			}
 
-			public Entity miniPlanet(float x, float y, float radius) {
+			public Entity startPlanet(float x, float y, float radius) {
 				Entity e = new Entity() {
 					@Override
 					void dispose() {
@@ -608,14 +607,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					}
 				};
 
-				Body body = bodyBuilder.mass(1000f) //
+				Body body = bodyBuilder.mass(1f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
 						.type(BodyType.StaticBody) //
 						.userData(e) //
 						.categoryBits(MiniPlanetCategoryBits).build();
-
+				
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				e.addComponent(new AttachmentComponent());
@@ -623,7 +622,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 				e.addBehavior(new ReleaseAttachmentBehavior(world));
 				e.addBehavior(new AttachEntityBehavior(jointBuilder));
-				e.addBehavior(new AttachedEntityDirectionBehavior());
+			 	e.addBehavior(new AttachedEntityDirectionBehavior());
 				return e;
 			}
 
@@ -636,7 +635,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					}
 				};
 				
-				Body body = bodyBuilder.mass(1000f) //
+				Body body = bodyBuilder.mass(1f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
 						.restitution(0f) //
@@ -725,16 +724,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, 90f);
 				float y = MathUtils.random(2f, 13f);
-				entityManager.add(entityFactory.grabbableDiamond(x, y, 0.1f, sprite));
+				entityManager.add(entityFactory.diamond(x, y, 0.2f, sprite));
 			}
 
-			cameraFollowEntity = entityFactory.cameraFollowEntity(cameraData);
+			cameraFollowEntity = entityFactory.camera(cameraData);
 			entityManager.add(cameraFollowEntity);
 
-			superSheep = entityFactory.superSheep(5f, 7.5f, sprite, new Vector2(1f, 0f));
+			superSheep = entityFactory.ship(5f, 7.5f, sprite, new Vector2(1f, 0f));
 			entityManager.add(superSheep);
 
-			startMiniPlanet = entityFactory.miniPlanet(5f, 7.5f, 1f);
+			startMiniPlanet = entityFactory.startPlanet(5f, 7.5f, 1f);
 
 			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
 			attachmentComponent.entityAttachment.entity = superSheep;
@@ -925,10 +924,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Sprite deadSuperSheepSprite = new Sprite(superSheepSprite);
 			deadSuperSheepSprite.setColor(0.7f, 0.7f, 0.7f, 1f);
 
-			Entity deadSuperSheepEntity = entityFactory.deadSuperSheepEntity(superSheepSpatial, deadSuperSheepSprite);
+			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial, deadSuperSheepSprite);
 			entityManager.add(deadSuperSheepEntity);
 
-			Entity newSuperSheep = entityFactory.superSheep(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
+			Entity newSuperSheep = entityFactory.ship(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
 			entityManager.add(newSuperSheep);
 
 			AttachmentComponent attachmentComponent = startMiniPlanet.getComponent(AttachmentComponent.class);
