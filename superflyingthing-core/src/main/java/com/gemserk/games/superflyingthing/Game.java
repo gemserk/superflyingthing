@@ -456,13 +456,57 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
+	
+	class GrabGrabbablesBehavior implements Behavior {
+		
+		private final ArrayList<Entity> entities;
+
+		public GrabGrabbablesBehavior(ArrayList<Entity> entities) {
+			this.entities = entities;
+		}
+		
+		@Override
+		public void update(int delta, Entity e) {
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
+			// float radius = 2f;
+
+			for (int i = 0; i < entities.size(); i++) {
+				Entity entity = entities.get(i);
+				GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
+				if (grabbableComponent == null)
+					continue;
+				if (grabbableComponent.grabbed)
+					continue;
+				Spatial grabbableEntitySpatial = ComponentWrapper.getSpatial(entity);
+				if (spatial.getPosition().dst(grabbableEntitySpatial.getPosition()) < radius)
+					grabbableComponent.grabbed = true;
+			}
+		}
+	}
+
+	class RemoveWhenGrabbedBehavior implements Behavior {
+		
+		private final ArrayList<Entity> entities;
+
+		public RemoveWhenGrabbedBehavior(ArrayList<Entity> entities)  {
+			this.entities = entities;
+		}
+		
+		@Override
+		public void update(int delta, Entity entity) {
+			GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
+			if (grabbableComponent.grabbed)
+				entities.add(entity);
+		}
+	}
 
 	// starts the game...
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
 		class EntityFactory {
-			
+
 			public Entity cameraFollowEntity(Camera camera) {
 				Entity e = new Entity();
 				e.addComponent(new CameraComponent(camera));
@@ -497,29 +541,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addComponent(new AliveComponent(false));
 				e.addComponent(new AttachableComponent());
 				e.addBehavior(new FixMovementBehavior());
-
-				// grab grabbables behavior
-				e.addBehavior(new Behavior() {
-					@Override
-					public void update(int delta, Entity e) {
-						Spatial spatial = ComponentWrapper.getSpatial(e);
-						 float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
-//						float radius = 2f;
-
-						for (int i = 0; i < entities.size(); i++) {
-							Entity entity = entities.get(i);
-							GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
-							if (grabbableComponent == null)
-								continue;
-							if (grabbableComponent.grabbed)
-								continue;
-							Spatial grabbableEntitySpatial = ComponentWrapper.getSpatial(entity);
-							if (spatial.getPosition().dst(grabbableEntitySpatial.getPosition()) < radius)
-								grabbableComponent.grabbed = true;
-						}
-					}
-				});
-
+				e.addBehavior(new GrabGrabbablesBehavior(entities));
 				return e;
 			}
 
@@ -528,15 +550,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addComponent(new SpatialComponent(new SpatialImpl(x, y, radius * 2, radius * 2, 0f)));
 				e.addComponent(new SpriteComponent(sprite));
 				e.addComponent(new GrabbableComponent());
-				// remove when grabbed behavior
-				e.addBehavior(new Behavior() {
-					@Override
-					public void update(int delta, Entity entity) {
-						GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
-						if (grabbableComponent.grabbed)
-							entitiesToRemove.add(entity);
-					}
-				});
+				e.addBehavior(new RemoveWhenGrabbedBehavior(entitiesToRemove));
 				return e;
 			}
 
@@ -661,7 +675,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.angle(90f)//
 						.build();
 			}
-			
+
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, 90f);
 				float y = MathUtils.random(2f, 13f);
