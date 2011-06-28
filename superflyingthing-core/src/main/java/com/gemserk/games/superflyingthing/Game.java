@@ -51,6 +51,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		Map<Class<? extends Component>, Component> components;
 
+		ArrayList<Behavior> behaviors;
+
 		@SuppressWarnings("unchecked")
 		<T extends Component> T getComponent(Class<T> clazz) {
 			return (T) components.get(clazz);
@@ -58,6 +60,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		public Entity() {
 			components = new HashMap<Class<? extends Component>, Component>();
+			behaviors = new ArrayList<Behavior>();
 		}
 
 		void addComponent(Component component) {
@@ -66,6 +69,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		void addComponent(Class<? extends Component> clazz, Component component) {
 			components.put(clazz, component);
+		}
+
+		void addBehavior(Behavior behavior) {
+			behaviors.add(behavior);
 		}
 
 		/**
@@ -82,7 +89,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		 *            The time since the last update call.
 		 */
 		void update(int delta) {
-
+			for (int i = 0; i < behaviors.size(); i++)
+				behaviors.get(i).update(delta, this);
 		}
 
 		void render(SpriteBatch spriteBatch) {
@@ -453,22 +461,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class CameraFollowEntity extends Entity {
 
-			Behavior cameraFollowBehavior = new CameraFollowBehavior();
-
 			public CameraFollowEntity(Camera camera) {
 				addComponent(new CameraComponent(camera));
 				addComponent(new TargetComponent(null));
-			}
-
-			public void update(int delta) {
-				cameraFollowBehavior.update(delta, this);
+				addBehavior(new CameraFollowBehavior());
 			}
 
 		}
 
 		class SuperSheep extends Entity {
-
-			Behavior fixMovementBehavior = new FixMovementBehavior();
 
 			public SuperSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
@@ -487,10 +488,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				addComponent(new MovementComponent(direction.x, direction.y));
 				addComponent(new AliveComponent(false));
 				addComponent(new AttachableComponent());
-			}
-
-			public void update(int delta) {
-				fixMovementBehavior.update(delta, this);
+				addBehavior(new FixMovementBehavior());
 			}
 
 			public void render(SpriteBatch spriteBatch) {
@@ -526,10 +524,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		class MiniPlanet extends Entity {
 
-			Behavior attachedEntityDirectionBehavior = new AttachedEntityDirectionBehavior();
-			Behavior attachEntityBehavior = new AttachEntityBehavior(jointBuilder);
-			Behavior releaseAttachmentBehavior = new ReleaseAttachmentBehavior(world);
-
 			public MiniPlanet(float x, float y, float radius) {
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
@@ -541,29 +535,31 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 				addComponent(new AttachmentComponent());
 				addComponent(new ReleaseEntityComponent());
-			}
 
-			public void update(int delta) {
-				releaseAttachmentBehavior.update(delta, this);
-				attachEntityBehavior.update(delta, this);
-				attachedEntityDirectionBehavior.update(delta, this);
+				addBehavior(new ReleaseAttachmentBehavior(world));
+				addBehavior(new AttachEntityBehavior(jointBuilder));
+				addBehavior(new AttachedEntityDirectionBehavior());
 			}
 
 		}
 
-		class DestinationPlanet extends MiniPlanet {
-
-			Behavior attachNearEntityBehavior = new AttachNearEntityBehavior(entities);
+		class DestinationPlanet extends Entity {
 
 			public DestinationPlanet(float x, float y, float radius) {
-				super(x, y, radius);
-				releaseAttachmentBehavior = new NullBehavior();
-			}
+				Body body = bodyBuilder.mass(1000f) //
+						.circleShape(radius * 0.1f) //
+						.position(x, y) //
+						.restitution(0f) //
+						.type(BodyType.StaticBody) //
+						.categoryBits(MiniPlanetCategoryBits).build();
+				addComponent(new PhysicsComponent(body));
+				addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+				addComponent(new AttachmentComponent());
+				addComponent(new ReleaseEntityComponent());
 
-			@Override
-			public void update(int delta) {
-				attachNearEntityBehavior.update(delta, this);
-				super.update(delta);
+				addBehavior(new AttachEntityBehavior(jointBuilder));
+				addBehavior(new AttachedEntityDirectionBehavior());
+				addBehavior(new AttachNearEntityBehavior(entities));
 			}
 
 		}
@@ -726,7 +722,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 
 		}
-		
+
 		private void drawAttachmentDebug(Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
