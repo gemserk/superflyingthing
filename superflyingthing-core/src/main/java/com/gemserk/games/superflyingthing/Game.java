@@ -206,6 +206,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
+	class GrabbableComponent implements Component {
+
+		boolean grabbed;
+
+	}
+
 	// custom for this game, only works fine if each component has only one value.
 
 	static class ComponentWrapper {
@@ -455,18 +461,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	class SuperSheepGameState extends GameStateImpl implements ContactListener {
 
-		class CameraFollowEntity extends Entity {
-
-			public CameraFollowEntity(Camera camera) {
-				addComponent(new CameraComponent(camera));
-				addComponent(new TargetComponent(null));
-				addBehavior(new CameraFollowBehavior());
-			}
-
-		}
-
 		class EntityFactory {
 			
+			public Entity cameraFollowEntity(Camera camera) {
+				Entity e = new Entity();
+				e.addComponent(new CameraComponent(camera));
+				e.addComponent(new TargetComponent(null));
+				e.addBehavior(new CameraFollowBehavior());
+				return e;
+			}
+
 			public Entity superSheep(float x, float y, Sprite sprite, Vector2 direction) {
 				float width = 0.4f;
 				float height = 0.2f;
@@ -485,7 +489,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						world.destroyBody(body);
 					}
 				};
-				
+
 				e.addComponent(new PhysicsComponent(body));
 				e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 				e.addComponent(new SpriteComponent(sprite));
@@ -493,18 +497,64 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addComponent(new AliveComponent(false));
 				e.addComponent(new AttachableComponent());
 				e.addBehavior(new FixMovementBehavior());
+
+				// grab grabbables behavior
+				e.addBehavior(new Behavior() {
+					@Override
+					public void update(int delta, Entity e) {
+						Spatial spatial = ComponentWrapper.getSpatial(e);
+						 float radius = ComponentWrapper.getSpatial(e).getWidth() * 0.5f;
+//						float radius = 2f;
+
+						for (int i = 0; i < entities.size(); i++) {
+							Entity entity = entities.get(i);
+							GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
+							if (grabbableComponent == null)
+								continue;
+							if (grabbableComponent.grabbed)
+								continue;
+							Spatial grabbableEntitySpatial = ComponentWrapper.getSpatial(entity);
+							if (spatial.getPosition().dst(grabbableEntitySpatial.getPosition()) < radius)
+								grabbableComponent.grabbed = true;
+						}
+					}
+				});
+
 				return e;
 			}
-			
+
+			public Entity grabbableDiamond(float x, float y, float radius, Sprite sprite) {
+				Entity e = new Entity();
+				e.addComponent(new SpatialComponent(new SpatialImpl(x, y, radius * 2, radius * 2, 0f)));
+				e.addComponent(new SpriteComponent(sprite));
+				e.addComponent(new GrabbableComponent());
+				// remove when grabbed behavior
+				e.addBehavior(new Behavior() {
+					@Override
+					public void update(int delta, Entity entity) {
+						GrabbableComponent grabbableComponent = entity.getComponent(GrabbableComponent.class);
+						if (grabbableComponent.grabbed)
+							entitiesToRemove.add(entity);
+					}
+				});
+				return e;
+			}
+
 			public Entity deadSuperSheepEntity(Spatial spatial, Sprite sprite) {
 				Entity e = new Entity();
 				e.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
 				e.addComponent(new SpriteComponent(sprite));
 				return e;
 			}
-			
+
 			public Entity miniPlanet(float x, float y, float radius) {
-				Entity e = new Entity();
+				Entity e = new Entity() {
+					@Override
+					void dispose() {
+						Body body = ComponentWrapper.getBody(this);
+						world.destroyBody(body);
+					}
+				};
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
@@ -521,9 +571,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addBehavior(new AttachedEntityDirectionBehavior());
 				return e;
 			}
-			
+
 			public Entity destinationPlanet(float x, float y, float radius) {
-				Entity e = new Entity();
+				Entity e = new Entity() {
+					@Override
+					void dispose() {
+						Body body = ComponentWrapper.getBody(this);
+						world.destroyBody(body);
+					}
+				};
 				Body body = bodyBuilder.mass(1000f) //
 						.circleShape(radius * 0.1f) //
 						.position(x, y) //
@@ -540,16 +596,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				e.addBehavior(new AttachNearEntityBehavior(entities));
 				return e;
 			}
-			
+
 		}
-		
+
 		private SpriteBatch spriteBatch;
 		private Libgdx2dCamera camera;
 		private World world;
 		private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 		private BodyBuilder bodyBuilder;
 		private JointBuilder jointBuilder;
-		
+
 		EntityFactory entityFactory;
 
 		private Entity startMiniPlanet;
@@ -557,6 +613,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private Entity cameraFollowEntity;
 
 		private ArrayList<Entity> entities;
+		private ArrayList<Entity> entitiesToRemove;
 
 		@Override
 		public void init() {
@@ -564,6 +621,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			camera = new Libgdx2dCameraTransformImpl();
 			entityFactory = new EntityFactory();
 			entities = new ArrayList<Entity>();
+			entitiesToRemove = new ArrayList<Entity>();
 
 			world = new World(new Vector2(), false);
 			world.setContactListener(this);
@@ -603,8 +661,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						.angle(90f)//
 						.build();
 			}
+			
+			for (int i = 0; i < 10; i++) {
+				float x = MathUtils.random(10f, 90f);
+				float y = MathUtils.random(2f, 13f);
+				entities.add(entityFactory.grabbableDiamond(x, y, 0.1f, sprite));
+			}
 
-			cameraFollowEntity = new CameraFollowEntity(cameraData);
+			cameraFollowEntity = entityFactory.cameraFollowEntity(cameraData);
 			entities.add(cameraFollowEntity);
 
 			superSheep = entityFactory.superSheep(5f, 7.5f, sprite, new Vector2(1f, 0f));
@@ -694,8 +758,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 			for (int i = 0; i < entities.size(); i++) {
 				Entity e = entities.get(i);
-				drawMovementDebug(e);
-				drawAttachmentDebug(e);
+				renderMovementDebug(e);
+				renderAttachmentDebug(e);
 			}
 
 		}
@@ -717,7 +781,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			spriteBatch.end();
 		}
 
-		private void drawAttachmentDebug(Entity e) {
+		private void renderAttachmentDebug(Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
@@ -728,7 +792,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
 		}
 
-		private void drawMovementDebug(Entity e) {
+		private void renderMovementDebug(Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
@@ -752,11 +816,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			calculateDirectionFromInput(delta, movementComponent.direction);
 			// superSheep.update(delta);
 
+			entitiesToRemove.clear();
 			for (int i = 0; i < entities.size(); i++)
 				entities.get(i).update(delta);
+			entities.removeAll(entitiesToRemove);
 
 			AttachableComponent attachableComponent = superSheep.getComponent(AttachableComponent.class);
 			TargetComponent targetComponent = cameraFollowEntity.getComponent(TargetComponent.class);
+
 			if (attachableComponent.owner != null) {
 				targetComponent.target = attachableComponent.owner;
 			} else {
