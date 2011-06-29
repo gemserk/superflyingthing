@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -15,17 +14,18 @@ import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
-public class MainMenuGameState extends GameStateImpl {
+public class SelectPlayModeGameState extends GameStateImpl {
 
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 	private BitmapFont titleFont;
 	private Text text;
-	private TextButton exitButton;
-	private TextButton playButton;
+	private TextButton challengeModeButton;
+	private TextButton practiceModeButton;
+	private TextButton randomModeButton;
 
-	public MainMenuGameState(Game game) {
+	public SelectPlayModeGameState(Game game) {
 		this.game = game;
 	}
 
@@ -45,14 +45,19 @@ public class MainMenuGameState extends GameStateImpl {
 		titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		text = new Text("Unidentified Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
+		text = new Text("Select Mode", centerX, height * 0.9f).setColor(Color.GREEN);
 
-		playButton = new TextButton(buttonFont, "Play", centerX, height * 0.7f) //
+		practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.7f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE);
 
-		exitButton = new TextButton(buttonFont, "Exit", centerX, height * 0.3f) //
+		challengeModeButton = new TextButton(buttonFont, "Challenge", centerX, height * 0.5f) //
+				.setNotOverColor(Color.WHITE) //
+				.setOverColor(Color.GREEN) //
+				.setColor(Color.WHITE);
+
+		randomModeButton = new TextButton(buttonFont, "Random", centerX, height * 0.3f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE);
@@ -64,10 +69,9 @@ public class MainMenuGameState extends GameStateImpl {
 		spriteBatch.begin();
 		text.draw(spriteBatch, titleFont);
 
-		playButton.draw(spriteBatch);
-		
-		if (Gdx.app.getType() != ApplicationType.Applet)
-			exitButton.draw(spriteBatch);
+		practiceModeButton.draw(spriteBatch);
+		challengeModeButton.draw(spriteBatch);
+		randomModeButton.draw(spriteBatch);
 
 		spriteBatch.end();
 	}
@@ -75,17 +79,20 @@ public class MainMenuGameState extends GameStateImpl {
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		playButton.update();
+
+		practiceModeButton.update();
+		challengeModeButton.update();
+		randomModeButton.update();
+
+		if (practiceModeButton.isReleased())
+			game.transition(game.getPlayingScreen(), 500, 250);
+
+		if (challengeModeButton.isReleased())
+			game.transition(game.getPlayingScreen(), 500, 250);
 		
-		if (playButton.isReleased() )  {
-			game.transition(game.getSelectPlayModeScreen(), 500, 500);
-		}
-		
-		if (Gdx.app.getType() != ApplicationType.Applet) {
-			exitButton.update();
-			if (exitButton.isReleased())
-				System.exit(0);
-		}
+		if (randomModeButton.isReleased())
+			game.transition(game.getPlayingScreen(), 500, 250);
+
 	}
 
 	@Override

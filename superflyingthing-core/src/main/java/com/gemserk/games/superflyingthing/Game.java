@@ -11,6 +11,7 @@ import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayingGameState;
+import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
@@ -20,6 +21,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen playingScreen;
 	private Screen splashScreen;
 	private Screen mainMenuScreen;
+	private Screen selectPlayModeScreen;
 
 	public Screen getPlayingScreen() {
 		return playingScreen;
@@ -28,9 +30,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getSplashScreen() {
 		return splashScreen;
 	}
-	
+
 	public Screen getMainMenuScreen() {
 		return mainMenuScreen;
+	}
+	
+	public Screen getSelectPlayModeScreen() {
+		return selectPlayModeScreen;
 	}
 
 	@Override
@@ -42,6 +48,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		playingScreen = new ScreenImpl(new PlayingGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
+		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));
 
 		setScreen(splashScreen);
 	}

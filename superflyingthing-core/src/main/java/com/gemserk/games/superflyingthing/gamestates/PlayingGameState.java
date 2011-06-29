@@ -121,7 +121,7 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 		entityManager.add(entityFactory.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
 		entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
-
+		
 	}
 
 	@Override
