@@ -8,40 +8,39 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.entities.Component;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
-	
+
 	// the real component ->
-	
+
 	public static class EntityAttachment {
 
 		Entity entity;
 
 		Joint joint;
-		
+
 		public Entity getEntity() {
 			return entity;
 		}
-		
+
 		public Joint getJoint() {
 			return joint;
 		}
-		
+
 		public void setEntity(Entity entity) {
 			this.entity = entity;
 		}
-		
+
 		public void setJoint(Joint joint) {
 			this.joint = joint;
 		}
 
 	}
-	
+
 	// the classes to use to abstract access to the real components :s, similar to Spatial stuff.
-	
-	public static class SpatialComponent implements Component {
+
+	public static class SpatialComponent {
 
 		Spatial spatial;
 
@@ -51,7 +50,7 @@ public class Components {
 
 	}
 
-	public static class PhysicsComponent implements Component {
+	public static class PhysicsComponent {
 
 		Physics physics;
 
@@ -65,7 +64,7 @@ public class Components {
 
 	}
 
-	public static class CameraComponent implements Component {
+	public static class CameraComponent {
 
 		Camera camera;
 
@@ -75,7 +74,7 @@ public class Components {
 
 	}
 
-	public static class SpriteComponent implements Component {
+	public static class SpriteComponent {
 
 		Sprite sprite;
 
@@ -85,12 +84,12 @@ public class Components {
 
 	}
 
-	public static class MovementComponent implements Component {
+	public static class MovementComponent {
 
 		final Vector2 direction = new Vector2();
-		
+
 		float angularVelocity = 0f;
-		
+
 		public Vector2 getDirection() {
 			return direction;
 		}
@@ -101,10 +100,10 @@ public class Components {
 
 	}
 
-	public static class AliveComponent implements Component {
+	public static class AliveComponent {
 
 		boolean dead;
-		
+
 		public boolean isDead() {
 			return dead;
 		}
@@ -115,10 +114,10 @@ public class Components {
 
 	}
 
-	public static class TargetComponent implements Component {
+	public static class TargetComponent {
 
 		Entity target;
-		
+
 		public void setTarget(Entity target) {
 			this.target = target;
 		}
@@ -129,10 +128,10 @@ public class Components {
 
 	}
 
-	public static class AttachmentComponent implements Component {
+	public static class AttachmentComponent {
 
 		EntityAttachment entityAttachment;
-		
+
 		public EntityAttachment getEntityAttachment() {
 			return entityAttachment;
 		}
@@ -143,32 +142,32 @@ public class Components {
 
 	}
 
-	public static class AttachableComponent implements Component {
+	public static class AttachableComponent {
 
 		Entity owner;
-		
+
 		public Entity getOwner() {
 			return owner;
 		}
 
 	}
 
-	public static class ReleaseEntityComponent implements Component {
+	public static class ReleaseEntityComponent {
 
 		int releaseTime;
 
 	}
 
-	public static class GrabbableComponent implements Component {
+	public static class GrabbableComponent {
 
 		boolean grabbed;
 
 	}
 
-	public static class InputDirectionComponent implements Component {
-		
+	public static class InputDirectionComponent {
+
 		float direction;
-		
+
 	}
-	
+
 }
