@@ -32,14 +32,14 @@ public class ComponentWrapper {
 		SpriteComponent component = getComponent(e, SpriteComponent.class);
 		if (component == null)
 			return null;
-		return component.sprite;
+		return component.getSprite();
 	}
 
 	public static Camera getCamera(Entity e) {
 		CameraComponent component = getComponent(e, CameraComponent.class);
 		if (component == null)
 			return null;
-		return component.camera;
+		return component.getCamera();
 	}
 
 	public static EntityAttachment getEntityAttachment(Entity e) {

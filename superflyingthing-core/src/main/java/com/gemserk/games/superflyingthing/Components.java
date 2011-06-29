@@ -66,20 +66,36 @@ public class Components {
 
 	public static class CameraComponent {
 
-		Camera camera;
+		private Camera camera;
+
+		public void setCamera(Camera camera) {
+			this.camera = camera;
+		}
+
+		public Camera getCamera() {
+			return camera;
+		}
 
 		public CameraComponent(Camera camera) {
-			this.camera = camera;
+			setCamera(camera);
 		}
 
 	}
 
 	public static class SpriteComponent {
 
-		Sprite sprite;
+		private Sprite sprite;
+
+		public void setSprite(Sprite sprite) {
+			this.sprite = sprite;
+		}
+
+		public Sprite getSprite() {
+			return sprite;
+		}
 
 		public SpriteComponent(Sprite sprite) {
-			this.sprite = sprite;
+			setSprite(sprite);
 		}
 
 	}
