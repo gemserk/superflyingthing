@@ -11,6 +11,7 @@ import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
+import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayingGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
@@ -20,6 +21,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private Screen playingScreen;
 	private Screen splashScreen;
+	private Screen mainMenuScreen;
 
 	public Screen getPlayingScreen() {
 		return playingScreen;
@@ -27,6 +29,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Screen getSplashScreen() {
 		return splashScreen;
+	}
+	
+	public Screen getMainMenuScreen() {
+		return mainMenuScreen;
 	}
 
 	@Override
@@ -37,6 +43,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		playingScreen = new ScreenImpl(new PlayingGameState());
 		splashScreen = new ScreenImpl(new SplashGameState(this));
+		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
 
 		setScreen(splashScreen);
 	}

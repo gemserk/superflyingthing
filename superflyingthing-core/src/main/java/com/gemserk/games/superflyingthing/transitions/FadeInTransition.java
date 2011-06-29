@@ -13,24 +13,25 @@ import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
 public class FadeInTransition extends GameTransitions.EnterTransition {
-	
+
 	private float alpha = 1f;
 	private Sprite whiteRectangle;
 	ResourceManager<String> resourceManager;
 	SpriteBatch spriteBatch;
-	
+	private final int time;
+
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
 
 	public FadeInTransition(Screen screen, int time) {
 		super(screen, time);
-		Synchronizers.transition(this, "alpha", Transitions.transitionBuilder(1f).end(0f).time(time));
+		this.time = time;
 	}
 
 	public FadeInTransition(Screen screen, int time, TransitionHandler transitionHandler) {
 		super(screen, time, transitionHandler);
-		Synchronizers.transition(this, "alpha", Transitions.transitionBuilder(1f).end(0f).time(time));
+		this.time = time;
 	}
 
 	@Override
@@ -40,6 +41,7 @@ public class FadeInTransition extends GameTransitions.EnterTransition {
 		GameResourceBuilder.loadResources(resourceManager);
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		spriteBatch = new SpriteBatch();
+		Synchronizers.transition(this, "alpha", Transitions.transitionBuilder(1f).end(0f).time(time));
 	}
 
 	@Override
@@ -59,8 +61,8 @@ public class FadeInTransition extends GameTransitions.EnterTransition {
 	}
 
 	@Override
-	public void update(int delta) {
-		super.update(delta);
+	public void internalUpdate(int delta) {
+		super.internalUpdate(delta);
 		Synchronizers.synchronize(delta);
 	}
 }
