@@ -3,6 +3,11 @@ package com.gemserk.games.entities;
 import java.util.ArrayList;
 
 public class EntityManagerImpl implements EntityManager {
+	
+	static class EntityLifeCycleHandlerNullImpl implements EntityLifeCycleHandler {
+		@Override public void init(Entity e) {}
+		@Override public void dispose(Entity e) {}
+	}
 
 	ArrayList<Entity> entities, entitiesToAdd, entitiesToRemove;
 
