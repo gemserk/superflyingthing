@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.tutorial.datadriven.DataDrivenTest.Game.MovementComponent;
 
 public class DataDrivenTest {
 
@@ -101,8 +102,8 @@ public class DataDrivenTest {
 
 		ArrayList<Behavior> behaviors;
 
-		<T> T getComponent(String name) {
-			return (T) components.get(name);
+		<T> T getComponent(Class<T> clazz) {
+			return (T) components.get(clazz.getName());
 		}
 
 		public Entity() {
@@ -145,7 +146,11 @@ public class DataDrivenTest {
 	static class ComponentWrapper {
 
 		static <T> T get(Entity e, Class<T> clazz) {
-			return (T) e.getComponent(clazz.getName());
+			return (T) e.getComponent(clazz);
+		}
+		
+		static MovementComponent getMovement(Entity e) {
+			return e.getComponent(MovementComponent.class);
 		}
 		
 	}
@@ -169,7 +174,7 @@ public class DataDrivenTest {
 			 */
 
 			public void update(int delta, Entity entity) {
-				MovementComponent movement = ComponentWrapper.get(entity, MovementComponent.class);
+				MovementComponent movement = ComponentWrapper.getMovement(entity);
 				if (movement == null)
 					return;
 				// process input in your own way to get movement direction.
