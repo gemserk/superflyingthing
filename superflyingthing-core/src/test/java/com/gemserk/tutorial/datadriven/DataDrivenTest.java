@@ -9,6 +9,7 @@ import org.junit.Test;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.tutorial.datadriven.DataDrivenTest.Game.MovementComponent;
+import com.gemserk.tutorial.datadriven.DataDrivenTest.Game.SpatialComponent;
 
 public class DataDrivenTest {
 
@@ -102,8 +103,14 @@ public class DataDrivenTest {
 
 		ArrayList<Behavior> behaviors;
 
+		@SuppressWarnings("unchecked")
 		<T> T getComponent(Class<T> clazz) {
 			return (T) components.get(clazz.getName());
+		}
+
+		@SuppressWarnings("unchecked")
+		<T> T getComponent(String name) {
+			return (T) components.get(name);
 		}
 
 		public Entity() {
@@ -111,8 +118,26 @@ public class DataDrivenTest {
 			behaviors = new ArrayList<Behavior>();
 		}
 
+		/**
+		 * Registers a component using component class as id.
+		 * 
+		 * @param component
+		 *            The component to be registered.
+		 */
 		void addComponent(Object component) {
-			components.put(component.getClass().getName(), component);
+			addComponent(component.getClass().getName(), component);
+		}
+
+		/**
+		 * Registers a component with a custom name.
+		 * 
+		 * @param name
+		 *            The name to use to register the component.
+		 * @param component
+		 *            The component to be registered.
+		 */
+		void addComponent(String name, Object component) {
+			components.put(name, component);
 		}
 
 		void addBehavior(Behavior behavior) {
@@ -142,21 +167,32 @@ public class DataDrivenTest {
 		void update(int delta, Entity entity);
 
 	}
-	
+
 	static class ComponentWrapper {
 
 		static <T> T get(Entity e, Class<T> clazz) {
 			return (T) e.getComponent(clazz);
 		}
-		
+
 		static MovementComponent getMovement(Entity e) {
 			return e.getComponent(MovementComponent.class);
 		}
-		
+
+		static SpatialComponent getSpatial(Entity e) {
+			return e.getComponent(SpatialComponent.class);
+		}
+
+		/**
+		 * The interesting part in all this is that now I can register a custom spatial component which implements the same interface.
+		 */
+		static void addSpatial(Entity e, SpatialComponent spatial) {
+			e.addComponent(SpatialComponent.class.getName(), spatial);
+		}
+
 	}
 
 	class Game {
-		
+
 		/**
 		 * Now both behaviors have a common interface, they are Ship behaviors, given a ship and a delta time they do something.
 		 * 
