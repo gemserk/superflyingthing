@@ -30,7 +30,6 @@ import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
-import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.EntityFactory;
@@ -49,7 +48,7 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 	Entity startPlanet;
 	Entity ship;
 	Entity camera;
-
+	
 	@Override
 	public void init() {
 		entityManager = new EntityManagerImpl(this);
@@ -97,7 +96,7 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 		startPlanet = entityFactory.startPlanet(5f, 7.5f, 1f);
 
 		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
-		attachmentComponent.getEntityAttachment().setEntity(ship);
+		attachmentComponent.setEntity(ship);
 		// startMiniPlanet.attachSuperSheep(superSheep);
 
 		entityManager.add(startPlanet);
@@ -162,7 +161,7 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 	}
 
 	private void diposeJoints(Entity e) {
-		EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+		AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 		if (entityAttachment == null)
 			return;
 		if (entityAttachment.getJoint() == null)
@@ -267,7 +266,7 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 		entityManager.add(newSuperSheep);
 
 		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
-		attachmentComponent.getEntityAttachment().setEntity(newSuperSheep);
+		attachmentComponent.setEntity(newSuperSheep);
 
 		this.ship = newSuperSheep;
 	}

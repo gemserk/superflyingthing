@@ -12,33 +12,6 @@ import com.gemserk.games.entities.Entity;
 
 public class Components {
 
-	// the real component ->
-
-	public static class EntityAttachment {
-
-		Entity entity;
-
-		Joint joint;
-
-		public Entity getEntity() {
-			return entity;
-		}
-
-		public Joint getJoint() {
-			return joint;
-		}
-
-		public void setEntity(Entity entity) {
-			this.entity = entity;
-		}
-
-		public void setJoint(Joint joint) {
-			this.joint = joint;
-		}
-
-	}
-
-	// the classes to use to abstract access to the real components :s, similar to Spatial stuff.
 
 	public static class SpatialComponent {
 
@@ -146,14 +119,24 @@ public class Components {
 
 	public static class AttachmentComponent {
 
-		EntityAttachment entityAttachment;
+		Entity entity;
 
-		public EntityAttachment getEntityAttachment() {
-			return entityAttachment;
+		Joint joint;
+
+		public Entity getEntity() {
+			return entity;
 		}
 
-		public AttachmentComponent() {
-			entityAttachment = new EntityAttachment();
+		public Joint getJoint() {
+			return joint;
+		}
+
+		public void setEntity(Entity entity) {
+			this.entity = entity;
+		}
+
+		public void setJoint(Joint joint) {
+			this.joint = joint;
 		}
 
 	}

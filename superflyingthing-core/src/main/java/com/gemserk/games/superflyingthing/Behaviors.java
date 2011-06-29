@@ -16,7 +16,7 @@ import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
-import com.gemserk.games.superflyingthing.Components.EntityAttachment;
+import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
@@ -79,7 +79,7 @@ public class Behaviors {
 
 		@Override
 		public void update(int delta, Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 
 			if (entityAttachment.entity == null)
 				return;
@@ -111,7 +111,7 @@ public class Behaviors {
 
 		@Override
 		public void update(int delta, Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 			if (entityAttachment.entity == null)
 				return;
 			if (entityAttachment.joint != null)
@@ -141,7 +141,7 @@ public class Behaviors {
 
 		@Override
 		public void update(int delta, Entity e) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 			Entity attachedEntity = entityAttachment.entity;
 
 			if (attachedEntity == null)
@@ -314,7 +314,7 @@ public class Behaviors {
 		}
 
 		private void updateAttachToAttachable(Entity e1, Entity e2) {
-			EntityAttachment entityAttachment = ComponentWrapper.getEntityAttachment(e2);
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e2);
 			if (entityAttachment == null)
 				return;
 			if (entityAttachment.entity != null)

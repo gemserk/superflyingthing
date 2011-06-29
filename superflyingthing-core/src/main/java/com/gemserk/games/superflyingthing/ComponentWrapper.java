@@ -7,7 +7,6 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
-import com.gemserk.games.superflyingthing.Components.EntityAttachment;
 import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
@@ -42,11 +41,8 @@ public class ComponentWrapper {
 		return component.getCamera();
 	}
 
-	public static EntityAttachment getEntityAttachment(Entity e) {
-		AttachmentComponent component = getComponent(e, AttachmentComponent.class);
-		if (component == null)
-			return null;
-		return component.entityAttachment;
+	public static AttachmentComponent getEntityAttachment(Entity e) {
+		return getComponent(e, AttachmentComponent.class);
 	}
 
 	@SuppressWarnings("unchecked")
