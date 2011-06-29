@@ -11,8 +11,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Contact;
-import com.badlogic.gdx.physics.box2d.ContactListener;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
@@ -40,14 +38,8 @@ import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Game extends com.gemserk.commons.gdx.Game {
-
-	public static short AllCategoryBits = 0xFF;
-
-	public static short ShipCategoryBits = 1;
-
-	public static short MiniPlanetCategoryBits = 2;
-
-	public static class SuperSheepGameState extends GameStateImpl implements ContactListener, EntityLifeCycleHandler {
+	
+	public static class PlayingGameState extends GameStateImpl implements EntityLifeCycleHandler {
 
 		SpriteBatch spriteBatch;
 		Libgdx2dCamera libgdxCamera;
@@ -68,7 +60,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			libgdxCamera = new Libgdx2dCameraTransformImpl();
 
 			world = new World(new Vector2(), false);
-			world.setContactListener(this);
+			world.setContactListener(new PhysicsContactListener());
 
 			entityFactory = new EntityFactory(world, entityManager);
 
@@ -126,52 +118,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
 			entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
-		}
-
-		@Override
-		public void beginContact(Contact contact) {
-			Body bodyA = contact.getFixtureA().getBody();
-			Body bodyB = contact.getFixtureB().getBody();
-
-			Entity entityA = (Entity) bodyA.getUserData();
-			Entity entityB = (Entity) bodyB.getUserData();
-
-			if (entityA != null) {
-				Physics physics = ComponentWrapper.getPhysics(entityA);
-				physics.getContact().addContact(contact, bodyB);
-				// PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
-				// physicsComponent.getContact().addContact(contact, bodyB);
-			}
-
-			if (entityB != null) {
-				Physics physics = ComponentWrapper.getPhysics(entityB);
-				physics.getContact().addContact(contact, bodyA);
-				// PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
-				// physicsComponent.getContact().addContact(contact, bodyA);
-			}
-		}
-
-		@Override
-		public void endContact(Contact contact) {
-			Body bodyA = contact.getFixtureA().getBody();
-			Body bodyB = contact.getFixtureB().getBody();
-
-			Entity entityA = (Entity) bodyA.getUserData();
-			Entity entityB = (Entity) bodyB.getUserData();
-
-			if (entityA != null) {
-				Physics physics = ComponentWrapper.getPhysics(entityB);
-				physics.getContact().removeContact(bodyB);
-				// PhysicsComponent physicsComponent = entityA.getComponent(PhysicsComponent.class);
-				// physicsComponent.getContact().removeContact(bodyB);
-			}
-
-			if (entityB != null) {
-				Physics physics = ComponentWrapper.getPhysics(entityB);
-				physics.getContact().removeContact(bodyA);
-				// PhysicsComponent physicsComponent = entityB.getComponent(PhysicsComponent.class);
-				// physicsComponent.getContact().removeContact(bodyA);
-			}
 		}
 
 		@Override
@@ -351,7 +297,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public void create() {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
-		setScreen(new ScreenImpl(new SuperSheepGameState()));
+		setScreen(new ScreenImpl(new PlayingGameState()));
 	}
 
 	@Override
@@ -359,7 +305,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		super.render();
 		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
 			getScreen().dispose();
-			setScreen(new ScreenImpl(new SuperSheepGameState()));
+			setScreen(new ScreenImpl(new PlayingGameState()));
 		}
 	}
 

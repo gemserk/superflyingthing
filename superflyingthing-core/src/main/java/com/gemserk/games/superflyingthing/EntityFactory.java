@@ -31,6 +31,16 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class EntityFactory {
+	
+	public static class CategoryBits {
+
+		public static short AllCategoryBits = 0xFF;
+
+		public static short ShipCategoryBits = 1;
+
+		public static short MiniPlanetCategoryBits = 2;
+
+	}
 
 	private final World world;
 	private final EntityManager entityManager;
@@ -63,8 +73,8 @@ public class EntityFactory {
 				.position(x, y) //
 				.restitution(0f) //
 				.type(BodyType.DynamicBody) //
-				.categoryBits(Game.ShipCategoryBits) //
-				.maskBits((short) (Game.AllCategoryBits & ~Game.MiniPlanetCategoryBits)) //
+				.categoryBits(CategoryBits.ShipCategoryBits) //
+				.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
 				.userData(e) //
 				.build();
 
@@ -138,7 +148,7 @@ public class EntityFactory {
 				.restitution(0f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //
-				.categoryBits(Game.MiniPlanetCategoryBits).build();
+				.categoryBits(CategoryBits.MiniPlanetCategoryBits).build();
 
 		e.addComponent(new PhysicsComponent(body));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
@@ -160,11 +170,11 @@ public class EntityFactory {
 				.restitution(0f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //
-				.categoryBits(Game.MiniPlanetCategoryBits).build();
+				.categoryBits(CategoryBits.MiniPlanetCategoryBits).build();
 
 		bodyBuilder.fixtureBuilder(body) //
 				.circleShape(radius) //
-				.categoryBits(Game.AllCategoryBits) //
+				.categoryBits(CategoryBits.AllCategoryBits) //
 				.sensor() //
 				.build();
 
