@@ -2,11 +2,8 @@ package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.games.Physics;
-import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Entity;
 
@@ -19,20 +16,6 @@ public class Components {
 
 		public SpatialComponent(Spatial spatial) {
 			this.spatial = spatial;
-		}
-
-	}
-
-	public static class PhysicsComponent {
-
-		Physics physics;
-
-		public Physics getPhysics() {
-			return physics;
-		}
-
-		public PhysicsComponent(Body body) {
-			physics = new PhysicsImpl(body);
 		}
 
 	}

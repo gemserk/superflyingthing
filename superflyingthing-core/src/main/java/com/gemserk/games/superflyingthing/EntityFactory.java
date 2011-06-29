@@ -8,6 +8,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.games.Physics;
+import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
@@ -24,14 +26,13 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.PhysicsComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class EntityFactory {
-	
+
 	public static class CategoryBits {
 
 		public static short AllCategoryBits = 0xFF;
@@ -78,7 +79,7 @@ public class EntityFactory {
 				.userData(e) //
 				.build();
 
-		e.addComponent(new PhysicsComponent(body));
+		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new MovementComponent(direction.x, direction.y));
@@ -106,28 +107,11 @@ public class EntityFactory {
 				.userData(e) //
 				.build();
 
-		e.addComponent(new PhysicsComponent(body));
+		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new GrabbableComponent());
 		e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
-
-		// e.addBehavior(new Behavior() {
-		//
-		// @Override
-		// public void update(int delta, Entity e) {
-		// GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
-		// if (grabbableComponent == null)
-		// return;
-		// PhysicsComponent physicsComponent = e.getComponent(PhysicsComponent.class);
-		// if (physicsComponent == null)
-		// return;
-		//
-		// if (physicsComponent.getContact().isInContact())
-		// grabbableComponent.grabbed = true;
-		// }
-		//
-		// });
 
 		return e;
 	}
@@ -150,7 +134,7 @@ public class EntityFactory {
 				.userData(e) //
 				.categoryBits(CategoryBits.MiniPlanetCategoryBits).build();
 
-		e.addComponent(new PhysicsComponent(body));
+		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
@@ -178,7 +162,7 @@ public class EntityFactory {
 				.sensor() //
 				.build();
 
-		e.addComponent(new PhysicsComponent(body));
+		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
@@ -197,7 +181,7 @@ public class EntityFactory {
 				.type(BodyType.StaticBody) //
 				.angle(angle) //
 				.build();
-		e.addComponent(new PhysicsComponent(body));
+		e.addComponent(Physics.class, new PhysicsImpl(body));
 		return e;
 	}
 
@@ -211,7 +195,7 @@ public class EntityFactory {
 				.position(x, y) //
 				.angle(angle) //
 				.build();
-		e.addComponent(new PhysicsComponent(body));
+		e.addComponent(Physics.class, new PhysicsImpl(body));
 		return e;
 	}
 
