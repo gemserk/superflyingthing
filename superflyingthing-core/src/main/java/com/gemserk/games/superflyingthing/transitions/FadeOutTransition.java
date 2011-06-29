@@ -29,8 +29,8 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	}
 
 	@Override
-	public void begin() {
-		super.begin();
+	public void init() {
+		super.init();
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResourceBuilder.loadResources(resourceManager);
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
@@ -39,8 +39,8 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	}
 
 	@Override
-	public void end() {
-		super.end();
+	public void dispose() {
+		super.dispose();
 		resourceManager.unloadAll();
 	}
 
