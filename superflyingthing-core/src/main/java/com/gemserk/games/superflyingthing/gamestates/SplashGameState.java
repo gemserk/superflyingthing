@@ -100,7 +100,7 @@ public class SplashGameState extends GameStateImpl {
 		if (timer.isRunning())
 			return;
 
-		game.transition(game.getPlayingScreen(), 500, 500);
+		game.transition(game.getMainMenuScreen(), 500, 500);
 	}
 
 	@Override

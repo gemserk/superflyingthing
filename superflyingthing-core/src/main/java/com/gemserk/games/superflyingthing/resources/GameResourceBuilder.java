@@ -25,6 +25,9 @@ public class GameResourceBuilder extends LibgdxResourceBuilder {
 		sprite("LwjglLogo", "LwjglLogoTexture", 0, 0, 512, 185);
 		sprite("LibgdxLogo", "LibgdxLogoTexture", 0, 25, 512, 256 - 50);
 		sprite("WhiteRectangle", "WhiteRectangleTexture");
+		
+		font("TitleFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
+		font("ButtonFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
 	}
 
 }
