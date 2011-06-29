@@ -31,6 +31,7 @@ import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.EntityFactory;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
@@ -200,10 +201,12 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				continue;
-			Sprite sprite = ComponentWrapper.getSprite(e);
-			if (sprite == null)
+			SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+			if (spriteComponent == null)
 				continue;
+			Sprite sprite = spriteComponent.getSprite();
 			sprite.setSize(spatial.getWidth(), spatial.getHeight());
+			sprite.setColor(spriteComponent.getColor());
 			Vector2 position = spatial.getPosition();
 			SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 		}
@@ -254,15 +257,13 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 		entityManager.remove(ship);
 
 		Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
-		Sprite superSheepSprite = ComponentWrapper.getSprite(ship);
+		SpriteComponent spriteComponent = ComponentWrapper.getSprite(ship);
+		Sprite sprite = spriteComponent.getSprite();
 
-		Sprite deadSuperSheepSprite = new Sprite(superSheepSprite);
-		deadSuperSheepSprite.setColor(0.7f, 0.7f, 0.7f, 1f);
-
-		Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial, deadSuperSheepSprite);
+		Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial, new Sprite(sprite));
 		entityManager.add(deadSuperSheepEntity);
 
-		Entity newSuperSheep = entityFactory.ship(5f, 6f, new Sprite(superSheepSprite), new Vector2(1f, 0f));
+		Entity newSuperSheep = entityFactory.ship(5f, 6f, new Sprite(sprite), new Vector2(1f, 0f));
 		entityManager.add(newSuperSheep);
 
 		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);

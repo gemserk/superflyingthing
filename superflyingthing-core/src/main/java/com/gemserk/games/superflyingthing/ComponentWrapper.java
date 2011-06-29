@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -19,11 +18,8 @@ public class ComponentWrapper {
 		return getComponent(e, Spatial.class);
 	}
 
-	public static Sprite getSprite(Entity e) {
-		SpriteComponent component = getComponent(e, SpriteComponent.class);
-		if (component == null)
-			return null;
-		return component.getSprite();
+	public static SpriteComponent getSprite(Entity e) {
+		return getComponent(e, SpriteComponent.class);
 	}
 
 	public static Camera getCamera(Entity e) {

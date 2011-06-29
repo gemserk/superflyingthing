@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -118,7 +119,7 @@ public class EntityFactory {
 	public Entity deadShip(Spatial spatial, Sprite sprite) {
 		Entity e = new Entity();
 		e.addComponent(Spatial.class, new SpatialImpl(spatial));
-		e.addComponent(new SpriteComponent(sprite));
+		e.addComponent(new SpriteComponent(sprite, Color.RED));
 		return e;
 	}
 

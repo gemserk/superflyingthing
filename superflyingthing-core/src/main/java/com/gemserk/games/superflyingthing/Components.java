@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
@@ -7,17 +8,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
-
-
-//	public static class SpatialComponent {
-//
-//		Spatial spatial;
-//
-//		public SpatialComponent(Spatial spatial) {
-//			this.spatial = spatial;
-//		}
-//
-//	}
 
 	public static class CameraComponent {
 
@@ -40,7 +30,9 @@ public class Components {
 	public static class SpriteComponent {
 
 		private Sprite sprite;
-
+		
+		private Color color;
+		
 		public void setSprite(Sprite sprite) {
 			this.sprite = sprite;
 		}
@@ -48,9 +40,19 @@ public class Components {
 		public Sprite getSprite() {
 			return sprite;
 		}
+		
+		public Color getColor() {
+			return color;
+		}
 
 		public SpriteComponent(Sprite sprite) {
 			setSprite(sprite);
+			this.color = new Color(1f, 1f, 1f, 1f);
+		}
+		
+		public SpriteComponent(Sprite sprite, Color color) { 
+			setSprite(sprite);
+			this.color = new Color(color);
 		}
 
 	}
