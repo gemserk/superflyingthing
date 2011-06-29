@@ -47,7 +47,7 @@ public class DataDrivenTest {
 	 * what is the difference now of an Obstacle entity and a Ship entity? only the components and behaviors they have. So we could define them outside.
 	 * 
 	 */
-	
+
 	/**
 	 * Try encapsulating the component data and treat all components as the same class, registering them with a name...
 	 * 
@@ -55,21 +55,17 @@ public class DataDrivenTest {
 	 * 
 	 * interface Health {
 	 * 
-	 * 	  float current, total;
+	 * float current, total;
 	 * 
-	 *    isAlive() : boolean
-	 *  
+	 * isAlive() : boolean
+	 * 
 	 * }
 	 * 
 	 * class Component {
-	 *  
-	 *   private Object object;
-	 *   
-	 *   <T> T get() {
-	 *   	if (object == null)
-	 *   		return null;
-	 *   	return (T) object;
-	 *   }
+	 * 
+	 * private Object object;
+	 * 
+	 * <T> T get() { if (object == null) return null; return (T) object; }
 	 * 
 	 * }
 	 * 
@@ -77,13 +73,11 @@ public class DataDrivenTest {
 	 * 
 	 * Health health = entity.getComponent("health").get();
 	 * 
-	 * going further, we could create a custom wrapper for our game: 
+	 * going further, we could create a custom wrapper for our game:
 	 * 
 	 * class ComponentWrapper {
 	 * 
-	 *   static <T> T getHealth(e) {
-	 *   	return e.getComponent("health").get();
-	 *   }
+	 * static <T> T getHealth(e) { return e.getComponent("health").get(); }
 	 * 
 	 * }
 	 * 
@@ -91,33 +85,33 @@ public class DataDrivenTest {
 	 * 
 	 * Same for other components.
 	 * 
-	 * So Health ends up being the real component and Component only a holder. 
+	 * So Health ends up being the real component and Component only a holder.
 	 * 
 	 * With this approach, how to make stuff like "if e has HealthComponent then ..."?
 	 * 
 	 * I could assume health component is registered with "health" string (or some other key type), and only that, if a sprite component is registered with that name, then it will fail.
-	 *  
+	 * 
 	 */
 
 	class Entity {
 
 		// This will allow only one component per class, another option is to use strings as keys.
 
-		Map<Class<?>, Object> components;
+		Map<String, Object> components;
 
 		ArrayList<Behavior> behaviors;
 
-		<T> T getComponent(Class<T> clazz) {
-			return null;
+		<T> T getComponent(String name) {
+			return (T) components.get(name);
 		}
 
 		public Entity() {
-			components = new HashMap<Class<?>, Object>();
+			components = new HashMap<String, Object>();
 			behaviors = new ArrayList<Behavior>();
 		}
 
-		void addComponent(Component component) {
-			components.put(component.getClass(), component);
+		void addComponent(Object component) {
+			components.put(component.getClass().getName(), component);
 		}
 
 		void addBehavior(Behavior behavior) {
@@ -140,13 +134,6 @@ public class DataDrivenTest {
 	}
 
 	/**
-	 * Defines a property of an Entity, for example, the property of having a position in the world, or stuff like that.
-	 */
-	interface Component {
-
-	}
-
-	/**
 	 * Defines a behavior an Entity should have, for example, the behavior of moving across the screen.
 	 */
 	interface Behavior {
@@ -154,9 +141,17 @@ public class DataDrivenTest {
 		void update(int delta, Entity entity);
 
 	}
+	
+	static class ComponentWrapper {
+
+		static <T> T get(Entity e, Class<T> clazz) {
+			return (T) e.getComponent(clazz.getName());
+		}
+		
+	}
 
 	class Game {
-
+		
 		/**
 		 * Now both behaviors have a common interface, they are Ship behaviors, given a ship and a delta time they do something.
 		 * 
@@ -174,7 +169,7 @@ public class DataDrivenTest {
 			 */
 
 			public void update(int delta, Entity entity) {
-				MovementComponent movement = entity.getComponent(MovementComponent.class);
+				MovementComponent movement = ComponentWrapper.get(entity, MovementComponent.class);
 				if (movement == null)
 					return;
 				// process input in your own way to get movement direction.
@@ -198,8 +193,8 @@ public class DataDrivenTest {
 			// One option is to add the property as a parameter, we will see another option later.
 
 			public void update(int delta, Entity entity) {
-				MovementComponent movement = entity.getComponent(MovementComponent.class);
-				SpatialComponent spatial = entity.getComponent(SpatialComponent.class);
+				MovementComponent movement = ComponentWrapper.get(entity, MovementComponent.class);
+				SpatialComponent spatial = ComponentWrapper.get(entity, SpatialComponent.class);
 
 				/**
 				 * We will see later that this could be controlled outside this class, so whenever we receive the update is because we have all components we need.
@@ -222,8 +217,8 @@ public class DataDrivenTest {
 		class CollisionBehavior implements Behavior {
 
 			public void update(int delta, Entity entity) {
-				InvulneravilityComponent invulneravility = entity.getComponent(InvulneravilityComponent.class);
-				HealthComponent health = entity.getComponent(HealthComponent.class);
+				InvulneravilityComponent invulneravility = ComponentWrapper.get(entity, InvulneravilityComponent.class);
+				HealthComponent health = ComponentWrapper.get(entity, HealthComponent.class);
 
 				if (invulneravility == null || health == null)
 					return;
@@ -238,7 +233,7 @@ public class DataDrivenTest {
 			}
 
 			private boolean collidingWithObstacle(Entity entity) {
-				BoundingComponent entityBoundingComponent = entity.getComponent(BoundingComponent.class);
+				BoundingComponent entityBoundingComponent = ComponentWrapper.get(entity, BoundingComponent.class);
 				if (entityBoundingComponent == null)
 					return false;
 
@@ -246,7 +241,7 @@ public class DataDrivenTest {
 					Entity e = entities.get(i);
 					if (e == entity)
 						continue;
-					BoundingComponent boundingComponent = e.getComponent(BoundingComponent.class);
+					BoundingComponent boundingComponent = ComponentWrapper.get(e, BoundingComponent.class);
 					if (boundingComponent == null)
 						continue;
 
@@ -268,13 +263,13 @@ public class DataDrivenTest {
 				if (entities.isEmpty())
 					return;
 
-				InvulneravilityComponent invulneravility = e.getComponent(InvulneravilityComponent.class);
+				InvulneravilityComponent invulneravility = ComponentWrapper.get(e, InvulneravilityComponent.class);
 				if (invulneravility == null)
 					return;
 
 				for (int i = 0; i < entities.size(); i++) {
 					Entity entity = entities.get(i);
-					ItemComponent itemComponent = entity.getComponent(ItemComponent.class);
+					ItemComponent itemComponent = ComponentWrapper.get(entity, ItemComponent.class);
 					if (itemComponent == null)
 						continue;
 					if (itemComponent.used)
@@ -301,7 +296,7 @@ public class DataDrivenTest {
 				// NOTE it uses ship instance from Game, we could make this component more abstract later.
 				if (!shipOverDestination(ship))
 					return;
-				ReachedComponent reachedComponent = entity.getComponent(ReachedComponent.class);
+				ReachedComponent reachedComponent = ComponentWrapper.get(entity, ReachedComponent.class);
 				reachedComponent.reached = true;
 			}
 
@@ -318,7 +313,7 @@ public class DataDrivenTest {
 		 * COMPONENTS (DATA) ->
 		 */
 
-		class SpatialComponent implements Component {
+		class SpatialComponent {
 
 			Vector2 position;
 
@@ -328,7 +323,7 @@ public class DataDrivenTest {
 
 		}
 
-		class MovementComponent implements Component {
+		class MovementComponent {
 
 			Vector2 direction;
 			float speed; // in meters per second
@@ -340,19 +335,19 @@ public class DataDrivenTest {
 
 		}
 
-		class HealthComponent implements Component {
+		class HealthComponent {
 
 			boolean dead;
 
 		}
 
-		class InvulneravilityComponent implements Component {
+		class InvulneravilityComponent {
 
 			boolean invulnerable;
 
 		}
 
-		class BoundingComponent implements Component {
+		class BoundingComponent {
 
 			Rectangle rectangle;
 
@@ -362,13 +357,13 @@ public class DataDrivenTest {
 
 		}
 
-		class ReachedComponent implements Component {
+		class ReachedComponent {
 
 			boolean reached;
 
 		}
 
-		class ItemComponent implements Component {
+		class ItemComponent {
 
 			boolean used;
 
@@ -508,7 +503,7 @@ public class DataDrivenTest {
 		void update(int delta) {
 			for (int i = 0; i < entities.size(); i++)
 				entities.get(i).update(delta);
-			ReachedComponent reachedComponent = destination.getComponent(ReachedComponent.class);
+			ReachedComponent reachedComponent = ComponentWrapper.get(destination, ReachedComponent.class);
 			if (reachedComponent.reached)
 				done = true;
 		}
@@ -527,11 +522,11 @@ public class DataDrivenTest {
 
 	@Test
 	public void mainTest() {
-//		Game game = new Game();
-//		game.init();
-//		while (!game.done)
-//			game.update(getDeltaTime());
-//		game.dispose();
+		// Game game = new Game();
+		// game.init();
+		// while (!game.done)
+		// game.update(getDeltaTime());
+		// game.dispose();
 	}
 
 }
