@@ -16,16 +16,25 @@ public class PhysicsContactListener implements ContactListener {
 		Entity entityA = (Entity) bodyA.getUserData();
 		Entity entityB = (Entity) bodyB.getUserData();
 
-		if (entityA != null) {
-			Physics physics = ComponentWrapper.getPhysics(entityA);
-			if (physics != null)
-				physics.getContact().addContact(contact, bodyB);
-		}
+		addBodyToContacts(entityA, bodyB, contact);
+		addBodyToContacts(entityB, bodyA, contact);
+	}
 
-		if (entityB != null) {
-			Physics physics = ComponentWrapper.getPhysics(entityB);
+	/**
+	 * Adds the body to the entity contacts.
+	 * 
+	 * @param e
+	 *            The entity to add the contact to.
+	 * @param body
+	 *            The body to add to the contacts.
+	 * @param contact
+	 *            The real contact, used internally to get some data like normals and stuff.
+	 */
+	private void addBodyToContacts(Entity e, Body body, Contact contact) {
+		if (e != null) {
+			Physics physics = ComponentWrapper.getPhysics(e);
 			if (physics != null)
-				physics.getContact().addContact(contact, bodyA);
+				physics.getContact().addContact(contact, body);
 		}
 	}
 
@@ -37,19 +46,19 @@ public class PhysicsContactListener implements ContactListener {
 		Entity entityA = (Entity) bodyA.getUserData();
 		Entity entityB = (Entity) bodyB.getUserData();
 
-		removeBodyFromContacts(bodyB, entityA);
-		removeBodyFromContacts(bodyA, entityB);
+		removeBodyFromContacts(entityA, bodyB);
+		removeBodyFromContacts(entityB, bodyA);
 	}
 
 	/**
 	 * Removes body from entity contacts.
 	 * 
-	 * @param body
-	 *            The body to be removed from contacts.
 	 * @param e
 	 *            The entity to remove the contact from.
+	 * @param body
+	 *            The body to be removed from contacts.
 	 */
-	private void removeBodyFromContacts(Body body, Entity e) {
+	private void removeBodyFromContacts(Entity e, Body body) {
 		if (e == null)
 			return;
 		Physics physics = ComponentWrapper.getPhysics(e);
