@@ -116,6 +116,12 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 	}
+	
+	@Override
+	public void resume() {
+		super.resume();
+		System.out.println("game resumed...");
+	}
 
 	@Override
 	public void init(Entity e) {

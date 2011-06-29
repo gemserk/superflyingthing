@@ -14,9 +14,14 @@ import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
 public class Game extends com.gemserk.commons.gdx.Game {
 	
 	private Screen playingScreen;
+	private Screen splashScreen;
 	
 	public Screen getPlayingScreen() {
 		return playingScreen;
+	}
+	
+	public Screen getSplashScreen() {
+		return splashScreen;
 	}
 
 	@Override
@@ -25,7 +30,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		
 		playingScreen = new ScreenImpl(new PlayingGameState());
-		setScreen(new ScreenImpl(new SplashGameState(this)));
+		splashScreen = new ScreenImpl(new SplashGameState(this));
+		
+		setScreen(splashScreen);
 	}
 
 	@Override

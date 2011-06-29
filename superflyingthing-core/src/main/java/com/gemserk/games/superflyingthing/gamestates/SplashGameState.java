@@ -9,6 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.GameTransitions;
+import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
+import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
+import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Game;
@@ -33,7 +37,7 @@ public class SplashGameState extends GameStateImpl {
 	private Sprite libgdxLogo;
 
 	private Sprite gemserkLogoBlur;
-	
+
 	private Color blurColor = new Color();
 
 	public SplashGameState(Game game) {
@@ -50,7 +54,7 @@ public class SplashGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
-		
+
 		new GameResourceBuilder(resourceManager);
 
 		gemserkLogo = resourceManager.getResourceValue("GemserkLogo");
@@ -67,7 +71,7 @@ public class SplashGameState extends GameStateImpl {
 		SpriteUtils.centerOn(gemserkLogoBlur, centerX, centerY);
 		SpriteUtils.centerOn(lwjglLogo, width * 0.85f, lwjglLogo.getHeight() * 0.5f);
 		SpriteUtils.centerOn(libgdxLogo, width * 0.15f, libgdxLogo.getHeight() * 0.5f);
-		
+
 		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1000));
 
 		timer = new CountDownTimer(2000, true);
@@ -77,10 +81,10 @@ public class SplashGameState extends GameStateImpl {
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		
+
 		gemserkLogoBlur.setColor(blurColor);
 		gemserkLogoBlur.draw(spriteBatch);
-		
+
 		gemserkLogo.draw(spriteBatch);
 		if (Gdx.app.getType() != ApplicationType.Android)
 			lwjglLogo.draw(spriteBatch);
@@ -91,11 +95,47 @@ public class SplashGameState extends GameStateImpl {
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		timer.update(delta);
-		if (!timer.isRunning())
-			game.setScreen(game.getPlayingScreen());
+
 		if (Gdx.input.justTouched())
 			timer.update(10000);
+
+		timer.update(delta);
+
+		if (timer.isRunning())
+			return;
+
+		// game.setScreen(game.getPlayingScreen(), true);
+
+		// game.setScreen(new TransitionScreen(new ScreenTransition(game.getSplashScreen(), game.getPlayingScreen(), 500, 500)));
+		final Sprite whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
+		game.setScreen(new TransitionScreen(new ScreenTransition( //
+				new GameTransitions.LeaveTransition(game.getScreen(), 1000) {
+					
+					float alpha = 0f;
+					
+					@Override
+					public void postRender(int delta) {
+						whiteRectangle.setPosition(0, 0);
+						whiteRectangle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+						whiteRectangle.setColor(0f, 0f, 0f, alpha);
+						spriteBatch.begin();
+						whiteRectangle.draw(spriteBatch);
+						spriteBatch.end();
+					}
+					
+					@Override
+					public void update(int delta) {
+						super.update(delta);
+						alpha += 0.001f * delta;
+					}
+					
+				}, //
+				new GameTransitions.EnterTransition(game.getPlayingScreen(), 0, new TransitionHandler() {
+					public void onEnd() {
+						game.setScreen(game.getPlayingScreen(), true);
+					};
+				}))));
+
 	}
 
 	@Override
