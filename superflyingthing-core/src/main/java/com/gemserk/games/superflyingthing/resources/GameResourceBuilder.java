@@ -7,8 +7,12 @@ import com.gemserk.resources.ResourceManager;
  * Declares all resources needed for the game.
  */
 public class GameResourceBuilder extends LibgdxResourceBuilder {
+	
+	public static void loadResources(ResourceManager<String> resourceManager) {
+		new GameResourceBuilder(resourceManager);
+	}
 
-	public GameResourceBuilder(ResourceManager<String> resourceManager) {
+	private GameResourceBuilder(ResourceManager<String> resourceManager) {
 		super(resourceManager);
 		texture("GemserkLogoTexture", "data/images/logo-gemserk-512x128.png");
 		texture("GemserkLogoTextureBlur", "data/images/logo-gemserk-512x128-blur.png");

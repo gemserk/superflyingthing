@@ -9,10 +9,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.GameTransitions;
-import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
-import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
-import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Game;
@@ -55,7 +51,7 @@ public class SplashGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
 
-		new GameResourceBuilder(resourceManager);
+		GameResourceBuilder.loadResources(resourceManager);
 
 		gemserkLogo = resourceManager.getResourceValue("GemserkLogo");
 		gemserkLogoBlur = resourceManager.getResourceValue("GemserkLogoBlur");
@@ -104,38 +100,7 @@ public class SplashGameState extends GameStateImpl {
 		if (timer.isRunning())
 			return;
 
-		// game.setScreen(game.getPlayingScreen(), true);
-
-		// game.setScreen(new TransitionScreen(new ScreenTransition(game.getSplashScreen(), game.getPlayingScreen(), 500, 500)));
-		final Sprite whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
-		game.setScreen(new TransitionScreen(new ScreenTransition( //
-				new GameTransitions.LeaveTransition(game.getScreen(), 1000) {
-					
-					float alpha = 0f;
-					
-					@Override
-					public void postRender(int delta) {
-						whiteRectangle.setPosition(0, 0);
-						whiteRectangle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-						whiteRectangle.setColor(0f, 0f, 0f, alpha);
-						spriteBatch.begin();
-						whiteRectangle.draw(spriteBatch);
-						spriteBatch.end();
-					}
-					
-					@Override
-					public void update(int delta) {
-						super.update(delta);
-						alpha += 0.001f * delta;
-					}
-					
-				}, //
-				new GameTransitions.EnterTransition(game.getPlayingScreen(), 0, new TransitionHandler() {
-					public void onEnd() {
-						game.setScreen(game.getPlayingScreen(), true);
-					};
-				}))));
-
+		game.transition(game.getPlayingScreen(), 500, 0);
 	}
 
 	@Override

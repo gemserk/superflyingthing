@@ -118,12 +118,6 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 	}
 	
 	@Override
-	public void resume() {
-		super.resume();
-		System.out.println("game resumed...");
-	}
-
-	@Override
 	public void init(Entity e) {
 
 	}
