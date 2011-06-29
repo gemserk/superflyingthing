@@ -21,7 +21,6 @@ import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
-import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Behaviors {
@@ -34,11 +33,11 @@ public class Behaviors {
 			Entity target = targetComponent.target;
 			if (target == null)
 				return;
-			SpatialComponent spatialComponent = target.getComponent(SpatialComponent.class);
-			if (spatialComponent == null)
+			Spatial spatial = ComponentWrapper.getSpatial(target);
+			if (spatial == null)
 				return;
 			Camera camera = ComponentWrapper.getCamera(entity);
-			camera.setPosition(spatialComponent.spatial.getX(), spatialComponent.spatial.getY());
+			camera.setPosition(spatial.getX(), spatial.getY());
 		}
 
 	}

@@ -4,21 +4,20 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
 
 
-	public static class SpatialComponent {
-
-		Spatial spatial;
-
-		public SpatialComponent(Spatial spatial) {
-			this.spatial = spatial;
-		}
-
-	}
+//	public static class SpatialComponent {
+//
+//		Spatial spatial;
+//
+//		public SpatialComponent(Spatial spatial) {
+//			this.spatial = spatial;
+//		}
+//
+//	}
 
 	public static class CameraComponent {
 

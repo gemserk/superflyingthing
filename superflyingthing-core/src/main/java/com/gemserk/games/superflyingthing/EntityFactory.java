@@ -27,7 +27,6 @@ import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
-import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
@@ -80,7 +79,7 @@ public class EntityFactory {
 				.build();
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, width, height));
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new MovementComponent(direction.x, direction.y));
 		e.addComponent(new AliveComponent(false));
@@ -108,7 +107,7 @@ public class EntityFactory {
 				.build();
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new GrabbableComponent());
 		e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
@@ -118,7 +117,7 @@ public class EntityFactory {
 
 	public Entity deadShip(Spatial spatial, Sprite sprite) {
 		Entity e = new Entity();
-		e.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+		e.addComponent(Spatial.class, new SpatialImpl(spatial));
 		e.addComponent(new SpriteComponent(sprite));
 		return e;
 	}
@@ -135,7 +134,7 @@ public class EntityFactory {
 				.categoryBits(CategoryBits.MiniPlanetCategoryBits).build();
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 
@@ -163,7 +162,7 @@ public class EntityFactory {
 				.build();
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 

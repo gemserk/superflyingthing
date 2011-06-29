@@ -7,7 +7,6 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
-import com.gemserk.games.superflyingthing.Components.SpatialComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 
 public class ComponentWrapper {
@@ -17,10 +16,7 @@ public class ComponentWrapper {
 	}
 
 	public static Spatial getSpatial(Entity e) {
-		SpatialComponent component = getComponent(e, SpatialComponent.class);
-		if (component == null)
-			return null;
-		return component.spatial;
+		return getComponent(e, Spatial.class);
 	}
 
 	public static Sprite getSprite(Entity e) {
