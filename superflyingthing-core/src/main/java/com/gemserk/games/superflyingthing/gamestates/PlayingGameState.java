@@ -153,8 +153,6 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 
 			Physics otherPhysics = ComponentWrapper.getPhysics(otherEntity);
 			otherPhysics.getContact().removeContact(body);
-			// PhysicsComponent otherPhyiscsComponent = otherEntity.getComponent(PhysicsComponent.class);
-			// otherPhyiscsComponent.getContact().removeContact(body);
 		}
 
 		world.destroyBody(body);
