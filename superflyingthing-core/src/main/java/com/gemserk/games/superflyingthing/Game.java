@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.converters.Converters;
@@ -41,28 +39,22 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 
-		playingScreen = new ScreenImpl(new PlayingGameState());
+		playingScreen = new ScreenImpl(new PlayingGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
 
 		setScreen(splashScreen);
 	}
 
-	@Override
-	public void render() {
-		super.render();
-		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
-			getScreen().dispose();
-			setScreen(new ScreenImpl(new PlayingGameState()));
-		}
-	}
-
 	public void transition(final Screen screen, int leaveTime, int enterTime) {
+		final Screen currentScreen = getScreen();
 		setScreen(new TransitionScreen(new ScreenTransition( //
-				new FadeOutTransition(getScreen(), leaveTime), //
+				new FadeOutTransition(currentScreen, leaveTime), //
 				new FadeInTransition(screen, enterTime, new TransitionHandler() {
 					public void onEnd() {
+						// disposes current transition screen, not previous screen.
 						setScreen(screen, true);
+						currentScreen.dispose();
 					};
 				}))));
 	}

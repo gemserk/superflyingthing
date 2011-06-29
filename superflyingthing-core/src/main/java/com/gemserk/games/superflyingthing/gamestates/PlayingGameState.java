@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,10 +35,12 @@ import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.EntityFactory;
+import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 
 public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHandler {
 
+	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera libgdxCamera;
 	World world;
@@ -49,7 +52,11 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 	Entity startPlanet;
 	Entity ship;
 	Entity camera;
-	
+
+	public PlayingGameState(Game game) {
+		this.game = game;
+	}
+
 	@Override
 	public void init() {
 		entityManager = new EntityManagerImpl(this);
@@ -116,7 +123,7 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 	}
-	
+
 	@Override
 	public void init(Entity e) {
 
@@ -238,6 +245,16 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 
 	@Override
 	public void update(int delta) {
+
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
+			game.transition(game.getMainMenuScreen(), 500, 500);
+		}
+
+		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
+			dispose();
+			init();
+		}
+
 		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 
 		entityManager.update(delta);
@@ -278,6 +295,18 @@ public class PlayingGameState extends GameStateImpl implements EntityLifeCycleHa
 			targetComponent.setTarget(attachableComponent.getOwner());
 		else
 			targetComponent.setTarget(ship);
+	}
+
+	@Override
+	public void resume() {
+		super.resume();
+		Gdx.input.setCatchBackKey(true);
+	}
+
+	@Override
+	public void pause() {
+		super.pause();
+		Gdx.input.setCatchBackKey(false);
 	}
 
 	@Override
