@@ -20,6 +20,22 @@ public class Components {
 		Entity entity;
 
 		Joint joint;
+		
+		public Entity getEntity() {
+			return entity;
+		}
+		
+		public Joint getJoint() {
+			return joint;
+		}
+		
+		public void setEntity(Entity entity) {
+			this.entity = entity;
+		}
+		
+		public void setJoint(Joint joint) {
+			this.joint = joint;
+		}
 
 	}
 	
@@ -74,6 +90,10 @@ public class Components {
 		final Vector2 direction = new Vector2();
 		
 		float angularVelocity = 0f;
+		
+		public Vector2 getDirection() {
+			return direction;
+		}
 
 		public MovementComponent(float dx, float dy) {
 			direction.set(dx, dy);
@@ -84,6 +104,10 @@ public class Components {
 	public static class AliveComponent implements Component {
 
 		boolean dead;
+		
+		public boolean isDead() {
+			return dead;
+		}
 
 		public AliveComponent(boolean dead) {
 			this.dead = dead;
@@ -94,6 +118,10 @@ public class Components {
 	public static class TargetComponent implements Component {
 
 		Entity target;
+		
+		public void setTarget(Entity target) {
+			this.target = target;
+		}
 
 		public TargetComponent(Entity target) {
 			this.target = target;
@@ -104,6 +132,10 @@ public class Components {
 	public static class AttachmentComponent implements Component {
 
 		EntityAttachment entityAttachment;
+		
+		public EntityAttachment getEntityAttachment() {
+			return entityAttachment;
+		}
 
 		public AttachmentComponent() {
 			entityAttachment = new EntityAttachment();
@@ -114,6 +146,10 @@ public class Components {
 	public static class AttachableComponent implements Component {
 
 		Entity owner;
+		
+		public Entity getOwner() {
+			return owner;
+		}
 
 	}
 
