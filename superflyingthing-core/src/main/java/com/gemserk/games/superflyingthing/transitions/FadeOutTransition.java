@@ -7,7 +7,7 @@ import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameTransitions;
 import com.gemserk.commons.gdx.Screen;
-import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
@@ -32,7 +32,7 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	public void init() {
 		super.init();
 		resourceManager = new ResourceManagerImpl<String>();
-		GameResourceBuilder.loadResources(resourceManager);
+		GameResources.load(resourceManager);
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		spriteBatch = new SpriteBatch();
 		Synchronizers.transition(this, "alpha", Transitions.transitionBuilder(0f).end(1f).time(time));

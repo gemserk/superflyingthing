@@ -10,7 +10,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
@@ -40,7 +40,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
 
-		GameResourceBuilder.loadResources(resourceManager);
+		GameResources.load(resourceManager);
 
 		titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");

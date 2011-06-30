@@ -38,7 +38,7 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
-import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
@@ -46,15 +46,16 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	
 	private final Game game;
 	SpriteBatch spriteBatch;
-	Libgdx2dCamera libgdxCamera;
+	Libgdx2dCamera worldCamera;
 	Camera cameraData;
 	
 	BodyBuilder bodyBuilder;
 
 	EntityTemplates entityTemplates;
 	EntityManager entityManager;
-	private World world;
-	private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
+	World world;
+	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
+	ResourceManager<String> resourceManager;
 
 	public PracticeModeGameState(Game game) {
 		this.game = game;
@@ -69,13 +70,13 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 		world = new World(new Vector2(), false);
 		world.setContactListener(new PhysicsContactListener());
 		
-		libgdxCamera = new Libgdx2dCameraTransformImpl();
-		libgdxCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		worldCamera = new Libgdx2dCameraTransformImpl();
+		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		
-		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) libgdxCamera, world);
+		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, world);
 		
-		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
-		GameResourceBuilder.loadResources(resourceManager);
+		resourceManager = new ResourceManagerImpl<String>();
+		GameResources.load(resourceManager);
 
 		entityTemplates = new EntityTemplates(world, entityManager, resourceManager);
 
@@ -187,11 +188,10 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		libgdxCamera.move(cameraData.getX(), cameraData.getY());
-		libgdxCamera.zoom(cameraData.getZoom());
-		libgdxCamera.rotate(cameraData.getAngle());
-
-		libgdxCamera.apply(spriteBatch);
+		worldCamera.move(cameraData.getX(), cameraData.getY());
+		worldCamera.zoom(cameraData.getZoom());
+		worldCamera.rotate(cameraData.getAngle());
+		worldCamera.apply(spriteBatch);
 
 		renderEntities(spriteBatch);
 	}
@@ -277,6 +277,8 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
+		world.dispose();
+		resourceManager.unloadAll();
 	}
 
 }

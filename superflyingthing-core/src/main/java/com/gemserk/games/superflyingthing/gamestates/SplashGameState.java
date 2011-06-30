@@ -12,7 +12,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
@@ -51,7 +51,7 @@ public class SplashGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
 
-		GameResourceBuilder.loadResources(resourceManager);
+		GameResources.load(resourceManager);
 
 		gemserkLogo = resourceManager.getResourceValue("GemserkLogo");
 		gemserkLogoBlur = resourceManager.getResourceValue("GemserkLogoBlur");
