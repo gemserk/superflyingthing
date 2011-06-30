@@ -73,56 +73,67 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
 		
-		createGameRandomMode();
-	}
-
-	private void createGameRandomMode() {
-		entityManager = new EntityManagerImpl(this);
-		entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
-
-		cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
-
-		Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
-
-		for (int i = 0; i < 10; i++) {
-			entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
-			entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
-		}
-
-		for (int i = 0; i < 10; i++) {
-			float x = MathUtils.random(10f, 90f);
-			float y = MathUtils.random(2f, 13f);
-			entityManager.add(entityTemplates.diamond(x, y, 0.2f));
-		}
-
-		Entity camera = entityTemplates.camera(cameraData);
-		entityManager.add(camera);
-
-		Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
-
-		entityManager.add(startPlanet);
-		entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
-
-		float worldWidth = 100f;
-		float worldHeight = 20f;
-
-		float x = worldWidth * 0.5f;
-		float y = worldHeight * 0.5f;
-
-		entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
-		entityManager.add(entityTemplates.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
-		entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
-		entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
-
-		Entity e = new Entity();
-		e.addComponent(new GameDataComponent(null, startPlanet, camera));
-		e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
-		e.addBehavior(new RemoveDeadShipBehavior(entityManager));
-		e.addBehavior(new CreateNewShipBehavior(entityManager, entityTemplates));
-		e.addBehavior(new FixCameraTargetBehavior());
-		entityManager.add(e);
+		new RandomMode().create(this);
 	}
 	
+
+	static class RandomMode {
+		
+		void create(PracticeModeGameState p) {
+			World physicsWorld = p.physicsWorld;
+			ResourceManager<String> resourceManager = p.resourceManager;
+			Camera camera = p.cameraData;
+			
+			EntityManager entityManager = new EntityManagerImpl(p);
+			EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+			
+			p.entityManager = entityManager;
+			p.entityTemplates = entityTemplates;
+
+			camera = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
+
+			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
+
+			for (int i = 0; i < 10; i++) {
+				entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
+				entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
+			}
+
+			for (int i = 0; i < 10; i++) {
+				float x = MathUtils.random(10f, 90f);
+				float y = MathUtils.random(2f, 13f);
+				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
+			}
+
+			Entity cameraEntity = entityTemplates.camera(camera);
+			entityManager.add(cameraEntity);
+
+			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
+
+			entityManager.add(startPlanet);
+			entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
+
+			float worldWidth = 100f;
+			float worldHeight = 20f;
+
+			float x = worldWidth * 0.5f;
+			float y = worldHeight * 0.5f;
+
+			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
+
+			Entity e = new Entity();
+			e.addComponent(new GameDataComponent(null, startPlanet, cameraEntity));
+			e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
+			e.addBehavior(new RemoveDeadShipBehavior(entityManager));
+			e.addBehavior(new CreateNewShipBehavior(entityManager, entityTemplates));
+			e.addBehavior(new FixCameraTargetBehavior());
+			entityManager.add(e);
+		}
+		
+	}
 
 	@Override
 	public void init(Entity e) {
