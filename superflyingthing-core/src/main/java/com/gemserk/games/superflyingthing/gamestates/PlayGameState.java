@@ -125,10 +125,14 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 			Entity e = new Entity();
+			
 			e.addComponent(new GameDataComponent(null, startPlanet, cameraEntity));
+			
 			e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
 			e.addBehavior(new RemoveDeadShipBehavior(entityManager));
+			
 			e.addBehavior(new CreateNewShipBehavior(entityManager, entityTemplates));
+			
 			e.addBehavior(new FixCameraTargetBehavior());
 			entityManager.add(e);
 		}

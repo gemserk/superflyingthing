@@ -6,17 +6,22 @@ import java.util.Map;
 
 public class Entity {
 
-	Map<Class<?>, Object> components;
+	Map<String, Object> components;
 
 	ArrayList<Behavior> behaviors;
 
 	@SuppressWarnings("unchecked")
 	public <T> T getComponent(Class<T> clazz) {
-		return (T) components.get(clazz);
+		return (T) components.get(clazz.getName());
 	}
-
+	
+	@SuppressWarnings("unchecked")
+	public <T> T getComponent(String name) {
+		return (T) components.get(name);
+	}
+	
 	public Entity() {
-		components = new HashMap<Class<?>, Object>();
+		components = new HashMap<String, Object>();
 		behaviors = new ArrayList<Behavior>();
 	}
 
@@ -25,7 +30,11 @@ public class Entity {
 	}
 
 	public void addComponent(Class<?> clazz, Object component) {
-		components.put(clazz, component);
+		addComponent(clazz.getName(), component);
+	}
+
+	public void addComponent(String name, Object component) {
+		components.put(name, component);
 	}
 
 	public void addBehavior(Behavior behavior) {

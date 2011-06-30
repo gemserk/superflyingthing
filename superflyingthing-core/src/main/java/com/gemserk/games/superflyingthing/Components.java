@@ -8,7 +8,15 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
-
+	
+	public static class Trigger {
+		
+		public void trigger(Entity e) {
+			
+		}
+		
+	}
+	
 	public static class CameraComponent {
 
 		private Camera camera;
