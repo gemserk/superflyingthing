@@ -17,6 +17,7 @@ import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
@@ -334,5 +335,116 @@ public class Behaviors {
 			Gdx.app.log("SuperSheep", "die!");
 		}
 	}
+	
+	// game behaviors
+	
+	public static class FixCameraTargetBehavior extends Behavior {
+		@Override
+		public void update(int delta, Entity e) {
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			if (gameDataComponent == null)
+				return;
+			Entity ship = gameDataComponent.ship;
+			if (ship == null)
+				return;
+			
+			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
+
+			if (attachableComponent.getOwner() != null)
+				targetComponent.setTarget(attachableComponent.getOwner());
+			else
+				targetComponent.setTarget(ship);
+		}
+	}
+
+	public static class CreateNewShipBehavior extends Behavior {
+		
+		EntityManager entityManager;
+		EntityTemplates entityTemplates;
+
+		public CreateNewShipBehavior(EntityManager entityManager, EntityTemplates entityTemplates) {
+			this.entityManager = entityManager;
+			this.entityTemplates = entityTemplates;
+		}
+		
+		@Override
+		public void update(int delta, Entity e) {
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			if (gameDataComponent == null)
+				return;
+			Entity ship = gameDataComponent.ship;
+			if (ship != null)
+				return;
+			ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
+			entityManager.add(ship);
+
+			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+			attachmentComponent.setEntity(ship);
+
+			gameDataComponent.ship = ship;
+		}
+	}
+
+	public static class RemoveDeadShipBehavior extends Behavior {
+		
+		EntityManager entityManager;
+
+		public RemoveDeadShipBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
+		}
+		
+		@Override
+		public void update(int delta, Entity e) {
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			if (gameDataComponent == null)
+				return;
+			Entity ship = gameDataComponent.ship;
+			if (ship == null)
+				return;
+			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
+
+			if (aliveComponent == null)
+				return;
+			if (!aliveComponent.isDead())
+				return;
+
+			entityManager.remove(ship);
+			
+			gameDataComponent.ship = null;
+		}
+	}
+
+	public static class CreateDeadShipBehavior extends Behavior {
+		
+		EntityManager entityManager;
+		EntityTemplates entityTemplates;
+
+		public CreateDeadShipBehavior(EntityManager entityManager, EntityTemplates entityTemplates) {
+			this.entityManager = entityManager;
+			this.entityTemplates = entityTemplates;
+		}
+		
+		@Override
+		public void update(int delta, Entity e) {
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			if (gameDataComponent == null)
+				return;
+			Entity ship = gameDataComponent.ship;
+			if (ship == null)
+				return;
+			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
+			if (aliveComponent == null)
+				return;
+			if (!aliveComponent.isDead())
+				return;
+
+			Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
+
+			Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
+			entityManager.add(deadSuperSheepEntity);
+		}
+	}
+
 
 }

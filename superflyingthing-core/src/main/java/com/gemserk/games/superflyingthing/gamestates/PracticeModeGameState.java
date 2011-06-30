@@ -2,14 +2,11 @@ package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
@@ -18,26 +15,17 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Physics;
-import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
-import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
-import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
-import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.entities.EntityManager;
-import com.gemserk.games.entities.EntityManagerImpl;
+import com.gemserk.games.superflyingthing.Behaviors.CreateDeadShipBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.CreateNewShipBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.RemoveDeadShipBehavior;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
-import com.gemserk.games.superflyingthing.Components.AliveComponent;
-import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.SpriteComponent;
-import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
@@ -46,188 +34,13 @@ import com.gemserk.resources.ResourceManagerImpl;
 
 public class PracticeModeGameState extends GameStateImpl {
 	
-	class FixCameraTargetBehavior extends Behavior {
-		@Override
-		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship == null)
-				return;
-			
-			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
-
-			if (attachableComponent.getOwner() != null)
-				targetComponent.setTarget(attachableComponent.getOwner());
-			else
-				targetComponent.setTarget(ship);
-		}
-	}
-
-	class CreateNewShipBehavior extends Behavior {
-		
-		EntityManager entityManager;
-
-		public CreateNewShipBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
-		
-		@Override
-		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship != null)
-				return;
-			ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
-			entityManager.add(ship);
-
-			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-			attachmentComponent.setEntity(ship);
-
-			gameDataComponent.ship = ship;
-		}
-	}
-
-	class RemoveDeadShipBehavior extends Behavior {
-		
-		EntityManager entityManager;
-
-		public RemoveDeadShipBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
-		
-		@Override
-		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship == null)
-				return;
-			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-
-			if (aliveComponent == null)
-				return;
-			if (!aliveComponent.isDead())
-				return;
-
-			entityManager.remove(ship);
-			
-			gameDataComponent.ship = null;
-		}
-	}
-
-	class CreateDeadShipBehavior extends Behavior {
-		
-		EntityManager entityManager;
-
-		public CreateDeadShipBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
-		
-		@Override
-		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship == null)
-				return;
-			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-			if (aliveComponent == null)
-				return;
-			if (!aliveComponent.isDead())
-				return;
-
-			Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
-
-			Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
-			entityManager.add(deadSuperSheepEntity);
-		}
-	}
-
-	class RealGame implements EntityLifeCycleHandler {
-
-		private World world;
-		private EntityManager entityManager;
-		
-		public RealGame(World world) {
-			this.entityManager = new EntityManagerImpl(this);
-			this.world = world;
-		}
-
-		@Override
-		public void init(Entity e) {
-
-		}
-
-		@Override
-		public void dispose(Entity e) {
-			diposeJoints(e);
-			disposeBody(e);
-		}
-
-		private void disposeBody(Entity e) {
-			Physics physics = ComponentWrapper.getPhysics(e);
-			if (physics == null)
-				return;
-
-			Body body = physics.getBody();
-			body.setUserData(null);
-
-			com.gemserk.commons.gdx.box2d.Contact contact = physics.getContact();
-
-			// removes contact from the other entity
-			for (int i = 0; i < contact.getContactCount(); i++) {
-				if (!contact.isInContact(i))
-					continue;
-
-				Body otherBody = contact.getBody(i);
-				if (otherBody == null)
-					continue;
-
-				Entity otherEntity = (Entity) otherBody.getUserData();
-				if (otherEntity == null)
-					continue;
-
-				Physics otherPhysics = ComponentWrapper.getPhysics(otherEntity);
-				otherPhysics.getContact().removeContact(body);
-			}
-
-			world.destroyBody(body);
-			Gdx.app.log("SuperSheep", "removing body from physics world");
-		}
-
-		private void diposeJoints(Entity e) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
-			if (entityAttachment == null)
-				return;
-			if (entityAttachment.getJoint() == null)
-				return;
-			world.destroyJoint(entityAttachment.getJoint());
-			Gdx.app.log("SuperSheep", "removing joints from physics world");
-		}
-
-		public void update(int delta) {
-			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-			entityManager.update(delta);
-		}
-
-	}
-
 	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera libgdxCamera;
-	World world;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	BodyBuilder bodyBuilder;
 
 	EntityTemplates entityTemplates;
-	EntityManager entityManager;
 
 	Entity camera;
 
@@ -242,11 +55,10 @@ public class PracticeModeGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 		libgdxCamera = new Libgdx2dCameraTransformImpl();
 
-		world = new World(new Vector2(), false);
-		world.setContactListener(new PhysicsContactListener());
-
-		realGame = new RealGame(world);
-		entityManager = realGame.entityManager;
+		realGame = new RealGame();
+		
+		EntityManager entityManager = realGame.entityManager;
+		World world = realGame.getWorld();
 		
 		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
 		GameResourceBuilder.loadResources(resourceManager);
@@ -303,87 +115,36 @@ public class PracticeModeGameState extends GameStateImpl {
 
 		Entity e = new Entity();
 		e.addComponent(new GameDataComponent(ship, startPlanet, camera));
-		e.addBehavior(new CreateDeadShipBehavior(entityManager));
+		e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
 		e.addBehavior(new RemoveDeadShipBehavior(entityManager));
-		e.addBehavior(new CreateNewShipBehavior(entityManager));
+		e.addBehavior(new CreateNewShipBehavior(entityManager, entityTemplates));
 		e.addBehavior(new FixCameraTargetBehavior());
 		entityManager.add(e);
 		
+		realGame.init();
 	}
 
 	@Override
 	public void render(int delta) {
+		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+
 		Camera cameraData = ComponentWrapper.getCamera(camera);
 
 		libgdxCamera.move(cameraData.getX(), cameraData.getY());
 		libgdxCamera.zoom(cameraData.getZoom());
 		libgdxCamera.rotate(cameraData.getAngle());
 
-		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		libgdxCamera.apply(spriteBatch);
 
-		renderEntities();
+		realGame.renderEntities(spriteBatch);
 
 		box2dCustomDebugRenderer.render();
-
-		for (int i = 0; i < entityManager.entitiesCount(); i++) {
-			Entity e = entityManager.get(i);
-			renderMovementDebug(e);
-			renderAttachmentDebug(e);
-		}
-
-	}
-
-	private void renderEntities() {
-		spriteBatch.begin();
-		for (int i = 0; i < entityManager.entitiesCount(); i++) {
-			Entity e = entityManager.get(i);
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			if (spatial == null)
-				continue;
-			SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
-			if (spriteComponent == null)
-				continue;
-			Sprite sprite = spriteComponent.getSprite();
-			sprite.setSize(spatial.getWidth(), spatial.getHeight());
-			sprite.setColor(spriteComponent.getColor());
-			Vector2 position = spatial.getPosition();
-			SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
-		}
-		spriteBatch.end();
-	}
-
-	private void renderAttachmentDebug(Entity e) {
-		Spatial spatial = ComponentWrapper.getSpatial(e);
-		if (spatial == null)
-			return;
-		AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-		if (attachmentComponent == null)
-			return;
-		Vector2 position = spatial.getPosition();
-		ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
-	}
-
-	private void renderMovementDebug(Entity e) {
-		Spatial spatial = ComponentWrapper.getSpatial(e);
-		if (spatial == null)
-			return;
-		Vector2 position = spatial.getPosition();
-		MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-		if (movementComponent == null)
-			return;
-		Vector2 direction = movementComponent.getDirection();
-		float x = position.x + direction.tmp().mul(0.5f).x;
-		float y = position.y + direction.tmp().mul(0.5f).y;
-		ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 	}
 
 	@Override
 	public void update(int delta) {
-
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) 
 			game.transition(game.getMainMenuScreen(), 500, 500);
-		}
 
 		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
 			dispose();
@@ -409,6 +170,6 @@ public class PracticeModeGameState extends GameStateImpl {
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		world.dispose();
+		realGame.dispose();
 	}
 }
