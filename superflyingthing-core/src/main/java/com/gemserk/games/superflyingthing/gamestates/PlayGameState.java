@@ -74,7 +74,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
 
-		new RandomMode().create(this);
+		// new RandomMode().create(this);
+		new PracticeMode().create(this);
 	}
 
 	static class RandomMode {
@@ -129,7 +130,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component("entityDeadTrigger", new Trigger() {
 						@Override
-						public void trigger(Entity e) {
+						public void onTrigger(Entity e) {
 							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 							entityManager.remove(gameDataComponent.ship);
 
@@ -143,7 +144,82 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.behavior(new CallTriggerIfEntityDeadBehavior()) //
 					.component("noEntityTrigger", new Trigger() {
 						@Override
-						public void trigger(Entity e) {
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
+							entityManager.add(ship);
+							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+							attachmentComponent.setEntity(ship);
+							gameDataComponent.ship = ship;
+						}
+					}) //
+					.behavior(new CallTriggerIfNoShipBehavior()) //
+					.behavior(new FixCameraTargetBehavior()) //
+					.build();
+			entityManager.add(game);
+		}
+	}
+
+	static class PracticeMode {
+
+		EntityBuilder entityBuilder = new EntityBuilder();
+
+		void create(PlayGameState p) {
+			World physicsWorld = p.physicsWorld;
+			ResourceManager<String> resourceManager = p.resourceManager;
+
+			final EntityManager entityManager = new EntityManagerImpl(p);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+
+			p.entityManager = entityManager;
+			p.entityTemplates = entityTemplates;
+
+			p.cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
+
+			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
+
+			for (int i = 0; i < 10; i++) {
+				entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
+				entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
+			}
+
+			for (int i = 0; i < 10; i++) {
+				float x = MathUtils.random(10f, 90f);
+				float y = MathUtils.random(2f, 13f);
+				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
+			}
+
+			Entity cameraEntity = entityTemplates.camera(p.cameraData);
+			entityManager.add(cameraEntity);
+
+			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
+
+			entityManager.add(startPlanet);
+			entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
+
+			float worldWidth = 100f;
+			float worldHeight = 20f;
+
+			float x = worldWidth * 0.5f;
+			float y = worldHeight * 0.5f;
+
+			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
+
+			Entity game = entityBuilder //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component("entityDeadTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							Gdx.app.log("SuperSheep", "super sheep is supposed to be dead...");
+						}
+					}) //
+					.behavior(new CallTriggerIfEntityDeadBehavior()) //
+					.component("noEntityTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
 							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 							Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
 							entityManager.add(ship);
