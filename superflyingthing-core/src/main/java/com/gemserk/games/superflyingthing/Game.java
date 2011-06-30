@@ -10,7 +10,7 @@ import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
-import com.gemserk.games.superflyingthing.gamestates.PracticeModeGameState;
+import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
@@ -55,9 +55,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 
-		playingScreen = new ScreenImpl(new PracticeModeGameState(this));
-		randomModeScreen = new ScreenImpl(new PracticeModeGameState(this));
-		practiceModeScreen = new ScreenImpl(new PracticeModeGameState(this));
+		playingScreen = new ScreenImpl(new PlayGameState(this));
+		randomModeScreen = new ScreenImpl(new PlayGameState(this));
+		practiceModeScreen = new ScreenImpl(new PlayGameState(this));
 		
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));

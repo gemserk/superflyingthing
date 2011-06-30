@@ -41,7 +41,7 @@ import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
-public class PracticeModeGameState extends GameStateImpl implements EntityLifeCycleHandler{
+public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler{
 	
 	private final Game game;
 	SpriteBatch spriteBatch;
@@ -54,7 +54,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
 
-	public PracticeModeGameState(Game game) {
+	public PlayGameState(Game game) {
 		this.game = game;
 	}
 
@@ -79,7 +79,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 
 	static class RandomMode {
 		
-		void create(PracticeModeGameState p) {
+		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
 			ResourceManager<String> resourceManager = p.resourceManager;
 			Camera camera = p.cameraData;
