@@ -49,7 +49,7 @@ public class PracticeModeGameState extends GameStateImpl {
 	class FixCameraTargetBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
 			Entity ship = gameDataComponent.ship;
@@ -57,7 +57,7 @@ public class PracticeModeGameState extends GameStateImpl {
 				return;
 			
 			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-			TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
+			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
 
 			if (attachableComponent.getOwner() != null)
 				targetComponent.setTarget(attachableComponent.getOwner());
@@ -67,9 +67,16 @@ public class PracticeModeGameState extends GameStateImpl {
 	}
 
 	class CreateNewShipBehavior extends Behavior {
+		
+		EntityManager entityManager;
+
+		public CreateNewShipBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
+		}
+		
 		@Override
 		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
 			Entity ship = gameDataComponent.ship;
@@ -86,9 +93,16 @@ public class PracticeModeGameState extends GameStateImpl {
 	}
 
 	class RemoveDeadShipBehavior extends Behavior {
+		
+		EntityManager entityManager;
+
+		public RemoveDeadShipBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
+		}
+		
 		@Override
 		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
 			Entity ship = gameDataComponent.ship;
@@ -108,16 +122,22 @@ public class PracticeModeGameState extends GameStateImpl {
 	}
 
 	class CreateDeadShipBehavior extends Behavior {
+		
+		EntityManager entityManager;
+
+		public CreateDeadShipBehavior(EntityManager entityManager) {
+			this.entityManager = entityManager;
+		}
+		
 		@Override
 		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
 			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
 			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-
 			if (aliveComponent == null)
 				return;
 			if (!aliveComponent.isDead())
@@ -282,10 +302,10 @@ public class PracticeModeGameState extends GameStateImpl {
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 		Entity e = new Entity();
-		e.addComponent(new GameDataComponent(ship, startPlanet));
-		e.addBehavior(new CreateDeadShipBehavior());
-		e.addBehavior(new RemoveDeadShipBehavior());
-		e.addBehavior(new CreateNewShipBehavior());
+		e.addComponent(new GameDataComponent(ship, startPlanet, camera));
+		e.addBehavior(new CreateDeadShipBehavior(entityManager));
+		e.addBehavior(new RemoveDeadShipBehavior(entityManager));
+		e.addBehavior(new CreateNewShipBehavior(entityManager));
 		e.addBehavior(new FixCameraTargetBehavior());
 		entityManager.add(e);
 		

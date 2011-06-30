@@ -156,12 +156,13 @@ public class Components {
 	public static class GameDataComponent {
 		
 		public Entity ship;
-		
 		public Entity startPlanet;
+		public Entity camera;
 		
-		public GameDataComponent(Entity ship, Entity startPlanet) {
+		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera) {
 			this.ship = ship;
 			this.startPlanet = startPlanet;
+			this.camera = camera;
 		}
 		
 	}
