@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
@@ -294,12 +295,17 @@ public class Behaviors {
 			Physics physics = ComponentWrapper.getPhysics(e1);
 			if (physics == null)
 				return;
-			if (!physics.getContact().isInContact())
+			Contact contact = physics.getContact();
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+				Entity e2 = (Entity) contact.getUserData(i);
+				updateGrabGrabbable(e1, e2);
+				updateAttachToAttachable(e1, e2);
+				updateAliveCollision(e1, e2);
 				return;
-			Entity e2 = (Entity) physics.getContact().getUserData();
-			updateGrabGrabbable(e1, e2);
-			updateAttachToAttachable(e1, e2);
-			updateAliveCollision(e1, e2);
+			}
+
 		}
 
 		private void updateGrabGrabbable(Entity e1, Entity e2) {
@@ -324,6 +330,8 @@ public class Behaviors {
 				return;
 			entityAttachment.entity = e1;
 		}
+		
+		// TODO: change it for a trigger instead... and decide to kill the entity outside
 
 		private void updateAliveCollision(Entity e, Entity e2) {
 			if (e2 != null)
@@ -332,7 +340,6 @@ public class Behaviors {
 			if (aliveComponent == null)
 				return;
 			aliveComponent.dead = true;
-			Gdx.app.log("SuperSheep", "die!");
 		}
 	}
 
@@ -389,7 +396,7 @@ public class Behaviors {
 				return;
 			if (!aliveComponent.isDead())
 				return;
-			
+
 			Trigger trigger = e.getComponent("entityDeadTrigger");
 			trigger.trigger(e);
 		}
