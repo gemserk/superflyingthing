@@ -206,5 +206,5 @@ public class EntityTemplates {
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		return e;
 	}
-
+	
 }

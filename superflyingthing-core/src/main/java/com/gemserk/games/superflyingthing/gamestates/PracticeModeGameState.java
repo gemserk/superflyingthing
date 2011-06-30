@@ -12,7 +12,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
@@ -49,11 +48,9 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	Libgdx2dCamera worldCamera;
 	Camera cameraData;
 	
-	BodyBuilder bodyBuilder;
-
 	EntityTemplates entityTemplates;
 	EntityManager entityManager;
-	World world;
+	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
 
@@ -64,25 +61,26 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	@Override
 	public void init() {
 		spriteBatch = new SpriteBatch();
-
-		entityManager = new EntityManagerImpl(this);
 		
-		world = new World(new Vector2(), false);
-		world.setContactListener(new PhysicsContactListener());
+		physicsWorld = new World(new Vector2(), false);
+		physicsWorld.setContactListener(new PhysicsContactListener());
 		
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		
-		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, world);
+		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 		
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
+		
+		createGameRandomMode();
+	}
 
-		entityTemplates = new EntityTemplates(world, entityManager, resourceManager);
+	private void createGameRandomMode() {
+		entityManager = new EntityManagerImpl(this);
+		entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
 
 		cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
-
-		bodyBuilder = new BodyBuilder(world);
 
 		Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
@@ -100,13 +98,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 		Entity camera = entityTemplates.camera(cameraData);
 		entityManager.add(camera);
 
-		Entity ship = entityTemplates.ship(5f, 7.5f, new Vector2(1f, 0f));
-		entityManager.add(ship);
-
 		Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
-
-		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
-		attachmentComponent.setEntity(ship);
 
 		entityManager.add(startPlanet);
 		entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
@@ -123,7 +115,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 		entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 		Entity e = new Entity();
-		e.addComponent(new GameDataComponent(ship, startPlanet, camera));
+		e.addComponent(new GameDataComponent(null, startPlanet, camera));
 		e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
 		e.addBehavior(new RemoveDeadShipBehavior(entityManager));
 		e.addBehavior(new CreateNewShipBehavior(entityManager, entityTemplates));
@@ -170,7 +162,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 			otherPhysics.getContact().removeContact(body);
 		}
 
-		world.destroyBody(body);
+		physicsWorld.destroyBody(body);
 		Gdx.app.log("SuperSheep", "removing body from physics world");
 	}
 
@@ -180,7 +172,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 			return;
 		if (entityAttachment.getJoint() == null)
 			return;
-		world.destroyJoint(entityAttachment.getJoint());
+		physicsWorld.destroyJoint(entityAttachment.getJoint());
 		Gdx.app.log("SuperSheep", "removing joints from physics world");
 	}
 
@@ -257,7 +249,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 			dispose();
 			init();
 		}
-		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
+		physicsWorld.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 		entityManager.update(delta);
 	}
 
@@ -277,7 +269,7 @@ public class PracticeModeGameState extends GameStateImpl implements EntityLifeCy
 	@Override
 	public void dispose() {
 		spriteBatch.dispose();
-		world.dispose();
+		physicsWorld.dispose();
 		resourceManager.unloadAll();
 	}
 
