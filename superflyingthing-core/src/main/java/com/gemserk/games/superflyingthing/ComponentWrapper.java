@@ -6,6 +6,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
+import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 
 public class ComponentWrapper {
@@ -38,6 +39,10 @@ public class ComponentWrapper {
 		if (e == null)
 			return null;
 		return (T) e.getComponent(clazz);
+	}
+
+	public static GameDataComponent getGameData(Entity e) {
+		return getComponent(e, GameDataComponent.class);
 	}
 
 }

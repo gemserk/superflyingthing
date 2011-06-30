@@ -152,5 +152,18 @@ public class Components {
 		float direction;
 
 	}
+	
+	public static class GameDataComponent {
+		
+		public Entity ship;
+		
+		public Entity startPlanet;
+		
+		public GameDataComponent(Entity ship, Entity startPlanet) {
+			this.ship = ship;
+			this.startPlanet = startPlanet;
+		}
+		
+	}
 
 }

@@ -31,6 +31,7 @@ import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
@@ -48,10 +49,10 @@ public class PracticeModeGameState extends GameStateImpl {
 	class FixCameraTargetBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e) {
-			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-			if (currentShipComponent == null)
+			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			if (gameDataComponent == null)
 				return;
-			Entity ship = currentShipComponent.ship;
+			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
 			
@@ -68,29 +69,29 @@ public class PracticeModeGameState extends GameStateImpl {
 	class CreateNewShipBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e) {
-			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-			if (currentShipComponent == null)
+			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			if (gameDataComponent == null)
 				return;
-			Entity ship = currentShipComponent.ship;
+			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
 			ship = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
 			entityManager.add(ship);
 
-			AttachmentComponent attachmentComponent = currentShipComponent.startPlanet.getComponent(AttachmentComponent.class);
+			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 			attachmentComponent.setEntity(ship);
 
-			currentShipComponent.ship = ship;
+			gameDataComponent.ship = ship;
 		}
 	}
 
 	class RemoveDeadShipBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e) {
-			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-			if (currentShipComponent == null)
+			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			if (gameDataComponent == null)
 				return;
-			Entity ship = currentShipComponent.ship;
+			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
 			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
@@ -102,17 +103,17 @@ public class PracticeModeGameState extends GameStateImpl {
 
 			entityManager.remove(ship);
 			
-			currentShipComponent.ship = null;
+			gameDataComponent.ship = null;
 		}
 	}
 
 	class CreateDeadShipBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e) {
-			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-			if (currentShipComponent == null)
+			GameDataComponent gameDataComponent = e.getComponent(GameDataComponent.class);
+			if (gameDataComponent == null)
 				return;
-			Entity ship = currentShipComponent.ship;
+			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
 			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
@@ -127,19 +128,6 @@ public class PracticeModeGameState extends GameStateImpl {
 			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
 			entityManager.add(deadSuperSheepEntity);
 		}
-	}
-
-	class CurrentShipComponent {
-		
-		Entity ship;
-		
-		Entity startPlanet;
-		
-		public CurrentShipComponent(Entity ship, Entity startPlanet) {
-			this.ship = ship;
-			this.startPlanet = startPlanet;
-		}
-		
 	}
 
 	class RealGame implements EntityLifeCycleHandler {
@@ -294,7 +282,7 @@ public class PracticeModeGameState extends GameStateImpl {
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 		Entity e = new Entity();
-		e.addComponent(new CurrentShipComponent(ship, startPlanet));
+		e.addComponent(new GameDataComponent(ship, startPlanet));
 		e.addBehavior(new CreateDeadShipBehavior());
 		e.addBehavior(new RemoveDeadShipBehavior());
 		e.addBehavior(new CreateNewShipBehavior());
