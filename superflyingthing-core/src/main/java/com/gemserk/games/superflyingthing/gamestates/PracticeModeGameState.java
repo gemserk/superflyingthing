@@ -44,97 +44,112 @@ import com.gemserk.resources.ResourceManagerImpl;
 // All screens/gamestates should be the same, and have different game world instantiations...
 
 public class PracticeModeGameState extends GameStateImpl {
+	
+	class FixCameraTargetBehavior extends Behavior {
+		@Override
+		public void update(int delta, Entity e) {
+			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+			if (currentShipComponent == null)
+				return;
+			Entity ship = currentShipComponent.ship;
+			if (ship == null)
+				return;
+			
+			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+			TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
+
+			if (attachableComponent.getOwner() != null)
+				targetComponent.setTarget(attachableComponent.getOwner());
+			else
+				targetComponent.setTarget(ship);
+		}
+	}
+
+	class CreateNewShipBehavior extends Behavior {
+		@Override
+		public void update(int delta, Entity e) {
+			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+			if (currentShipComponent == null)
+				return;
+			Entity ship = currentShipComponent.ship;
+			if (ship != null)
+				return;
+			ship = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
+			entityManager.add(ship);
+
+			AttachmentComponent attachmentComponent = currentShipComponent.startPlanet.getComponent(AttachmentComponent.class);
+			attachmentComponent.setEntity(ship);
+
+			currentShipComponent.ship = ship;
+		}
+	}
+
+	class RemoveDeadShipBehavior extends Behavior {
+		@Override
+		public void update(int delta, Entity e) {
+			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+			if (currentShipComponent == null)
+				return;
+			Entity ship = currentShipComponent.ship;
+			if (ship == null)
+				return;
+			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
+
+			if (aliveComponent == null)
+				return;
+			if (!aliveComponent.isDead())
+				return;
+
+			entityManager.remove(ship);
+			
+			currentShipComponent.ship = null;
+		}
+	}
+
+	class CreateDeadShipBehavior extends Behavior {
+		@Override
+		public void update(int delta, Entity e) {
+			CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+			if (currentShipComponent == null)
+				return;
+			Entity ship = currentShipComponent.ship;
+			if (ship == null)
+				return;
+			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
+
+			if (aliveComponent == null)
+				return;
+			if (!aliveComponent.isDead())
+				return;
+
+			Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
+
+			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
+			entityManager.add(deadSuperSheepEntity);
+		}
+	}
+
+	class CurrentShipComponent {
+		
+		Entity ship;
+		
+		Entity startPlanet;
+		
+		public CurrentShipComponent(Entity ship, Entity startPlanet) {
+			this.ship = ship;
+			this.startPlanet = startPlanet;
+		}
+		
+	}
 
 	class RealGame implements EntityLifeCycleHandler {
 
-		private Entity startPlanet;
 		private World world;
-		private Entity ship;
 		private EntityManager entityManager;
-		
-		class CurrentShipComponent {
-			
-			Entity ship;
-			
-			public CurrentShipComponent(Entity ship) {
-				this.ship = ship;
-			}
-			
-		}
 		
 		public RealGame(World world) {
 			this.entityManager = new EntityManagerImpl(this);
 			this.world = world;
-		}
-		
-		public void init() {
-			// game logic entity 
-			Entity e = new Entity();
-			e.addComponent(new CurrentShipComponent(ship));
-			e.addBehavior(new Behavior() {
-				@Override
-				public void update(int delta, Entity e) {
-					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-					if (currentShipComponent == null)
-						return;
-					Entity ship = currentShipComponent.ship;
-					if (ship == null)
-						return;
-					AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-
-					if (aliveComponent == null)
-						return;
-					if (!aliveComponent.isDead())
-						return;
-
-					entityManager.remove(ship);
-					
-					Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
-
-					Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
-					entityManager.add(deadSuperSheepEntity);
-					
-					currentShipComponent.ship = null;
-				}
-			});
-			e.addBehavior(new Behavior(){
-				@Override
-				public void update(int delta, Entity e) {
-					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-					if (currentShipComponent == null)
-						return;
-					Entity ship = currentShipComponent.ship;
-					if (ship != null)
-						return;
-					ship = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
-					entityManager.add(ship);
-
-					AttachmentComponent attachmentComponent = getStartPlanet().getComponent(AttachmentComponent.class);
-					attachmentComponent.setEntity(ship);
-
-					currentShipComponent.ship = ship;
-				}
-			});
-			e.addBehavior(new Behavior(){
-				@Override
-				public void update(int delta, Entity e) {
-					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
-					if (currentShipComponent == null)
-						return;
-					Entity ship = currentShipComponent.ship;
-					if (ship == null)
-						return;
-					
-					AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-					TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
-
-					if (attachableComponent.getOwner() != null)
-						targetComponent.setTarget(attachableComponent.getOwner());
-					else
-						targetComponent.setTarget(ship);
-				}
-			});
-			entityManager.add(e);
 		}
 
 		@Override
@@ -192,18 +207,6 @@ public class PracticeModeGameState extends GameStateImpl {
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 			entityManager.update(delta);
-		}
-		
-		void setShip(Entity ship) {
-			this.ship = ship;
-		}
-
-		void setStartPlanet(Entity startPlanet) {
-			this.startPlanet = startPlanet;
-		}
-
-		Entity getStartPlanet() {
-			return startPlanet;
 		}
 
 	}
@@ -290,10 +293,14 @@ public class PracticeModeGameState extends GameStateImpl {
 		entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
-		realGame.setShip(ship);
-		realGame.setStartPlanet(startPlanet);
+		Entity e = new Entity();
+		e.addComponent(new CurrentShipComponent(ship, startPlanet));
+		e.addBehavior(new CreateDeadShipBehavior());
+		e.addBehavior(new RemoveDeadShipBehavior());
+		e.addBehavior(new CreateNewShipBehavior());
+		e.addBehavior(new FixCameraTargetBehavior());
+		entityManager.add(e);
 		
-		realGame.init();
 	}
 
 	@Override
