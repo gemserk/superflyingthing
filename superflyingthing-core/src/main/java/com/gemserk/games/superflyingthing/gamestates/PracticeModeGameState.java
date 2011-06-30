@@ -22,6 +22,7 @@ import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.entities.EntityManager;
@@ -47,13 +48,82 @@ public class PracticeModeGameState extends GameStateImpl {
 	class RealGame implements EntityLifeCycleHandler {
 
 		private Entity startPlanet;
-		
 		private World world;
+		private Entity ship;
 		private EntityManager entityManager;
+		
+		class CurrentShipComponent {
+			
+			Entity ship;
+			
+			public CurrentShipComponent(Entity ship) {
+				this.ship = ship;
+			}
+			
+		}
 		
 		public RealGame(World world) {
 			this.entityManager = new EntityManagerImpl(this);
 			this.world = world;
+		}
+		
+		public void init() {
+			// game logic entity 
+			Entity e = new Entity();
+			e.addComponent(new CurrentShipComponent(ship));
+			e.addBehavior(new Behavior() {
+				@Override
+				public void update(int delta, Entity e) {
+					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+					if (currentShipComponent == null)
+						return;
+					
+					Entity ship = currentShipComponent.ship;
+					
+					if (ship == null)
+						return;
+					AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
+
+					if (aliveComponent == null)
+						return;
+					if (!aliveComponent.isDead())
+						return;
+
+					entityManager.remove(ship);
+					
+					Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
+
+					Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
+					entityManager.add(deadSuperSheepEntity);
+					
+					currentShipComponent.ship = null;
+					
+					System.out.println("Behavior: removed current ship from game");
+				}
+			});
+			e.addBehavior(new Behavior(){
+				@Override
+				public void update(int delta, Entity e) {
+					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+					if (currentShipComponent == null)
+						return;
+					Entity ship = currentShipComponent.ship;
+					if (ship != null)
+						return;
+					ship = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
+					entityManager.add(ship);
+
+					AttachmentComponent attachmentComponent = getStartPlanet().getComponent(AttachmentComponent.class);
+					attachmentComponent.setEntity(ship);
+
+					currentShipComponent.ship = ship;
+					
+					System.out.println("Behavior: new ship for game created");
+					// remove this one...
+					setShip(ship);
+				}
+			});
+			entityManager.add(e);
 		}
 
 		@Override
@@ -114,12 +184,11 @@ public class PracticeModeGameState extends GameStateImpl {
 			entityManager.update(delta);
 
 			updateCameraTarget(delta);
-			updateHandleDeadShipBehavior(delta, getShip());
-			updateCreateNewShipOnStartPlanet(delta, getShip());
+			// updateHandleDeadShipBehavior(delta, getShip());
+			// updateCreateNewShipOnStartPlanet(delta, getShip());
 		}
 		
 		boolean shouldCreateNewShip = false;
-		private Entity ship;
 
 		private void updateHandleDeadShipBehavior(int delta, Entity e) {
 			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
@@ -266,6 +335,8 @@ public class PracticeModeGameState extends GameStateImpl {
 
 		realGame.setShip(ship);
 		realGame.setStartPlanet(startPlanet);
+		
+		realGame.init();
 	}
 
 	@Override
