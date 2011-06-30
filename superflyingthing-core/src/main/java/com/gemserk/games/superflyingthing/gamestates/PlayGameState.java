@@ -25,10 +25,9 @@ import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.entities.EntityManagerImpl;
-import com.gemserk.games.superflyingthing.Behaviors.CreateDeadShipBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.CreateNewShipBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfEntityDeadBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.RemoveDeadShipBehavior;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
@@ -126,10 +125,20 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity e = new Entity();
 
 			e.addComponent(new GameDataComponent(null, startPlanet, cameraEntity));
-
-			e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
-			e.addBehavior(new RemoveDeadShipBehavior(entityManager));
-
+			e.addComponent("entityDeadTrigger", new Trigger() {
+				@Override
+				public void trigger(Entity e) {
+					GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+					entityManager.remove(gameDataComponent.ship);
+					
+					Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+					Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
+					entityManager.add(deadSuperSheepEntity);
+					
+					gameDataComponent.ship = null;
+				}
+			});
+			e.addBehavior(new CallTriggerIfEntityDeadBehavior());
 			e.addComponent("noEntityTrigger", new Trigger() {
 				@Override
 				public void trigger(Entity e) {
@@ -141,7 +150,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					gameDataComponent.ship = ship;
 				}
 			});
-			e.addBehavior(new CreateNewShipBehavior(entityManager));
+			e.addBehavior(new CallTriggerIfNoShipBehavior());
 
 			e.addBehavior(new FixCameraTargetBehavior());
 			entityManager.add(e);

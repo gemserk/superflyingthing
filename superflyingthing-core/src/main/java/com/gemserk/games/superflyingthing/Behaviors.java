@@ -358,15 +358,7 @@ public class Behaviors {
 		}
 	}
 
-	public static class CreateNewShipBehavior extends Behavior {
-
-		EntityManager entityManager;
-//		EntityTemplates entityTemplates;
-
-		public CreateNewShipBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-//			this.entityTemplates = entityTemplates;
-		}
+	public static class CallTriggerIfNoShipBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity e) {
@@ -376,27 +368,12 @@ public class Behaviors {
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
-
 			Trigger trigger = e.getComponent("noEntityTrigger");
 			trigger.trigger(e);
-
-			// ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
-			// entityManager.add(ship);
-			//
-			// AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-			// attachmentComponent.setEntity(ship);
-			//
-			// gameDataComponent.ship = ship;
 		}
 	}
 
-	public static class RemoveDeadShipBehavior extends Behavior {
-
-		EntityManager entityManager;
-
-		public RemoveDeadShipBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
-		}
+	public static class CallTriggerIfEntityDeadBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity e) {
@@ -412,41 +389,9 @@ public class Behaviors {
 				return;
 			if (!aliveComponent.isDead())
 				return;
-
-			entityManager.remove(ship);
-
-			gameDataComponent.ship = null;
-		}
-	}
-
-	public static class CreateDeadShipBehavior extends Behavior {
-
-		EntityManager entityManager;
-		EntityTemplates entityTemplates;
-
-		public CreateDeadShipBehavior(EntityManager entityManager, EntityTemplates entityTemplates) {
-			this.entityManager = entityManager;
-			this.entityTemplates = entityTemplates;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship == null)
-				return;
-			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-			if (aliveComponent == null)
-				return;
-			if (!aliveComponent.isDead())
-				return;
-
-			Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
-
-			Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
-			entityManager.add(deadSuperSheepEntity);
+			
+			Trigger trigger = e.getComponent("entityDeadTrigger");
+			trigger.trigger(e);
 		}
 	}
 
