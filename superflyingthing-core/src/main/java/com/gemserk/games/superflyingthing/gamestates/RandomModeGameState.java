@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -37,8 +36,137 @@ import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.EntityFactory;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
+import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
+import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.ResourceManagerImpl;
 
-public class RandomModeGameState extends GameStateImpl implements EntityLifeCycleHandler {
+public class RandomModeGameState extends GameStateImpl {
+
+	class RealGame implements EntityLifeCycleHandler {
+
+		private Entity startPlanet;
+		private Entity ship;
+
+		@Override
+		public void init(Entity e) {
+
+		}
+
+		@Override
+		public void dispose(Entity e) {
+			diposeJoints(e);
+			disposeBody(e);
+		}
+
+		private void disposeBody(Entity e) {
+			Physics physics = ComponentWrapper.getPhysics(e);
+			if (physics == null)
+				return;
+
+			Body body = physics.getBody();
+			body.setUserData(null);
+
+			com.gemserk.commons.gdx.box2d.Contact contact = physics.getContact();
+
+			// removes contact from the other entity
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+
+				Body otherBody = contact.getBody(i);
+				if (otherBody == null)
+					continue;
+
+				Entity otherEntity = (Entity) otherBody.getUserData();
+				if (otherEntity == null)
+					continue;
+
+				Physics otherPhysics = ComponentWrapper.getPhysics(otherEntity);
+				otherPhysics.getContact().removeContact(body);
+			}
+
+			world.destroyBody(body);
+			Gdx.app.log("SuperSheep", "removing body from physics world");
+		}
+
+		private void diposeJoints(Entity e) {
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			if (entityAttachment == null)
+				return;
+			if (entityAttachment.getJoint() == null)
+				return;
+			world.destroyJoint(entityAttachment.getJoint());
+			Gdx.app.log("SuperSheep", "removing joints from physics world");
+		}
+
+		public void update(int delta) {
+			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
+
+			entityManager.update(delta);
+
+			updateCameraTarget(delta);
+			updateHandleDeadShipBehavior(delta, getShip());
+		}
+		
+		boolean shouldCreateNewShip = false;
+
+		private void updateHandleDeadShipBehavior(int delta, Entity e) {
+			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
+
+			if (aliveComponent == null)
+				return;
+			if (!aliveComponent.isDead())
+				return;
+
+			entityManager.remove(e);
+			
+			Spatial superSheepSpatial = ComponentWrapper.getSpatial(e);
+
+			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
+			entityManager.add(deadSuperSheepEntity);
+			
+			shouldCreateNewShip = true;
+
+			createNewShipOnStartPlanet();
+		}
+
+		private void createNewShipOnStartPlanet() {
+			Entity newSuperSheep = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
+			entityManager.add(newSuperSheep);
+
+			AttachmentComponent attachmentComponent = getStartPlanet().getComponent(AttachmentComponent.class);
+			attachmentComponent.setEntity(newSuperSheep);
+
+			setShip(newSuperSheep);
+		}
+
+		private void updateCameraTarget(int delta) {
+			AttachableComponent attachableComponent = getShip().getComponent(AttachableComponent.class);
+			TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
+
+			if (attachableComponent.getOwner() != null)
+				targetComponent.setTarget(attachableComponent.getOwner());
+			else
+				targetComponent.setTarget(getShip());
+		}
+
+		void setShip(Entity ship) {
+			this.ship = ship;
+		}
+
+		Entity getShip() {
+			return ship;
+		}
+
+		void setStartPlanet(Entity startPlanet) {
+			this.startPlanet = startPlanet;
+		}
+
+		Entity getStartPlanet() {
+			return startPlanet;
+		}
+
+	}
 
 	private final Game game;
 	SpriteBatch spriteBatch;
@@ -49,9 +177,10 @@ public class RandomModeGameState extends GameStateImpl implements EntityLifeCycl
 
 	EntityFactory entityFactory;
 	EntityManager entityManager;
-	Entity startPlanet;
-	Entity ship;
+
 	Entity camera;
+
+	RealGame realGame;
 
 	public RandomModeGameState(Game game) {
 		this.game = game;
@@ -59,14 +188,19 @@ public class RandomModeGameState extends GameStateImpl implements EntityLifeCycl
 
 	@Override
 	public void init() {
-		entityManager = new EntityManagerImpl(this);
+		realGame = new RealGame();
+
+		entityManager = new EntityManagerImpl(realGame);
 		spriteBatch = new SpriteBatch();
 		libgdxCamera = new Libgdx2dCameraTransformImpl();
 
 		world = new World(new Vector2(), false);
 		world.setContactListener(new PhysicsContactListener());
+		
+		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
+		GameResourceBuilder.loadResources(resourceManager);
 
-		entityFactory = new EntityFactory(world, entityManager);
+		entityFactory = new EntityFactory(world, entityManager, resourceManager);
 
 		libgdxCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
@@ -75,10 +209,6 @@ public class RandomModeGameState extends GameStateImpl implements EntityLifeCycl
 		// camera.zoom(32f);
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) libgdxCamera, world);
-
-		Texture whiteRectangle = new Texture(Gdx.files.internal("data/images/white-rectangle.png"));
-		Sprite sprite = new Sprite(whiteRectangle);
-		sprite.setSize(0.5f, 0.5f);
 
 		bodyBuilder = new BodyBuilder(world);
 
@@ -92,24 +222,22 @@ public class RandomModeGameState extends GameStateImpl implements EntityLifeCycl
 		for (int i = 0; i < 10; i++) {
 			float x = MathUtils.random(10f, 90f);
 			float y = MathUtils.random(2f, 13f);
-			entityManager.add(entityFactory.diamond(x, y, 0.2f, sprite));
+			entityManager.add(entityFactory.diamond(x, y, 0.2f));
 		}
 
 		camera = entityFactory.camera(cameraData);
 		entityManager.add(camera);
 
-		ship = entityFactory.ship(5f, 7.5f, sprite, new Vector2(1f, 0f));
+		Entity ship = entityFactory.ship(5f, 7.5f, new Vector2(1f, 0f));
 		entityManager.add(ship);
 
-		startPlanet = entityFactory.startPlanet(5f, 7.5f, 1f);
+		Entity startPlanet = entityFactory.startPlanet(5f, 7.5f, 1f);
 
 		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
 		attachmentComponent.setEntity(ship);
-		// startMiniPlanet.attachSuperSheep(superSheep);
 
 		entityManager.add(startPlanet);
 		entityManager.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
-		// entityManager.add(entityFactory.destinationPlanet(15f, 7.5f, 1f));
 
 		float worldWidth = 100f;
 		float worldHeight = 20f;
@@ -121,59 +249,9 @@ public class RandomModeGameState extends GameStateImpl implements EntityLifeCycl
 		entityManager.add(entityFactory.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
 		entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
-		
-	}
 
-	@Override
-	public void init(Entity e) {
-
-	}
-
-	@Override
-	public void dispose(Entity e) {
-		diposeJoints(e);
-		disposeBody(e);
-	}
-
-	private void disposeBody(Entity e) {
-		Physics physics = ComponentWrapper.getPhysics(e);
-		if (physics == null)
-			return;
-
-		Body body = physics.getBody();
-		body.setUserData(null);
-
-		com.gemserk.commons.gdx.box2d.Contact contact = physics.getContact();
-
-		// removes contact from the other entity
-		for (int i = 0; i < contact.getContactCount(); i++) {
-			if (!contact.isInContact(i))
-				continue;
-
-			Body otherBody = contact.getBody(i);
-			if (otherBody == null)
-				continue;
-
-			Entity otherEntity = (Entity) otherBody.getUserData();
-			if (otherEntity == null)
-				continue;
-
-			Physics otherPhysics = ComponentWrapper.getPhysics(otherEntity);
-			otherPhysics.getContact().removeContact(body);
-		}
-
-		world.destroyBody(body);
-		Gdx.app.log("SuperSheep", "removing body from physics world");
-	}
-
-	private void diposeJoints(Entity e) {
-		AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
-		if (entityAttachment == null)
-			return;
-		if (entityAttachment.getJoint() == null)
-			return;
-		world.destroyJoint(entityAttachment.getJoint());
-		Gdx.app.log("SuperSheep", "removing joints from physics world");
+		realGame.setShip(ship);
+		realGame.setStartPlanet(startPlanet);
 	}
 
 	@Override
@@ -255,50 +333,12 @@ public class RandomModeGameState extends GameStateImpl implements EntityLifeCycl
 			init();
 		}
 
-		world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-
-		entityManager.update(delta);
-
-		updateCameraTarget(delta);
-
-		AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-
-		if (aliveComponent == null)
-			return;
-
-		if (!aliveComponent.isDead())
-			return;
-
-		entityManager.remove(ship);
-
-		Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
-		SpriteComponent spriteComponent = ComponentWrapper.getSprite(ship);
-		Sprite sprite = spriteComponent.getSprite();
-
-		Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial, new Sprite(sprite));
-		entityManager.add(deadSuperSheepEntity);
-
-		Entity newSuperSheep = entityFactory.ship(5f, 6f, new Sprite(sprite), new Vector2(1f, 0f));
-		entityManager.add(newSuperSheep);
-
-		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
-		attachmentComponent.setEntity(newSuperSheep);
-
-		this.ship = newSuperSheep;
-	}
-
-	private void updateCameraTarget(int delta) {
-		AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-		TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
-
-		if (attachableComponent.getOwner() != null)
-			targetComponent.setTarget(attachableComponent.getOwner());
-		else
-			targetComponent.setTarget(ship);
+		realGame.update(delta);
 	}
 
 	@Override
 	public void resume() {
+		// automatically handled in Game class and if no previous screen, then don't handle it (or system.exit())
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
 	}

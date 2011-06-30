@@ -30,6 +30,7 @@ import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
+import com.gemserk.resources.ResourceManager;
 
 public class EntityFactory {
 
@@ -47,10 +48,12 @@ public class EntityFactory {
 	private final EntityManager entityManager;
 	private final BodyBuilder bodyBuilder;
 	private final JointBuilder jointBuilder;
+	private final ResourceManager<String> resourceManager;
 
-	public EntityFactory(World world, EntityManager entityManager) {
+	public EntityFactory(World world, EntityManager entityManager, ResourceManager<String> resourceManager) {
 		this.world = world;
 		this.entityManager = entityManager;
+		this.resourceManager = resourceManager;
 		this.bodyBuilder = new BodyBuilder(world);
 		this.jointBuilder = new JointBuilder(world);
 	}
@@ -63,10 +66,12 @@ public class EntityFactory {
 		return e;
 	}
 
-	public Entity ship(float x, float y, Sprite sprite, Vector2 direction) {
+	public Entity ship(float x, float y, Vector2 direction) {
 		float width = 0.4f;
 		float height = 0.2f;
 
+		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		
 		Entity e = new Entity();
 
 		Body body = bodyBuilder.mass(50f) //
@@ -95,9 +100,11 @@ public class EntityFactory {
 		return e;
 	}
 
-	public Entity diamond(float x, float y, float radius, Sprite sprite) {
+	public Entity diamond(float x, float y, float radius) {
 		Entity e = new Entity();
-
+		
+		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		
 		Body body = bodyBuilder.mass(50f) //
 				.circleShape(radius) //
 				.sensor() //
@@ -116,7 +123,8 @@ public class EntityFactory {
 		return e;
 	}
 
-	public Entity deadShip(Spatial spatial, Sprite sprite) {
+	public Entity deadShip(Spatial spatial) {
+		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 		Entity e = new Entity();
 		e.addComponent(Spatial.class, new SpatialImpl(spatial));
 		e.addComponent(new SpriteComponent(sprite, Color.RED));

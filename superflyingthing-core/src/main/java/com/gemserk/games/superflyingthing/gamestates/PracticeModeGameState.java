@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -37,15 +36,25 @@ import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.EntityFactory;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
+import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
+import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.ResourceManagerImpl;
 
 // All screens/gamestates should be the same, and have different game world instantiations...
 
 public class PracticeModeGameState extends GameStateImpl {
 
 	class RealGame implements EntityLifeCycleHandler {
-		
+
 		private Entity startPlanet;
-		private Entity ship;
+		
+		private World world;
+		private EntityManager entityManager;
+		
+		public RealGame(World world) {
+			this.entityManager = new EntityManagerImpl(this);
+			this.world = world;
+		}
 
 		@Override
 		public void init(Entity e) {
@@ -98,38 +107,51 @@ public class PracticeModeGameState extends GameStateImpl {
 			world.destroyJoint(entityAttachment.getJoint());
 			Gdx.app.log("SuperSheep", "removing joints from physics world");
 		}
-		
+
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 
 			entityManager.update(delta);
 
 			updateCameraTarget(delta);
+			updateHandleDeadShipBehavior(delta, getShip());
+			updateCreateNewShipOnStartPlanet(delta, getShip());
+		}
+		
+		boolean shouldCreateNewShip = false;
+		private Entity ship;
 
-			AliveComponent aliveComponent = getShip().getComponent(AliveComponent.class);
+		private void updateHandleDeadShipBehavior(int delta, Entity e) {
+			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
 
 			if (aliveComponent == null)
 				return;
-
 			if (!aliveComponent.isDead())
 				return;
 
-			entityManager.remove(getShip());
+			entityManager.remove(e);
+			
+			Spatial superSheepSpatial = ComponentWrapper.getSpatial(e);
 
-			Spatial superSheepSpatial = ComponentWrapper.getSpatial(getShip());
-			SpriteComponent spriteComponent = ComponentWrapper.getSprite(getShip());
-			Sprite sprite = spriteComponent.getSprite();
-
-			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial, new Sprite(sprite));
+			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
 			entityManager.add(deadSuperSheepEntity);
+			
+			shouldCreateNewShip = true;
+		}
 
-			Entity newSuperSheep = entityFactory.ship(5f, 6f, new Sprite(sprite), new Vector2(1f, 0f));
+		private void updateCreateNewShipOnStartPlanet(int delta, Entity e) {
+			if (!shouldCreateNewShip)
+				return;
+			
+			Entity newSuperSheep = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
 			entityManager.add(newSuperSheep);
 
 			AttachmentComponent attachmentComponent = getStartPlanet().getComponent(AttachmentComponent.class);
 			attachmentComponent.setEntity(newSuperSheep);
 
 			setShip(newSuperSheep);
+			
+			shouldCreateNewShip = false;
 		}
 
 		private void updateCameraTarget(int delta) {
@@ -158,7 +180,6 @@ public class PracticeModeGameState extends GameStateImpl {
 			return startPlanet;
 		}
 
-
 	}
 
 	private final Game game;
@@ -181,16 +202,19 @@ public class PracticeModeGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		realGame = new RealGame();
-
-		entityManager = new EntityManagerImpl(realGame);
 		spriteBatch = new SpriteBatch();
 		libgdxCamera = new Libgdx2dCameraTransformImpl();
 
 		world = new World(new Vector2(), false);
 		world.setContactListener(new PhysicsContactListener());
 
-		entityFactory = new EntityFactory(world, entityManager);
+		realGame = new RealGame(world);
+		entityManager = realGame.entityManager;
+		
+		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
+		GameResourceBuilder.loadResources(resourceManager);
+
+		entityFactory = new EntityFactory(world, entityManager, resourceManager);
 
 		libgdxCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
@@ -199,10 +223,6 @@ public class PracticeModeGameState extends GameStateImpl {
 		// camera.zoom(32f);
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) libgdxCamera, world);
-
-		Texture whiteRectangle = new Texture(Gdx.files.internal("data/images/white-rectangle.png"));
-		Sprite sprite = new Sprite(whiteRectangle);
-		sprite.setSize(0.5f, 0.5f);
 
 		bodyBuilder = new BodyBuilder(world);
 
@@ -216,13 +236,13 @@ public class PracticeModeGameState extends GameStateImpl {
 		for (int i = 0; i < 10; i++) {
 			float x = MathUtils.random(10f, 90f);
 			float y = MathUtils.random(2f, 13f);
-			entityManager.add(entityFactory.diamond(x, y, 0.2f, sprite));
+			entityManager.add(entityFactory.diamond(x, y, 0.2f));
 		}
 
 		camera = entityFactory.camera(cameraData);
 		entityManager.add(camera);
 
-		Entity ship = entityFactory.ship(5f, 7.5f, sprite, new Vector2(1f, 0f));
+		Entity ship = entityFactory.ship(5f, 7.5f, new Vector2(1f, 0f));
 		entityManager.add(ship);
 
 		Entity startPlanet = entityFactory.startPlanet(5f, 7.5f, 1f);
@@ -243,7 +263,7 @@ public class PracticeModeGameState extends GameStateImpl {
 		entityManager.add(entityFactory.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
 		entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
 		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
-		
+
 		realGame.setShip(ship);
 		realGame.setStartPlanet(startPlanet);
 	}
@@ -326,7 +346,7 @@ public class PracticeModeGameState extends GameStateImpl {
 			dispose();
 			init();
 		}
-		
+
 		realGame.update(delta);
 	}
 

@@ -167,6 +167,14 @@ public class DataDrivenTest {
 		void update(int delta, Entity entity);
 
 	}
+	
+	class WorldBehavior {
+		
+		void update(int delta) {
+			
+		}
+		
+	}
 
 	static class ComponentWrapper {
 
