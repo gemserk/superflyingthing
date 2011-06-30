@@ -35,7 +35,7 @@ import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.EntityFactory;
+import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.resources.GameResourceBuilder;
@@ -82,7 +82,7 @@ public class PracticeModeGameState extends GameStateImpl {
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
-			ship = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
+			ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
 			entityManager.add(ship);
 
 			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
@@ -145,7 +145,7 @@ public class PracticeModeGameState extends GameStateImpl {
 
 			Spatial superSheepSpatial = ComponentWrapper.getSpatial(ship);
 
-			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
+			Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
 			entityManager.add(deadSuperSheepEntity);
 		}
 	}
@@ -226,7 +226,7 @@ public class PracticeModeGameState extends GameStateImpl {
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	BodyBuilder bodyBuilder;
 
-	EntityFactory entityFactory;
+	EntityTemplates entityTemplates;
 	EntityManager entityManager;
 
 	Entity camera;
@@ -251,7 +251,7 @@ public class PracticeModeGameState extends GameStateImpl {
 		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
 		GameResourceBuilder.loadResources(resourceManager);
 
-		entityFactory = new EntityFactory(world, entityManager, resourceManager);
+		entityTemplates = new EntityTemplates(world, entityManager, resourceManager);
 
 		libgdxCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
@@ -266,29 +266,29 @@ public class PracticeModeGameState extends GameStateImpl {
 		Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
 		for (int i = 0; i < 10; i++) {
-			entityManager.add(entityFactory.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
-			entityManager.add(entityFactory.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
+			entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
+			entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
 		}
 
 		for (int i = 0; i < 10; i++) {
 			float x = MathUtils.random(10f, 90f);
 			float y = MathUtils.random(2f, 13f);
-			entityManager.add(entityFactory.diamond(x, y, 0.2f));
+			entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 		}
 
-		camera = entityFactory.camera(cameraData);
+		camera = entityTemplates.camera(cameraData);
 		entityManager.add(camera);
 
-		Entity ship = entityFactory.ship(5f, 7.5f, new Vector2(1f, 0f));
+		Entity ship = entityTemplates.ship(5f, 7.5f, new Vector2(1f, 0f));
 		entityManager.add(ship);
 
-		Entity startPlanet = entityFactory.startPlanet(5f, 7.5f, 1f);
+		Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
 
 		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
 		attachmentComponent.setEntity(ship);
 
 		entityManager.add(startPlanet);
-		entityManager.add(entityFactory.destinationPlanet(95f, 7.5f, 1f));
+		entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
 
 		float worldWidth = 100f;
 		float worldHeight = 20f;
@@ -296,10 +296,10 @@ public class PracticeModeGameState extends GameStateImpl {
 		float x = worldWidth * 0.5f;
 		float y = worldHeight * 0.5f;
 
-		entityManager.add(entityFactory.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
-		entityManager.add(entityFactory.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
-		entityManager.add(entityFactory.boxObstacle(0, y, 0.1f, worldHeight, 0f));
-		entityManager.add(entityFactory.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
+		entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+		entityManager.add(entityTemplates.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
+		entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+		entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 		Entity e = new Entity();
 		e.addComponent(new GameDataComponent(ship, startPlanet, camera));

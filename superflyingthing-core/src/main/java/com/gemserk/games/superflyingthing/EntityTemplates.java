@@ -32,7 +32,7 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.resources.ResourceManager;
 
-public class EntityFactory {
+public class EntityTemplates {
 
 	public static class CategoryBits {
 
@@ -50,7 +50,7 @@ public class EntityFactory {
 	private final JointBuilder jointBuilder;
 	private final ResourceManager<String> resourceManager;
 
-	public EntityFactory(World world, EntityManager entityManager, ResourceManager<String> resourceManager) {
+	public EntityTemplates(World world, EntityManager entityManager, ResourceManager<String> resourceManager) {
 		this.world = world;
 		this.entityManager = entityManager;
 		this.resourceManager = resourceManager;
