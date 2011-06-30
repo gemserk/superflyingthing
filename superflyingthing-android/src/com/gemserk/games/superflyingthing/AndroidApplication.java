@@ -21,7 +21,9 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 
 	private final int HIDE_ADS = 0;
 
-	protected Handler handler = new Handler() {
+	protected Handler handler = new AdWhirlAndroidHandler();
+
+	private class AdWhirlAndroidHandler extends Handler {
 		@Override
 		public void handleMessage(Message msg) {
 			switch (msg.what) {
@@ -35,7 +37,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 			}
 			}
 		}
-	};
+	}
 
 	private class CustomAdViewHandler implements AdWhirlViewHandler {
 		@Override
