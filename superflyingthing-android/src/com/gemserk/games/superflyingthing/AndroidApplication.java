@@ -2,7 +2,6 @@ package com.gemserk.games.superflyingthing;
 
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Message;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -12,44 +11,15 @@ import com.adwhirl.AdWhirlLayout.AdWhirlInterface;
 import com.adwhirl.AdWhirlManager;
 import com.adwhirl.AdWhirlTargeting;
 import com.badlogic.gdx.backends.android.AndroidApplicationConfiguration;
+import com.gemserk.commons.adwhirl.AdWhirlAndroidHandler;
+import com.gemserk.commons.adwhirl.CustomAdViewHandler;
+import com.gemserk.commons.adwhirl.PausableAdWhirlLayout;
 
 public class AndroidApplication extends com.badlogic.gdx.backends.android.AndroidApplication implements AdWhirlInterface {
 
 	private PausableAdWhirlLayout adView;
 
-	private final int SHOW_ADS = 1;
-
-	private final int HIDE_ADS = 0;
-
-	protected Handler handler = new AdWhirlAndroidHandler();
-
-	private class AdWhirlAndroidHandler extends Handler {
-		@Override
-		public void handleMessage(Message msg) {
-			switch (msg.what) {
-			case SHOW_ADS: {
-				adView.onResume();
-				break;
-			}
-			case HIDE_ADS: {
-				adView.onPause();
-				break;
-			}
-			}
-		}
-	}
-
-	private class CustomAdViewHandler implements AdWhirlViewHandler {
-		@Override
-		public void show() {
-			handler.sendEmptyMessage(SHOW_ADS);
-		}
-
-		@Override
-		public void hide() {
-			handler.sendEmptyMessage(HIDE_ADS);
-		}
-	}
+	protected Handler handler;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -69,8 +39,6 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		config.useCompass = false;
 		config.useWakelock = true;
 
-		View gameView = initializeForView(new Game(new CustomAdViewHandler()), config);
-
 		AdWhirlManager.setConfigExpireTimeout(1000 * 15);
 		AdWhirlTargeting.setAge(23);
 		AdWhirlTargeting.setGender(AdWhirlTargeting.Gender.MALE);
@@ -79,6 +47,10 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		AdWhirlTargeting.setTestMode(false);
 
 		adView = new PausableAdWhirlLayout(this, "5d99c9fc499b41e5be30b22e3b52d799");
+		
+		handler = new AdWhirlAndroidHandler(adView);
+		CustomAdViewHandler adWhirlViewHandler = new CustomAdViewHandler(handler);
+		View gameView = initializeForView(new Game(adWhirlViewHandler), config);
 
 		int diWidth = 400;
 		int diHeight = 32;
@@ -97,6 +69,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		layout.addView(adView, adParams);
 
 		setContentView(layout);
+
 	}
 
 	@Override
