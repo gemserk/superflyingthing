@@ -371,12 +371,14 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void resume() {
 		// automatically handled in Game class and if no previous screen, then don't handle it (or system.exit())
+		game.getAdWhirlViewHandler().hide();
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
 	}
 
 	@Override
 	public void pause() {
+		game.getAdWhirlViewHandler().show();
 		super.pause();
 		Gdx.input.setCatchBackKey(false);
 	}

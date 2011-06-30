@@ -18,10 +18,15 @@ import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
+	private final AdWhirlViewHandler adWhirlViewHandler;
 	private Screen splashScreen;
 	private Screen mainMenuScreen;
 	private Screen selectPlayModeScreen;
 	private Screen playScreen;
+	
+	public AdWhirlViewHandler getAdWhirlViewHandler() {
+		return adWhirlViewHandler;
+	}
 
 	public Screen getPlayScreen() {
 		return playScreen;
@@ -37,6 +42,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	
 	public Screen getSelectPlayModeScreen() {
 		return selectPlayModeScreen;
+	}
+	
+	public Game(AdWhirlViewHandler adWhirlViewHandler) {
+		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
 	
 	@Override
@@ -64,6 +73,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 						currentScreen.dispose();
 					};
 				}))));
+	}
+	
+	@Override
+	public void pause() {
+		adWhirlViewHandler.hide();
 	}
 
 }
