@@ -10,18 +10,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
-import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.CreateDeadShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CreateNewShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.RemoveDeadShipBehavior;
-import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
@@ -37,12 +34,11 @@ public class PracticeModeGameState extends GameStateImpl {
 	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera libgdxCamera;
-	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
+	Camera cameraData;
+	
 	BodyBuilder bodyBuilder;
 
 	EntityTemplates entityTemplates;
-
-	Entity camera;
 
 	RealGame realGame;
 
@@ -53,25 +49,19 @@ public class PracticeModeGameState extends GameStateImpl {
 	@Override
 	public void init() {
 		spriteBatch = new SpriteBatch();
-		libgdxCamera = new Libgdx2dCameraTransformImpl();
 
 		realGame = new RealGame();
 		
 		EntityManager entityManager = realGame.entityManager;
 		World world = realGame.getWorld();
+		libgdxCamera = realGame.libgdxCamera;
 		
 		ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
 		GameResourceBuilder.loadResources(resourceManager);
 
 		entityTemplates = new EntityTemplates(world, entityManager, resourceManager);
 
-		libgdxCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		// cameraData = new CameraImpl(0f, 0f, 32f, 0f);
-		Camera cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
-
-		// camera.zoom(32f);
-
-		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) libgdxCamera, world);
+		cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
 
 		bodyBuilder = new BodyBuilder(world);
 
@@ -88,7 +78,7 @@ public class PracticeModeGameState extends GameStateImpl {
 			entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 		}
 
-		camera = entityTemplates.camera(cameraData);
+		Entity camera = entityTemplates.camera(cameraData);
 		entityManager.add(camera);
 
 		Entity ship = entityTemplates.ship(5f, 7.5f, new Vector2(1f, 0f));
@@ -128,8 +118,6 @@ public class PracticeModeGameState extends GameStateImpl {
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		Camera cameraData = ComponentWrapper.getCamera(camera);
-
 		libgdxCamera.move(cameraData.getX(), cameraData.getY());
 		libgdxCamera.zoom(cameraData.getZoom());
 		libgdxCamera.rotate(cameraData.getAngle());
@@ -137,8 +125,6 @@ public class PracticeModeGameState extends GameStateImpl {
 		libgdxCamera.apply(spriteBatch);
 
 		realGame.renderEntities(spriteBatch);
-
-		box2dCustomDebugRenderer.render();
 	}
 
 	@Override

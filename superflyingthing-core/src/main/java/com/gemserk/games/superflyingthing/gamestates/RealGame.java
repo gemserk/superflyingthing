@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Physics;
@@ -28,6 +29,7 @@ public class RealGame implements EntityLifeCycleHandler {
 	private World world;
 	EntityManager entityManager;
 	Libgdx2dCamera libgdxCamera;
+	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	
 	public World getWorld() {
 		return world;
@@ -43,6 +45,7 @@ public class RealGame implements EntityLifeCycleHandler {
 		world.setContactListener(new PhysicsContactListener());
 		libgdxCamera = new Libgdx2dCameraTransformImpl();
 		libgdxCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) libgdxCamera, world);
 	}
 	
 	public void init() {
@@ -127,6 +130,8 @@ public class RealGame implements EntityLifeCycleHandler {
 			SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 		}
 		spriteBatch.end();
+		
+		box2dCustomDebugRenderer.render();
 		
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
