@@ -44,6 +44,14 @@ import com.gemserk.resources.ResourceManagerImpl;
 
 public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler {
 
+	// temporal
+
+	public static final int RandomGameMode = 0;
+	public static final int PracticeGameMode = 1;
+	public static final int ChallengeGameMode = 2;
+
+	public static int gameMode = 0;
+
 	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
@@ -74,8 +82,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
 
-		// new RandomMode().create(this);
-		new PracticeMode().create(this);
+		if (gameMode == RandomGameMode)
+			new RandomMode().create(this);
+		else if (gameMode == PracticeGameMode) 
+			new PracticeMode().create(this);
+		
 	}
 
 	static class RandomMode {
@@ -210,13 +221,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity game = entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component("entityDeadTrigger", new Trigger() {
-						@Override
-						public void onTrigger(Entity e) {
-							Gdx.app.log("SuperSheep", "super sheep is supposed to be dead...");
-						}
-					}) //
-					.behavior(new CallTriggerIfEntityDeadBehavior()) //
 					.component("noEntityTrigger", new Trigger() {
 						@Override
 						public void onTrigger(Entity e) {

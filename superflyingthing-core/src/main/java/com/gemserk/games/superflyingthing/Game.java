@@ -21,12 +21,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen splashScreen;
 	private Screen mainMenuScreen;
 	private Screen selectPlayModeScreen;
-	private Screen playingScreen;
-	private Screen randomModeScreen;
-	private Screen practiceModeScreen;
+	private Screen playScreen;
 
-	public Screen getPlayingScreen() {
-		return playingScreen;
+	public Screen getPlayScreen() {
+		return playScreen;
 	}
 
 	public Screen getSplashScreen() {
@@ -41,24 +39,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return selectPlayModeScreen;
 	}
 	
-	public Screen getRandomModeScreen() {
-		return randomModeScreen;
-	}
-	
-	public Screen getPracticeModeScreen() {
-		return practiceModeScreen;
-	}
-
 	@Override
 	public void create() {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 
-		playingScreen = new ScreenImpl(new PlayGameState(this));
-		randomModeScreen = new ScreenImpl(new PlayGameState(this));
-		practiceModeScreen = new ScreenImpl(new PlayGameState(this));
-		
+		playScreen = new ScreenImpl(new PlayGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
 		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));
