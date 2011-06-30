@@ -335,9 +335,9 @@ public class Behaviors {
 			Gdx.app.log("SuperSheep", "die!");
 		}
 	}
-	
+
 	// game behaviors
-	
+
 	public static class FixCameraTargetBehavior extends Behavior {
 		@Override
 		public void update(int delta, Entity e) {
@@ -347,7 +347,7 @@ public class Behaviors {
 			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
-			
+
 			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
 			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
 
@@ -359,15 +359,15 @@ public class Behaviors {
 	}
 
 	public static class CreateNewShipBehavior extends Behavior {
-		
-		EntityManager entityManager;
-		EntityTemplates entityTemplates;
 
-		public CreateNewShipBehavior(EntityManager entityManager, EntityTemplates entityTemplates) {
+		EntityManager entityManager;
+//		EntityTemplates entityTemplates;
+
+		public CreateNewShipBehavior(EntityManager entityManager) {
 			this.entityManager = entityManager;
-			this.entityTemplates = entityTemplates;
+//			this.entityTemplates = entityTemplates;
 		}
-		
+
 		@Override
 		public void update(int delta, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -376,24 +376,28 @@ public class Behaviors {
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
-			ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
-			entityManager.add(ship);
 
-			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-			attachmentComponent.setEntity(ship);
+			Trigger trigger = e.getComponent("noEntityTrigger");
+			trigger.trigger(e);
 
-			gameDataComponent.ship = ship;
+			// ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
+			// entityManager.add(ship);
+			//
+			// AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+			// attachmentComponent.setEntity(ship);
+			//
+			// gameDataComponent.ship = ship;
 		}
 	}
 
 	public static class RemoveDeadShipBehavior extends Behavior {
-		
+
 		EntityManager entityManager;
 
 		public RemoveDeadShipBehavior(EntityManager entityManager) {
 			this.entityManager = entityManager;
 		}
-		
+
 		@Override
 		public void update(int delta, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -410,13 +414,13 @@ public class Behaviors {
 				return;
 
 			entityManager.remove(ship);
-			
+
 			gameDataComponent.ship = null;
 		}
 	}
 
 	public static class CreateDeadShipBehavior extends Behavior {
-		
+
 		EntityManager entityManager;
 		EntityTemplates entityTemplates;
 
@@ -424,7 +428,7 @@ public class Behaviors {
 			this.entityManager = entityManager;
 			this.entityTemplates = entityTemplates;
 		}
-		
+
 		@Override
 		public void update(int delta, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -445,6 +449,5 @@ public class Behaviors {
 			entityManager.add(deadSuperSheepEntity);
 		}
 	}
-
 
 }

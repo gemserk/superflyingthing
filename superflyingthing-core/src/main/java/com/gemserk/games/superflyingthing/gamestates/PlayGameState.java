@@ -37,17 +37,18 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
+import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
-public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler{
-	
+public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler {
+
 	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
 	Camera cameraData;
-	
+
 	EntityTemplates entityTemplates;
 	EntityManager entityManager;
 	World physicsWorld;
@@ -61,36 +62,34 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void init() {
 		spriteBatch = new SpriteBatch();
-		
+
 		physicsWorld = new World(new Vector2(), false);
 		physicsWorld.setContactListener(new PhysicsContactListener());
-		
+
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		
+
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
-		
+
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
-		
+
 		new RandomMode().create(this);
 	}
-	
 
 	static class RandomMode {
-		
+
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
 			ResourceManager<String> resourceManager = p.resourceManager;
-			Camera camera = p.cameraData;
-			
-			EntityManager entityManager = new EntityManagerImpl(p);
-			EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
-			
+
+			final EntityManager entityManager = new EntityManagerImpl(p);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
 
-			camera = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
+			p.cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
@@ -105,7 +104,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 			}
 
-			Entity cameraEntity = entityTemplates.camera(camera);
+			Entity cameraEntity = entityTemplates.camera(p.cameraData);
 			entityManager.add(cameraEntity);
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
@@ -125,23 +124,34 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
 
 			Entity e = new Entity();
-			
+
 			e.addComponent(new GameDataComponent(null, startPlanet, cameraEntity));
-			
+
 			e.addBehavior(new CreateDeadShipBehavior(entityManager, entityTemplates));
 			e.addBehavior(new RemoveDeadShipBehavior(entityManager));
-			
-			e.addBehavior(new CreateNewShipBehavior(entityManager, entityTemplates));
-			
+
+			e.addComponent("noEntityTrigger", new Trigger() {
+				@Override
+				public void trigger(Entity e) {
+					GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+					Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
+					entityManager.add(ship);
+					AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+					attachmentComponent.setEntity(ship);
+					gameDataComponent.ship = ship;
+				}
+			});
+			e.addBehavior(new CreateNewShipBehavior(entityManager));
+
 			e.addBehavior(new FixCameraTargetBehavior());
 			entityManager.add(e);
 		}
-		
+
 	}
 
 	@Override
 	public void init(Entity e) {
-		
+
 	}
 
 	@Override
@@ -202,7 +212,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		renderEntities(spriteBatch);
 	}
-	
+
 	void renderEntities(SpriteBatch spriteBatch) {
 		spriteBatch.begin();
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
@@ -220,9 +230,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
 		}
 		spriteBatch.end();
-		
+
 		box2dCustomDebugRenderer.render();
-		
+
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
@@ -257,7 +267,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void update(int delta) {
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) 
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK))
 			game.transition(game.getMainMenuScreen(), 500, 500);
 
 		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
