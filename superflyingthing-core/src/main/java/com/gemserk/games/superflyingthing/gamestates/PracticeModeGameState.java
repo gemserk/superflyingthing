@@ -77,9 +77,7 @@ public class PracticeModeGameState extends GameStateImpl {
 					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
 					if (currentShipComponent == null)
 						return;
-					
 					Entity ship = currentShipComponent.ship;
-					
 					if (ship == null)
 						return;
 					AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
@@ -97,8 +95,6 @@ public class PracticeModeGameState extends GameStateImpl {
 					entityManager.add(deadSuperSheepEntity);
 					
 					currentShipComponent.ship = null;
-					
-					System.out.println("Behavior: removed current ship from game");
 				}
 			});
 			e.addBehavior(new Behavior(){
@@ -117,10 +113,25 @@ public class PracticeModeGameState extends GameStateImpl {
 					attachmentComponent.setEntity(ship);
 
 					currentShipComponent.ship = ship;
+				}
+			});
+			e.addBehavior(new Behavior(){
+				@Override
+				public void update(int delta, Entity e) {
+					CurrentShipComponent currentShipComponent = e.getComponent(CurrentShipComponent.class);
+					if (currentShipComponent == null)
+						return;
+					Entity ship = currentShipComponent.ship;
+					if (ship == null)
+						return;
 					
-					System.out.println("Behavior: new ship for game created");
-					// remove this one...
-					setShip(ship);
+					AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+					TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
+
+					if (attachableComponent.getOwner() != null)
+						targetComponent.setTarget(attachableComponent.getOwner());
+					else
+						targetComponent.setTarget(ship);
 				}
 			});
 			entityManager.add(e);
@@ -180,65 +191,11 @@ public class PracticeModeGameState extends GameStateImpl {
 
 		public void update(int delta) {
 			world.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
-
 			entityManager.update(delta);
-
-			updateCameraTarget(delta);
-			// updateHandleDeadShipBehavior(delta, getShip());
-			// updateCreateNewShipOnStartPlanet(delta, getShip());
 		}
 		
-		boolean shouldCreateNewShip = false;
-
-		private void updateHandleDeadShipBehavior(int delta, Entity e) {
-			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
-
-			if (aliveComponent == null)
-				return;
-			if (!aliveComponent.isDead())
-				return;
-
-			entityManager.remove(e);
-			
-			Spatial superSheepSpatial = ComponentWrapper.getSpatial(e);
-
-			Entity deadSuperSheepEntity = entityFactory.deadShip(superSheepSpatial);
-			entityManager.add(deadSuperSheepEntity);
-			
-			shouldCreateNewShip = true;
-		}
-
-		private void updateCreateNewShipOnStartPlanet(int delta, Entity e) {
-			if (!shouldCreateNewShip)
-				return;
-			
-			Entity newSuperSheep = entityFactory.ship(5f, 6f, new Vector2(1f, 0f));
-			entityManager.add(newSuperSheep);
-
-			AttachmentComponent attachmentComponent = getStartPlanet().getComponent(AttachmentComponent.class);
-			attachmentComponent.setEntity(newSuperSheep);
-
-			setShip(newSuperSheep);
-			
-			shouldCreateNewShip = false;
-		}
-
-		private void updateCameraTarget(int delta) {
-			AttachableComponent attachableComponent = getShip().getComponent(AttachableComponent.class);
-			TargetComponent targetComponent = camera.getComponent(TargetComponent.class);
-
-			if (attachableComponent.getOwner() != null)
-				targetComponent.setTarget(attachableComponent.getOwner());
-			else
-				targetComponent.setTarget(getShip());
-		}
-
 		void setShip(Entity ship) {
 			this.ship = ship;
-		}
-
-		Entity getShip() {
-			return ship;
 		}
 
 		void setStartPlanet(Entity startPlanet) {
