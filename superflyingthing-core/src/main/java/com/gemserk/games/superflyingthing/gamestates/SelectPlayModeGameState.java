@@ -84,14 +84,18 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		challengeModeButton.update();
 		randomModeButton.update();
 
-		if (practiceModeButton.isReleased())
+		if (practiceModeButton.isReleased()) {
+			// instantiate in some way the game world
 			game.transition(game.getPracticeModeScreen(), 500, 250);
+		}
 
-		if (challengeModeButton.isReleased())
+		if (challengeModeButton.isReleased()) {
 			game.transition(game.getPlayingScreen(), 500, 250);
+		}
 		
-		if (randomModeButton.isReleased())
+		if (randomModeButton.isReleased()) {
 			game.transition(game.getRandomModeScreen(), 500, 250);
+		}
 
 	}
 
