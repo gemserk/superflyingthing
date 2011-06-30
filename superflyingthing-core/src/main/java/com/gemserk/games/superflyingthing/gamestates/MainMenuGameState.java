@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Game;
@@ -47,15 +48,22 @@ public class MainMenuGameState extends GameStateImpl {
 
 		text = new Text("Unidentified Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
 
-		playButton = new TextButton(buttonFont, "Play", centerX, height * 0.7f) //
-				.setNotOverColor(Color.WHITE) //
-				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE);
+		playButton = GuiControls.textButton() //
+				.position(centerX, height * 0.7f) //
+				.text("Play") //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.build();
 
-		exitButton = new TextButton(buttonFont, "Exit", centerX, height * 0.3f) //
-				.setNotOverColor(Color.WHITE) //
-				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE);
+		exitButton = GuiControls.textButton() //
+				.position(centerX, height * 0.3f) //
+				.text("Exit") //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.build();
+		
 	}
 
 	@Override
@@ -65,7 +73,7 @@ public class MainMenuGameState extends GameStateImpl {
 		text.draw(spriteBatch, titleFont);
 
 		playButton.draw(spriteBatch);
-		
+
 		if (Gdx.app.getType() != ApplicationType.Applet)
 			exitButton.draw(spriteBatch);
 
@@ -76,11 +84,11 @@ public class MainMenuGameState extends GameStateImpl {
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 		playButton.update();
-		
-		if (playButton.isReleased() )  {
+
+		if (playButton.isReleased()) {
 			game.transition(game.getSelectPlayModeScreen(), 500, 500);
 		}
-		
+
 		if (Gdx.app.getType() != ApplicationType.Applet) {
 			exitButton.update();
 			if (exitButton.isReleased())

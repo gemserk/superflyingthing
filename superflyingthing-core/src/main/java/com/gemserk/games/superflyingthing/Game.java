@@ -11,6 +11,7 @@ import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayingGameState;
+import com.gemserk.games.superflyingthing.gamestates.RandomModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
@@ -18,10 +19,12 @@ import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
-	private Screen playingScreen;
 	private Screen splashScreen;
 	private Screen mainMenuScreen;
 	private Screen selectPlayModeScreen;
+	private Screen playingScreen;
+	private Screen randomModeScreen;
+	private Screen practiceModeScreen;
 
 	public Screen getPlayingScreen() {
 		return playingScreen;
@@ -38,6 +41,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getSelectPlayModeScreen() {
 		return selectPlayModeScreen;
 	}
+	
+	public Screen getRandomModeScreen() {
+		return randomModeScreen;
+	}
+	
+	public Screen getPracticeModeScreen() {
+		return practiceModeScreen;
+	}
 
 	@Override
 	public void create() {
@@ -46,6 +57,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Float.class, Converters.floatValue());
 
 		playingScreen = new ScreenImpl(new PlayingGameState(this));
+		randomModeScreen = new ScreenImpl(new RandomModeGameState(this));
+		practiceModeScreen = new ScreenImpl(new RandomModeGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
 		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));
