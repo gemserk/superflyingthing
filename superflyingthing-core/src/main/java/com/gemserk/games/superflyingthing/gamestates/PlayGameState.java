@@ -84,9 +84,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		if (gameMode == RandomGameMode)
 			new RandomMode().create(this);
-		else if (gameMode == PracticeGameMode) 
+		else if (gameMode == PracticeGameMode)
 			new PracticeMode().create(this);
-		
+		else if (gameMode == ChallengeGameMode)
+			new ChallengeMode().create(this);
+
 	}
 
 	static class RandomMode {
@@ -103,18 +105,24 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
 
-			p.cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
+			float worldWidth = MathUtils.random(50f, 200f);
+			float worldHeight = MathUtils.random(10f, 20f);
+
+			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
-			for (int i = 0; i < 10; i++) {
-				entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
-				entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
+			float obstacleX = 12f;
+
+			while (obstacleX < worldWidth - 17f) {
+				entityManager.add(entityTemplates.obstacle(vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				entityManager.add(entityTemplates.obstacle(vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				obstacleX += 8f;
 			}
 
 			for (int i = 0; i < 10; i++) {
-				float x = MathUtils.random(10f, 90f);
-				float y = MathUtils.random(2f, 13f);
+				float x = MathUtils.random(10f, worldWidth - 10f);
+				float y = MathUtils.random(2f, worldHeight - 2f);
 				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 			}
 
@@ -124,18 +132,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
-
-			float worldWidth = 100f;
-			float worldHeight = 20f;
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, 7.5f, 1f));
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
 
 			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
-			entityManager.add(entityTemplates.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
 			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
-			entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
 
 			Entity game = entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -157,7 +162,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 						@Override
 						public void onTrigger(Entity e) {
 							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-							Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f));
+							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+							Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
 							entityManager.add(ship);
 							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 							attachmentComponent.setEntity(ship);
@@ -168,6 +174,88 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.behavior(new FixCameraTargetBehavior()) //
 					.build();
 			entityManager.add(game);
+
+			// simulate a step to put everything on their places
+			entityManager.update(1);
+			physicsWorld.step(1, 1, 1);
+			entityManager.update(1);
+		}
+	}
+
+	static class ChallengeMode {
+
+		EntityBuilder entityBuilder = new EntityBuilder();
+
+		void create(PlayGameState p) {
+			World physicsWorld = p.physicsWorld;
+			ResourceManager<String> resourceManager = p.resourceManager;
+
+			final EntityManager entityManager = new EntityManagerImpl(p);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+
+			p.entityManager = entityManager;
+			p.entityTemplates = entityTemplates;
+
+			// Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
+
+			float worldWidth = 50f;
+			float worldHeight = 10f;
+
+			float x = worldWidth * 0.5f;
+			float y = worldHeight * 0.5f;
+
+			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
+
+			entityManager.add(startPlanet);
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f));
+
+			Entity cameraEntity = entityTemplates.camera(p.cameraData);
+			entityManager.add(cameraEntity);
+
+			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
+
+			Entity game = entityBuilder //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component("entityDeadTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							entityManager.remove(gameDataComponent.ship);
+
+							Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+							Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
+							entityManager.add(deadSuperSheepEntity);
+
+							gameDataComponent.ship = null;
+						}
+					}) //
+					.behavior(new CallTriggerIfEntityDeadBehavior()) //
+					.component("noEntityTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+							Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
+							entityManager.add(ship);
+							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+							attachmentComponent.setEntity(ship);
+							gameDataComponent.ship = ship;
+						}
+					}) //
+					.behavior(new CallTriggerIfNoShipBehavior()) //
+					.behavior(new FixCameraTargetBehavior()) //
+					.build();
+			entityManager.add(game);
+
+			// simulate a step to put everything on their places
+			entityManager.update(1);
+			physicsWorld.step(1, 1, 1);
+			entityManager.update(1);
 		}
 	}
 
@@ -185,13 +273,16 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
 
-			p.cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, 100f, 15f));
+			float worldWidth = 100f;
+			float worldHeight = 15f;
+
+			p.cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
 			for (int i = 0; i < 10; i++) {
-				entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, 15f), 0f));
-				entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, 15f), 90f));
+				entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, worldHeight), 0f));
+				entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, worldHeight), 90f));
 			}
 
 			for (int i = 0; i < 10; i++) {
@@ -206,18 +297,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(95f, 7.5f, 1f));
-
-			float worldWidth = 100f;
-			float worldHeight = 20f;
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, 7.5f, 1f));
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
 
 			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
-			entityManager.add(entityTemplates.boxObstacle(x, 15f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
 			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
-			entityManager.add(entityTemplates.boxObstacle(100f, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
 
 			Entity game = entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -236,6 +324,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.behavior(new FixCameraTargetBehavior()) //
 					.build();
 			entityManager.add(game);
+
+			// simulate a step to put everything on their places
+			entityManager.update(1);
+			physicsWorld.step(1, 1, 1);
+			entityManager.update(1);
 		}
 	}
 

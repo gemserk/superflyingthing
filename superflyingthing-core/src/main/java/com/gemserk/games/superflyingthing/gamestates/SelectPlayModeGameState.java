@@ -91,7 +91,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		}
 
 		if (challengeModeButton.isReleased()) {
-			PlayGameState.gameMode = PlayGameState.RandomGameMode;
+			PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
 			game.transition(game.getPlayScreen(), 500, 250);
 		}
 		
