@@ -14,6 +14,7 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
@@ -71,7 +72,7 @@ public class EntityTemplates {
 		float height = 0.2f;
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
-		
+
 		Entity e = new Entity();
 
 		Body body = bodyBuilder.mass(50f) //
@@ -102,9 +103,9 @@ public class EntityTemplates {
 
 	public Entity diamond(float x, float y, float radius) {
 		Entity e = new Entity();
-		
+
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
-		
+
 		Body body = bodyBuilder.mass(50f) //
 				.circleShape(radius) //
 				.sensor() //
@@ -153,7 +154,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity destinationPlanet(float x, float y, float radius) {
+	public Entity destinationPlanet(float x, float y, float radius, Trigger destinationReachedTrigger) {
 		Entity e = new Entity();
 
 		Body body = bodyBuilder.mass(1f) //
@@ -174,9 +175,29 @@ public class EntityTemplates {
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
-
 		e.addBehavior(new AttachEntityBehavior(jointBuilder));
 		e.addBehavior(new AttachedEntityDirectionBehavior());
+
+		// Trigger destinationReachedTrigger = new Trigger() {
+		// @Override
+		// protected void onTrigger(Entity e) {
+		//
+		// }
+		// };
+		e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
+		e.addBehavior(new Behavior() {
+			@Override
+			public void update(int delta, Entity e) {
+				AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
+				if (attachmentComponent.entity == null)
+					return;
+				Trigger trigger = e.getComponent("destinationReachedTrigger");
+				// if (trigger == null)
+				// return;
+				trigger.trigger(e);
+			}
+		});
+
 		return e;
 	}
 
@@ -206,5 +227,5 @@ public class EntityTemplates {
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		return e;
 	}
-	
+
 }

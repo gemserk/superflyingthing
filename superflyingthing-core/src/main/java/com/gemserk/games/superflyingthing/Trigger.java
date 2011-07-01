@@ -2,7 +2,7 @@ package com.gemserk.games.superflyingthing;
 
 import com.gemserk.games.entities.Entity;
 
-public abstract class Trigger {
+public class Trigger {
 
 	private boolean triggered = false;
 
@@ -19,6 +19,6 @@ public abstract class Trigger {
 		onTrigger(e);
 	}
 
-	protected abstract void onTrigger(Entity e);
+	protected void onTrigger(Entity e) {};
 
 }

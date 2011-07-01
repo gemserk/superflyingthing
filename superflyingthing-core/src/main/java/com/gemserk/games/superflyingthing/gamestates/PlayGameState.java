@@ -62,6 +62,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
+	
+	boolean done;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -88,10 +90,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			new PracticeMode().create(this);
 		else if (gameMode == ChallengeGameMode)
 			new ChallengeMode().create(this);
-
+		
+		done = false;
 	}
 
-	static class RandomMode {
+	class RandomMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
@@ -105,8 +108,10 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
 
-			float worldWidth = MathUtils.random(50f, 200f);
+			float worldWidth = MathUtils.random(30f, 150f);
 			float worldHeight = MathUtils.random(10f, 20f);
+			
+			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
 
 			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
@@ -129,10 +134,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity cameraEntity = entityTemplates.camera(p.cameraData);
 			entityManager.add(cameraEntity);
 
-			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, 7.5f, 1f));
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() { 
+				@Override
+				protected void onTrigger(Entity e) {
+					done = true;
+				}
+			}));
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
@@ -182,7 +192,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 	}
 
-	static class ChallengeMode {
+	class ChallengeMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
@@ -209,7 +219,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f));
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger()));
 
 			Entity cameraEntity = entityTemplates.camera(p.cameraData);
 			entityManager.add(cameraEntity);
@@ -259,7 +269,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 	}
 
-	static class PracticeMode {
+	class PracticeMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
@@ -297,7 +307,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, 7.5f, 1f));
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, 7.5f, 1f, new Trigger()));
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
@@ -453,10 +463,14 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK))
 			game.transition(game.getMainMenuScreen(), 500, 500);
 
-		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU)) {
+		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU))
+			done = true;
+		
+		if (done) {
 			dispose();
 			init();
 		}
+		
 		physicsWorld.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 		entityManager.update(delta);
 	}
