@@ -47,20 +47,22 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 		text = new Text("Select Mode", centerX, height * 0.9f).setColor(Color.GREEN);
 
-		practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.7f) //
+		challengeModeButton = new TextButton(buttonFont, "Challenge", centerX, height * 0.7f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE);
+				.setColor(Color.WHITE) //
+				.setBoundsOffset(20f, 20f);
 
-		challengeModeButton = new TextButton(buttonFont, "Challenge", centerX, height * 0.5f) //
+		practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.5f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE);
+				.setColor(Color.WHITE).setBoundsOffset(20f, 20f);
 
 		randomModeButton = new TextButton(buttonFont, "Random", centerX, height * 0.3f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE);
+				.setColor(Color.WHITE) //
+				.setBoundsOffset(20f, 20f);
 	}
 
 	@Override
@@ -94,7 +96,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 			PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
 			game.transition(game.getPlayScreen(), 500, 250);
 		}
-		
+
 		if (randomModeButton.isReleased()) {
 			PlayGameState.gameMode = PlayGameState.RandomGameMode;
 			game.transition(game.getPlayScreen(), 500, 250);

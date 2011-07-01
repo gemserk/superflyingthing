@@ -54,6 +54,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
 				.notOverColor(Color.WHITE)//
+				.boundsOffset(20, 20f) //
 				.build();
 
 		exitButton = GuiControls.textButton() //
@@ -62,6 +63,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
 				.notOverColor(Color.WHITE)//
+				.boundsOffset(20, 20f) //
 				.build();
 		
 	}

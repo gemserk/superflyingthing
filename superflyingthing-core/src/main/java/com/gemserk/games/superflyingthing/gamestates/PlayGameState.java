@@ -62,7 +62,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
-	
+
 	boolean done;
 
 	public PlayGameState(Game game) {
@@ -90,7 +90,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			new PracticeMode().create(this);
 		else if (gameMode == ChallengeGameMode)
 			new ChallengeMode().create(this);
-		
+
 		done = false;
 	}
 
@@ -110,7 +110,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			float worldWidth = MathUtils.random(30f, 150f);
 			float worldHeight = MathUtils.random(10f, 20f);
-			
+
 			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
 
 			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
@@ -137,7 +137,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() { 
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
 					done = true;
@@ -283,31 +283,36 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
 
-			float worldWidth = 100f;
-			float worldHeight = 15f;
+			float worldWidth = MathUtils.random(40f, 40f);
+			float worldHeight = MathUtils.random(15f, 15f);
 
-			p.cameraData = new CameraRestrictedImpl(0f, 0f, 42f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
+
+			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
-			for (int i = 0; i < 10; i++) {
-				entityManager.add(entityTemplates.obstacle(vertices, 17f + i * 8f, MathUtils.random(0f, worldHeight), 0f));
-				entityManager.add(entityTemplates.obstacle(vertices, 12f + i * 8f, MathUtils.random(0f, worldHeight), 90f));
+			float obstacleX = 12f;
+
+			while (obstacleX < worldWidth - 17f) {
+				entityManager.add(entityTemplates.obstacle(vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				entityManager.add(entityTemplates.obstacle(vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				obstacleX += 8f;
 			}
 
 			for (int i = 0; i < 10; i++) {
-				float x = MathUtils.random(10f, 90f);
-				float y = MathUtils.random(2f, 13f);
+				float x = MathUtils.random(10f, worldWidth - 10f);
+				float y = MathUtils.random(2f, worldHeight - 2f);
 				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 			}
 
 			Entity cameraEntity = entityTemplates.camera(p.cameraData);
 			entityManager.add(cameraEntity);
 
-			Entity startPlanet = entityTemplates.startPlanet(5f, 7.5f, 1f);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, 7.5f, 1f, new Trigger()));
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {}));
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
@@ -465,12 +470,12 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU))
 			done = true;
-		
+
 		if (done) {
 			dispose();
 			init();
 		}
-		
+
 		physicsWorld.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
 		entityManager.update(delta);
 	}
