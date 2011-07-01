@@ -5,7 +5,6 @@ import java.awt.Canvas;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.utils.GdxNativesLoader;
-import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 
 public class Applet extends java.applet.Applet {
 
@@ -40,7 +39,7 @@ public class Applet extends java.applet.Applet {
 			canvas = new Canvas() {
 				public final void addNotify() {
 					super.addNotify();
-					application = new LwjglApplication(new Game(new AdWhirlViewHandler()), false, this) {
+					application = new LwjglApplication(new Game(), false, this) {
 						public com.badlogic.gdx.Application.ApplicationType getType() {
 							return ApplicationType.Applet;
 						};

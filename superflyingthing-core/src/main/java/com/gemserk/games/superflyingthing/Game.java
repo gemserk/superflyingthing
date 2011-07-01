@@ -49,6 +49,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
 	
+	public Game() {
+		this(new AdWhirlViewHandler());
+	}
+	
 	@Override
 	public void create() {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());

@@ -17,14 +17,9 @@ import com.gemserk.commons.adwhirl.PausableAdWhirlLayout;
 
 public class AndroidApplication extends com.badlogic.gdx.backends.android.AndroidApplication implements AdWhirlInterface {
 
-	private PausableAdWhirlLayout adView;
-
-	protected Handler handler;
-
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
-		// initialize(new HelloWorld(new CustomAdViewHandler()), false);
 
 		RelativeLayout layout = new RelativeLayout(this);
 
@@ -39,21 +34,21 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		config.useCompass = false;
 		config.useWakelock = true;
 
-		AdWhirlManager.setConfigExpireTimeout(1000 * 15);
+		AdWhirlManager.setConfigExpireTimeout(1000 * 60);
 		AdWhirlTargeting.setAge(23);
 		AdWhirlTargeting.setGender(AdWhirlTargeting.Gender.MALE);
 		AdWhirlTargeting.setKeywords("online games gaming");
 		AdWhirlTargeting.setPostalCode("94123");
 		AdWhirlTargeting.setTestMode(false);
 
-		adView = new PausableAdWhirlLayout(this, "5d99c9fc499b41e5be30b22e3b52d799");
+		PausableAdWhirlLayout adView = new PausableAdWhirlLayout(this, "5d99c9fc499b41e5be30b22e3b52d799");
 		
-		handler = new AdWhirlAndroidHandler(adView);
+		Handler handler = new AdWhirlAndroidHandler(adView);
 		CustomAdViewHandler adWhirlViewHandler = new CustomAdViewHandler(handler);
 		View gameView = initializeForView(new Game(adWhirlViewHandler), config);
 
-		int diWidth = 400;
-		int diHeight = 32;
+		int diWidth = 800;
+		int diHeight = 45;
 		
 		float density = getResources().getDisplayMetrics().density;
 
@@ -69,7 +64,6 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		layout.addView(adView, adParams);
 
 		setContentView(layout);
-
 	}
 
 	@Override
