@@ -33,8 +33,8 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		config.useAccelerometer = false;
 		config.useCompass = false;
 		config.useWakelock = true;
-
-		AdWhirlManager.setConfigExpireTimeout(1000 * 60);
+		
+		AdWhirlManager.setConfigExpireTimeout(1000 * 15);
 		AdWhirlTargeting.setAge(23);
 		AdWhirlTargeting.setGender(AdWhirlTargeting.Gender.MALE);
 		AdWhirlTargeting.setKeywords("online games gaming");
@@ -68,7 +68,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 
 	@Override
 	public void adWhirlGeneric() {
-
+		
 	}
 
 }

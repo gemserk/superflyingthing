@@ -2,7 +2,9 @@ package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Contact;
+import com.badlogic.gdx.physics.box2d.ContactImpulse;
 import com.badlogic.gdx.physics.box2d.ContactListener;
+import com.badlogic.gdx.physics.box2d.Manifold;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.games.entities.Entity;
 
@@ -65,6 +67,18 @@ public class PhysicsContactListener implements ContactListener {
 		if (physics == null)
 			return;
 		physics.getContact().removeContact(body);
+	}
+
+	@Override
+	public void preSolve(Contact contact, Manifold oldManifold) {
+		// TODO Auto-generated function stub
+		
+	}
+
+	@Override
+	public void postSolve(Contact contact, ContactImpulse impulse) {
+		// TODO Auto-generated function stub
+		
 	}
 
 }

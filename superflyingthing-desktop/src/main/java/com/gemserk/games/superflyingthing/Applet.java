@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.utils.GdxNativesLoader;
 
@@ -39,7 +40,13 @@ public class Applet extends java.applet.Applet {
 			canvas = new Canvas() {
 				public final void addNotify() {
 					super.addNotify();
-					application = new LwjglApplication(new Game(), false, this) {
+					application = new LwjglApplication(new Game(){
+						@Override
+						public void create() {
+							Gdx.graphics.setVSync(true);
+							super.create();
+						};
+					}, false, this) {
 						public com.badlogic.gdx.Application.ApplicationType getType() {
 							return ApplicationType.Applet;
 						};

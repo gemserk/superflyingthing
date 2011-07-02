@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.converters.Converters;
@@ -82,7 +83,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	
 	@Override
 	public void pause() {
+		super.pause();
+		Gdx.app.log("SuperSheep", "game paused via ApplicationListner.pause()");
 		adWhirlViewHandler.hide();
+	}
+	
+	@Override
+	public void resume() {
+		super.resume();
+		Gdx.app.log("SuperSheep", "game resumed via ApplicationListner.resume()");
+		adWhirlViewHandler.show();		
 	}
 
 }

@@ -102,6 +102,16 @@ public class SplashGameState extends GameStateImpl {
 
 		game.transition(game.getMainMenuScreen(), 500, 500);
 	}
+	
+	@Override
+	public void resume() {
+		game.getAdWhirlViewHandler().hide();
+	}
+	
+	@Override
+	public void pause() {
+		game.getAdWhirlViewHandler().show();
+	}
 
 	@Override
 	public void dispose() {
