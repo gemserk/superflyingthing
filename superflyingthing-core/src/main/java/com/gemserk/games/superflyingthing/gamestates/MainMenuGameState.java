@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -11,6 +13,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
+import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -23,8 +26,8 @@ public class MainMenuGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	private BitmapFont titleFont;
 	private Text text;
-	private TextButton exitButton;
-	private TextButton playButton;
+
+	ArrayList<TextButton> buttons;
 
 	public MainMenuGameState(Game game) {
 		this.game = game;
@@ -47,24 +50,42 @@ public class MainMenuGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		text = new Text("Unidentified Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
+		
+		buttons = new ArrayList<TextButton>();
 
-		playButton = GuiControls.textButton() //
+		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
 				.text("Play") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
 				.notOverColor(Color.WHITE)//
 				.boundsOffset(20, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(TextButton button) {
+						game.transition(game.getSelectPlayModeScreen(), 500, 500);
+					}
+				})//
 				.build();
 
-		exitButton = GuiControls.textButton() //
+		TextButton exitButton = GuiControls.textButton() //
 				.position(centerX, height * 0.3f) //
 				.text("Exit") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
 				.notOverColor(Color.WHITE)//
 				.boundsOffset(20, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(TextButton button) {
+						Gdx.app.exit();
+					}
+				})//
 				.build();
+
+		buttons.add(playButton);
+		if (Gdx.app.getType() != ApplicationType.Applet)
+			buttons.add(exitButton);
 		
 	}
 
@@ -73,29 +94,16 @@ public class MainMenuGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		text.draw(spriteBatch, titleFont);
-
-		playButton.draw(spriteBatch);
-
-		if (Gdx.app.getType() != ApplicationType.Applet)
-			exitButton.draw(spriteBatch);
-
+		for (int i = 0; i < buttons.size(); i++)
+			buttons.get(i).draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		playButton.update();
-
-		if (playButton.isReleased()) {
-			game.transition(game.getSelectPlayModeScreen(), 500, 500);
-		}
-
-		if (Gdx.app.getType() != ApplicationType.Applet) {
-			exitButton.update();
-			if (exitButton.isReleased())
-				System.exit(0);
-		}
+		for (int i = 0; i < buttons.size(); i++)
+			buttons.get(i).update();
 	}
 
 	@Override
