@@ -40,6 +40,7 @@ import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.Trigger;
+import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
@@ -212,10 +213,10 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	class ChallengeMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
-
-		void loadLevel1(final EntityManager entityManager, EntityTemplates templates) {
-			float worldWidth = 50f;
-			float worldHeight = 10f;
+		
+		void loadLevel1(final EntityManager entityManager, EntityTemplates templates, Level level) {
+			float worldWidth = level.w;
+			float worldHeight = level.h;
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
@@ -244,15 +245,16 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					worldCamera.rotate(camera.getAngle());
 				}
 			});
-
-			Vector2[] vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-
-			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, 1.4f, 0f));
-			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, worldHeight - 1.4f, 180f * MathUtils.degreesToRadians));
-
-			entityManager.add(entityTemplates.diamond(15f, worldHeight * 0.5f, 0.2f));
-			entityManager.add(entityTemplates.diamond(25f, worldHeight * 0.5f, 0.2f));
-			entityManager.add(entityTemplates.diamond(35f, worldHeight * 0.5f, 0.2f));
+			
+			for (int i = 0; i < level.obstacles.length; i++) {
+				Obstacle o = level.obstacles[i];
+				entityManager.add(entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians));	
+			}
+			
+			for (int i = 0; i < level.items.length; i++) {
+				Level.Item item = level.items[i];
+				entityManager.add(entityTemplates.diamond(item.x, item.y, 0.2f));	
+			}
 
 			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
 			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
@@ -387,7 +389,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityTemplates = entityTemplates;
 
 			if (GameData.level == 1)
-				loadLevel1(entityManager, entityTemplates);
+				loadLevel1(entityManager, entityTemplates, Levels.level1());
 
 			if (GameData.level == 2)
 				loadLevel2(entityManager, entityTemplates);
