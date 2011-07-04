@@ -30,7 +30,7 @@
 
 	<resources os="Windows">
 		#foreach( $dependency in $fulldependencies )
-			#if ( $dependency.classifier == 'natives-win' )
+			#if ( $dependency.classifier == 'natives-win' || $dependency.classifier == 'natives-windows')
 				<nativelib href="${dependency.artifactId}-${dependency.version}-${dependency.classifier}.jar" />
 			#end
 		#end
@@ -46,7 +46,7 @@
 
 	<resources os="Mac OS">
 		#foreach( $dependency in $fulldependencies )
-			#if ( $dependency.classifier == 'natives-mac' )
+			#if ( $dependency.classifier == 'natives-mac' || $dependency.classifier == 'natives-osx' )
 				<nativelib href="${dependency.artifactId}-${dependency.version}-${dependency.classifier}.jar" />
 			#end
 		#end
