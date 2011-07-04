@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.gui.Button;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -27,7 +28,7 @@ public class MainMenuGameState extends GameStateImpl {
 	private BitmapFont titleFont;
 	private Text text;
 
-	ArrayList<TextButton> buttons;
+	ArrayList<Button> buttons;
 
 	public MainMenuGameState(Game game) {
 		this.game = game;
@@ -51,7 +52,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 		text = new Text("Unidentified Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
 		
-		buttons = new ArrayList<TextButton>();
+		buttons = new ArrayList<Button>();
 
 		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //

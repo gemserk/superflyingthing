@@ -67,6 +67,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					@Override
 					public void onReleased() {
 						// load level 1, then go to play screen
+						GameData.level = 1;
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				}) //

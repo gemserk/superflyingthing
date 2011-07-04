@@ -62,7 +62,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setButtonHandler(new ButtonHandler(){
 					@Override
 					public void onReleased() {
-						PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
+						GameData.gameMode = GameData.ChallengeGameMode;
 						game.transition(game.getLevelSelectionScreen(), 500, 500);	
 					}
 				});
@@ -75,7 +75,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setButtonHandler(new ButtonHandler(){
 					@Override
 					public void onReleased() {
-						PlayGameState.gameMode = PlayGameState.PracticeGameMode;
+						GameData.gameMode = GameData.PracticeGameMode;
 						game.transition(game.getPlayScreen(), 500, 250);		
 					}
 				});
@@ -88,7 +88,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setButtonHandler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						PlayGameState.gameMode = PlayGameState.RandomGameMode;
+						GameData.gameMode = GameData.RandomGameMode;
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				});

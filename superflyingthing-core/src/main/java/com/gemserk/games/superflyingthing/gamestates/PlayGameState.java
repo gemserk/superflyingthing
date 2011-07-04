@@ -47,12 +47,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	// temporal
 
-	public static final int RandomGameMode = 0;
-	public static final int PracticeGameMode = 1;
-	public static final int ChallengeGameMode = 2;
-
-	public static int gameMode = 0;
-
 	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
@@ -87,13 +81,13 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
 
-		if (gameMode == RandomGameMode) {
+		if (GameData.gameMode == GameData.RandomGameMode) {
 			new RandomMode().create(this);
 			Analytics.traker.trackPageView("/startChallengeMode", "/startChallengeMode", null);
-		} else if (gameMode == PracticeGameMode) {
+		} else if (GameData.gameMode == GameData.PracticeGameMode) {
 			new PracticeMode().create(this);
 			Analytics.traker.trackPageView("/startPracticeMode", "/startPracticeMode", null);
-		} else if (gameMode == ChallengeGameMode) {
+		} else if (GameData.gameMode == GameData.ChallengeGameMode) {
 			new ChallengeMode().create(this);
 			Analytics.traker.trackPageView("/startRandomMode", "/startRandomMode", null);
 		}
@@ -482,11 +476,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
 			game.transition(game.getMainMenuScreen(), 500, 500);
 
-			if (gameMode == RandomGameMode) {
+			if (GameData.gameMode == GameData.RandomGameMode) {
 				Analytics.traker.trackPageView("/finishChallengeMode", "/finishChallengeMode", null);
-			} else if (gameMode == PracticeGameMode) {
+			} else if (GameData.gameMode == GameData.PracticeGameMode) {
 				Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
-			} else if (gameMode == ChallengeGameMode) {
+			} else if (GameData.gameMode == GameData.ChallengeGameMode) {
 				Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
 			}
 
