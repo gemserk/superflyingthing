@@ -11,6 +11,7 @@ import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
+import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
@@ -25,6 +26,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen mainMenuScreen;
 	private Screen selectPlayModeScreen;
 	private Screen playScreen;
+	private Screen levelSelectionScreen;
 	
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -46,6 +48,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return selectPlayModeScreen;
 	}
 	
+	public Screen getLevelSelectionScreen() {
+		return levelSelectionScreen;
+	}
+	
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
@@ -61,6 +67,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Float.class, Converters.floatValue());
 
 		playScreen = new ScreenImpl(new PlayGameState(this));
+		levelSelectionScreen = new ScreenImpl(new LevelSelectionGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
 		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));

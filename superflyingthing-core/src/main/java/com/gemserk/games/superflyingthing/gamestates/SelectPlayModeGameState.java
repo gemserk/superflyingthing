@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -94,7 +95,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 		if (challengeModeButton.isReleased()) {
 			PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
-			game.transition(game.getPlayScreen(), 500, 250);
+			game.transition(game.getLevelSelectionScreen(), 500, 500);
 		}
 
 		if (randomModeButton.isReleased()) {
@@ -102,6 +103,18 @@ public class SelectPlayModeGameState extends GameStateImpl {
 			game.transition(game.getPlayScreen(), 500, 250);
 		}
 
+		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE))
+			game.transition(game.getMainMenuScreen(), 500, 500);
+	}
+
+	@Override
+	public void resume() {
+		Gdx.input.setCatchBackKey(true);
+	}
+
+	@Override
+	public void pause() {
+		Gdx.input.setCatchBackKey(false);
 	}
 
 	@Override
