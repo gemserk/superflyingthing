@@ -61,7 +61,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setBoundsOffset(20f, 20f) //
 				.setButtonHandler(new ButtonHandler(){
 					@Override
-					public void onReleased(TextButton button) {
+					public void onReleased() {
 						PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
 						game.transition(game.getLevelSelectionScreen(), 500, 500);						
 					}
@@ -74,7 +74,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setBoundsOffset(20f, 20f) //
 				.setButtonHandler(new ButtonHandler(){
 					@Override
-					public void onReleased(TextButton button) {
+					public void onReleased() {
 						PlayGameState.gameMode = PlayGameState.PracticeGameMode;
 						game.transition(game.getPlayScreen(), 500, 250);						
 					}
@@ -87,7 +87,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setBoundsOffset(20f, 20f) //
 				.setButtonHandler(new ButtonHandler() {
 					@Override
-					public void onReleased(TextButton button) {
+					public void onReleased() {
 						PlayGameState.gameMode = PlayGameState.RandomGameMode;
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
@@ -101,7 +101,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.setAlignment(HAlignment.RIGHT) //
 				.setButtonHandler(new ButtonHandler() {
 					@Override
-					public void onReleased(TextButton button) {
+					public void onReleased() {
 						game.transition(game.getMainMenuScreen(), 500, 500);
 					}
 				});

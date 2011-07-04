@@ -62,7 +62,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased(TextButton button) {
+					public void onReleased() {
 						game.transition(game.getSelectPlayModeScreen(), 500, 500);
 					}
 				})//
@@ -77,7 +77,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased(TextButton button) {
+					public void onReleased() {
 						Gdx.app.exit();
 					}
 				})//

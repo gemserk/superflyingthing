@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.gui.Button;
+import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
@@ -28,7 +31,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private BitmapFont titleFont;
 	private Text text;
 
-	ArrayList<TextButton> buttons;
+	ArrayList<Button> buttons;
 
 	public LevelSelectionGameState(Game game) {
 		this.game = game;
@@ -52,7 +55,22 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		text = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
 
-		buttons = new ArrayList<TextButton>();
+		buttons = new ArrayList<Button>();
+
+		Sprite level1 = resourceManager.getResourceValue("WhiteRectangle");
+
+		buttons.add(GuiControls.imageButton(level1) //
+				.color(0.8f, 0.8f, 0.8f, 1f) //
+				.size(width * 0.1f, height * 0.1f) //
+				.position(width * 0.15f, height * 0.75f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						// load level 1, then go to play screen
+						game.transition(game.getPlayScreen(), 500, 250);
+					}
+				}) //
+				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
 			buttons.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
@@ -63,7 +81,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.setAlignment(HAlignment.RIGHT) //
 					.setButtonHandler(new ButtonHandler() {
 						@Override
-						public void onReleased(TextButton button) {
+						public void onReleased() {
 							game.transition(game.getSelectPlayModeScreen(), 500, 500);
 						}
 					}));
@@ -78,12 +96,14 @@ public class LevelSelectionGameState extends GameStateImpl {
 		for (int i = 0; i < buttons.size(); i++)
 			buttons.get(i).draw(spriteBatch);
 		spriteBatch.end();
+
+		// GuiControls.debugRender(scene);
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		
+
 		for (int i = 0; i < buttons.size(); i++)
 			buttons.get(i).update();
 
