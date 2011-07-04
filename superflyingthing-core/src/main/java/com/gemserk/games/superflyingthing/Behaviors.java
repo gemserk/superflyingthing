@@ -20,7 +20,7 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
+import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
@@ -193,19 +193,19 @@ public class Behaviors {
 		}
 	}
 
-	public static class FixDirectionFromInputBehavior extends Behavior {
+	public static class FixDirectionFromControllerBehavior extends Behavior {
 
 		@Override
 		public void update(int delta, Entity e) {
 			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-			InputDirectionComponent inputDirectionComponent = e.getComponent(InputDirectionComponent.class);
+			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
 
 			if (movementComponent == null)
 				return;
-			if (inputDirectionComponent == null)
+			if (shipControllerComponent == null)
 				return;
 
-			float movementDirection = inputDirectionComponent.direction;
+			float movementDirection = shipControllerComponent.direction;
 			Vector2 direction = movementComponent.direction;
 
 			float rotationAngle = 0f;
@@ -246,10 +246,10 @@ public class Behaviors {
 
 		@Override
 		public void update(int delta, Entity e) {
-			InputDirectionComponent inputDirectionComponent = e.getComponent(InputDirectionComponent.class);
-			if (inputDirectionComponent == null)
+			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
+			if (shipControllerComponent == null)
 				return;
-			inputDirectionComponent.direction = getMovementDirection();
+			shipControllerComponent.direction = getMovementDirection();
 		}
 
 		private float getMovementDirection() {

@@ -147,7 +147,7 @@ public class Components {
 
 	}
 
-	public static class InputDirectionComponent {
+	public static class ShipControllerComponent {
 
 		float direction;
 

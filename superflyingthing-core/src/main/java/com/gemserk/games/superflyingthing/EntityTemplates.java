@@ -26,7 +26,7 @@ import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.Components.InputDirectionComponent;
+import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
@@ -91,10 +91,10 @@ public class EntityTemplates {
 		e.addComponent(new MovementComponent(direction.x, direction.y));
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
-		e.addComponent(new InputDirectionComponent());
+		e.addComponent(new ShipControllerComponent());
 
 		e.addBehavior(new Behaviors.FixMovementBehavior());
-		e.addBehavior(new Behaviors.FixDirectionFromInputBehavior());
+		e.addBehavior(new Behaviors.FixDirectionFromControllerBehavior());
 		e.addBehavior(new Behaviors.CalculateInputDirectionBehavior());
 		e.addBehavior(new Behaviors.CollisionHandlerBehavior());
 
