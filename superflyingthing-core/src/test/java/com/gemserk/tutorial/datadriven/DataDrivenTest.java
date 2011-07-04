@@ -150,7 +150,7 @@ public class DataDrivenTest {
 
 		void update(int delta) {
 			for (int i = 0; i < behaviors.size(); i++)
-				behaviors.get(i).update(delta, this);
+				behaviors.get(i).update(null, this);
 		}
 
 		void dispose() {
@@ -158,22 +158,24 @@ public class DataDrivenTest {
 		}
 
 	}
+	
+	class World {
+		
+		int delta;
+		
+		public int getDelta() {
+			return delta;
+		}
+		
+	}
 
 	/**
 	 * Defines a behavior an Entity should have, for example, the behavior of moving across the screen.
 	 */
-	interface Behavior {
+	class Behavior {
 
-		void update(int delta, Entity entity);
+		void update(World world, Entity entity) {}
 
-	}
-	
-	class WorldBehavior {
-		
-		void update(int delta) {
-			
-		}
-		
 	}
 
 	static class ComponentWrapper {
@@ -211,13 +213,13 @@ public class DataDrivenTest {
 		 * BEHAVIORS (LOGIC) ->
 		 */
 
-		class InputBehavior implements Behavior {
+		class InputBehavior extends Behavior {
 
 			/**
 			 * This one calculates, given an input (keyboard, mouse, touch), the current ship direction. As you can see, this behavior depends only on the ship's direction.
 			 */
 
-			public void update(int delta, Entity entity) {
+			public void update(World world, Entity entity) {
 				MovementComponent movement = ComponentWrapper.getMovement(entity);
 				if (movement == null)
 					return;
@@ -235,13 +237,13 @@ public class DataDrivenTest {
 		 * Nice, now it depends on Spatial and Movement Components only.
 		 */
 
-		class MovementBehavior implements Behavior {
+		class MovementBehavior extends Behavior {
 
 			// It needs to access a property of the entity....
 
 			// One option is to add the property as a parameter, we will see another option later.
 
-			public void update(int delta, Entity entity) {
+			public void update(World world, Entity entity) {
 				MovementComponent movement = ComponentWrapper.get(entity, MovementComponent.class);
 				SpatialComponent spatial = ComponentWrapper.get(entity, SpatialComponent.class);
 
@@ -253,7 +255,7 @@ public class DataDrivenTest {
 
 				// updates position using whatever you want, maybe a physics engine.
 				// only to denote it is using ship speed for some calculations
-				float realSpeed = movement.speed * delta * 0.001f;
+				float realSpeed = movement.speed * world.getDelta() * 0.001f;
 				spatial.position.add(movement.direction.tmp().nor().mul(realSpeed));
 			}
 
@@ -263,9 +265,9 @@ public class DataDrivenTest {
 		 * Using the same common API of the Behaviors, I create a new one for the collisions
 		 */
 
-		class CollisionBehavior implements Behavior {
+		class CollisionBehavior extends Behavior {
 
-			public void update(int delta, Entity entity) {
+			public void update(World world, Entity entity) {
 				InvulneravilityComponent invulneravility = ComponentWrapper.get(entity, InvulneravilityComponent.class);
 				HealthComponent health = ComponentWrapper.get(entity, HealthComponent.class);
 
@@ -306,9 +308,9 @@ public class DataDrivenTest {
 
 		}
 
-		class GetItemBehavior implements Behavior {
+		class GetItemBehavior extends Behavior {
 
-			public void update(int delta, Entity e) {
+			public void update(World world, Entity e) {
 				if (entities.isEmpty())
 					return;
 
@@ -338,10 +340,10 @@ public class DataDrivenTest {
 
 		}
 
-		class DetectsShipOnDestinationBehavior implements Behavior {
+		class DetectsShipOnDestinationBehavior extends Behavior {
 
 			@Override
-			public void update(int delta, Entity entity) {
+			public void update(World world, Entity entity) {
 				// NOTE it uses ship instance from Game, we could make this component more abstract later.
 				if (!shipOverDestination(ship))
 					return;
