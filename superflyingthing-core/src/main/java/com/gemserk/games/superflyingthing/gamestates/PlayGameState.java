@@ -22,6 +22,7 @@ import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.entities.EntityLifeCycleHandler;
@@ -50,7 +51,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
-	Camera cameraData;
 
 	EntityTemplates entityTemplates;
 	EntityManager entityManager;
@@ -114,7 +114,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
 
-			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
@@ -132,8 +132,18 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 			}
 
-			Entity cameraEntity = entityTemplates.camera(p.cameraData);
+			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
+			
+			cameraEntity.addBehavior(new Behavior() {
+				@Override
+				public void update(int delta, Entity e) {
+					Camera camera = ComponentWrapper.getCamera(e);
+					worldCamera.move(camera.getX(), camera.getY());
+					worldCamera.zoom(camera.getZoom());
+					worldCamera.rotate(camera.getAngle());
+				}
+			});
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -210,7 +220,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
 
-			PlayGameState.this.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -222,8 +232,18 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				}
 			}));
 
-			Entity cameraEntity = entityTemplates.camera(PlayGameState.this.cameraData);
+			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
+			
+			cameraEntity.addBehavior(new Behavior() {
+				@Override
+				public void update(int delta, Entity e) {
+					Camera camera = ComponentWrapper.getCamera(e);
+					worldCamera.move(camera.getX(), camera.getY());
+					worldCamera.zoom(camera.getZoom());
+					worldCamera.rotate(camera.getAngle());
+				}
+			});
 
 			Vector2[] vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
 
@@ -280,7 +300,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
 
-			PlayGameState.this.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -292,8 +312,18 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				}
 			}));
 
-			Entity cameraEntity = entityTemplates.camera(PlayGameState.this.cameraData);
+			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
+			
+			cameraEntity.addBehavior(new Behavior() {
+				@Override
+				public void update(int delta, Entity e) {
+					Camera camera = ComponentWrapper.getCamera(e);
+					worldCamera.move(camera.getX(), camera.getY());
+					worldCamera.zoom(camera.getZoom());
+					worldCamera.rotate(camera.getAngle());
+				}
+			});
 
 			Vector2[] vertices = new Vector2[] { new Vector2(15f, -1f), new Vector2(10f, 1f), new Vector2(-10f, 1f), new Vector2(-15f, -1f) };
 			Vector2[] vertices2 = new Vector2[] { new Vector2(5f, -1f), new Vector2(5f, 1f), new Vector2(-5f, 1f), new Vector2(-5f, -1f) };
@@ -388,7 +418,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
 
-			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
@@ -406,8 +436,18 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
 			}
 
-			Entity cameraEntity = entityTemplates.camera(p.cameraData);
+			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
+			
+			cameraEntity.addBehavior(new Behavior() {
+				@Override
+				public void update(int delta, Entity e) {
+					Camera camera = ComponentWrapper.getCamera(e);
+					worldCamera.move(camera.getX(), camera.getY());
+					worldCamera.zoom(camera.getZoom());
+					worldCamera.rotate(camera.getAngle());
+				}
+			});
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -503,12 +543,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		worldCamera.move(cameraData.getX(), cameraData.getY());
-		worldCamera.zoom(cameraData.getZoom());
-		worldCamera.rotate(cameraData.getAngle());
 		worldCamera.apply(spriteBatch);
-
 		renderEntities(spriteBatch);
 	}
 
