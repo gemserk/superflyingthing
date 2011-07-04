@@ -1,15 +1,20 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
+import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -22,9 +27,8 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	private BitmapFont titleFont;
 	private Text text;
-	private TextButton challengeModeButton;
-	private TextButton practiceModeButton;
-	private TextButton randomModeButton;
+
+	ArrayList<TextButton> buttons;
 
 	public SelectPlayModeGameState(Game game) {
 		this.game = game;
@@ -48,22 +52,66 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 		text = new Text("Select Mode", centerX, height * 0.9f).setColor(Color.GREEN);
 
-		challengeModeButton = new TextButton(buttonFont, "Challenge", centerX, height * 0.7f) //
+		buttons = new ArrayList<TextButton>();
+
+		TextButton challengeModeButton = new TextButton(buttonFont, "Challenge", centerX, height * 0.7f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE) //
-				.setBoundsOffset(20f, 20f);
+				.setBoundsOffset(20f, 20f) //
+				.setButtonHandler(new ButtonHandler(){
+					@Override
+					public void onReleased(TextButton button) {
+						PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
+						game.transition(game.getLevelSelectionScreen(), 500, 500);						
+					}
+				});
 
-		practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.5f) //
-				.setNotOverColor(Color.WHITE) //
-				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE).setBoundsOffset(20f, 20f);
-
-		randomModeButton = new TextButton(buttonFont, "Random", centerX, height * 0.3f) //
+		TextButton practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.5f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE) //
-				.setBoundsOffset(20f, 20f);
+				.setBoundsOffset(20f, 20f) //
+				.setButtonHandler(new ButtonHandler(){
+					@Override
+					public void onReleased(TextButton button) {
+						PlayGameState.gameMode = PlayGameState.PracticeGameMode;
+						game.transition(game.getPlayScreen(), 500, 250);						
+					}
+				});
+
+		TextButton randomModeButton = new TextButton(buttonFont, "Random", centerX, height * 0.3f) //
+				.setNotOverColor(Color.WHITE) //
+				.setOverColor(Color.GREEN) //
+				.setColor(Color.WHITE) //
+				.setBoundsOffset(20f, 20f) //
+				.setButtonHandler(new ButtonHandler() {
+					@Override
+					public void onReleased(TextButton button) {
+						PlayGameState.gameMode = PlayGameState.RandomGameMode;
+						game.transition(game.getPlayScreen(), 500, 250);
+					}
+				});
+
+		TextButton backButton = new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
+				.setNotOverColor(Color.WHITE) //
+				.setOverColor(Color.GREEN) //
+				.setColor(Color.WHITE) //
+				.setBoundsOffset(20f, 20f) //
+				.setAlignment(HAlignment.RIGHT) //
+				.setButtonHandler(new ButtonHandler() {
+					@Override
+					public void onReleased(TextButton button) {
+						game.transition(game.getMainMenuScreen(), 500, 500);
+					}
+				});
+
+		buttons.add(challengeModeButton);
+		buttons.add(practiceModeButton);
+		buttons.add(randomModeButton);
+		
+		if (Gdx.app.getType() != ApplicationType.Android)
+			buttons.add(backButton);
 	}
 
 	@Override
@@ -72,9 +120,8 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		spriteBatch.begin();
 		text.draw(spriteBatch, titleFont);
 
-		practiceModeButton.draw(spriteBatch);
-		challengeModeButton.draw(spriteBatch);
-		randomModeButton.draw(spriteBatch);
+		for (int i = 0; i < buttons.size(); i++)
+			buttons.get(i).draw(spriteBatch);
 
 		spriteBatch.end();
 	}
@@ -83,25 +130,8 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 
-		practiceModeButton.update();
-		challengeModeButton.update();
-		randomModeButton.update();
-
-		if (practiceModeButton.isReleased()) {
-			// instantiate in some way the game world
-			PlayGameState.gameMode = PlayGameState.PracticeGameMode;
-			game.transition(game.getPlayScreen(), 500, 250);
-		}
-
-		if (challengeModeButton.isReleased()) {
-			PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
-			game.transition(game.getLevelSelectionScreen(), 500, 500);
-		}
-
-		if (randomModeButton.isReleased()) {
-			PlayGameState.gameMode = PlayGameState.RandomGameMode;
-			game.transition(game.getPlayScreen(), 500, 250);
-		}
+		for (int i = 0; i < buttons.size(); i++)
+			buttons.get(i).update();
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE))
 			game.transition(game.getMainMenuScreen(), 500, 500);
