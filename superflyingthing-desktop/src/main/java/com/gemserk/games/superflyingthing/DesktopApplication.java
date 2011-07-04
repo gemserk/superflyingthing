@@ -2,10 +2,18 @@ package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.dmurph.tracking.AnalyticsConfigData;
+import com.dmurph.tracking.JGoogleAnalyticsTracker;
+import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
+import com.gemserk.analytics.Analytics;
+import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 
 public class DesktopApplication {
 
 	public static void main(String[] argv) {
+		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-4");
+		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
+		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
 		new LwjglApplication(new Game(){
 			@Override
 			public void create() {

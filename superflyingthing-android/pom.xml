@@ -221,6 +221,9 @@
 			<artifactId>gdx-backend-android</artifactId>
 			<version>${libgdxversion}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.gemserk.analytics.googleanalytics</groupId>
+			<artifactId>jgoogleanalyticstracker-android</artifactId>
+		</dependency>
 	</dependencies>
 </project>

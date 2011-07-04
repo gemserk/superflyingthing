@@ -29,9 +29,9 @@
 		<appletMain>com.gemserk.games.superflyingthing.Applet</appletMain>
 
 		<appletGameParameter>com.gemserk.games.superflyingthing.Applet</appletGameParameter>
-		
+
 		<mainClass>${webstartMain}</mainClass>
-		
+
 		<jnlp.applet.mainClass>com.gemserk.games.superflyingthing.Applet</jnlp.applet.mainClass>
 
 		<natives>${basedir}/target/natives/</natives>
@@ -75,6 +75,10 @@
 			<groupId>com.badlogic.gdx</groupId>
 			<artifactId>gdx-backend-lwjgl</artifactId>
 			<version>${libgdxversion}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.gemserk.analytics.googleanalytics</groupId>
+			<artifactId>jgoogleanalyticstracker-desktop</artifactId>
 		</dependency>
 	</dependencies>
 
