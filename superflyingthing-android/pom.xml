@@ -178,6 +178,11 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>com.google.ads.admob</groupId>
+			<artifactId>admob</artifactId>
+			<version>4.1.0</version>
+		</dependency>
+		<dependency>
 			<groupId>com.adwhirl.adwhirl</groupId>
 			<artifactId>adwhirl</artifactId>
 			<version>3.0.0</version>
@@ -224,6 +229,11 @@
 		<dependency>
 			<groupId>com.gemserk.analytics.googleanalytics</groupId>
 			<artifactId>jgoogleanalyticstracker-android</artifactId>
+		</dependency>
+				<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-android</artifactId>
+			<version>1.6.1-RC1</version>
 		</dependency>
 	</dependencies>
 </project>
