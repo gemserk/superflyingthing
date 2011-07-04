@@ -135,7 +135,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
-			
+
 			cameraEntity.addBehavior(new Behavior() {
 				@Override
 				public void update(int delta, Entity e) {
@@ -213,8 +213,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	class ChallengeMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
-		
-		void loadLevel1(final EntityManager entityManager, EntityTemplates templates, Level level) {
+
+		void loadLevel(final EntityManager entityManager, EntityTemplates templates, Level level) {
 			float worldWidth = level.w;
 			float worldHeight = level.h;
 
@@ -235,7 +235,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
-			
+
 			cameraEntity.addBehavior(new Behavior() {
 				@Override
 				public void update(int delta, Entity e) {
@@ -245,15 +245,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					worldCamera.rotate(camera.getAngle());
 				}
 			});
-			
+
 			for (int i = 0; i < level.obstacles.length; i++) {
 				Obstacle o = level.obstacles[i];
-				entityManager.add(entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians));	
+				entityManager.add(entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians));
 			}
-			
+
 			for (int i = 0; i < level.items.length; i++) {
 				Level.Item item = level.items[i];
-				entityManager.add(entityTemplates.diamond(item.x, item.y, 0.2f));	
+				entityManager.add(entityTemplates.diamond(item.x, item.y, 0.2f));
 			}
 
 			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
@@ -295,89 +295,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.add(game);
 		}
 
-		void loadLevel2(final EntityManager entityManager, EntityTemplates templates) {
-			float worldWidth = 50f;
-			float worldHeight = 10f;
-
-			float x = worldWidth * 0.5f;
-			float y = worldHeight * 0.5f;
-
-			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
-
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
-
-			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
-				@Override
-				protected void onTrigger(Entity e) {
-					done = true;
-				}
-			}));
-
-			Entity cameraEntity = entityTemplates.camera(camera);
-			entityManager.add(cameraEntity);
-			
-			cameraEntity.addBehavior(new Behavior() {
-				@Override
-				public void update(int delta, Entity e) {
-					Camera camera = ComponentWrapper.getCamera(e);
-					worldCamera.move(camera.getX(), camera.getY());
-					worldCamera.zoom(camera.getZoom());
-					worldCamera.rotate(camera.getAngle());
-				}
-			});
-
-			Vector2[] vertices = new Vector2[] { new Vector2(15f, -1f), new Vector2(10f, 1f), new Vector2(-10f, 1f), new Vector2(-15f, -1f) };
-			Vector2[] vertices2 = new Vector2[] { new Vector2(5f, -1f), new Vector2(5f, 1f), new Vector2(-5f, 1f), new Vector2(-5f, -1f) };
-
-			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, 0.9f, 0f));
-			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, worldHeight - 0.9f, 180f * MathUtils.degreesToRadians));
-			entityManager.add(entityTemplates.obstacle(vertices2, worldWidth * 0.5f, worldHeight * 0.5f, 0f));
-
-			entityManager.add(entityTemplates.diamond(20f, 7f, 0.2f));
-			entityManager.add(entityTemplates.diamond(25f, 3f, 0.2f));
-			entityManager.add(entityTemplates.diamond(30f, 7f, 0.2f));
-			entityManager.add(entityTemplates.diamond(35f, 3f, 0.2f));
-
-			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
-			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
-			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
-			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
-
-			Entity game = entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component("entityDeadTrigger", new Trigger() {
-						@Override
-						public void onTrigger(Entity e) {
-							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-							entityManager.remove(gameDataComponent.ship);
-
-							Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-							Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
-							entityManager.add(deadSuperSheepEntity);
-
-							gameDataComponent.ship = null;
-						}
-					}) //
-					.behavior(new CallTriggerIfEntityDeadBehavior()) //
-					.component("noEntityTrigger", new Trigger() {
-						@Override
-						public void onTrigger(Entity e) {
-							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-							Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
-							entityManager.add(ship);
-							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-							attachmentComponent.setEntity(ship);
-							gameDataComponent.ship = ship;
-						}
-					}) //
-					.behavior(new CallTriggerIfNoShipBehavior()) //
-					.behavior(new FixCameraTargetBehavior()) //
-					.build();
-			entityManager.add(game);
-		}
-		
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
 			ResourceManager<String> resourceManager = p.resourceManager;
@@ -389,10 +306,10 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityTemplates = entityTemplates;
 
 			if (GameData.level == 1)
-				loadLevel1(entityManager, entityTemplates, Levels.level1());
+				loadLevel(entityManager, entityTemplates, Levels.level1());
 
 			if (GameData.level == 2)
-				loadLevel2(entityManager, entityTemplates);
+				loadLevel(entityManager, entityTemplates, Levels.level2());
 
 			// simulate a step to put everything on their places
 			entityManager.update(1);
@@ -440,7 +357,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity cameraEntity = entityTemplates.camera(camera);
 			entityManager.add(cameraEntity);
-			
+
 			cameraEntity.addBehavior(new Behavior() {
 				@Override
 				public void update(int delta, Entity e) {
