@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
@@ -73,6 +74,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));
 
 		setScreen(splashScreen);
+		
+		Analytics.traker.trackPageView("/start", "/start", null);
 	}
 
 	public void transition(final Screen screen, int leaveTime, int enterTime) {

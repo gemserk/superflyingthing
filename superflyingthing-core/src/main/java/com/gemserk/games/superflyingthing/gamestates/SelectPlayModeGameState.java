@@ -63,7 +63,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					@Override
 					public void onReleased() {
 						PlayGameState.gameMode = PlayGameState.ChallengeGameMode;
-						game.transition(game.getLevelSelectionScreen(), 500, 500);						
+						game.transition(game.getLevelSelectionScreen(), 500, 500);	
 					}
 				});
 
@@ -76,7 +76,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					@Override
 					public void onReleased() {
 						PlayGameState.gameMode = PlayGameState.PracticeGameMode;
-						game.transition(game.getPlayScreen(), 500, 250);						
+						game.transition(game.getPlayScreen(), 500, 250);		
 					}
 				});
 

@@ -11,6 +11,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -62,6 +63,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
+	boolean resetPressed;
 
 	boolean done;
 
@@ -71,6 +73,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void init() {
+		resetPressed = false;
 		spriteBatch = new SpriteBatch();
 
 		physicsWorld = new World(new Vector2(), false);
@@ -84,12 +87,16 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
 
-		if (gameMode == RandomGameMode)
+		if (gameMode == RandomGameMode) {
 			new RandomMode().create(this);
-		else if (gameMode == PracticeGameMode)
+			Analytics.traker.trackPageView("/startChallengeMode", "/startChallengeMode", null);
+		} else if (gameMode == PracticeGameMode) {
 			new PracticeMode().create(this);
-		else if (gameMode == ChallengeGameMode)
+			Analytics.traker.trackPageView("/startPracticeMode", "/startPracticeMode", null);
+		} else if (gameMode == ChallengeGameMode) {
 			new ChallengeMode().create(this);
+			Analytics.traker.trackPageView("/startRandomMode", "/startRandomMode", null);
+		}
 
 		done = false;
 	}
@@ -141,6 +148,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				@Override
 				protected void onTrigger(Entity e) {
 					done = true;
+					Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
 				}
 			}));
 
@@ -165,6 +173,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							entityManager.add(deadSuperSheepEntity);
 
 							gameDataComponent.ship = null;
+							
+							Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
 						}
 					}) //
 					.behavior(new CallTriggerIfEntityDeadBehavior()) //
@@ -189,6 +199,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.update(1);
 			physicsWorld.step(1, 1, 1);
 			entityManager.update(1);
+
+			// if R and MENU doesn't generate N levels per second
+			// Analytics.traker.trackPageView("/randomMode/newLevel", "/randomMode/newLevel", null);
 		}
 	}
 
@@ -312,7 +325,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {}));
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
+			}));
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
@@ -465,10 +479,23 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void update(int delta) {
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK))
+		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
 			game.transition(game.getMainMenuScreen(), 500, 500);
 
-		if (Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU))
+			if (gameMode == RandomGameMode) {
+				Analytics.traker.trackPageView("/finishChallengeMode", "/finishChallengeMode", null);
+			} else if (gameMode == PracticeGameMode) {
+				Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
+			} else if (gameMode == ChallengeGameMode) {
+				Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
+			}
+
+		}
+
+		if (!resetPressed)
+			resetPressed = Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU);
+
+		if (resetPressed && !Gdx.input.isKeyPressed(Keys.R) && !Gdx.input.isKeyPressed(Keys.MENU))
 			done = true;
 
 		if (done) {
