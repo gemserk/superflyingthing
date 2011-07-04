@@ -14,7 +14,10 @@ public class DesktopApplication {
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-4");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
-		new LwjglApplication(new Game(){
+
+		// Analytics.traker.setEnabled(false);
+
+		new LwjglApplication(new Game() {
 			@Override
 			public void create() {
 				Gdx.graphics.setVSync(true);

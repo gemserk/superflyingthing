@@ -72,6 +72,20 @@ public class LevelSelectionGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
+		
+		buttons.add(GuiControls.imageButton(level1) //
+				.color(0.8f, 0.8f, 0.8f, 1f) //
+				.size(width * 0.1f, height * 0.1f) //
+				.position(width * 0.3f, height * 0.75f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						// load level 1, then go to play screen
+						GameData.level = 2;
+						game.transition(game.getPlayScreen(), 500, 250);
+					}
+				}) //
+				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
 			buttons.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //

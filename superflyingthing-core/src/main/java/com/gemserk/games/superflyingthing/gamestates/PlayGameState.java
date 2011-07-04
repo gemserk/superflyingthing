@@ -167,7 +167,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							entityManager.add(deadSuperSheepEntity);
 
 							gameDataComponent.ship = null;
-							
+
 							Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
 						}
 					}) //
@@ -203,33 +203,36 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
-		void create(PlayGameState p) {
-			World physicsWorld = p.physicsWorld;
-			ResourceManager<String> resourceManager = p.resourceManager;
-
-			final EntityManager entityManager = new EntityManagerImpl(p);
-			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
-
-			p.entityManager = entityManager;
-			p.entityTemplates = entityTemplates;
-
-			// Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
-
+		void loadLevel1(final EntityManager entityManager, EntityTemplates templates) {
 			float worldWidth = 50f;
 			float worldHeight = 10f;
 
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
 
-			p.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			PlayGameState.this.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger()));
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
+				@Override
+				protected void onTrigger(Entity e) {
+					done = true;
+				}
+			}));
 
-			Entity cameraEntity = entityTemplates.camera(p.cameraData);
+			Entity cameraEntity = entityTemplates.camera(PlayGameState.this.cameraData);
 			entityManager.add(cameraEntity);
+
+			Vector2[] vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
+
+			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, 1.4f, 0f));
+			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, worldHeight - 1.4f, 180f * MathUtils.degreesToRadians));
+
+			entityManager.add(entityTemplates.diamond(15f, worldHeight * 0.5f, 0.2f));
+			entityManager.add(entityTemplates.diamond(25f, worldHeight * 0.5f, 0.2f));
+			entityManager.add(entityTemplates.diamond(35f, worldHeight * 0.5f, 0.2f));
 
 			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
 			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
@@ -268,6 +271,96 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.behavior(new FixCameraTargetBehavior()) //
 					.build();
 			entityManager.add(game);
+		}
+
+		void loadLevel2(final EntityManager entityManager, EntityTemplates templates) {
+			float worldWidth = 50f;
+			float worldHeight = 10f;
+
+			float x = worldWidth * 0.5f;
+			float y = worldHeight * 0.5f;
+
+			PlayGameState.this.cameraData = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
+
+			entityManager.add(startPlanet);
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
+				@Override
+				protected void onTrigger(Entity e) {
+					done = true;
+				}
+			}));
+
+			Entity cameraEntity = entityTemplates.camera(PlayGameState.this.cameraData);
+			entityManager.add(cameraEntity);
+
+			Vector2[] vertices = new Vector2[] { new Vector2(15f, -1f), new Vector2(10f, 1f), new Vector2(-10f, 1f), new Vector2(-15f, -1f) };
+			Vector2[] vertices2 = new Vector2[] { new Vector2(5f, -1f), new Vector2(5f, 1f), new Vector2(-5f, 1f), new Vector2(-5f, -1f) };
+
+			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, 0.9f, 0f));
+			entityManager.add(entityTemplates.obstacle(vertices, worldWidth * 0.5f, worldHeight - 0.9f, 180f * MathUtils.degreesToRadians));
+			entityManager.add(entityTemplates.obstacle(vertices2, worldWidth * 0.5f, worldHeight * 0.5f, 0f));
+
+			entityManager.add(entityTemplates.diamond(20f, 7f, 0.2f));
+			entityManager.add(entityTemplates.diamond(25f, 3f, 0.2f));
+			entityManager.add(entityTemplates.diamond(30f, 7f, 0.2f));
+			entityManager.add(entityTemplates.diamond(35f, 3f, 0.2f));
+
+			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
+
+			Entity game = entityBuilder //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component("entityDeadTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							entityManager.remove(gameDataComponent.ship);
+
+							Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+							Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
+							entityManager.add(deadSuperSheepEntity);
+
+							gameDataComponent.ship = null;
+						}
+					}) //
+					.behavior(new CallTriggerIfEntityDeadBehavior()) //
+					.component("noEntityTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+							Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
+							entityManager.add(ship);
+							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+							attachmentComponent.setEntity(ship);
+							gameDataComponent.ship = ship;
+						}
+					}) //
+					.behavior(new CallTriggerIfNoShipBehavior()) //
+					.behavior(new FixCameraTargetBehavior()) //
+					.build();
+			entityManager.add(game);
+		}
+		
+		void create(PlayGameState p) {
+			World physicsWorld = p.physicsWorld;
+			ResourceManager<String> resourceManager = p.resourceManager;
+
+			final EntityManager entityManager = new EntityManagerImpl(p);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+
+			p.entityManager = entityManager;
+			p.entityTemplates = entityTemplates;
+
+			if (GameData.level == 1)
+				loadLevel1(entityManager, entityTemplates);
+
+			if (GameData.level == 2)
+				loadLevel2(entityManager, entityTemplates);
 
 			// simulate a step to put everything on their places
 			entityManager.update(1);
@@ -477,7 +570,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			game.transition(game.getMainMenuScreen(), 500, 500);
 
 			if (GameData.gameMode == GameData.RandomGameMode) {
-				Analytics.traker.trackPageView("/finishChallengeMode", "/finishChallengeMode", null);
+				Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
 			} else if (GameData.gameMode == GameData.PracticeGameMode) {
 				Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
 			} else if (GameData.gameMode == GameData.ChallengeGameMode) {
@@ -493,8 +586,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			done = true;
 
 		if (done) {
-			dispose();
-			init();
+
+			if (GameData.gameMode == GameData.ChallengeGameMode) {
+				game.transition(game.getLevelSelectionScreen(), 500, 500);
+				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
+			} else {
+				// restart game state...
+				dispose();
+				init();
+			}
 		}
 
 		physicsWorld.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
