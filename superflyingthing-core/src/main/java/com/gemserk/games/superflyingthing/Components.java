@@ -61,6 +61,7 @@ public class Components {
 
 		final Vector2 direction = new Vector2();
 		float angularVelocity = 0f;
+		float maxLinearSpeed = 6f;
 		private float maxAngularVelocity = 600f;
 		private float minAngularVelocity = 100f;
 		private float angularAcceleration = 1f;
