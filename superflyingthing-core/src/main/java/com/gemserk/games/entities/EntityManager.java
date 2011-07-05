@@ -28,7 +28,7 @@ public interface EntityManager {
 	 * Updates all entities behaviors.
 	 * 
 	 * @param delta
-	 *            the time in ms from the las update call.
+	 *            the time in ms from the last update call.
 	 */
 	void update(int delta);
 
@@ -41,5 +41,5 @@ public interface EntityManager {
 	 * Returns an entity given an index.
 	 */
 	Entity get(int index);
-
+	
 }
