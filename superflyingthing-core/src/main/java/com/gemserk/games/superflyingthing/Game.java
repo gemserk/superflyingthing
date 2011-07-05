@@ -2,6 +2,8 @@ package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
@@ -12,13 +14,17 @@ import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
+import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
+import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.ResourceManagerImpl;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
@@ -28,6 +34,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen selectPlayModeScreen;
 	private Screen playScreen;
 	private Screen levelSelectionScreen;
+	private ResourceManager<String> resourceManager;
+	private BitmapFont fpsFont;
+	private SpriteBatch spriteBatch;
 	
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -67,6 +76,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 
+		resourceManager = new ResourceManagerImpl<String>();
+		GameResources.load(resourceManager);
+		
+		fpsFont = resourceManager.getResourceValue("FpsFont");
+		spriteBatch = new SpriteBatch();
+		
 		playScreen = new ScreenImpl(new PlayGameState(this));
 		levelSelectionScreen = new ScreenImpl(new LevelSelectionGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
@@ -92,6 +107,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 	
 	@Override
+	public void render() {
+		super.render();
+		spriteBatch.begin();
+		SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
+		spriteBatch.end();
+	}
+	
+	@Override
 	public void pause() {
 		super.pause();
 		Gdx.app.log("SuperSheep", "game paused via ApplicationListner.pause()");
@@ -103,6 +126,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		super.resume();
 		Gdx.app.log("SuperSheep", "game resumed via ApplicationListner.resume()");
 		adWhirlViewHandler.show();		
+	}
+	
+	@Override
+	public void dispose() {
+		super.dispose();
+		resourceManager.unloadAll();
+		spriteBatch.dispose();
 	}
 
 }
