@@ -62,6 +62,10 @@ public class Components {
 		final Vector2 direction = new Vector2();
 
 		float angularVelocity = 0f;
+		
+		float maxAngularVelocity = 600f;
+		
+		float minAngularVelocity = 100f;
 
 		public Vector2 getDirection() {
 			return direction;

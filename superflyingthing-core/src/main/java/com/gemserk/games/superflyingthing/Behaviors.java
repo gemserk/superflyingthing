@@ -20,9 +20,9 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
+import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Behaviors {
@@ -209,11 +209,12 @@ public class Behaviors {
 			Vector2 direction = movementComponent.direction;
 
 			float rotationAngle = 0f;
-			float maxAngularVelocity = 600f;
+			// float maxAngularVelocity = 600f;
+			float maxAngularVelocity = movementComponent.maxAngularVelocity;
 			float acceleration = 1f;
 			float angularVelocity = movementComponent.angularVelocity;
-
-			float minimumAngularVelocity = 100f;
+			// float minimumAngularVelocity = 100f;
+			float minimumAngularVelocity = movementComponent.minAngularVelocity;
 
 			if (movementDirection > 0) {
 				if (angularVelocity < 0)
@@ -330,7 +331,7 @@ public class Behaviors {
 				return;
 			entityAttachment.entity = e1;
 		}
-		
+
 		// TODO: change it for a trigger instead... and decide to kill the entity outside
 
 		private void updateAliveCollision(Entity e, Entity e2) {
