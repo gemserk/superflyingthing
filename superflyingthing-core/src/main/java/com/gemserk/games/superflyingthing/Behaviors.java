@@ -97,7 +97,7 @@ public class Behaviors {
 			Vector2 diff = superSheepPosition.sub(position).nor();
 			diff.rotate(-90f);
 
-			movementComponent.direction.set(diff);
+			movementComponent.getDirection().set(diff);
 		}
 
 	}
@@ -209,11 +209,11 @@ public class Behaviors {
 			Vector2 direction = movementComponent.direction;
 
 			float rotationAngle = 0f;
-
-			float maxAngularVelocity = movementComponent.maxAngularVelocity;
-			float acceleration = movementComponent.angularAcceleration;
 			float angularVelocity = movementComponent.angularVelocity;
-			float minimumAngularVelocity = movementComponent.minAngularVelocity;
+
+			float maxAngularVelocity = movementComponent.getMaxAngularVelocity();
+			float acceleration = movementComponent.getAngularAcceleration();
+			float minimumAngularVelocity = movementComponent.getMinAngularVelocity();
 
 			if (movementDirection > 0) {
 				if (angularVelocity < 0)

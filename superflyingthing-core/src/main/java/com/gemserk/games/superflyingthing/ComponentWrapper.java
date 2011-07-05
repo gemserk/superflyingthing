@@ -7,6 +7,7 @@ import com.gemserk.games.entities.Entity;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 
 public class ComponentWrapper {
@@ -33,6 +34,15 @@ public class ComponentWrapper {
 	public static AttachmentComponent getEntityAttachment(Entity e) {
 		return getComponent(e, AttachmentComponent.class);
 	}
+	
+	public static MovementComponent getMovementComponent(Entity e) {
+		return getComponent(e, MovementComponent.class);
+	}
+	
+	public static void addMovementComponent(Entity e, Object o) {
+		e.addComponent(MovementComponent.class, o);
+	}
+
 
 	@SuppressWarnings("unchecked")
 	static <T> T getComponent(Entity e, Class<?> clazz) {

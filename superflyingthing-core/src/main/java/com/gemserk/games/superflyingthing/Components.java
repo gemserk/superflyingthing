@@ -8,7 +8,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
-	
+
 	public static class CameraComponent {
 
 		private Camera camera;
@@ -30,9 +30,9 @@ public class Components {
 	public static class SpriteComponent {
 
 		private Sprite sprite;
-		
+
 		private Color color;
-		
+
 		public void setSprite(Sprite sprite) {
 			this.sprite = sprite;
 		}
@@ -40,7 +40,7 @@ public class Components {
 		public Sprite getSprite() {
 			return sprite;
 		}
-		
+
 		public Color getColor() {
 			return color;
 		}
@@ -49,8 +49,8 @@ public class Components {
 			setSprite(sprite);
 			this.color = new Color(1f, 1f, 1f, 1f);
 		}
-		
-		public SpriteComponent(Sprite sprite, Color color) { 
+
+		public SpriteComponent(Sprite sprite, Color color) {
 			setSprite(sprite);
 			this.color = new Color(color);
 		}
@@ -61,9 +61,9 @@ public class Components {
 
 		final Vector2 direction = new Vector2();
 		float angularVelocity = 0f;
-		float maxAngularVelocity = 600f;
-		float minAngularVelocity = 100f;
-		float angularAcceleration = 1f;
+		private float maxAngularVelocity = 600f;
+		private float minAngularVelocity = 100f;
+		private float angularAcceleration = 1f;
 
 		public Vector2 getDirection() {
 			return direction;
@@ -71,6 +71,30 @@ public class Components {
 
 		public MovementComponent(float dx, float dy) {
 			direction.set(dx, dy);
+		}
+
+		public void setAngularAcceleration(float angularAcceleration) {
+			this.angularAcceleration = angularAcceleration;
+		}
+
+		public float getAngularAcceleration() {
+			return angularAcceleration;
+		}
+
+		public void setMinAngularVelocity(float minAngularVelocity) {
+			this.minAngularVelocity = minAngularVelocity;
+		}
+
+		public float getMinAngularVelocity() {
+			return minAngularVelocity;
+		}
+
+		public void setMaxAngularVelocity(float maxAngularVelocity) {
+			this.maxAngularVelocity = maxAngularVelocity;
+		}
+
+		public float getMaxAngularVelocity() {
+			return maxAngularVelocity;
 		}
 
 	}
@@ -154,19 +178,19 @@ public class Components {
 		float direction;
 
 	}
-	
+
 	public static class GameDataComponent {
-		
+
 		public Entity ship;
 		public Entity startPlanet;
 		public Entity camera;
-		
+
 		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera) {
 			this.ship = ship;
 			this.startPlanet = startPlanet;
 			this.camera = camera;
 		}
-		
+
 	}
 
 }
