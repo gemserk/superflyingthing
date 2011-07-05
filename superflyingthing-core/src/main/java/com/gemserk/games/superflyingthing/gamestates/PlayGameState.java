@@ -35,6 +35,7 @@ import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
@@ -465,28 +466,41 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	void renderEntities(SpriteBatch spriteBatch) {
 		spriteBatch.begin();
-		for (int i = 0; i < entityManager.entitiesCount(); i++) {
-			Entity e = entityManager.get(i);
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			if (spatial == null)
-				continue;
-			SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
-			if (spriteComponent == null)
-				continue;
-			Sprite sprite = spriteComponent.getSprite();
-			sprite.setSize(spatial.getWidth(), spatial.getHeight());
-			sprite.setColor(spriteComponent.getColor());
-			Vector2 position = spatial.getPosition();
-			SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
-		}
+		for (int i = 0; i < entityManager.entitiesCount(); i++) 
+			renderEntitySprite(entityManager.get(i));
 		spriteBatch.end();
 
-		box2dCustomDebugRenderer.render();
+		// box2dCustomDebugRenderer.render();
 
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
 			renderAttachmentDebug(e);
+			renderEntityWithShape(e);
+		}
+	}
+	
+	private void renderEntitySprite(Entity e) {
+		Spatial spatial = ComponentWrapper.getSpatial(e);
+		if (spatial == null)
+			return;
+		SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+		if (spriteComponent == null)
+			return;
+		Sprite sprite = spriteComponent.getSprite();
+		sprite.setSize(spatial.getWidth(), spatial.getHeight());
+		sprite.setColor(spriteComponent.getColor());
+		Vector2 position = spatial.getPosition();
+		SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
+	}
+
+	private void renderEntityWithShape(Entity e) {
+		ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
+		if (shapeComponent != null) {
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			if (spatial == null)
+				return;
+			ImmediateModeRendererUtils.drawPolygon(shapeComponent.getVertices(), spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 		}
 	}
 

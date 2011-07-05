@@ -56,6 +56,23 @@ public class Components {
 		}
 
 	}
+	
+	public static class ShapeComponent {
+
+		private final Vector2[] vertices;
+		
+		public Color color;
+		
+		public Vector2[] getVertices() {
+			return vertices;
+		}
+		
+		public ShapeComponent(Vector2[] vertices, Color color) {
+			this.vertices = vertices;
+			this.color = color;
+		}
+		
+	}
 
 	public static class MovementComponent {
 

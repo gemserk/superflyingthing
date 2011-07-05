@@ -1,10 +1,11 @@
 package com.gemserk.games.superflyingthing;
 
+import org.lwjgl.opengl.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
@@ -26,14 +27,23 @@ public class DesktopApplication {
 			Game.setDebugMode(true);
 			Analytics.traker.setEnabled(false);
 		}
+		
+		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.width = 800;
+		config.height = 480;
+		config.fullscreen = false;
+		config.title = "Super Flying Thing - Prototype";
+		config.useGL20 = false;
+		config.useCPUSynch = false;
 
 		new LwjglApplication(new Game() {
 			@Override
 			public void create() {
-				Gdx.graphics.setVSync(true);
+				// Gdx.graphics.setVSync(true);
+				Display.setVSyncEnabled(true);
 				super.create();
 			}
-		}, "Super Flying Thing Prototype", 800, 480, false);
+		}, config);
 	}
 
 }

@@ -27,6 +27,7 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
+import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
@@ -216,6 +217,8 @@ public class EntityTemplates {
 				.angle(angle) //
 				.build();
 		e.addComponent(Physics.class, new PhysicsImpl(body));
+		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
+		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Color.GREEN));
 		return e;
 	}
 
@@ -230,6 +233,13 @@ public class EntityTemplates {
 				.angle(angle) //
 				.build();
 		e.addComponent(Physics.class, new PhysicsImpl(body));
+		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
+		e.addComponent(ShapeComponent.class, new ShapeComponent(new Vector2[] { //
+				new Vector2(w * 0.5f, h * 0.5f), //
+						new Vector2(w * 0.5f, -h * 0.5f), //
+						new Vector2(-w * 0.5f, -h * 0.5f), //
+						new Vector2(-w * 0.5f, h * 0.5f), //
+				}, Color.WHITE));
 		return e;
 	}
 
