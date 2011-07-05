@@ -84,7 +84,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		storedConfig = new AnalyticsStoredConfig(getApplicationContext());
 		visitorData = storedConfig.loadVisitor();
 		
-		AnalyticsConfigData analyticsconfig = new AnalyticsConfigData("UA-23542248-3",visitorData);
+		AnalyticsConfigData analyticsconfig = new AnalyticsConfigData("UA-23542248-4",visitorData);
 		BasicConfig.configure(analyticsconfig, getApplicationContext());
 		
 		JGoogleAnalyticsTracker tracker = new JGoogleAnalyticsTracker(analyticsconfig,GoogleAnalyticsVersion.V_4_7_2);
