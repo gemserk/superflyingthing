@@ -27,6 +27,16 @@ import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
 public class Game extends com.gemserk.commons.gdx.Game {
+	
+	private static boolean debugMode;
+	
+	public static boolean isDebugMode() {
+		return debugMode;
+	}
+	
+	public static void setDebugMode(boolean debugMode) {
+		Game.debugMode = debugMode;
+	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
 	private Screen splashScreen;

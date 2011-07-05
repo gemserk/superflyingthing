@@ -209,11 +209,10 @@ public class Behaviors {
 			Vector2 direction = movementComponent.direction;
 
 			float rotationAngle = 0f;
-			// float maxAngularVelocity = 600f;
+
 			float maxAngularVelocity = movementComponent.maxAngularVelocity;
-			float acceleration = 1f;
+			float acceleration = movementComponent.angularAcceleration;
 			float angularVelocity = movementComponent.angularVelocity;
-			// float minimumAngularVelocity = 100f;
 			float minimumAngularVelocity = movementComponent.minAngularVelocity;
 
 			if (movementDirection > 0) {

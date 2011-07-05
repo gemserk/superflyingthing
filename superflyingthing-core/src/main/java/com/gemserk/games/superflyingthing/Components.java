@@ -60,12 +60,10 @@ public class Components {
 	public static class MovementComponent {
 
 		final Vector2 direction = new Vector2();
-
 		float angularVelocity = 0f;
-		
 		float maxAngularVelocity = 600f;
-		
 		float minAngularVelocity = 100f;
+		float angularAcceleration = 1f;
 
 		public Vector2 getDirection() {
 			return direction;
