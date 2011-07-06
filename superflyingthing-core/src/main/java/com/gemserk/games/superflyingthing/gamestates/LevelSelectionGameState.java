@@ -38,11 +38,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-
-		int centerX = width / 2;
-		int centerY = height / 2;
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
