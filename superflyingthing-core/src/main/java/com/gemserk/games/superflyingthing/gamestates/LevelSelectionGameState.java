@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -13,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Control;
+import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -28,10 +26,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	private BitmapFont titleFont;
-	private Text text;
-
-	ArrayList<Control> controls;
+	
+	Container container;
 
 	public LevelSelectionGameState(Game game) {
 		this.game = game;
@@ -50,16 +46,18 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		GameResources.load(resourceManager);
 
-		titleFont = resourceManager.getResourceValue("TitleFont");
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		text = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
-
-		controls = new ArrayList<Control>();
+		Text title = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
+		title.setFont(titleFont);
+		
+		container = new Container();
+		container.add(title);
 
 		Sprite level1 = resourceManager.getResourceValue("WhiteRectangle");
 
-		controls.add(GuiControls.imageButton(level1) //
+		container.add(GuiControls.imageButton(level1) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
 				.position(width * 0.15f, height * 0.75f) //
@@ -73,7 +71,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				}) //
 				.build());
 		
-		controls.add(GuiControls.imageButton(level1) //
+		container.add(GuiControls.imageButton(level1) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
 				.position(width * 0.3f, height * 0.75f) //
@@ -88,7 +86,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
-			controls.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
+			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
 					.setNotOverColor(Color.WHITE) //
 					.setOverColor(Color.GREEN) //
 					.setColor(Color.WHITE) //
@@ -107,21 +105,15 @@ public class LevelSelectionGameState extends GameStateImpl {
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		text.draw(spriteBatch, titleFont);
-		for (int i = 0; i < controls.size(); i++)
-			controls.get(i).draw(spriteBatch);
+		container.draw(spriteBatch);
 		spriteBatch.end();
-
 		// GuiControls.debugRender(scene);
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-
-		for (int i = 0; i < controls.size(); i++)
-			controls.get(i).update();
-
+		container.update();
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE))
 			game.transition(game.getSelectPlayModeScreen(), 500, 500);
 	}
