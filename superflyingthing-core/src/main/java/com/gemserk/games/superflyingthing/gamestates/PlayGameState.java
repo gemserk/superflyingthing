@@ -262,7 +262,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			float worldWidth = MathUtils.random(30f, 150f);
 			float worldHeight = MathUtils.random(10f, 20f);
 
-			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
+			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
@@ -402,7 +402,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			float worldWidth = MathUtils.random(40f, 40f);
 			float worldHeight = MathUtils.random(15f, 15f);
 
-			Gdx.app.log("SuperSheep", "new world generated with size " + worldWidth + ", " + worldHeight);
+			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
@@ -550,7 +550,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		physicsWorld.destroyBody(body);
-		Gdx.app.log("SuperSheep", "removing body from physics world");
+		Gdx.app.log("SuperFlyingThing", "removing body from physics world");
 	}
 
 	private void diposeJoints(Entity e) {
@@ -560,7 +560,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		if (entityAttachment.getJoint() == null)
 			return;
 		physicsWorld.destroyJoint(entityAttachment.getJoint());
-		Gdx.app.log("SuperSheep", "removing joints from physics world");
+		Gdx.app.log("SuperFlyingThing", "removing joints from physics world");
 	}
 
 	@Override

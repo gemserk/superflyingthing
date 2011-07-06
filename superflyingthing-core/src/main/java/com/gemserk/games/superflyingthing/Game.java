@@ -147,9 +147,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		if (inputDevicesMonitor.getButton("toggleDebug").isReleased()) {
 			Game.setDebugMode(!Game.isDebugMode());
 			if (Game.isDebugMode())
-				Gdx.app.log("SuperSheep", "debug controls enabled");
+				Gdx.app.log("SuperFlyingThing", "debug controls enabled");
 			else
-				Gdx.app.log("SuperSheep", "debug controls disabled");
+				Gdx.app.log("SuperFlyingThing", "debug controls disabled");
 		}
 		
 		super.render();
@@ -161,14 +161,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	@Override
 	public void pause() {
 		super.pause();
-		Gdx.app.log("SuperSheep", "game paused via ApplicationListner.pause()");
+		Gdx.app.log("SuperFlyingThing", "game paused via ApplicationListner.pause()");
 		adWhirlViewHandler.hide();
 	}
 
 	@Override
 	public void resume() {
 		super.resume();
-		Gdx.app.log("SuperSheep", "game resumed via ApplicationListner.resume()");
+		Gdx.app.log("SuperFlyingThing", "game resumed via ApplicationListner.resume()");
 		adWhirlViewHandler.show();
 	}
 
