@@ -562,7 +562,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			}
 		}
 
-		physicsWorld.step(Gdx.app.getGraphics().getDeltaTime(), 3, 3);
+		physicsWorld.step(delta * 0.001f, 3, 3);
 		entityManager.update(delta);
 	}
 

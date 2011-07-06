@@ -13,7 +13,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 
 public class DesktopApplication {
-	
+
 	protected static final Logger logger = LoggerFactory.getLogger(DesktopApplication.class);
 
 	public static void main(String[] argv) {
@@ -27,7 +27,7 @@ public class DesktopApplication {
 			Game.setDebugMode(true);
 			Analytics.traker.setEnabled(false);
 		}
-		
+
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
