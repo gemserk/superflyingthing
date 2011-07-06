@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -10,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Control;
+import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -25,10 +23,8 @@ public class MainMenuGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	private BitmapFont titleFont;
-	private Text text;
-
-	ArrayList<Control> controls;
+	
+	Container container;
 
 	public MainMenuGameState(Game game) {
 		this.game = game;
@@ -36,24 +32,24 @@ public class MainMenuGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
 
-		int centerX = width / 2;
-		int centerY = height / 2;
+		float centerX = width * 0.5f;
+		// float centerY = height * 0.5f;
 
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
 
 		GameResources.load(resourceManager);
 
-		titleFont = resourceManager.getResourceValue("TitleFont");
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
+		container = new Container();
 
-		text = new Text("Super Flying Thing - Prototype", centerX, height * 0.9f).setColor(Color.GREEN);
+		Text text = new Text("Super Flying Thing - Prototype", centerX, height * 0.9f).setColor(Color.GREEN);
+		text.setFont(titleFont);
 		
-		controls = new ArrayList<Control>();
-
 		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
 				.text("Play") //
@@ -84,9 +80,10 @@ public class MainMenuGameState extends GameStateImpl {
 				})//
 				.build();
 
-		controls.add(playButton);
+		container.add(text);
+		container.add(playButton);
 		if (Gdx.app.getType() != ApplicationType.Applet)
-			controls.add(exitButton);
+			container.add(exitButton);
 		
 	}
 
@@ -94,17 +91,14 @@ public class MainMenuGameState extends GameStateImpl {
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		text.draw(spriteBatch, titleFont);
-		for (int i = 0; i < controls.size(); i++)
-			controls.get(i).draw(spriteBatch);
+		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		for (int i = 0; i < controls.size(); i++)
-			controls.get(i).update();
+		container.update();
 	}
 
 	@Override
