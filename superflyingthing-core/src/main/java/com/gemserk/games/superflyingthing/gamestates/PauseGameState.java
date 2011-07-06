@@ -55,7 +55,7 @@ public class PauseGameState extends GameStateImpl {
 		
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
-		whiteRectangle.setColor(0f, 0f, 0f, 0.5f);
+		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
 		
 		buttons = new ArrayList<Button>();
 
@@ -85,6 +85,7 @@ public class PauseGameState extends GameStateImpl {
 					@Override
 					public void onReleased() {
 						game.transition(game.getMainMenuScreen(), 500, 500);
+						game.getPlayScreen().dispose();
 					}
 				})//
 				.build();
