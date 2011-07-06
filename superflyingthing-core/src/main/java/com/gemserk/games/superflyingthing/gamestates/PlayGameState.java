@@ -118,6 +118,25 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		boolean insideObstacle;
 
+		class Shape {
+
+			Vector2[] vertices;
+
+			public Shape(Vector2[] vertices) {
+				this.vertices = vertices;
+			}
+
+		}
+
+		private final Shape[] shapes = new Shape[] { //
+		new Shape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }), //
+				new Shape(new Vector2[] { new Vector2(1.5f, 0f), new Vector2(0.5f, 2f), new Vector2(-1.5f, 1f), new Vector2(-0.5f, -2.5f) }), //
+		};
+
+		private Shape getRandomShape() {
+			return shapes[MathUtils.random(shapes.length-1)];
+		}
+
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
 			ResourceManager<String> resourceManager = p.resourceManager;
@@ -135,11 +154,12 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
+			// Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
 
 			float obstacleX = 12f;
 
 			while (obstacleX < worldWidth - 17f) {
+				Vector2[] vertices = getRandomShape().vertices;
 				entityManager.add(entityTemplates.obstacle(vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
 				entityManager.add(entityTemplates.obstacle(vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
 				obstacleX += 8f;
@@ -474,7 +494,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.update(1);
 		}
 	}
-	
 
 	private void gameFinished() {
 		BitmapFont font = resourceManager.getResourceValue("GameFont");
@@ -495,7 +514,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				done = true;
 			}
 		});
-		
+
 		// Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
 	}
 
