@@ -51,6 +51,7 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
+import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
@@ -112,29 +113,140 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		done = false;
 	}
 
+	class ChallengeMode {
+
+		EntityBuilder entityBuilder = new EntityBuilder();
+
+		void loadLevel(final EntityManager entityManager, EntityTemplates templates, Level level) {
+			float worldWidth = level.w;
+			float worldHeight = level.h;
+
+			float x = worldWidth * 0.5f;
+			float y = worldHeight * 0.5f;
+
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
+
+			entityManager.add(startPlanet);
+			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
+				@Override
+				protected void onTrigger(Entity e) {
+					gameFinished();
+					triggered();
+				}
+			}));
+
+			Entity cameraEntity = entityTemplates.camera(camera);
+			entityManager.add(cameraEntity);
+
+			cameraEntity.addBehavior(new Behavior() {
+				@Override
+				public void update(int delta, Entity e) {
+					Camera camera = ComponentWrapper.getCamera(e);
+					worldCamera.move(camera.getX(), camera.getY());
+					worldCamera.zoom(camera.getZoom());
+					worldCamera.rotate(camera.getAngle());
+				}
+			});
+
+			for (int i = 0; i < level.obstacles.length; i++) {
+				Obstacle o = level.obstacles[i];
+				entityManager.add(entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians));
+			}
+
+			for (int i = 0; i < level.items.length; i++) {
+				Level.Item item = level.items[i];
+				entityManager.add(entityTemplates.diamond(item.x, item.y, 0.2f));
+			}
+
+			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
+			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
+			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
+
+			Entity game = entityBuilder //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component("entityDeadTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							entityManager.remove(gameDataComponent.ship);
+
+							Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+							Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
+							entityManager.add(deadSuperSheepEntity);
+
+							gameDataComponent.ship = null;
+						}
+					}) //
+					.behavior(new CallTriggerIfEntityDeadBehavior()) //
+					.component("noEntityTrigger", new Trigger() {
+						@Override
+						public void onTrigger(Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+							Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
+							entityManager.add(ship);
+							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+							attachmentComponent.setEntity(ship);
+							gameDataComponent.ship = ship;
+						}
+					}) //
+					.behavior(new CallTriggerIfNoShipBehavior()) //
+					.behavior(new FixCameraTargetBehavior()) //
+					.build();
+			entityManager.add(game);
+
+			BitmapFont font = resourceManager.getResourceValue("GameFont");
+
+			Text levelNameText = GuiControls.label(level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
+					.font(font) //
+					.color(1f, 1f, 1f, 1f) //
+					.build();
+
+			container.add(levelNameText);
+
+			Synchronizers.transition(levelNameText.getColor(), Transitions.transitionBuilder(levelNameText.getColor()) //
+					.end(new Color(1f, 1f, 1f, 0f)) //
+					.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
+					.time(3000));
+		}
+
+		void create(PlayGameState p) {
+			World physicsWorld = p.physicsWorld;
+			ResourceManager<String> resourceManager = p.resourceManager;
+
+			final EntityManager entityManager = new EntityManagerImpl(p);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+
+			p.entityManager = entityManager;
+			p.entityTemplates = entityTemplates;
+
+			if (GameData.level != null)
+				loadLevel(entityManager, entityTemplates, GameData.level);
+
+			// simulate a step to put everything on their places
+			entityManager.update(1);
+			physicsWorld.step(1, 1, 1);
+			entityManager.update(1);
+		}
+	}
+	
 	class RandomMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
 		boolean insideObstacle;
 
-		class Shape {
-
-			Vector2[] vertices;
-
-			public Shape(Vector2[] vertices) {
-				this.vertices = vertices;
-			}
-
-		}
-
 		private final Shape[] shapes = new Shape[] { //
 		new Shape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }), //
 				new Shape(new Vector2[] { new Vector2(1.5f, 0f), new Vector2(0.5f, 2f), new Vector2(-1.5f, 1f), new Vector2(-0.5f, -2.5f) }), //
+				new Shape(new Vector2[] { new Vector2(2f, 1f), new Vector2(-3f, 1.2f), new Vector2(-2.5f, -0.8f), new Vector2(2.5f, -2f) }), //
 		};
 
 		private Shape getRandomShape() {
-			return shapes[MathUtils.random(shapes.length-1)];
+			return shapes[MathUtils.random(shapes.length - 1)];
 		}
 
 		void create(PlayGameState p) {
@@ -154,14 +266,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			// Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
-
 			float obstacleX = 12f;
 
 			while (obstacleX < worldWidth - 17f) {
-				Vector2[] vertices = getRandomShape().vertices;
-				entityManager.add(entityTemplates.obstacle(vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
-				entityManager.add(entityTemplates.obstacle(vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				entityManager.add(entityTemplates.obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				entityManager.add(entityTemplates.obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
 				obstacleX += 8f;
 			}
 
@@ -264,135 +373,21 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 	}
 
-	class ChallengeMode {
-
-		EntityBuilder entityBuilder = new EntityBuilder();
-
-		void loadLevel(final EntityManager entityManager, EntityTemplates templates, Level level) {
-			float worldWidth = level.w;
-			float worldHeight = level.h;
-
-			float x = worldWidth * 0.5f;
-			float y = worldHeight * 0.5f;
-
-			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
-
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
-
-			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
-				@Override
-				protected void onTrigger(Entity e) {
-					gameFinished();
-					triggered();
-				}
-			}));
-
-			Entity cameraEntity = entityTemplates.camera(camera);
-			entityManager.add(cameraEntity);
-
-			cameraEntity.addBehavior(new Behavior() {
-				@Override
-				public void update(int delta, Entity e) {
-					Camera camera = ComponentWrapper.getCamera(e);
-					worldCamera.move(camera.getX(), camera.getY());
-					worldCamera.zoom(camera.getZoom());
-					worldCamera.rotate(camera.getAngle());
-				}
-			});
-
-			for (int i = 0; i < level.obstacles.length; i++) {
-				Obstacle o = level.obstacles[i];
-				entityManager.add(entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians));
-			}
-
-			for (int i = 0; i < level.items.length; i++) {
-				Level.Item item = level.items[i];
-				entityManager.add(entityTemplates.diamond(item.x, item.y, 0.2f));
-			}
-
-			entityManager.add(entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f));
-			entityManager.add(entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f));
-			entityManager.add(entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f));
-			entityManager.add(entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f));
-
-			Entity game = entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component("entityDeadTrigger", new Trigger() {
-						@Override
-						public void onTrigger(Entity e) {
-							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-							entityManager.remove(gameDataComponent.ship);
-
-							Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-							Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
-							entityManager.add(deadSuperSheepEntity);
-
-							gameDataComponent.ship = null;
-						}
-					}) //
-					.behavior(new CallTriggerIfEntityDeadBehavior()) //
-					.component("noEntityTrigger", new Trigger() {
-						@Override
-						public void onTrigger(Entity e) {
-							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-							Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
-							entityManager.add(ship);
-							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-							attachmentComponent.setEntity(ship);
-							gameDataComponent.ship = ship;
-						}
-					}) //
-					.behavior(new CallTriggerIfNoShipBehavior()) //
-					.behavior(new FixCameraTargetBehavior()) //
-					.build();
-			entityManager.add(game);
-
-			BitmapFont font = resourceManager.getResourceValue("GameFont");
-
-			// Text levelNameText = new Text(level.name, Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f, 0.5f, 0.5f);
-			// levelNameText.setFont(textFont);
-			// levelNameText.setColor(new Color(1f, 1f, 1f, 1f));
-
-			Text levelNameText = GuiControls.label(level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
-					.font(font) //
-					.color(1f, 1f, 1f, 1f) //
-					.build();
-
-			container.add(levelNameText);
-
-			Synchronizers.transition(levelNameText.getColor(), Transitions.transitionBuilder(levelNameText.getColor()) //
-					.end(new Color(1f, 1f, 1f, 0f)) //
-					.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
-					.time(3000));
-		}
-
-		void create(PlayGameState p) {
-			World physicsWorld = p.physicsWorld;
-			ResourceManager<String> resourceManager = p.resourceManager;
-
-			final EntityManager entityManager = new EntityManagerImpl(p);
-			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
-
-			p.entityManager = entityManager;
-			p.entityTemplates = entityTemplates;
-
-			if (GameData.level != null)
-				loadLevel(entityManager, entityTemplates, GameData.level);
-
-			// simulate a step to put everything on their places
-			entityManager.update(1);
-			physicsWorld.step(1, 1, 1);
-			entityManager.update(1);
-		}
-	}
-
 	class PracticeMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
 		boolean insideObstacle;
+
+		private final Shape[] shapes = new Shape[] { //
+		new Shape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }), //
+				new Shape(new Vector2[] { new Vector2(1.5f, 0f), new Vector2(0.5f, 2f), new Vector2(-1.5f, 1f), new Vector2(-0.5f, -2.5f) }), //
+				new Shape(new Vector2[] { new Vector2(2f, 1f), new Vector2(-3f, 1.2f), new Vector2(-2.5f, -0.8f), new Vector2(2.5f, -2f) }), //
+		};
+
+		private Shape getRandomShape() {
+			return shapes[MathUtils.random(shapes.length - 1)];
+		}
 
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
@@ -411,13 +406,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			Vector2[] vertices = new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), };
-
 			float obstacleX = 12f;
 
 			while (obstacleX < worldWidth - 17f) {
-				entityManager.add(entityTemplates.obstacle(vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
-				entityManager.add(entityTemplates.obstacle(vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				entityManager.add(entityTemplates.obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
+				entityManager.add(entityTemplates.obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f)));
 				obstacleX += 8f;
 			}
 
