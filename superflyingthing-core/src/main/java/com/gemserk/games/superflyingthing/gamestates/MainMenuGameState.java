@@ -50,7 +50,7 @@ public class MainMenuGameState extends GameStateImpl {
 		titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		text = new Text("Unidentified Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
+		text = new Text("Super Flying Thing - Prototype", centerX, height * 0.9f).setColor(Color.GREEN);
 		
 		buttons = new ArrayList<Button>();
 
