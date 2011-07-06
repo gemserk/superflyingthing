@@ -155,6 +155,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		super.render();
 		spriteBatch.begin();
 		SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
+		if (Game.isDebugMode())
+			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "Debug", Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		spriteBatch.end();
 	}
 
