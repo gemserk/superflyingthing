@@ -17,6 +17,7 @@ import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
+import com.gemserk.games.superflyingthing.gamestates.PauseGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
@@ -27,13 +28,13 @@ import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
 public class Game extends com.gemserk.commons.gdx.Game {
-	
+
 	private static boolean debugMode;
-	
+
 	public static boolean isDebugMode() {
 		return debugMode;
 	}
-	
+
 	public static void setDebugMode(boolean debugMode) {
 		Game.debugMode = debugMode;
 	}
@@ -44,10 +45,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen selectPlayModeScreen;
 	private Screen playScreen;
 	private Screen levelSelectionScreen;
+	private Screen pauseScreen;
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
-	
+
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
@@ -63,23 +65,27 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getMainMenuScreen() {
 		return mainMenuScreen;
 	}
-	
+
 	public Screen getSelectPlayModeScreen() {
 		return selectPlayModeScreen;
 	}
-	
+
 	public Screen getLevelSelectionScreen() {
 		return levelSelectionScreen;
 	}
 	
+	public Screen getPauseScreen() {
+		return pauseScreen;
+	}
+
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
-	
+
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}
-	
+
 	@Override
 	public void create() {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
@@ -88,22 +94,28 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
-		
+
 		fpsFont = resourceManager.getResourceValue("FpsFont");
 		spriteBatch = new SpriteBatch();
-		
+
 		playScreen = new ScreenImpl(new PlayGameState(this));
+		pauseScreen = new ScreenImpl(new PauseGameState(this)); 
 		levelSelectionScreen = new ScreenImpl(new LevelSelectionGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
 		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));
 
 		setScreen(splashScreen);
-		
+
 		Analytics.traker.trackPageView("/start", "/start", null);
 	}
 
 	public void transition(final Screen screen, int leaveTime, int enterTime) {
+		final boolean shouldDisposeCurrentScreen = true;
+		transition(screen, leaveTime, enterTime, shouldDisposeCurrentScreen);
+	}
+
+	public void transition(final Screen screen, int leaveTime, int enterTime, final boolean shouldDisposeCurrentScreen) {
 		final Screen currentScreen = getScreen();
 		setScreen(new TransitionScreen(new ScreenTransition( //
 				new FadeOutTransition(currentScreen, leaveTime), //
@@ -111,11 +123,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					public void onEnd() {
 						// disposes current transition screen, not previous screen.
 						setScreen(screen, true);
-						currentScreen.dispose();
+						if (shouldDisposeCurrentScreen)
+							currentScreen.dispose();
 					};
 				}))));
 	}
-	
+
 	@Override
 	public void render() {
 		super.render();
@@ -123,21 +136,21 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
 		spriteBatch.end();
 	}
-	
+
 	@Override
 	public void pause() {
 		super.pause();
 		Gdx.app.log("SuperSheep", "game paused via ApplicationListner.pause()");
 		adWhirlViewHandler.hide();
 	}
-	
+
 	@Override
 	public void resume() {
 		super.resume();
 		Gdx.app.log("SuperSheep", "game resumed via ApplicationListner.resume()");
-		adWhirlViewHandler.show();		
+		adWhirlViewHandler.show();
 	}
-	
+
 	@Override
 	public void dispose() {
 		super.dispose();

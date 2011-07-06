@@ -36,7 +36,7 @@ public class DebugComponents {
 			setLayout(new GridLayout(10, 1));
 			
 			add(new JLabel("Linear speed - max (mts per second)"));
-			maxLinearSpeedSlider = new JSlider(100, 600, 600) {
+			maxLinearSpeedSlider = new JSlider(100, 600, 500) {
 				{
 					addChangeListener(new ChangeListener() {
 						@Override
@@ -54,7 +54,7 @@ public class DebugComponents {
 			add(maxLinearSpeedSlider);
 
 			add(new JLabel("Angular acceleration"));
-			angularAcceleration = new JSlider(0, 400, 100) {
+			angularAcceleration = new JSlider(0, 400, 70) {
 				{
 					addChangeListener(new ChangeListener() {
 						@Override
@@ -72,7 +72,7 @@ public class DebugComponents {
 			add(angularAcceleration);
 
 			add(new JLabel("Anglular velocity - min (degrees per second)"));
-			minAngularVelocitySlider = new JSlider(0, 600, 100) {
+			minAngularVelocitySlider = new JSlider(0, 600, 200) {
 				{
 					addChangeListener(new ChangeListener() {
 						@Override
@@ -90,7 +90,7 @@ public class DebugComponents {
 			add(minAngularVelocitySlider);
 
 			add(new JLabel("Anglular velocity - max (degrees per second)"));
-			maxAngularVelocitySlider = new JSlider(0, 600, 600) {
+			maxAngularVelocitySlider = new JSlider(0, 600, 300) {
 				{
 					addChangeListener(new ChangeListener() {
 						@Override

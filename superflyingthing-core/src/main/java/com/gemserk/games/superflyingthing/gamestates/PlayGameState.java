@@ -532,15 +532,17 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void update(int delta) {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
-			game.transition(game.getMainMenuScreen(), 500, 500);
+//			game.transition(game.getMainMenuScreen(), 500, 500);
+			
+			game.transition(game.getPauseScreen(), 500, 500, false);
 
-			if (GameData.gameMode == GameData.RandomGameMode) {
-				Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
-			} else if (GameData.gameMode == GameData.PracticeGameMode) {
-				Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
-			} else if (GameData.gameMode == GameData.ChallengeGameMode) {
-				Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
-			}
+//			if (GameData.gameMode == GameData.RandomGameMode) {
+//				Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
+//			} else if (GameData.gameMode == GameData.PracticeGameMode) {
+//				Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
+//			} else if (GameData.gameMode == GameData.ChallengeGameMode) {
+//				Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
+//			}
 
 		}
 
