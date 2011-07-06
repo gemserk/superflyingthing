@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Button;
@@ -52,11 +53,11 @@ public class PauseGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		title = new Text("Game Paused", centerX, height * 0.9f).setColor(Color.GREEN);
-		
+
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
-		
+
 		buttons = new ArrayList<Button>();
 
 		TextButton playButton = GuiControls.textButton() //
@@ -86,6 +87,15 @@ public class PauseGameState extends GameStateImpl {
 					public void onReleased() {
 						game.transition(game.getMainMenuScreen(), 500, 500);
 						game.getPlayScreen().dispose();
+
+						if (GameData.gameMode == GameData.RandomGameMode) {
+							Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
+						} else if (GameData.gameMode == GameData.PracticeGameMode) {
+							Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
+						} else if (GameData.gameMode == GameData.ChallengeGameMode) {
+							Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
+						}
+
 					}
 				})//
 				.build();
@@ -93,25 +103,25 @@ public class PauseGameState extends GameStateImpl {
 		buttons.add(playButton);
 		buttons.add(exitButton);
 	}
-	
+
 	@Override
 	public void show() {
 		super.show();
 		game.getPlayScreen().show();
 	}
-	
+
 	@Override
 	public void hide() {
 		super.hide();
-		game.getPlayScreen().hide();		
+		game.getPlayScreen().hide();
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		
+
 		game.getPlayScreen().render(delta);
-		
+
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
 		title.draw(spriteBatch, titleFont);

@@ -10,6 +10,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -101,6 +103,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
+		boolean insideObstacle;
+
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
 			ResourceManager<String> resourceManager = p.resourceManager;
@@ -131,7 +135,23 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, worldWidth - 10f);
 				float y = MathUtils.random(2f, worldHeight - 2f);
-				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
+				float w = 0.2f;
+				float h = 0.2f;
+
+				insideObstacle = false;
+
+				physicsWorld.QueryAABB(new QueryCallback() {
+					@Override
+					public boolean reportFixture(Fixture fixture) {
+						insideObstacle = true;
+						return false;
+					}
+				}, x - w, y - h, x + w, y + h);
+
+				if (insideObstacle)
+					continue;
+
+				entityManager.add(entityTemplates.diamond(x, y, w));
 			}
 
 			Entity cameraEntity = entityTemplates.camera(camera);
@@ -320,6 +340,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		EntityBuilder entityBuilder = new EntityBuilder();
 
+		boolean insideObstacle;
+
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
 			ResourceManager<String> resourceManager = p.resourceManager;
@@ -350,7 +372,23 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, worldWidth - 10f);
 				float y = MathUtils.random(2f, worldHeight - 2f);
-				entityManager.add(entityTemplates.diamond(x, y, 0.2f));
+				float w = 0.2f;
+				float h = 0.2f;
+
+				insideObstacle = false;
+
+				physicsWorld.QueryAABB(new QueryCallback() {
+					@Override
+					public boolean reportFixture(Fixture fixture) {
+						insideObstacle = true;
+						return false;
+					}
+				}, x - w, y - h, x + w, y + h);
+
+				if (insideObstacle)
+					continue;
+
+				entityManager.add(entityTemplates.diamond(x, y, w));
 			}
 
 			Entity cameraEntity = entityTemplates.camera(camera);
@@ -466,7 +504,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	void renderEntities(SpriteBatch spriteBatch) {
 		spriteBatch.begin();
-		for (int i = 0; i < entityManager.entitiesCount(); i++) 
+		for (int i = 0; i < entityManager.entitiesCount(); i++)
 			renderEntitySprite(entityManager.get(i));
 		spriteBatch.end();
 
@@ -479,7 +517,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			renderEntityWithShape(e);
 		}
 	}
-	
+
 	private void renderEntitySprite(Entity e) {
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 		if (spatial == null)
@@ -532,18 +570,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void update(int delta) {
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
-//			game.transition(game.getMainMenuScreen(), 500, 500);
-			
 			game.transition(game.getPauseScreen(), 500, 500, false);
-
-//			if (GameData.gameMode == GameData.RandomGameMode) {
-//				Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
-//			} else if (GameData.gameMode == GameData.PracticeGameMode) {
-//				Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
-//			} else if (GameData.gameMode == GameData.ChallengeGameMode) {
-//				Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
-//			}
-
 		}
 
 		if (!resetPressed)
