@@ -24,7 +24,6 @@ public class DesktopApplication {
 		String runningInDebug = System.getProperty("runningInDebug");
 		if (runningInDebug != null) {
 			logger.info("Running in debug mode, Analytics disabled");
-			Game.setDebugMode(true);
 			Analytics.traker.setEnabled(false);
 		}
 

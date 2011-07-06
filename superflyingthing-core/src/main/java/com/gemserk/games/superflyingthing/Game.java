@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -15,6 +16,8 @@ import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PauseGameState;
@@ -49,6 +52,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -108,6 +112,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		setScreen(splashScreen);
 
 		Analytics.traker.trackPageView("/start", "/start", null);
+		
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+					monitorKey("toggleDebug", Keys.NUM_0);
+			}
+		};
 	}
 
 	public void transition(final Screen screen, int leaveTime, int enterTime) {
@@ -131,6 +142,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	@Override
 	public void render() {
+		inputDevicesMonitor.update();
+		
+		if (inputDevicesMonitor.getButton("toggleDebug").isReleased()) {
+			Game.setDebugMode(!Game.isDebugMode());
+			if (Game.isDebugMode())
+				Gdx.app.log("SuperSheep", "debug controls enabled");
+			else
+				Gdx.app.log("SuperSheep", "debug controls disabled");
+		}
+		
 		super.render();
 		spriteBatch.begin();
 		SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
