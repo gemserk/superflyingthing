@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -11,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Control;
+import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -26,11 +24,8 @@ public class PauseGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	private BitmapFont titleFont;
-	private Text title;
-
-	ArrayList<Control> controls;
 	private Sprite whiteRectangle;
+	Container container;
 
 	public PauseGameState(Game game) {
 		this.game = game;
@@ -38,27 +33,26 @@ public class PauseGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-
-		int centerX = width / 2;
-		int centerY = height / 2;
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
 
 		GameResources.load(resourceManager);
 
-		titleFont = resourceManager.getResourceValue("TitleFont");
+		container = new Container();
+
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		title = new Text("Game Paused", centerX, height * 0.9f).setColor(Color.GREEN);
+		Text title = new Text("Game Paused", centerX, height * 0.9f).setColor(Color.GREEN);
+		title.setFont(titleFont);
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
-
-		controls = new ArrayList<Control>();
 
 		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
@@ -100,8 +94,9 @@ public class PauseGameState extends GameStateImpl {
 				})//
 				.build();
 
-		controls.add(playButton);
-		controls.add(exitButton);
+		container.add(title);
+		container.add(playButton);
+		container.add(exitButton);
 	}
 
 	@Override
@@ -124,17 +119,14 @@ public class PauseGameState extends GameStateImpl {
 
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
-		title.draw(spriteBatch, titleFont);
-		for (int i = 0; i < controls.size(); i++)
-			controls.get(i).draw(spriteBatch);
+		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		for (int i = 0; i < controls.size(); i++)
-			controls.get(i).update();
+		container.update();
 	}
 
 	@Override

@@ -34,9 +34,7 @@ public class MainMenuGameState extends GameStateImpl {
 	public void init() {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
-
 		float centerX = width * 0.5f;
-		// float centerY = height * 0.5f;
 
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
