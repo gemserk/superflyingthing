@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Button;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -28,7 +28,7 @@ public class MainMenuGameState extends GameStateImpl {
 	private BitmapFont titleFont;
 	private Text text;
 
-	ArrayList<Button> buttons;
+	ArrayList<Control> controls;
 
 	public MainMenuGameState(Game game) {
 		this.game = game;
@@ -52,7 +52,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 		text = new Text("Super Flying Thing - Prototype", centerX, height * 0.9f).setColor(Color.GREEN);
 		
-		buttons = new ArrayList<Button>();
+		controls = new ArrayList<Control>();
 
 		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
@@ -84,9 +84,9 @@ public class MainMenuGameState extends GameStateImpl {
 				})//
 				.build();
 
-		buttons.add(playButton);
+		controls.add(playButton);
 		if (Gdx.app.getType() != ApplicationType.Applet)
-			buttons.add(exitButton);
+			controls.add(exitButton);
 		
 	}
 
@@ -95,16 +95,16 @@ public class MainMenuGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		text.draw(spriteBatch, titleFont);
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).draw(spriteBatch);
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).update();
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).update();
 	}
 
 	@Override

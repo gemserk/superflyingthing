@@ -13,7 +13,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Button;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -31,7 +31,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private BitmapFont titleFont;
 	private Text text;
 
-	ArrayList<Button> buttons;
+	ArrayList<Control> controls;
 
 	public LevelSelectionGameState(Game game) {
 		this.game = game;
@@ -55,11 +55,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		text = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
 
-		buttons = new ArrayList<Button>();
+		controls = new ArrayList<Control>();
 
 		Sprite level1 = resourceManager.getResourceValue("WhiteRectangle");
 
-		buttons.add(GuiControls.imageButton(level1) //
+		controls.add(GuiControls.imageButton(level1) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
 				.position(width * 0.15f, height * 0.75f) //
@@ -73,7 +73,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				}) //
 				.build());
 		
-		buttons.add(GuiControls.imageButton(level1) //
+		controls.add(GuiControls.imageButton(level1) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
 				.position(width * 0.3f, height * 0.75f) //
@@ -88,7 +88,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
-			buttons.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
+			controls.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
 					.setNotOverColor(Color.WHITE) //
 					.setOverColor(Color.GREEN) //
 					.setColor(Color.WHITE) //
@@ -108,8 +108,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		text.draw(spriteBatch, titleFont);
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).draw(spriteBatch);
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).draw(spriteBatch);
 		spriteBatch.end();
 
 		// GuiControls.debugRender(scene);
@@ -119,8 +119,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).update();
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).update();
 
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE))
 			game.transition(game.getSelectPlayModeScreen(), 500, 500);

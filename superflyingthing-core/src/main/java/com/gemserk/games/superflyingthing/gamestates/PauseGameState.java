@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Button;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
@@ -29,7 +29,7 @@ public class PauseGameState extends GameStateImpl {
 	private BitmapFont titleFont;
 	private Text title;
 
-	ArrayList<Button> buttons;
+	ArrayList<Control> controls;
 	private Sprite whiteRectangle;
 
 	public PauseGameState(Game game) {
@@ -58,7 +58,7 @@ public class PauseGameState extends GameStateImpl {
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
 
-		buttons = new ArrayList<Button>();
+		controls = new ArrayList<Control>();
 
 		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
@@ -100,8 +100,8 @@ public class PauseGameState extends GameStateImpl {
 				})//
 				.build();
 
-		buttons.add(playButton);
-		buttons.add(exitButton);
+		controls.add(playButton);
+		controls.add(exitButton);
 	}
 
 	@Override
@@ -125,16 +125,16 @@ public class PauseGameState extends GameStateImpl {
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
 		title.draw(spriteBatch, titleFont);
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).draw(spriteBatch);
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).update();
+		for (int i = 0; i < controls.size(); i++)
+			controls.get(i).update();
 	}
 
 	@Override

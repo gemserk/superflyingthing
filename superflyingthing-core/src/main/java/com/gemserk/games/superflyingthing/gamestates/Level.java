@@ -23,5 +23,7 @@ public class Level {
 	Obstacle[] obstacles;
 	
 	Item[] items;
+	
+	String name;
 
 }

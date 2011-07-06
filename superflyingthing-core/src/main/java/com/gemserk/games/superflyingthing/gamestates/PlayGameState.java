@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -14,6 +15,9 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
+import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
+import com.gemserk.animation4j.transitions.Transitions;
+import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -24,6 +28,9 @@ import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityBuilder;
@@ -62,8 +69,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
 	boolean resetPressed;
-
 	boolean done;
+	Container container;
+	private Libgdx2dCamera guiCamera;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -80,10 +88,13 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
+		guiCamera = new Libgdx2dCameraTransformImpl();
+
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
+		container = new Container();
 
 		if (GameData.gameMode == GameData.RandomGameMode) {
 			new RandomMode().create(this);
@@ -314,6 +325,24 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.behavior(new FixCameraTargetBehavior()) //
 					.build();
 			entityManager.add(game);
+
+			BitmapFont font = resourceManager.getResourceValue("GameFont");
+
+			// Text levelNameText = new Text(level.name, Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f, 0.5f, 0.5f);
+			// levelNameText.setFont(textFont);
+			// levelNameText.setColor(new Color(1f, 1f, 1f, 1f));
+
+			Text levelNameText = GuiControls.label(level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
+					.font(font) //
+					.color(1f, 1f, 1f, 1f) //
+					.build();
+
+			container.add(levelNameText);
+
+			Synchronizers.transition(levelNameText.getColor(), Transitions.transitionBuilder(levelNameText.getColor()) //
+					.end(new Color(1f, 1f, 1f, 0f)) //
+					.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
+					.time(3000));
 		}
 
 		void create(PlayGameState p) {
@@ -516,6 +545,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			renderAttachmentDebug(e);
 			renderEntityWithShape(e);
 		}
+
+		guiCamera.apply(spriteBatch);
+		spriteBatch.begin();
+		container.draw(spriteBatch);
+		spriteBatch.end();
 	}
 
 	private void renderEntitySprite(Entity e) {
@@ -569,6 +603,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void update(int delta) {
+		Synchronizers.synchronize(delta);
+		container.update();
+
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
 			game.transition(game.getPauseScreen(), 500, 500, false);
 		}

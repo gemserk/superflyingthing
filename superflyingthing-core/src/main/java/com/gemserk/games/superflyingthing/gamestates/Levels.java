@@ -5,6 +5,7 @@ import com.badlogic.gdx.math.Vector2;
 public class Levels {
 	
 	private static Level level1 = new Level() {{
+		name = "Learning to fly";
 		w = 50f;
 		h = 10f;
 		obstacles = new Obstacle[]{
@@ -37,6 +38,7 @@ public class Levels {
 	}};
 	
 	private static Level level2 = new Level() {{
+		name = "I'm a flying machine!";
 		w = 50f;
 		h = 10f;
 		obstacles = new Obstacle[]{
