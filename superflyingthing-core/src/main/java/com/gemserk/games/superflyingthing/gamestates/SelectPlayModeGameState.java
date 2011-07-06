@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
-
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -12,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
@@ -25,10 +24,8 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	private BitmapFont titleFont;
-	private Text text;
-
-	ArrayList<TextButton> buttons;
+	
+	Container container;
 
 	public SelectPlayModeGameState(Game game) {
 		this.game = game;
@@ -36,23 +33,20 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		int width = Gdx.graphics.getWidth();
-		int height = Gdx.graphics.getHeight();
-
-		int centerX = width / 2;
-		int centerY = height / 2;
+		float width = Gdx.graphics.getWidth();
+		float height = Gdx.graphics.getHeight();
+		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
 		resourceManager = new ResourceManagerImpl<String>();
 
 		GameResources.load(resourceManager);
-
-		titleFont = resourceManager.getResourceValue("TitleFont");
+		
+		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		text = new Text("Select Mode", centerX, height * 0.9f).setColor(Color.GREEN);
-
-		buttons = new ArrayList<TextButton>();
+		Text title = new Text("Select Mode", centerX, height * 0.9f).setColor(Color.GREEN);
+		title.setFont(titleFont);
 
 		TextButton challengeModeButton = new TextButton(buttonFont, "Challenge", centerX, height * 0.7f) //
 				.setNotOverColor(Color.WHITE) //
@@ -106,33 +100,29 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					}
 				});
 
-		buttons.add(challengeModeButton);
-		buttons.add(practiceModeButton);
-		buttons.add(randomModeButton);
+		container = new Container();
+		
+		container.add(title);
+		container.add(challengeModeButton);
+		container.add(practiceModeButton);
+		container.add(randomModeButton);
 		
 		if (Gdx.app.getType() != ApplicationType.Android)
-			buttons.add(backButton);
+			container.add(backButton);
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
-		text.draw(spriteBatch, titleFont);
-
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).draw(spriteBatch);
-
+		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
-
-		for (int i = 0; i < buttons.size(); i++)
-			buttons.get(i).update();
-
+		container.update();
 		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE))
 			game.transition(game.getMainMenuScreen(), 500, 500);
 	}
