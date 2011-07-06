@@ -14,6 +14,8 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -26,6 +28,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	
 	Container container;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public SelectPlayModeGameState(Game game) {
 		this.game = game;
@@ -109,6 +112,16 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		
 		if (Gdx.app.getType() != ApplicationType.Android)
 			container.add(backButton);
+		
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				if (Gdx.app.getType() == ApplicationType.Android)
+					monitorKey("back", Keys.BACK);
+				else
+					monitorKey("back", Keys.ESCAPE);
+			}
+		};
 	}
 
 	@Override
@@ -122,8 +135,9 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
+		inputDevicesMonitor.update();
 		container.update();
-		if (Gdx.input.isKeyPressed(Keys.BACK) || Gdx.input.isKeyPressed(Keys.ESCAPE))
+		if (inputDevicesMonitor.getButton("back").isReleased())
 			game.transition(game.getMainMenuScreen(), 500, 500);
 	}
 

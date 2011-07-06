@@ -1,6 +1,8 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -14,6 +16,8 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -26,6 +30,7 @@ public class PauseGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	private Sprite whiteRectangle;
 	Container container;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public PauseGameState(Game game) {
 		this.game = game;
@@ -70,7 +75,7 @@ public class PauseGameState extends GameStateImpl {
 				.build();
 
 		TextButton exitButton = GuiControls.textButton() //
-				.position(centerX, height * 0.5f) //
+				.position(centerX, height * 0.3f) //
 				.text("Main Menu") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -97,6 +102,16 @@ public class PauseGameState extends GameStateImpl {
 		container.add(title);
 		container.add(playButton);
 		container.add(exitButton);
+
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				if (Gdx.app.getType() == ApplicationType.Android)
+					monitorKey("resume", Keys.BACK);
+				else
+					monitorKey("resume", Keys.ESCAPE);
+			}
+		};
 	}
 
 	@Override
@@ -109,6 +124,16 @@ public class PauseGameState extends GameStateImpl {
 	public void hide() {
 		super.hide();
 		game.getPlayScreen().hide();
+	}
+
+	@Override
+	public void resume() {
+		Gdx.input.setCatchBackKey(true);
+	}
+
+	@Override
+	public void pause() {
+		Gdx.input.setCatchBackKey(false);
 	}
 
 	@Override
@@ -126,7 +151,10 @@ public class PauseGameState extends GameStateImpl {
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
+		inputDevicesMonitor.update();
 		container.update();
+		if (inputDevicesMonitor.getButton("resume").isReleased())
+			game.transition(game.getPlayScreen(), 500, 250);
 	}
 
 	@Override
