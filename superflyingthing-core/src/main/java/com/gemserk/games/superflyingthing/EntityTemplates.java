@@ -184,12 +184,6 @@ public class EntityTemplates {
 		e.addBehavior(new AttachEntityBehavior(jointBuilder));
 		e.addBehavior(new AttachedEntityDirectionBehavior());
 
-		// Trigger destinationReachedTrigger = new Trigger() {
-		// @Override
-		// protected void onTrigger(Entity e) {
-		//
-		// }
-		// };
 		e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
 		e.addBehavior(new Behavior() {
 			@Override
@@ -198,8 +192,6 @@ public class EntityTemplates {
 				if (attachmentComponent.entity == null)
 					return;
 				Trigger trigger = e.getComponent("destinationReachedTrigger");
-				// if (trigger == null)
-				// return;
 				trigger.trigger(e);
 			}
 		});

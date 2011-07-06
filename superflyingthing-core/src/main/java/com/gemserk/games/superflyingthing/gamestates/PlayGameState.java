@@ -16,7 +16,9 @@ import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
+import com.gemserk.animation4j.transitions.Transition;
 import com.gemserk.animation4j.transitions.Transitions;
+import com.gemserk.animation4j.transitions.event.TransitionEventHandler;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
@@ -184,8 +186,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
-					done = true;
-					Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
+					gameFinished();
+					triggered();
 				}
 			}));
 
@@ -261,7 +263,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
-					done = true;
+					gameFinished();
+					triggered();
 				}
 			}));
 
@@ -470,6 +473,30 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			physicsWorld.step(1, 1, 1);
 			entityManager.update(1);
 		}
+	}
+	
+
+	private void gameFinished() {
+		BitmapFont font = resourceManager.getResourceValue("GameFont");
+
+		Text message = GuiControls.label("Great Job!").position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
+				.font(font) //
+				.color(1f, 1f, 1f, 1f) //
+				.build();
+
+		container.add(message);
+
+		Synchronizers.transition(message.getColor(), Transitions.transitionBuilder(message.getColor()) //
+				.end(new Color(1f, 1f, 1f, 0f)) //
+				.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
+				.time(3000), new TransitionEventHandler<Color>() {
+			@Override
+			public void onTransitionFinished(Transition<Color> transition) {
+				done = true;
+			}
+		});
+		
+		// Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
 	}
 
 	@Override
