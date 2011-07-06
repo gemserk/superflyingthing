@@ -13,8 +13,6 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.commons.gdx.gui.Text;
-import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -52,14 +50,16 @@ public class PauseGameState extends GameStateImpl {
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		Text title = new Text("Game Paused", centerX, height * 0.9f).setColor(Color.GREEN);
-		title.setFont(titleFont);
-
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
 
-		TextButton playButton = GuiControls.textButton() //
+		container.add(GuiControls.label("Game Paused") //
+				.position(centerX, height * 0.9f) //
+				.color(Color.GREEN) //
+				.font(titleFont)//
+				.build());
+		container.add(GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
 				.text("Resume") //
 				.font(buttonFont) //
@@ -72,9 +72,8 @@ public class PauseGameState extends GameStateImpl {
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				})//
-				.build();
-
-		TextButton exitButton = GuiControls.textButton() //
+				.build());
+		container.add(GuiControls.textButton() //
 				.position(centerX, height * 0.3f) //
 				.text("Main Menu") //
 				.font(buttonFont) //
@@ -97,11 +96,7 @@ public class PauseGameState extends GameStateImpl {
 
 					}
 				})//
-				.build();
-
-		container.add(title);
-		container.add(playButton);
-		container.add(exitButton);
+				.build());
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {

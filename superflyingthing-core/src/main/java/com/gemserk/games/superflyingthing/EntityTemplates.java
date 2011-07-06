@@ -44,7 +44,7 @@ public class EntityTemplates {
 		public static short MiniPlanetCategoryBits = 2;
 
 	}
-
+	
 	private final World world;
 	private final EntityManager entityManager;
 	private final BodyBuilder bodyBuilder;
@@ -210,7 +210,7 @@ public class EntityTemplates {
 				.build();
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
-		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Color.GREEN));
+		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Colors.lightGreen));
 		return e;
 	}
 
@@ -231,7 +231,7 @@ public class EntityTemplates {
 						new Vector2(w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, h * 0.5f), //
-				}, Color.WHITE));
+				}, Colors.darkRed));
 		return e;
 	}
 
