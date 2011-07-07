@@ -43,6 +43,7 @@ import com.gemserk.games.entities.EntityManagerImpl;
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfEntityDeadBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
@@ -205,7 +206,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-			Text levelNameText = GuiControls.label(level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
+			Text levelNameText = GuiControls.label("Level: " + level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
 					.font(font) //
 					.color(1f, 1f, 1f, 1f) //
 					.build();
@@ -630,7 +631,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		if (attachmentComponent == null)
 			return;
 		Vector2 position = spatial.getPosition();
-		ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Color.BLUE);
+		ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Colors.yellow);
 	}
 
 	private void renderMovementDebug(Entity e) {

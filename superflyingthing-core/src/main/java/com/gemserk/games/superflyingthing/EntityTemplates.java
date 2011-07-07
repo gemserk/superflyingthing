@@ -210,7 +210,7 @@ public class EntityTemplates {
 				.build();
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
-		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Colors.darkBlue));
+		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Color.BLUE));
 		return e;
 	}
 
@@ -231,7 +231,7 @@ public class EntityTemplates {
 						new Vector2(w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, h * 0.5f), //
-				}, Colors.darkRed));
+				}, Color.BLUE));
 		return e;
 	}
 
