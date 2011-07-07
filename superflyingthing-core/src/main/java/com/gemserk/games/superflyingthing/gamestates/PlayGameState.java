@@ -115,7 +115,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		done = false;
 		tutorialShown = false; // get from preferences
-		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
 
 	class ChallengeMode {

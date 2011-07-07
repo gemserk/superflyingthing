@@ -141,6 +141,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("toggleFps", Keys.NUM_8);
 			}
 		};
+		
+		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
 
 	public void transition(final Screen screen, int leaveTime, int enterTime) {
