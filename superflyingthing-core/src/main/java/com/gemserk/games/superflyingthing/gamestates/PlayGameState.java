@@ -1,6 +1,9 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -59,6 +62,7 @@ import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
+import com.gemserk.util.ScreenshotSaver;
 
 public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler {
 
@@ -113,6 +117,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		done = false;
+		
+		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
 
 	class ChallengeMode {
@@ -677,6 +683,14 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		physicsWorld.step(delta * 0.001f, 3, 3);
 		entityManager.update(delta);
+		
+		if(Gdx.input.isKeyPressed(Input.Keys.NUM_9)){
+			try {
+				ScreenshotSaver.saveScreenshot("superflyingthing");
+			} catch (IOException e) {
+				Gdx.app.log("SuperSheep", "Can't save screenshot");
+			}
+		}
 	}
 
 	@Override
