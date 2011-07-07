@@ -57,12 +57,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen levelSelectionScreen;
 	private Screen pauseScreen;
 	private Screen gameOverScreen;
+	private Screen instructionsScreen;
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private Screen instructionsScreen;
+	GamePreferences gamePreferences;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -99,6 +100,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
 	}
+	
+	public GamePreferences getGamePreferences() {
+		return gamePreferences;
+	}
 
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
@@ -113,6 +118,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
+		
+		gamePreferences = new GamePreferences();
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
