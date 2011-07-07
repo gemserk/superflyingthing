@@ -501,7 +501,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		Synchronizers.transition(message.getColor(), Transitions.transitionBuilder(message.getColor()) //
 				.end(new Color(1f, 1f, 1f, 0f)) //
 				.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
-				.time(3000), new TransitionEventHandler<Color>() {
+				.time(1500), new TransitionEventHandler<Color>() {
 			@Override
 			public void onTransitionFinished(Transition<Color> transition) {
 				done = true;
