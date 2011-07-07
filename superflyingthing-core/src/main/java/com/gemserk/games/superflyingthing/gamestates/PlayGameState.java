@@ -179,7 +179,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 							gameDataComponent.ship = null;
 
-							PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 500, false);
+							PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 300, false);
 						}
 					}) //
 					.behavior(new CallTriggerIfEntityDeadBehavior()) //
@@ -650,7 +650,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		container.update();
 
 		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
-			game.transition(game.getPauseScreen(), 500, 500, false);
+			game.transition(game.getPauseScreen(), 200, 300, false);
 		}
 
 		if (!resetPressed)
@@ -662,7 +662,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		if (done) {
 
 			if (GameData.gameMode == GameData.ChallengeGameMode) {
-				game.transition(game.getLevelSelectionScreen(), 500, 500);
+				game.transition(game.getLevelSelectionScreen(), 200, 300);
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
 			} else {
 				// restart game state...
