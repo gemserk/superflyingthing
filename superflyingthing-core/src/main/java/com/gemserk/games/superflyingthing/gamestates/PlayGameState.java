@@ -178,6 +178,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							entityManager.add(deadSuperSheepEntity);
 
 							gameDataComponent.ship = null;
+
+							PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 500, false);
 						}
 					}) //
 					.behavior(new CallTriggerIfEntityDeadBehavior()) //
@@ -191,6 +193,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 							attachmentComponent.setEntity(ship);
 							gameDataComponent.ship = ship;
+							// PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 500, 500, false);
+							triggered();
 						}
 					}) //
 					.behavior(new CallTriggerIfNoShipBehavior()) //
@@ -232,7 +236,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			entityManager.update(1);
 		}
 	}
-	
+
 	class RandomMode {
 
 		EntityBuilder entityBuilder = new EntityBuilder();
