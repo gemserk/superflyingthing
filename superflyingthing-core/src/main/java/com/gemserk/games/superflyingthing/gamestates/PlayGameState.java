@@ -200,7 +200,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-			Text levelNameText = GuiControls.label(level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
+			Text levelNameText = GuiControls.label(level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
 					.font(font) //
 					.color(1f, 1f, 1f, 1f) //
 					.build();
