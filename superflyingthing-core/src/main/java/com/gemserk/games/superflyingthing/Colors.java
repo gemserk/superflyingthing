@@ -8,6 +8,10 @@ public class Colors {
 	
 	public static final Color lightGreen = new Color(0.3f, 0.9f, 0.3f, 1f);
 	
+	public static final Color darkGreen = new Color(0f, 0.6f, 0f, 1f);
+	
 	public static final Color darkRed = new Color(0.6f, 0f, 0f, 1f);
+	
+	public static final Color darkBlue = new Color(0f, 0f, 0.6f, 1f);
 	
 }

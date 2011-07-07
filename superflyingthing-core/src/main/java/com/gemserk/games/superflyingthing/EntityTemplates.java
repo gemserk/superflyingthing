@@ -210,7 +210,7 @@ public class EntityTemplates {
 				.build();
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
-		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Colors.lightGreen));
+		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Colors.darkBlue));
 		return e;
 	}
 
