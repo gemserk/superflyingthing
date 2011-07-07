@@ -21,20 +21,7 @@ public class Levels {
 				vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
 			}},
 		}; 
-		items = new Level.Item[] {
-			new Item() {{
-				x = 15f;
-				y = h * 0.5f;
-			}},
-			new Item() {{
-				x = 25f;
-				y = h * 0.5f;
-			}},
-			new Item() {{
-				x = 35f;
-				y = h * 0.5f;
-			}}
-		};
+		items = new Level.Item[] {};
 	}};
 	
 	private static Level level2 = new Level() {{
@@ -60,24 +47,7 @@ public class Levels {
 				vertices = new Vector2[] { new Vector2(5f, -0.5f), new Vector2(5f, 0.5f), new Vector2(-5f, 0.5f), new Vector2(-5f, -0.5f) };
 			}},
 		}; 
-		items = new Level.Item[] {
-			new Item() {{
-				x = 20f;
-				y = 7f;
-			}},
-			new Item() {{
-				x = 30f;
-				y = 7f;
-			}},
-			new Item() {{
-				x = 25f;
-				y = 3f;
-			}},
-			new Item() {{
-				x = 35f;
-				y = 3f;
-			}},
-		};
+		items = new Level.Item[] {};
 	}};
 	
 	public static Level level1() {
