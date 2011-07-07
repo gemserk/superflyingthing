@@ -77,6 +77,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	boolean done;
 	Container container;
 	private Libgdx2dCamera guiCamera;
+	boolean tutorialShown;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -113,8 +114,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		done = false;
-		
-		game.transition(game.getInstructionsScreen(), 0, 300);
+		tutorialShown = false; // get from preferences
 	}
 
 	class ChallengeMode {
@@ -652,6 +652,13 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void update(int delta) {
+		
+		if (!tutorialShown) {
+			tutorialShown = true;
+			game.transition(game.getInstructionsScreen(), 0, 300, false);
+			return;
+		}
+		
 		Synchronizers.synchronize(delta);
 		container.update();
 
