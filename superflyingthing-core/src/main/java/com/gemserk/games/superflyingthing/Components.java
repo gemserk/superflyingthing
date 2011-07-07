@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Entity;
 
 public class Components {
@@ -60,6 +61,8 @@ public class Components {
 	public static class ShapeComponent {
 
 		private final Vector2[] vertices;
+		
+		public Triangulator triangulator;
 		
 		public Color color;
 		

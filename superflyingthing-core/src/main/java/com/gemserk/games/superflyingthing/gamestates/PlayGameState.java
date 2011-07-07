@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -29,7 +30,9 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
+import com.gemserk.commons.gdx.graphics.NeatTriangulator;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
@@ -615,8 +618,43 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
-			ImmediateModeRendererUtils.drawPolygon(shapeComponent.getVertices(), spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
+			
+			// ImmediateModeRendererUtils.drawPolygon(shapeComponent.getVertices(), spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
+			
+			if (shapeComponent.triangulator == null) {
+				Triangulator triangulator = new NeatTriangulator();
+				Vector2[] vertices = shapeComponent.getVertices();
+				for (int i = 0; i < vertices.length; i++)
+					triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
+				triangulator.triangulate();
+				shapeComponent.triangulator = triangulator;
+			}
+			
+			render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
+			
 		}
+	}
+	
+	ImmediateModeRenderer renderer = new ImmediateModeRenderer();
+	
+	public void render(Triangulator triangulator, float x, float y, float angle, Color color) {
+		GL10 gl = Gdx.graphics.getGL10();
+		
+		gl.glPushMatrix();
+		gl.glTranslatef(x, y, 0f);
+		gl.glRotatef(angle, 0f, 0f, 1f);
+		
+		renderer.begin(GL10.GL_TRIANGLES);
+		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
+			for (int p = 0; p < 3; p++) {
+				float[] pt = triangulator.getTrianglePoint(i, p);
+				renderer.color(color.r, color.g, color.b, color.a);
+				renderer.vertex(pt[0], pt[1], 0f);
+			}
+		}
+		renderer.end();
+		
+		gl.glPopMatrix();
 	}
 
 	private void renderAttachmentDebug(Entity e) {
