@@ -68,6 +68,11 @@ public class InstructionsGameState extends GameStateImpl {
 					.color(Color.WHITE) //
 					.font(font)//
 					.build());
+			container.add(GuiControls.label("Tap screen to start") //
+					.position(centerX, height * 0.1f) //
+					.color(Color.WHITE) //
+					.font(font)//
+					.build());
 		} else {
 			container.add(GuiControls.label("LEFT KEY - rotates the ship to the left\n" + //
 					"RIGHT KEY - rotates the ship to the right\n" //
@@ -79,7 +84,7 @@ public class InstructionsGameState extends GameStateImpl {
 					.color(Color.WHITE) //
 					.font(font)//
 					.build());
-			container.add(GuiControls.label("Click to continue") //
+			container.add(GuiControls.label("Click to start") //
 					.position(centerX, height * 0.1f) //
 					.color(Color.WHITE) //
 					.font(font)//
