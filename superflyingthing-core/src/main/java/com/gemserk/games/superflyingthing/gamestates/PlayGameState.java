@@ -616,21 +616,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
-			
-			// ImmediateModeRendererUtils.drawPolygon(shapeComponent.getVertices(), spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
-			
-			if (shapeComponent.triangulator == null) {
+			if (shapeComponent.triangulator == null) 
 				shapeComponent.triangulator = ShapeUtils.triangulate(shapeComponent.getVertices());
-//				Triangulator triangulator = new NeatTriangulator();
-//				Vector2[] vertices = shapeComponent.getVertices();
-//				for (int i = 0; i < vertices.length; i++)
-//					triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
-//				triangulator.triangulate();
-//				shapeComponent.triangulator = triangulator;
-			}
-			
 			ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
-			
 		}
 	}
 
