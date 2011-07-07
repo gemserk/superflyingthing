@@ -49,6 +49,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
+		
+		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
 
 		Text title = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
 		title.setFont(titleFont);
@@ -58,6 +60,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		Sprite level1 = resourceManager.getResourceValue("WhiteRectangle");
 
+		// TODO: generate the levels list automatically from an array...
+		
 		container.add(GuiControls.imageButton(level1) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
@@ -70,6 +74,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				}) //
+				.build());
+		container.add(GuiControls.label("01") //
+				.position(width * 0.15f, height * 0.75f) //
+				.color(Color.BLUE) //
+				.font(levelFont) //
 				.build());
 		
 		container.add(GuiControls.imageButton(level1) //
@@ -84,6 +93,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				}) //
+				.build());
+		container.add(GuiControls.label("02") //
+				.position(width * 0.3f, height * 0.75f) //
+				.color(Color.BLUE) //
+				.font(levelFont) //
 				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
