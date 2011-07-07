@@ -34,6 +34,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private static boolean debugMode;
 
+	private static boolean showFps = true;
+
 	public static boolean isDebugMode() {
 		return debugMode;
 	}
@@ -77,7 +79,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getLevelSelectionScreen() {
 		return levelSelectionScreen;
 	}
-	
+
 	public Screen getPauseScreen() {
 		return pauseScreen;
 	}
@@ -103,7 +105,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		spriteBatch = new SpriteBatch();
 
 		playScreen = new ScreenImpl(new PlayGameState(this));
-		pauseScreen = new ScreenImpl(new PauseGameState(this)); 
+		pauseScreen = new ScreenImpl(new PauseGameState(this));
 		levelSelectionScreen = new ScreenImpl(new LevelSelectionGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
@@ -112,11 +114,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		setScreen(splashScreen);
 
 		Analytics.traker.trackPageView("/start", "/start", null);
-		
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-					monitorKey("toggleDebug", Keys.NUM_0);
+				monitorKey("toggleDebug", Keys.NUM_0);
+				monitorKey("toggleFps", Keys.NUM_9);
 			}
 		};
 	}
@@ -143,18 +146,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	@Override
 	public void render() {
 		inputDevicesMonitor.update();
+
+		if (inputDevicesMonitor.getButton("toggleFps").isReleased()) 
+			showFps = !showFps;
 		
-		if (inputDevicesMonitor.getButton("toggleDebug").isReleased()) {
+		if (inputDevicesMonitor.getButton("toggleDebug").isReleased()) 
 			Game.setDebugMode(!Game.isDebugMode());
-			if (Game.isDebugMode())
-				Gdx.app.log("SuperFlyingThing", "debug controls enabled");
-			else
-				Gdx.app.log("SuperFlyingThing", "debug controls disabled");
-		}
-		
+
 		super.render();
+
 		spriteBatch.begin();
-		SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
+		if (showFps) 
+			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
 		if (Game.isDebugMode())
 			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "Debug", Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		spriteBatch.end();
