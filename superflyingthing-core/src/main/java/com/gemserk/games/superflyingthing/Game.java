@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
+import java.io.IOException;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -31,6 +33,7 @@ import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
+import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
 
@@ -88,11 +91,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getPauseScreen() {
 		return pauseScreen;
 	}
-	
+
 	public Screen getGameOverScreen() {
 		return gameOverScreen;
 	}
-	
+
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
 	}
@@ -134,7 +137,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
 				monitorKey("toggleDebug", Keys.NUM_0);
-				monitorKey("toggleFps", Keys.NUM_9);
+				monitorKey("grabScreenshot", Keys.NUM_9);
+				monitorKey("toggleFps", Keys.NUM_8);
 			}
 		};
 	}
@@ -162,20 +166,28 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public void render() {
 		inputDevicesMonitor.update();
 
-		if (inputDevicesMonitor.getButton("toggleFps").isReleased()) 
+		if (inputDevicesMonitor.getButton("toggleFps").isReleased())
 			showFps = !showFps;
-		
-		if (inputDevicesMonitor.getButton("toggleDebug").isReleased()) 
+
+		if (inputDevicesMonitor.getButton("toggleDebug").isReleased())
 			Game.setDebugMode(!Game.isDebugMode());
 
 		super.render();
 
 		spriteBatch.begin();
-		if (showFps) 
+		if (showFps)
 			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
 		if (Game.isDebugMode())
 			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "Debug", Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		spriteBatch.end();
+
+		if (inputDevicesMonitor.getButton("grabScreenshot").isReleased()) {
+			try {
+				ScreenshotSaver.saveScreenshot("superflyingthing");
+			} catch (IOException e) {
+				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
+			}
+		}
 	}
 
 	@Override
