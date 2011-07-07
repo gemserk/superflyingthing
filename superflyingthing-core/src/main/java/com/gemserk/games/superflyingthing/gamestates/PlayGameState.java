@@ -113,6 +113,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		done = false;
+		
+		game.transition(game.getInstructionsScreen(), 0, 300);
 	}
 
 	class ChallengeMode {

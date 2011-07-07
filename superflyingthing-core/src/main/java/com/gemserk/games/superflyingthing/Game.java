@@ -19,6 +19,7 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
+import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PauseGameState;
@@ -58,6 +59,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
+	private Screen instructionsScreen;
+
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
@@ -89,6 +92,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getGameOverScreen() {
 		return gameOverScreen;
 	}
+	
+	public Screen getInstructionsScreen() {
+		return instructionsScreen;
+	}
 
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
@@ -112,6 +119,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		playScreen = new ScreenImpl(new PlayGameState(this));
 		pauseScreen = new ScreenImpl(new PauseGameState(this));
+		instructionsScreen = new ScreenImpl(new InstructionsGameState(this));
 		gameOverScreen = new ScreenImpl(new GameOverGameState(this));
 		levelSelectionScreen = new ScreenImpl(new LevelSelectionGameState(this));
 		splashScreen = new ScreenImpl(new SplashGameState(this));
