@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -125,7 +126,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 		
-		gamePreferences = new GamePreferences();
+		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
+		gamePreferences = new GamePreferences(preferences);
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
