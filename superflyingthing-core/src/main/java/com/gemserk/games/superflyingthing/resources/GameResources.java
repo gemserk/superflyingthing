@@ -31,6 +31,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		font("ButtonFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
 		font("GameFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
 		font("LevelFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
+		font("InstructionsFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 		
 	}
 

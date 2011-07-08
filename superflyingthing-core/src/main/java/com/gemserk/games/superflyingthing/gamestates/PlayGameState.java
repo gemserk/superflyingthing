@@ -1,9 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.io.IOException;
-
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -37,6 +34,8 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityBuilder;
@@ -55,6 +54,7 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
@@ -62,7 +62,6 @@ import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
-import com.gemserk.util.ScreenshotSaver;
 
 public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler {
 
@@ -81,6 +80,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	boolean done;
 	Container container;
 	private Libgdx2dCamera guiCamera;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -117,8 +117,14 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		done = false;
-		
-		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
+
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("pause", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("restart", Keys.MENU, Keys.R);
+			}
+		};
 	}
 
 	class ChallengeMode {
@@ -588,14 +594,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			renderEntitySprite(entityManager.get(i));
 		spriteBatch.end();
 
-		// box2dCustomDebugRenderer.render();
-
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
 			renderAttachmentDebug(e);
 			renderEntityWithShape(e);
 		}
+
+		if (Game.isShowBox2dDebug())
+			box2dCustomDebugRenderer.render();
 
 		guiCamera.apply(spriteBatch);
 		spriteBatch.begin();
@@ -623,7 +630,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
-			if (shapeComponent.triangulator == null) 
+			if (shapeComponent.triangulator == null)
 				shapeComponent.triangulator = ShapeUtils.triangulate(shapeComponent.getVertices());
 			ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 		}
@@ -656,41 +663,35 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void update(int delta) {
+
+		GamePreferences gamePreferences = game.getGamePreferences();
+		if (gamePreferences.isTutorialEnabled()) {
+			gamePreferences.setTutorialEnabled(false);
+			game.transition(game.getInstructionsScreen(), 0, 300, false);
+			return;
+		}
+
+		inputDevicesMonitor.update();
 		Synchronizers.synchronize(delta);
 		container.update();
 
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
-			game.transition(game.getPauseScreen(), 200, 300, false);
-		}
-
-		if (!resetPressed)
-			resetPressed = Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU);
-
-		if (resetPressed && !Gdx.input.isKeyPressed(Keys.R) && !Gdx.input.isKeyPressed(Keys.MENU))
+		if (inputDevicesMonitor.getButton("restart").isReleased())
 			done = true;
 
-		if (done) {
+		if (inputDevicesMonitor.getButton("pause").isReleased())
+			game.transition(game.getPauseScreen(), 200, 300, false);
 
+		if (done) {
 			if (GameData.gameMode == GameData.ChallengeGameMode) {
 				game.transition(game.getLevelSelectionScreen(), 200, 300);
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
 			} else {
-				// restart game state...
-				dispose();
-				init();
+				game.getPlayScreen().restart();
 			}
 		}
 
 		physicsWorld.step(delta * 0.001f, 3, 3);
 		entityManager.update(delta);
-		
-		if(Gdx.input.isKeyPressed(Input.Keys.NUM_9)){
-			try {
-				ScreenshotSaver.saveScreenshot("superflyingthing");
-			} catch (IOException e) {
-				Gdx.app.log("SuperSheep", "Can't save screenshot");
-			}
-		}
 	}
 
 	@Override

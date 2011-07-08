@@ -62,7 +62,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 				saveAnalyticsData();
 			}
 		}, config);
-
+		
 		int diWidth = 800;
 		int diHeight = 75;
 		
