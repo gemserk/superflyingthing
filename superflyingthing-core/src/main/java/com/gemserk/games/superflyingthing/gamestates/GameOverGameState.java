@@ -71,8 +71,6 @@ public class GameOverGameState extends GameStateImpl {
 						// restart game screen ?
 						
 						game.transition(game.getPlayScreen(), 200, 250);
-						
-						// render will explode!!
 						game.getPlayScreen().restart();
 						
 						// restart the screen between fade out/in ?

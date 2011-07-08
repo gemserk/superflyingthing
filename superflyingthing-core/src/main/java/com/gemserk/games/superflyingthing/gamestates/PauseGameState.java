@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -74,7 +73,7 @@ public class PauseGameState extends GameStateImpl {
 				})//
 				.build());
 		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.5f) //
+				.position(centerX, height * 0.55f) //
 				.text("Instructions") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -89,7 +88,22 @@ public class PauseGameState extends GameStateImpl {
 				})//
 				.build());
 		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.3f) //
+				.position(centerX, height * 0.40f) //
+				.text("Restart") //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.boundsOffset(20, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						game.transition(game.getPlayScreen(), 500, 0);
+						game.getPlayScreen().restart();
+					}
+				})//
+				.build());
+		container.add(GuiControls.textButton() //
+				.position(centerX, height * 0.25f) //
 				.text("Main Menu") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -116,10 +130,7 @@ public class PauseGameState extends GameStateImpl {
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				if (Gdx.app.getType() == ApplicationType.Android)
-					monitorKey("resume", Keys.BACK);
-				else
-					monitorKey("resume", Keys.ESCAPE);
+				monitorKeys("resume", Keys.BACK, Keys.ESCAPE);
 			}
 		};
 	}
