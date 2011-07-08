@@ -40,6 +40,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private static boolean debugMode;
 
 	private static boolean showFps = true;
+	
+	private static boolean showBox2dDebug = false;
 
 	public static boolean isDebugMode() {
 		return debugMode;
@@ -47,6 +49,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public static void setDebugMode(boolean debugMode) {
 		Game.debugMode = debugMode;
+	}
+	
+	public static boolean isShowBox2dDebug() {
+		return showBox2dDebug;
 	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
@@ -146,6 +152,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("toggleDebug", Keys.NUM_0);
 				monitorKey("grabScreenshot", Keys.NUM_9);
 				monitorKey("toggleFps", Keys.NUM_8);
+				monitorKey("toggleBox2dDebug", Keys.NUM_7);
 			}
 		};
 		
@@ -175,6 +182,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public void render() {
 		inputDevicesMonitor.update();
 
+		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased())
+			showBox2dDebug = !showBox2dDebug;
+		
 		if (inputDevicesMonitor.getButton("toggleFps").isReleased())
 			showFps = !showFps;
 

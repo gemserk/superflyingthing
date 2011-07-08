@@ -584,14 +584,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			renderEntitySprite(entityManager.get(i));
 		spriteBatch.end();
 
-		// box2dCustomDebugRenderer.render();
-
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
 			renderAttachmentDebug(e);
 			renderEntityWithShape(e);
 		}
+
+		if (Game.isShowBox2dDebug())
+			box2dCustomDebugRenderer.render();
 
 		guiCamera.apply(spriteBatch);
 		spriteBatch.begin();
@@ -619,7 +620,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
-			if (shapeComponent.triangulator == null) 
+			if (shapeComponent.triangulator == null)
 				shapeComponent.triangulator = ShapeUtils.triangulate(shapeComponent.getVertices());
 			ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 		}
@@ -652,14 +653,14 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 	@Override
 	public void update(int delta) {
-		
+
 		if (tutorialEnabled) {
 			tutorialEnabled = false;
 			game.getGamePreferences().setTutorialEnabled(false);
 			game.transition(game.getInstructionsScreen(), 0, 300, false);
 			return;
 		}
-		
+
 		Synchronizers.synchronize(delta);
 		container.update();
 
