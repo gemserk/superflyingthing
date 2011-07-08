@@ -74,6 +74,21 @@ public class PauseGameState extends GameStateImpl {
 				})//
 				.build());
 		container.add(GuiControls.textButton() //
+				.position(centerX, height * 0.5f) //
+				.text("Instructions") //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.boundsOffset(20, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						game.getGamePreferences().setTutorialEnabled(true);
+						game.transition(game.getPlayScreen(), 500, 250);
+					}
+				})//
+				.build());
+		container.add(GuiControls.textButton() //
 				.position(centerX, height * 0.3f) //
 				.text("Main Menu") //
 				.font(buttonFont) //

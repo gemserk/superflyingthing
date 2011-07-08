@@ -52,6 +52,7 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
@@ -77,7 +78,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	boolean done;
 	Container container;
 	private Libgdx2dCamera guiCamera;
-	boolean tutorialEnabled;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -114,7 +114,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		done = false;
-		tutorialEnabled = game.getGamePreferences().isTutorialEnabled(); // get from preferences
 	}
 
 	class ChallengeMode {
@@ -654,9 +653,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void update(int delta) {
 
-		if (tutorialEnabled) {
-			tutorialEnabled = false;
-			game.getGamePreferences().setTutorialEnabled(false);
+		GamePreferences gamePreferences = game.getGamePreferences();
+		if (gamePreferences.isTutorialEnabled()) {
+			gamePreferences.setTutorialEnabled(false);
 			game.transition(game.getInstructionsScreen(), 0, 300, false);
 			return;
 		}
