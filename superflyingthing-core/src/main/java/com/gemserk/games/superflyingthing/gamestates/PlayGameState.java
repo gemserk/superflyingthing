@@ -45,7 +45,6 @@ import com.gemserk.games.entities.EntityManagerImpl;
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfEntityDeadBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
-import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
@@ -141,8 +140,11 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
+			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
 
 			entityManager.add(startPlanet);
+			
+			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
@@ -333,7 +335,10 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
+			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
 			entityManager.add(startPlanet);
+			
+			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
@@ -472,8 +477,10 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			});
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
-
+			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
+			
 			entityManager.add(startPlanet);
+			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 			}));
 
@@ -601,7 +608,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
-			renderAttachmentDebug(e);
+//			renderAttachmentDebug(e);
 			renderEntityWithShape(e);
 		}
 
@@ -640,16 +647,16 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 	}
 
-	private void renderAttachmentDebug(Entity e) {
-		Spatial spatial = ComponentWrapper.getSpatial(e);
-		if (spatial == null)
-			return;
-		AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-		if (attachmentComponent == null)
-			return;
-		Vector2 position = spatial.getPosition();
-		ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Colors.yellow);
-	}
+//	private void renderAttachmentDebug(Entity e) {
+//		Spatial spatial = ComponentWrapper.getSpatial(e);
+//		if (spatial == null)
+//			return;
+//		AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+//		if (attachmentComponent == null)
+//			return;
+//		Vector2 position = spatial.getPosition();
+//		ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Colors.yellow);
+//	}
 
 	private void renderMovementDebug(Entity e) {
 		Spatial spatial = ComponentWrapper.getSpatial(e);

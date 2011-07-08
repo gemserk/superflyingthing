@@ -140,7 +140,7 @@ public class EntityTemplates {
 
 	public Entity startPlanet(float x, float y, float radius) {
 		Entity e = new Entity();
-
+		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Body body = bodyBuilder.mass(1f) //
 				.circleShape(radius * 0.1f) //
 				.position(x, y) //
@@ -153,16 +153,45 @@ public class EntityTemplates {
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
-
+		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addBehavior(new ReleaseAttachmentBehavior(world));
 		e.addBehavior(new AttachEntityBehavior(jointBuilder));
 		e.addBehavior(new AttachedEntityDirectionBehavior());
+		return e;
+	}
+	
+	public Entity planetBlur(float x, float y, float radius) {
+		Entity e = new Entity();
+		Sprite sprite = resourceManager.getResourceValue("PlanetBlur");
+		e.addComponent(Spatial.class, new SpatialImpl(x, y, radius * 2, radius * 2, 0f));
+		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		
+		e.addBehavior(new Behavior() {
+			
+			float diff = 0.5f;
+			
+			public void update(int delta, Entity e) {
+				SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+				Color color = spriteComponent.getColor();
+				
+				color.a += diff * delta * 0.001f;
+				
+				if (color.a >= 0.9f) 
+					diff = -0.5f;
+				
+				if (color.a <= 0.4)
+					diff = 0.5f;
+			};
+		} );
+		
 		return e;
 	}
 
 	public Entity destinationPlanet(float x, float y, float radius, Trigger destinationReachedTrigger) {
 		Entity e = new Entity();
 
+		Sprite sprite = resourceManager.getResourceValue("Planet");
+		
 		Body body = bodyBuilder.mass(1f) //
 				.circleShape(radius * 0.1f) //
 				.position(x, y) //
@@ -179,6 +208,7 @@ public class EntityTemplates {
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
+		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 		e.addBehavior(new AttachEntityBehavior(jointBuilder));

@@ -33,6 +33,12 @@ public class GameResources extends LibgdxResourceBuilder {
 		font("LevelFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 		font("InstructionsFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 		
+		texture("PlanetTexture", "data/images/planet.png");
+		sprite("Planet", "PlanetTexture");
+		
+		texture("PlanetBlurTexture", "data/images/planet_blur.png");
+		sprite("PlanetBlur", "PlanetBlurTexture");
+
 	}
 
 }
