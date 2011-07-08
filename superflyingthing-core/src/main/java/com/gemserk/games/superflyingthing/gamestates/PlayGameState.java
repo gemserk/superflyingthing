@@ -218,7 +218,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-			Text levelNameText = GuiControls.label("Level: " + level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
+			Text levelNameText = GuiControls.label("Level " + (GameData.level + 1) + ": " + level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
 					.font(font) //
 					.color(1f, 1f, 1f, 1f) //
 					.build();
@@ -687,8 +687,13 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 		if (done) {
 			if (GameData.gameMode == GameData.ChallengeGameMode) {
-				game.transition(game.getLevelSelectionScreen(), 200, 300);
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
+				if (!Levels.hasLevel(GameData.level + 1))
+					game.transition(game.getLevelSelectionScreen(), 200, 300);
+				else {
+					GameData.level++;
+					game.getPlayScreen().restart();
+				}
 			} else {
 				game.getPlayScreen().restart();
 			}
