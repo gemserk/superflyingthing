@@ -58,19 +58,18 @@ public class LevelSelectionGameState extends GameStateImpl {
 		container = new Container();
 		container.add(title);
 
-		Sprite level1 = resourceManager.getResourceValue("WhiteRectangle");
+		Sprite levelThumbnail = resourceManager.getResourceValue("WhiteRectangle");
 
 		// TODO: generate the levels list automatically from an array...
 		
-		container.add(GuiControls.imageButton(level1) //
+		container.add(GuiControls.imageButton(levelThumbnail) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
 				.position(width * 0.15f, height * 0.75f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						// load level 1, then go to play screen
-						GameData.level = Levels.level1();
+						GameData.level = 0;
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				}) //
@@ -81,15 +80,14 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.font(levelFont) //
 				.build());
 		
-		container.add(GuiControls.imageButton(level1) //
+		container.add(GuiControls.imageButton(levelThumbnail) //
 				.color(0.8f, 0.8f, 0.8f, 1f) //
 				.size(width * 0.1f, height * 0.1f) //
 				.position(width * 0.3f, height * 0.75f) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						// load level 1, then go to play screen
-						GameData.level = Levels.level2();
+						GameData.level = 1;
 						game.transition(game.getPlayScreen(), 500, 250);
 					}
 				}) //

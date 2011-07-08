@@ -241,8 +241,12 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
 
-			if (GameData.level != null)
-				loadLevel(entityManager, entityTemplates, GameData.level);
+			if (Levels.hasLevel(GameData.level)) {
+				Level level = Levels.level(GameData.level);
+				loadLevel(entityManager, entityTemplates, level);
+			}
+			// if (GameData.level != null)
+			// loadLevel(entityManager, entityTemplates, GameData.level);
 
 			// simulate a step to put everything on their places
 			entityManager.update(1);

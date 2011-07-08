@@ -10,6 +10,6 @@ public class GameData {
 
 	public static int gameMode = 0;
 	
-	public static Level level = null;
+	public static int level = 0;
 
 }
