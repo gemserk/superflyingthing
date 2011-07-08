@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -34,6 +35,8 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityBuilder;
@@ -78,6 +81,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	boolean done;
 	Container container;
 	private Libgdx2dCamera guiCamera;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -114,6 +118,19 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		done = false;
+
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				if (Gdx.app.getType() == ApplicationType.Android) {
+					monitorKey("pause", Keys.BACK);
+					monitorKey("restart", Keys.MENU);
+				} else {
+					monitorKey("pause", Keys.ESCAPE);
+					monitorKey("restart", Keys.R);
+				}
+			}
+		};
 	}
 
 	class ChallengeMode {
@@ -660,28 +677,22 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			return;
 		}
 
+		inputDevicesMonitor.update();
 		Synchronizers.synchronize(delta);
 		container.update();
 
-		if (Gdx.input.isKeyPressed(Keys.ESCAPE) || Gdx.input.isKeyPressed(Keys.BACK)) {
-			game.transition(game.getPauseScreen(), 200, 300, false);
-		}
-
-		if (!resetPressed)
-			resetPressed = Gdx.input.isKeyPressed(Keys.R) || Gdx.input.isKeyPressed(Keys.MENU);
-
-		if (resetPressed && !Gdx.input.isKeyPressed(Keys.R) && !Gdx.input.isKeyPressed(Keys.MENU))
+		if (inputDevicesMonitor.getButton("restart").isReleased())
 			done = true;
 
-		if (done) {
+		if (inputDevicesMonitor.getButton("pause").isReleased())
+			game.transition(game.getPauseScreen(), 200, 300, false);
 
+		if (done) {
 			if (GameData.gameMode == GameData.ChallengeGameMode) {
 				game.transition(game.getLevelSelectionScreen(), 200, 300);
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
 			} else {
-				// restart game state...
-				dispose();
-				init();
+				game.getPlayScreen().restart();
 			}
 		}
 
