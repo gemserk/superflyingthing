@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -122,13 +121,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				if (Gdx.app.getType() == ApplicationType.Android) {
-					monitorKey("pause", Keys.BACK);
-					monitorKey("restart", Keys.MENU);
-				} else {
-					monitorKey("pause", Keys.ESCAPE);
-					monitorKey("restart", Keys.R);
-				}
+				monitorKeys("pause", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("restart", Keys.MENU, Keys.R);
 			}
 		};
 	}
