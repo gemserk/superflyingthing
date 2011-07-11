@@ -62,8 +62,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		// TODO: generate the levels list automatically from an array...
 		
-		float x = width * 0.15f;
-		float y = height * 0.75f;
+		float x = 0f;
+		float y = height * (0.75f + 0.12f) ;
 		
 		for (int i = 0; i < Levels.levelsCount(); i++) {
 
@@ -71,6 +71,13 @@ public class LevelSelectionGameState extends GameStateImpl {
 			float h = height * 0.1f;
 			
 			final int levelIndex = i;
+			
+			if (i % 6 == 0)  {
+				y -= height * 0.12f;
+				x = 0f;
+			}
+			
+			x += width * 0.15f;
 			
 			container.add(GuiControls.imageButton(levelThumbnail) //
 					.color(0.8f, 0.8f, 0.8f, 1f) //
@@ -90,30 +97,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.font(levelFont) //
 					.build());
 			
-			x += width * 0.15f;
-			
 		}
 		
-//
-//		
-//		container.add(GuiControls.imageButton(levelThumbnail) //
-//				.color(0.8f, 0.8f, 0.8f, 1f) //
-//				.size(width * 0.1f, height * 0.1f) //
-//				.position(width * 0.3f, height * 0.75f) //
-//				.handler(new ButtonHandler() {
-//					@Override
-//					public void onReleased() {
-//						GameData.level = 1;
-//						game.transition(game.getPlayScreen(), 500, 250);
-//					}
-//				}) //
-//				.build());
-//		container.add(GuiControls.label("02") //
-//				.position(width * 0.3f, height * 0.75f) //
-//				.color(Color.BLUE) //
-//				.font(levelFont) //
-//				.build());
-
 		if (Gdx.app.getType() != ApplicationType.Android)
 			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
 					.setNotOverColor(Color.WHITE) //
