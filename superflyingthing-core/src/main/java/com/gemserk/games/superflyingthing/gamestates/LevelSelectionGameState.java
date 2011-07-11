@@ -62,41 +62,57 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		// TODO: generate the levels list automatically from an array...
 		
-		container.add(GuiControls.imageButton(levelThumbnail) //
-				.color(0.8f, 0.8f, 0.8f, 1f) //
-				.size(width * 0.1f, height * 0.1f) //
-				.position(width * 0.15f, height * 0.75f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						GameData.level = 0;
-						game.transition(game.getPlayScreen(), 500, 250);
-					}
-				}) //
-				.build());
-		container.add(GuiControls.label("01") //
-				.position(width * 0.15f, height * 0.75f) //
-				.color(Color.BLUE) //
-				.font(levelFont) //
-				.build());
+		float x = width * 0.15f;
+		float y = height * 0.75f;
 		
-		container.add(GuiControls.imageButton(levelThumbnail) //
-				.color(0.8f, 0.8f, 0.8f, 1f) //
-				.size(width * 0.1f, height * 0.1f) //
-				.position(width * 0.3f, height * 0.75f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						GameData.level = 1;
-						game.transition(game.getPlayScreen(), 500, 250);
-					}
-				}) //
-				.build());
-		container.add(GuiControls.label("02") //
-				.position(width * 0.3f, height * 0.75f) //
-				.color(Color.BLUE) //
-				.font(levelFont) //
-				.build());
+		for (int i = 0; i < Levels.levelsCount(); i++) {
+
+			float w = width * 0.1f;
+			float h = height * 0.1f;
+			
+			final int levelIndex = i;
+			
+			container.add(GuiControls.imageButton(levelThumbnail) //
+					.color(0.8f, 0.8f, 0.8f, 1f) //
+					.size(w, h) //
+					.position(x, y) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased() {
+							GameData.level = levelIndex;
+							game.transition(game.getPlayScreen(), 500, 250);
+						}
+					}) //
+					.build());
+			container.add(GuiControls.label("" + i) //
+					.position(x, y) //
+					.color(Color.BLUE) //
+					.font(levelFont) //
+					.build());
+			
+			x += width * 0.15f;
+			
+		}
+		
+//
+//		
+//		container.add(GuiControls.imageButton(levelThumbnail) //
+//				.color(0.8f, 0.8f, 0.8f, 1f) //
+//				.size(width * 0.1f, height * 0.1f) //
+//				.position(width * 0.3f, height * 0.75f) //
+//				.handler(new ButtonHandler() {
+//					@Override
+//					public void onReleased() {
+//						GameData.level = 1;
+//						game.transition(game.getPlayScreen(), 500, 250);
+//					}
+//				}) //
+//				.build());
+//		container.add(GuiControls.label("02") //
+//				.position(width * 0.3f, height * 0.75f) //
+//				.color(Color.BLUE) //
+//				.font(levelFont) //
+//				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
 			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //

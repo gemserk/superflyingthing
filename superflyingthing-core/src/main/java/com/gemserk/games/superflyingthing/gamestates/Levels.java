@@ -16,7 +16,11 @@ import com.gemserk.games.superflyingthing.gamestates.Level.StartPlanet;
 
 public class Levels {
 
-	private static final String[] levels = new String[] { "data/levels/level01.svg", "data/levels/level02.svg" };
+	private static final String[] levels = new String[] { // 
+		"data/levels/level01.svg",  //
+		"data/levels/level02.svg", //
+		"data/levels/level03.svg", //
+		};
 	
 	// TODO: cache levels...
 
