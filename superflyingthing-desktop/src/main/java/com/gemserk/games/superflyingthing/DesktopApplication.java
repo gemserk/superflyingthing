@@ -34,6 +34,7 @@ public class DesktopApplication {
 		config.title = "Super Flying Thing - Prototype";
 		config.useGL20 = false;
 		config.useCPUSynch = false;
+		config.forceExit = true;
 
 		new LwjglApplication(new Game() {
 			@Override
