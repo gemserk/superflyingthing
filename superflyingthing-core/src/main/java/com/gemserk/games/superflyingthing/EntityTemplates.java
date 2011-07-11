@@ -79,13 +79,15 @@ public class EntityTemplates {
 
 		Entity e = new Entity();
 
-		Body body = bodyBuilder.mass(50f) //
-				.boxShape(width * 0.3f, height * 0.3f) //
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.restitution(0f) //
+						.categoryBits(CategoryBits.ShipCategoryBits) //
+						.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
+						.boxShape(width * 0.3f, height * 0.3f)) //
+				.mass(50f) //
 				.position(x, y) //
-				.restitution(0f) //
 				.type(BodyType.DynamicBody) //
-				.categoryBits(CategoryBits.ShipCategoryBits) //
-				.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
 				.userData(e) //
 				.build();
 
@@ -116,11 +118,13 @@ public class EntityTemplates {
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 
-		Body body = bodyBuilder.mass(50f) //
-				.circleShape(radius) //
-				.sensor() //
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.sensor() //
+						.restitution(0f) //
+						.circleShape(radius)) //
+				.mass(50f) //
 				.position(x, y) //
-				.restitution(0f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //
 				.build();
@@ -145,13 +149,16 @@ public class EntityTemplates {
 	public Entity startPlanet(float x, float y, float radius) {
 		Entity e = new Entity();
 		Sprite sprite = resourceManager.getResourceValue("Planet");
-		Body body = bodyBuilder.mass(1f) //
-				.circleShape(radius * 0.1f) //
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.circleShape(radius * 0.1f) //
+						.restitution(0f) //
+						.categoryBits(CategoryBits.MiniPlanetCategoryBits)) //
 				.position(x, y) //
-				.restitution(0f) //
+				.mass(1f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //
-				.categoryBits(CategoryBits.MiniPlanetCategoryBits).build();
+				.build();
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
@@ -196,13 +203,15 @@ public class EntityTemplates {
 
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 
-		Body body = bodyBuilder.mass(1f) //
-				.circleShape(radius * 0.1f) //
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder().circleShape(radius * 0.1f) //
+						.categoryBits(CategoryBits.MiniPlanetCategoryBits) //
+						.restitution(0f)) //
 				.position(x, y) //
-				.restitution(0f) //
+				.mass(1f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //
-				.categoryBits(CategoryBits.MiniPlanetCategoryBits).build();
+				.build();
 
 		bodyBuilder.fixtureBuilder(body) //
 				.circleShape(radius) //
@@ -237,11 +246,11 @@ public class EntityTemplates {
 		Entity e = new Entity();
 
 		Triangulator triangulator = new NeatTriangulator();
-		
+
 		for (int i = 0; i < vertices.length; i++)
 			triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
 		triangulator.triangulate();
-		
+
 		FixtureDef[] fixtureDefs = new FixtureDef[triangulator.getTriangleCount()];
 		FixtureDefBuilder fixtureDefBuilder = new FixtureDefBuilder();
 
@@ -273,11 +282,14 @@ public class EntityTemplates {
 
 	public Entity boxObstacle(float x, float y, float w, float h, float angle) {
 		Entity e = new Entity();
-		Body body = bodyBuilder.type(BodyType.StaticBody) //
-				.boxShape(w * 0.5f, h * 0.5f) //
-				.restitution(1f) //
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.boxShape(w * 0.5f, h * 0.5f) //
+						.restitution(1f) //
+						.friction(0f) //
+				) //
+				.type(BodyType.StaticBody) //
 				.mass(1f)//
-				.friction(0f) //
 				.position(x, y) //
 				.angle(angle) //
 				.build();
