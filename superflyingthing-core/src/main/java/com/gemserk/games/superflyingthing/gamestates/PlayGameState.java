@@ -606,7 +606,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
-			// renderAttachmentDebug(e);
 			renderEntityWithShape(e);
 		}
 
@@ -644,17 +643,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 		}
 	}
-
-	// private void renderAttachmentDebug(Entity e) {
-	// Spatial spatial = ComponentWrapper.getSpatial(e);
-	// if (spatial == null)
-	// return;
-	// AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-	// if (attachmentComponent == null)
-	// return;
-	// Vector2 position = spatial.getPosition();
-	// ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Colors.yellow);
-	// }
 
 	private void renderMovementDebug(Entity e) {
 		Spatial spatial = ComponentWrapper.getSpatial(e);

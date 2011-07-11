@@ -36,8 +36,6 @@ public class Levels {
 
 			@Override
 			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
-				for (int i = 0; i < vertices.length; i++)
-					System.out.println(vertices[i]);
 				level.obstacles.add(new Obstacle(vertices));
 			}
 		}.process(document);
