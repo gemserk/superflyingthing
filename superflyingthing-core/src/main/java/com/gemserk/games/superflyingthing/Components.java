@@ -74,7 +74,13 @@ public class Components {
 			this.vertices = vertices;
 			this.color = color;
 		}
-		
+
+		public ShapeComponent(Vector2[] vertices, Color color, Triangulator triangulator) {
+			this.vertices = vertices;
+			this.color = color;
+			this.triangulator = triangulator;
+		}
+
 	}
 
 	public static class MovementComponent {

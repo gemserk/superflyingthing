@@ -5,8 +5,10 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
+import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
@@ -14,6 +16,8 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.commons.gdx.graphics.NeatTriangulator;
+import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityManager;
@@ -44,7 +48,7 @@ public class EntityTemplates {
 		public static short MiniPlanetCategoryBits = 2;
 
 	}
-	
+
 	private final World world;
 	private final EntityManager entityManager;
 	private final BodyBuilder bodyBuilder;
@@ -159,31 +163,31 @@ public class EntityTemplates {
 		e.addBehavior(new AttachedEntityDirectionBehavior());
 		return e;
 	}
-	
+
 	public Entity planetBlur(float x, float y, float radius) {
 		Entity e = new Entity();
 		Sprite sprite = resourceManager.getResourceValue("PlanetBlur");
 		e.addComponent(Spatial.class, new SpatialImpl(x, y, radius * 2, radius * 2, 0f));
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
-		
+
 		e.addBehavior(new Behavior() {
-			
+
 			float diff = 0.5f;
-			
+
 			public void update(int delta, Entity e) {
 				SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
 				Color color = spriteComponent.getColor();
-				
+
 				color.a += diff * delta * 0.001f;
-				
-				if (color.a >= 0.9f) 
+
+				if (color.a >= 0.9f)
 					diff = -0.5f;
-				
+
 				if (color.a <= 0.4)
 					diff = 0.5f;
 			};
-		} );
-		
+		});
+
 		return e;
 	}
 
@@ -191,7 +195,7 @@ public class EntityTemplates {
 		Entity e = new Entity();
 
 		Sprite sprite = resourceManager.getResourceValue("Planet");
-		
+
 		Body body = bodyBuilder.mass(1f) //
 				.circleShape(radius * 0.1f) //
 				.position(x, y) //
@@ -231,16 +235,39 @@ public class EntityTemplates {
 
 	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
 		Entity e = new Entity();
+
+		Triangulator triangulator = new NeatTriangulator();
+		
+		for (int i = 0; i < vertices.length; i++)
+			triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
+		triangulator.triangulate();
+		
+		FixtureDef[] fixtureDefs = new FixtureDef[triangulator.getTriangleCount()];
+		FixtureDefBuilder fixtureDefBuilder = new FixtureDefBuilder();
+
+		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
+			Vector2[] v = new Vector2[3];
+			for (int p = 0; p < 3; p++) {
+				float[] pt = triangulator.getTrianglePoint(i, p);
+				v[p] = new Vector2(pt[0], pt[1]);
+			}
+			fixtureDefs[i] = fixtureDefBuilder //
+					.polygonShape(v) //
+					.restitution(0f) //
+					.build();
+		}
+
 		Body body = bodyBuilder.mass(1f) //
-				.polygonShape(vertices) //
+				.fixtures(fixtureDefs) //
 				.position(x, y) //
-				.restitution(0f) //
 				.type(BodyType.StaticBody) //
 				.angle(angle) //
 				.build();
+
 		e.addComponent(Physics.class, new PhysicsImpl(body));
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
-		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Color.BLUE));
+		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Color.BLUE, triangulator));
+
 		return e;
 	}
 
