@@ -9,20 +9,21 @@ public class Levels {
 			name = "Learning to fly";
 			w = 50f;
 			h = 10f;
-			obstacles = new Obstacle[] { new Obstacle() {
-				{
-					x = w * 0.5f;
-					y = 1.4f;
-					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-				}
-			}, new Obstacle() {
-				{
-					x = w * 0.5f;
-					y = h - 1.4f;
-					angle = 180f;
-					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-				}
-			}, };
+			obstacles = new Obstacle[] { };
+//			obstacles = new Obstacle[] { new Obstacle() {
+//				{
+//					x = w * 0.5f;
+//					y = 1.4f;
+//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
+//				}
+//			}, new Obstacle() {
+//				{
+//					x = w * 0.5f;
+//					y = h - 1.4f;
+//					angle = 180f;
+//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
+//				}
+//			}, };
 			items = new Level.Item[] {};
 		}
 	};

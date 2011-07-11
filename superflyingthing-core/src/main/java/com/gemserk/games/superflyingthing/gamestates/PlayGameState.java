@@ -1,5 +1,10 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.io.InputStream;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -34,6 +39,8 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.commons.svg.inkscape.DocumentParser;
+import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.entities.Behavior;
@@ -54,6 +61,7 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
+import com.gemserk.games.superflyingthing.LayerProcessor;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
@@ -246,6 +254,19 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			if (Levels.hasLevel(GameData.level)) {
 				Level level = Levels.level(GameData.level);
 				loadLevel(entityManager, entityTemplates, level);
+				
+				InputStream svg = Gdx.files.internal("data/levels/level-template.svg").read();
+				Document document = new DocumentParser().parse(svg);
+				
+				new LayerProcessor("World") {
+					@Override
+					protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
+						for (int i = 0; i < vertices.length; i++) 
+							System.out.println(vertices[i]);
+						entityManager.add(entityTemplates.obstacle(vertices, 0f, 0f, 0f));
+					}
+				}.process(document);
+				
 			}
 			// if (GameData.level != null)
 			// loadLevel(entityManager, entityTemplates, GameData.level);
