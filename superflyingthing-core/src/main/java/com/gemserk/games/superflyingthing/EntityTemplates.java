@@ -204,19 +204,18 @@ public class EntityTemplates {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 
 		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder().circleShape(radius * 0.1f) //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.circleShape(radius * 0.1f) //
 						.categoryBits(CategoryBits.MiniPlanetCategoryBits) //
 						.restitution(0f)) //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.circleShape(radius) //
+						.categoryBits(CategoryBits.AllCategoryBits) //
+						.sensor()) //
 				.position(x, y) //
 				.mass(1f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //
-				.build();
-
-		bodyBuilder.fixtureBuilder(body) //
-				.circleShape(radius) //
-				.categoryBits(CategoryBits.AllCategoryBits) //
-				.sensor() //
 				.build();
 
 		e.addComponent(Physics.class, new PhysicsImpl(body));
