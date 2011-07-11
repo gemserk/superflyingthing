@@ -33,7 +33,7 @@ public class LayerProcessor {
 			@Override
 			protected void handle(SvgParser svgParser, SvgDocument svgDocument, Element element) {
 				LayerProcessor.this.svgDocument = svgDocument;
-				handleDocument(svgDocument);
+				handleDocument(svgDocument, element);
 			}
 		});
 		svgParser.addHandler(new SvgInkscapeGroupHandler() {
@@ -113,7 +113,7 @@ public class LayerProcessor {
 		svgParser.parse(document);
 	}
 	
-	protected void handleDocument(SvgDocument document) {
+	protected void handleDocument(SvgDocument document, Element element) {
 		
 	}
 	

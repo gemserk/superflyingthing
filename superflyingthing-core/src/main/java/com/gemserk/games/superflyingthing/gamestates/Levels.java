@@ -1,68 +1,58 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
+import java.io.InputStream;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.Vector2;
+import com.gemserk.commons.svg.inkscape.DocumentParser;
+import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
+import com.gemserk.games.superflyingthing.LayerProcessor;
+import com.gemserk.games.superflyingthing.gamestates.Level.DestinationPlanet;
+import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
+import com.gemserk.games.superflyingthing.gamestates.Level.StartPlanet;
 
 public class Levels {
 
-	private static Level level1 = new Level() {
-		{
-			name = "Learning to fly";
-			w = 50f;
-			h = 10f;
-			obstacles = new ArrayList<Obstacle>();
-//			obstacles = new Obstacle[] { new Obstacle() {
-//				{
-//					x = w * 0.5f;
-//					y = 1.4f;
-//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-//				}
-//			}, new Obstacle() {
-//				{
-//					x = w * 0.5f;
-//					y = h - 1.4f;
-//					angle = 180f;
-//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-//				}
-//			}, };
-			items = new ArrayList<Item>();
-		}
-	};
+	private static final String[] levels = new String[] { "data/levels/level01.svg", "data/levels/level02.svg" };
+	
+	// TODO: cache levels...
 
-	private static Level level2 = new Level() {
-		{
-			name = "I'm a flying machine!";
-			w = 50f;
-			h = 10f;
-			obstacles = new ArrayList<Obstacle>();
-//			obstacles = new ArrayList<Obstacle>() { new Obstacle() {
-//				{
-//					x = w * 0.5f;
-//					y = 0f;
-//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-//				}
-//			}, new Obstacle() {
-//				{
-//					x = w * 0.5f;
-//					y = h;
-//					angle = 180f;
-//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-//				}
-//			}, new Obstacle() {
-//				{
-//					x = w * 0.5f;
-//					y = h * 0.5f;
-//					angle = 0f;
-//					vertices = new Vector2[] { new Vector2(5f, -0.5f), new Vector2(5f, 0.5f), new Vector2(-5f, 0.5f), new Vector2(-5f, -0.5f) };
-//				}
-//			}, };
-			items = new ArrayList<Item>();
-		}
-	};
+	public static Level level(int levelNumber) {
+		InputStream svg = Gdx.files.internal(levels[levelNumber]).read();
+		Document document = new DocumentParser().parse(svg);
 
-	private static final Level[] levels = new Level[] { level1, level2 };
+		final Level level = new Level();
+		level.name = "name";
 
-	public static Level level(int level) {
-		return levels[level];
+		new LayerProcessor("Obstacles") {
+			protected void handleDocument(com.gemserk.commons.svg.inkscape.SvgDocument document, Element element) {
+				level.w = document.getWidth();
+				level.h = document.getHeight();
+				level.name = element.getAttribute("levelName");
+			};
+
+			@Override
+			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
+				for (int i = 0; i < vertices.length; i++)
+					System.out.println(vertices[i]);
+				level.obstacles.add(new Obstacle(vertices));
+			}
+		}.process(document);
+
+		new LayerProcessor("World") {
+			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
+				if (element.hasAttribute("startPlanet")) {
+					level.startPlanet = new StartPlanet(x, y);
+				} else if (element.hasAttribute("destinationPlanet")) {
+					level.destinationPlanet = new DestinationPlanet(x, y);
+				}
+			};
+		}.process(document);
+
+		return level;
 	}
 
 	public static boolean hasLevel(int level) {

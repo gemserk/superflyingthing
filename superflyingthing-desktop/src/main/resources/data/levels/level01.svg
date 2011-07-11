@@ -15,7 +15,7 @@
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level-template.svg"
+ sodipodi:docname="level01.svg"
  levelName="Learning to fly">
 <defs
  id="defs4" />
@@ -26,9 +26,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="20.48"
- inkscape:cx="20.8346"
- inkscape:cy="6.41556"
+ inkscape:zoom="27.68"
+ inkscape:cx="18.0429"
+ inkscape:cy="4.80495"
  inkscape:document-units="px"
  inkscape:current-layer="layer3"
  showgrid="true"
@@ -133,23 +133,23 @@
  sodipodi:nodetypes="cccc" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 40,10 40,8 25,9 25,10 z"
+ d="M 36,10 36,8 21,9 21,10 z"
  id="path2998"
  inkscape:connector-curvature="0" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 25,10 25,9 15,7 15,10 z"
+ d="M 21,10 21,9 11,7 11,10 z"
  id="path3000"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="ccccc" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 15,10 15,7 13,8 12,10 z"
+ d="M 11,10 11,7 9,8 8,10 z"
  id="path3002"
  inkscape:connector-curvature="0" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 43,10 42,9 40,8 40,10 z"
+ d="M 39,10 38,9 36,8 36,10 z"
  id="path3004"
  inkscape:connector-curvature="0" />
 <path

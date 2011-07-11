@@ -1,10 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.io.InputStream;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -39,8 +34,6 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
-import com.gemserk.commons.svg.inkscape.DocumentParser;
-import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.entities.Behavior;
@@ -61,7 +54,6 @@ import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
-import com.gemserk.games.superflyingthing.LayerProcessor;
 import com.gemserk.games.superflyingthing.PhysicsContactListener;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
@@ -147,13 +139,13 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
-			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f);
+			entityManager.add(entityTemplates.planetBlur(level.startPlanet.x, level.startPlanet.y, 1f));
 
 			entityManager.add(startPlanet);
-			
-			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
-			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
+
+			entityManager.add(entityTemplates.planetBlur(level.destinationPlanet.x, level.destinationPlanet.y, 1f));
+			entityManager.add(entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
 					gameFinished();
@@ -252,34 +244,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityTemplates = entityTemplates;
 
 			if (Levels.hasLevel(GameData.level)) {
-//				Level level = Levels.level(GameData.level);
-//				loadLevel(entityManager, entityTemplates, level);
-				
-				InputStream svg = Gdx.files.internal("data/levels/level-template.svg").read();
-				Document document = new DocumentParser().parse(svg);
-				
-				final Level level = new Level();
-				level.name = "name";
-				
-				new LayerProcessor("World") {
-					protected void handleDocument(com.gemserk.commons.svg.inkscape.SvgDocument document) {
-						level.w = document.getWidth();
-						level.h = document.getHeight();
-					};
-					@Override
-					protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
-						for (int i = 0; i < vertices.length; i++) 
-							System.out.println(vertices[i]);
-						level.obstacles.add(new Obstacle(vertices));
-						// entityManager.add(entityTemplates.obstacle(vertices, 0f, 0f, 0f));
-					}
-				}.process(document);
-				
+				Level level = Levels.level(GameData.level);
 				loadLevel(entityManager, entityTemplates, level);
-				
 			}
-			// if (GameData.level != null)
-			// loadLevel(entityManager, entityTemplates, GameData.level);
 
 			// simulate a step to put everything on their places
 			entityManager.update(1);
@@ -368,7 +335,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
 			entityManager.add(startPlanet);
-			
+
 			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -509,7 +476,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
-			
+
 			entityManager.add(startPlanet);
 			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
@@ -639,7 +606,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		for (int i = 0; i < entityManager.entitiesCount(); i++) {
 			Entity e = entityManager.get(i);
 			renderMovementDebug(e);
-//			renderAttachmentDebug(e);
+			// renderAttachmentDebug(e);
 			renderEntityWithShape(e);
 		}
 
@@ -678,16 +645,16 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 	}
 
-//	private void renderAttachmentDebug(Entity e) {
-//		Spatial spatial = ComponentWrapper.getSpatial(e);
-//		if (spatial == null)
-//			return;
-//		AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-//		if (attachmentComponent == null)
-//			return;
-//		Vector2 position = spatial.getPosition();
-//		ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Colors.yellow);
-//	}
+	// private void renderAttachmentDebug(Entity e) {
+	// Spatial spatial = ComponentWrapper.getSpatial(e);
+	// if (spatial == null)
+	// return;
+	// AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+	// if (attachmentComponent == null)
+	// return;
+	// Vector2 position = spatial.getPosition();
+	// ImmediateModeRendererUtils.drawSolidCircle(position, spatial.getWidth() * 0.5f, Colors.yellow);
+	// }
 
 	private void renderMovementDebug(Entity e) {
 		Spatial spatial = ComponentWrapper.getSpatial(e);

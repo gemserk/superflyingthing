@@ -10,13 +10,13 @@
  xmlns:xlink="http://www.w3.org/1999/xlink"
  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
- width="40"
+ width="30"
  height="10"
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level-template.svg"
- levelName="Learning to fly">
+ sodipodi:docname="level02.svg"
+ levelName="Look ma' I'm flying">
 <defs
  id="defs4" />
 <sodipodi:namedview
@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="20.48"
- inkscape:cx="20.8346"
- inkscape:cy="6.41556"
+ inkscape:zoom="27.68"
+ inkscape:cx="15.9735"
+ inkscape:cy="5.8718"
  inkscape:document-units="px"
- inkscape:current-layer="layer3"
+ inkscape:current-layer="layer2"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -127,37 +127,39 @@
  inkscape:label="Obstacles">
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 21,2 26,0 19,0 z"
+ d="M 23,1 24,0 19,0 z"
  id="path2994"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="cccc" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 40,10 40,8 25,9 25,10 z"
- id="path2998"
- inkscape:connector-curvature="0" />
-<path
- style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 25,10 25,9 15,7 15,10 z"
+ d="M 19,10 20,6 9,7 9,10 z"
  id="path3000"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="ccccc" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 15,10 15,7 13,8 12,10 z"
+ d="M 9,10 9,7 7,8 6,10 z"
  id="path3002"
  inkscape:connector-curvature="0" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 43,10 42,9 40,8 40,10 z"
+ d="M 23,10 21,9 20,6 19,10 z"
  id="path3004"
- inkscape:connector-curvature="0" />
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="ccccc" />
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 21,2 19,0 15,0 14,1 16.1059,2.61681 19.0255,3 z"
+ d="M 23,1 19,0 8,0 10,1 14,3 19,2 z"
  id="path3006"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="ccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 26.0246,2.56647 30,3 30,0 24,0 23,1 z"
+ id="path4152"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccc" />
 </g>
 <g
  inkscape:groupmode="layer"
@@ -169,16 +171,16 @@
  id="path3806"
  inkscape:connector-curvature="0" />
 <image
- y="4"
- x="4"
+ y="3"
+ x="3"
  id="image3824-5-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
  width="2"
  startPlanet="" />
 <image
- y="3"
- x="29"
+ y="5"
+ x="25"
  id="image3824-5-1-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
