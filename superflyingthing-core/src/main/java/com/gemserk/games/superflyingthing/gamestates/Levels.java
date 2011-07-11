@@ -1,6 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import com.badlogic.gdx.math.Vector2;
+import java.util.ArrayList;
 
 public class Levels {
 
@@ -9,7 +9,7 @@ public class Levels {
 			name = "Learning to fly";
 			w = 50f;
 			h = 10f;
-			obstacles = new Obstacle[] { };
+			obstacles = new ArrayList<Obstacle>();
 //			obstacles = new Obstacle[] { new Obstacle() {
 //				{
 //					x = w * 0.5f;
@@ -24,7 +24,7 @@ public class Levels {
 //					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
 //				}
 //			}, };
-			items = new Level.Item[] {};
+			items = new ArrayList<Item>();
 		}
 	};
 
@@ -33,28 +33,29 @@ public class Levels {
 			name = "I'm a flying machine!";
 			w = 50f;
 			h = 10f;
-			obstacles = new Obstacle[] { new Obstacle() {
-				{
-					x = w * 0.5f;
-					y = 0f;
-					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-				}
-			}, new Obstacle() {
-				{
-					x = w * 0.5f;
-					y = h;
-					angle = 180f;
-					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
-				}
-			}, new Obstacle() {
-				{
-					x = w * 0.5f;
-					y = h * 0.5f;
-					angle = 0f;
-					vertices = new Vector2[] { new Vector2(5f, -0.5f), new Vector2(5f, 0.5f), new Vector2(-5f, 0.5f), new Vector2(-5f, -0.5f) };
-				}
-			}, };
-			items = new Level.Item[] {};
+			obstacles = new ArrayList<Obstacle>();
+//			obstacles = new ArrayList<Obstacle>() { new Obstacle() {
+//				{
+//					x = w * 0.5f;
+//					y = 0f;
+//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
+//				}
+//			}, new Obstacle() {
+//				{
+//					x = w * 0.5f;
+//					y = h;
+//					angle = 180f;
+//					vertices = new Vector2[] { new Vector2(15f, -1.5f), new Vector2(10f, 1.5f), new Vector2(-10f, 1.5f), new Vector2(-15f, -1.5f) };
+//				}
+//			}, new Obstacle() {
+//				{
+//					x = w * 0.5f;
+//					y = h * 0.5f;
+//					angle = 0f;
+//					vertices = new Vector2[] { new Vector2(5f, -0.5f), new Vector2(5f, 0.5f), new Vector2(-5f, 0.5f), new Vector2(-5f, -0.5f) };
+//				}
+//			}, };
+			items = new ArrayList<Item>();
 		}
 	};
 

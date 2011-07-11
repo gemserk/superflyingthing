@@ -174,13 +174,13 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				}
 			});
 
-			for (int i = 0; i < level.obstacles.length; i++) {
-				Obstacle o = level.obstacles[i];
+			for (int i = 0; i < level.obstacles.size(); i++) {
+				Obstacle o = level.obstacles.get(i);
 				entityManager.add(entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians));
 			}
 
-			for (int i = 0; i < level.items.length; i++) {
-				Level.Item item = level.items[i];
+			for (int i = 0; i < level.items.size(); i++) {
+				Level.Item item = level.items.get(i);
 				entityManager.add(entityTemplates.diamond(item.x, item.y, 0.2f));
 			}
 
@@ -252,20 +252,30 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			p.entityTemplates = entityTemplates;
 
 			if (Levels.hasLevel(GameData.level)) {
-				Level level = Levels.level(GameData.level);
-				loadLevel(entityManager, entityTemplates, level);
+//				Level level = Levels.level(GameData.level);
+//				loadLevel(entityManager, entityTemplates, level);
 				
 				InputStream svg = Gdx.files.internal("data/levels/level-template.svg").read();
 				Document document = new DocumentParser().parse(svg);
 				
+				final Level level = new Level();
+				level.name = "name";
+				
 				new LayerProcessor("World") {
+					protected void handleDocument(com.gemserk.commons.svg.inkscape.SvgDocument document) {
+						level.w = document.getWidth();
+						level.h = document.getHeight();
+					};
 					@Override
 					protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
 						for (int i = 0; i < vertices.length; i++) 
 							System.out.println(vertices[i]);
-						entityManager.add(entityTemplates.obstacle(vertices, 0f, 0f, 0f));
+						level.obstacles.add(new Obstacle(vertices));
+						// entityManager.add(entityTemplates.obstacle(vertices, 0f, 0f, 0f));
 					}
 				}.process(document);
+				
+				loadLevel(entityManager, entityTemplates, level);
 				
 			}
 			// if (GameData.level != null)

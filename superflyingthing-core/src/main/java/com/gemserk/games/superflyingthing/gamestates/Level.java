@@ -1,18 +1,28 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.math.Vector2;
 
 public class Level {
 
-	public class Obstacle {
+	public static class Obstacle {
 
 		public float x, y;
 		public float angle;
 		public Vector2[] vertices;
+		
+		public Obstacle() {
+			
+		}
+		
+		public Obstacle(Vector2[] vertices) {
+			this.vertices = vertices;
+		}
 
 	}
 	
-	public class Item {
+	public static class Item {
 		
 		public float x,y;
 		
@@ -20,10 +30,10 @@ public class Level {
 
 	public float w, h;
 	
-	Obstacle[] obstacles;
+	ArrayList<Obstacle> obstacles = new ArrayList<Level.Obstacle>();
 	
-	Item[] items;
+	ArrayList<Item> items = new ArrayList<Level.Item>();
 	
 	String name;
-
+	
 }
