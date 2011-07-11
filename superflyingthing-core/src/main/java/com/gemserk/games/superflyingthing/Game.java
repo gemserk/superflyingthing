@@ -41,7 +41,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private static boolean debugMode;
 
 	private static boolean showFps = true;
-	
+
 	private static boolean showBox2dDebug = false;
 
 	public static boolean isDebugMode() {
@@ -51,7 +51,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static void setDebugMode(boolean debugMode) {
 		Game.debugMode = debugMode;
 	}
-	
+
 	public static boolean isShowBox2dDebug() {
 		return showBox2dDebug;
 	}
@@ -107,7 +107,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
 	}
-	
+
 	public GamePreferences getGamePreferences() {
 		return gamePreferences;
 	}
@@ -125,7 +125,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
-		
+
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
 		gamePreferences = new GamePreferences(preferences);
 
@@ -157,27 +157,88 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("toggleBox2dDebug", Keys.NUM_7);
 			}
 		};
-		
+
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
 
+	public static class TransitionBuilder {
+
+		private final Screen screen;
+		private final Game game;
+
+		int leaveTime;
+		int enterTime;
+		boolean shouldDisposeCurrentScreen;
+
+		TransitionHandler leaveTransitionHandler = new TransitionHandler();
+
+		// TransitionHandler enterTransitionHandler = new TransitionHandler();
+
+		public TransitionBuilder leaveTime(int leaveTime) {
+			this.leaveTime = leaveTime;
+			return this;
+		}
+
+		public TransitionBuilder enterTime(int enterTime) {
+			this.enterTime = enterTime;
+			return this;
+		}
+
+		public TransitionBuilder disposeCurrent() {
+			this.shouldDisposeCurrentScreen = true;
+			return this;
+		}
+
+		public TransitionBuilder disposeCurrent(boolean disposeCurrent) {
+			this.shouldDisposeCurrentScreen = disposeCurrent;
+			return this;
+		}
+
+		public TransitionBuilder leaveTransitionHandler(TransitionHandler transitionHandler) {
+			this.leaveTransitionHandler = transitionHandler;
+			return this;
+		}
+
+		public TransitionBuilder(final Game game, final Screen screen) {
+			this.game = game;
+			this.screen = screen;
+			this.leaveTransitionHandler = new TransitionHandler();
+		}
+
+		public void start() {
+			final Screen currentScreen = game.getScreen();
+			game.setScreen(new TransitionScreen(new ScreenTransition( //
+					new FadeOutTransition(currentScreen, leaveTime, leaveTransitionHandler), //
+					new FadeInTransition(screen, enterTime, new TransitionHandler() {
+						public void onEnd() {
+							// disposes current transition screen, not previous screen.
+							game.setScreen(screen, true);
+							if (shouldDisposeCurrentScreen)
+								currentScreen.dispose();
+						};
+					}))));
+		}
+
+	}
+
+	public TransitionBuilder transition(Screen screen) {
+		return new TransitionBuilder(this, screen);
+	}
+
 	public void transition(final Screen screen, int leaveTime, int enterTime) {
-		final boolean shouldDisposeCurrentScreen = true;
-		transition(screen, leaveTime, enterTime, shouldDisposeCurrentScreen);
+		transition(screen) //
+				.leaveTime(leaveTime) //
+				.enterTime(enterTime) //
+				.disposeCurrent() //
+				.start();
 	}
 
 	public void transition(final Screen screen, int leaveTime, int enterTime, final boolean shouldDisposeCurrentScreen) {
-		final Screen currentScreen = getScreen();
-		setScreen(new TransitionScreen(new ScreenTransition( //
-				new FadeOutTransition(currentScreen, leaveTime), //
-				new FadeInTransition(screen, enterTime, new TransitionHandler() {
-					public void onEnd() {
-						// disposes current transition screen, not previous screen.
-						setScreen(screen, true);
-						if (shouldDisposeCurrentScreen)
-							currentScreen.dispose();
-					};
-				}))));
+		transition(screen) //
+				.leaveTime(leaveTime) //
+				.enterTime(enterTime) //
+				.disposeCurrent(shouldDisposeCurrentScreen) //
+				.start();
 	}
 
 	@Override
@@ -186,7 +247,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased())
 			showBox2dDebug = !showBox2dDebug;
-		
+
 		if (inputDevicesMonitor.getButton("toggleFps").isReleased())
 			showFps = !showFps;
 

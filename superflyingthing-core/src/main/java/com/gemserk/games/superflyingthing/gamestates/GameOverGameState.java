@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
@@ -68,12 +69,15 @@ public class GameOverGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						// restart game screen ?
-						
-						game.transition(game.getPlayScreen(), 200, 250);
-						game.getPlayScreen().restart();
-						
-						// restart the screen between fade out/in ?
+						game.transition(game.getPlayScreen()) //
+								.leaveTime(250) //
+								.enterTime(250) //
+								.leaveTransitionHandler(new TransitionHandler() {
+									@Override
+									public void onEnd() {
+										game.getPlayScreen().restart();
+									}
+								}).start();
 					}
 				})//
 				.build());
@@ -87,8 +91,15 @@ public class GameOverGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getMainMenuScreen(), 500, 500);
-						game.getPlayScreen().dispose();
+						game.transition(game.getMainMenuScreen()) //
+								.leaveTime(250) //
+								.enterTime(250) //
+								.leaveTransitionHandler(new TransitionHandler() {
+									@Override
+									public void onEnd() {
+										game.getPlayScreen().dispose();
+									}
+								}).start();
 					}
 				})//
 				.build());

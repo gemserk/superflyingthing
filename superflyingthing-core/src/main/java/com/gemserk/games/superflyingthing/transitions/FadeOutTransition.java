@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameTransitions;
+import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -25,6 +26,11 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 
 	public FadeOutTransition(Screen screen, int time) {
 		super(screen, time);
+		this.time = time;
+	}
+
+	public FadeOutTransition(Screen screen, int time, TransitionHandler transitionHandler) {
+		super(screen, time, transitionHandler);
 		this.time = time;
 	}
 
