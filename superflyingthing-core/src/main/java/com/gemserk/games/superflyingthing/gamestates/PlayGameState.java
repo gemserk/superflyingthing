@@ -361,7 +361,7 @@ public class PlayGameState extends GameStateImpl  {
 			entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f);
 			entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f);
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
-
+			
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {

@@ -20,6 +20,7 @@ import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -49,6 +50,10 @@ public class EntityTemplates {
 		public static short ShipCategoryBits = 1;
 
 		public static short MiniPlanetCategoryBits = 2;
+		
+		public static short MovingObstacleCategoryBits = 4;
+		
+		public static short ObstacleCategoryBits = 8;
 
 	}
 
@@ -163,7 +168,7 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-		
+
 		e.addComponent(new SpriteComponent(sprite, 0));
 		e.addComponent(new GrabbableComponent());
 
@@ -177,7 +182,7 @@ public class EntityTemplates {
 			}
 
 		}));
-		
+
 		e.refresh();
 		return e;
 	}
@@ -248,15 +253,17 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-		
+
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 
 		// e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
-		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {{ 
-			put(Triggers.destinationReachedTrigger, destinationReachedTrigger);
-		}}));
+		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
+			{
+				put(Triggers.destinationReachedTrigger, destinationReachedTrigger);
+			}
+		}));
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
@@ -298,6 +305,7 @@ public class EntityTemplates {
 			fixtureDefs[i] = fixtureDefBuilder //
 					.polygonShape(v) //
 					.restitution(0f) //
+					.categoryBits(CategoryBits.ObstacleCategoryBits) //
 					.build();
 		}
 
@@ -311,6 +319,97 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(vertices, Color.BLUE, triangulator));
+		e.refresh();
+		return e;
+	}
+
+	public Entity movingObstacle(Vector2[] vertices, final Vector2[] points, float x, float y, float angle) {
+		Entity e = entityBuilder.build();
+
+		Triangulator triangulator = ShapeUtils.triangulate(vertices);
+
+		FixtureDef[] fixtureDefs = new FixtureDef[triangulator.getTriangleCount()];
+		FixtureDefBuilder fixtureDefBuilder = new FixtureDefBuilder();
+
+		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
+			Vector2[] v = new Vector2[3];
+			for (int p = 0; p < 3; p++) {
+				float[] pt = triangulator.getTrianglePoint(i, p);
+				v[p] = new Vector2(pt[0], pt[1]);
+			}
+			fixtureDefs[i] = fixtureDefBuilder //
+					.polygonShape(v) //
+					.restitution(0f) //
+					.categoryBits(CategoryBits.MovingObstacleCategoryBits) //
+					.maskBits((short)(CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
+					.build();
+		}
+
+		Body body = bodyBuilder //
+				.mass(500f) //
+				.inertia(1f) //
+				.fixtures(fixtureDefs) //
+				.position(x, y) //
+				.type(BodyType.DynamicBody) //
+				.angle(angle) //
+				.build();
+
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
+		e.addComponent(new ShapeComponent(vertices, Color.BLUE, triangulator));
+
+		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+
+			int currentTarget;
+
+			@Override
+			public void init(com.artemis.World world, Entity e) {
+				currentTarget = 0;
+			}
+
+			private Vector2 getCurrentTargetPosition() {
+				return points[currentTarget];
+			}
+
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+				Physics physics = ComponentWrapper.getPhysics(e);
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				
+				Body body = physics.getBody();
+				
+				Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
+				force.nor().mul(50000f);
+				body.applyForce(force, spatial.getPosition());
+				body.applyTorque(10f);
+				
+				if (spatial.getPosition().dst(getCurrentTargetPosition()) < 1f) {
+					currentTarget++;
+					if (currentTarget >= points.length)
+						currentTarget = 0;
+				}
+
+				Vector2 linearVelocity = body.getLinearVelocity();
+				float speed = linearVelocity.len();
+
+				float maxSpeed = 5f;
+				
+				if (speed > maxSpeed) {
+					linearVelocity.mul(maxSpeed / speed);
+					body.setLinearVelocity(linearVelocity);
+				}
+				
+				float angularVelocity = body.getAngularVelocity();
+				float maxAngularVelocity = 1f;
+				
+				if (angularVelocity > maxAngularVelocity) {
+					angularVelocity = maxAngularVelocity / angularVelocity;
+					body.setAngularVelocity(angularVelocity);
+				}
+			}
+
+		}));
+
 		e.refresh();
 		return e;
 	}
