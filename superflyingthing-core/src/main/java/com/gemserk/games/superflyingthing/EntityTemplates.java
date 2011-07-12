@@ -255,7 +255,7 @@ public class EntityTemplates {
 
 		// e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
 		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {{ 
-			put("destinationReachedTrigger", destinationReachedTrigger);
+			put(Triggers.destinationReachedTrigger, destinationReachedTrigger);
 		}}));
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
@@ -272,7 +272,7 @@ public class EntityTemplates {
 				if (attachmentComponent.entity == null)
 					return;
 				TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-				Trigger trigger = triggerComponent.getTrigger("destinationReachedTrigger");
+				Trigger trigger = triggerComponent.getTrigger(Triggers.destinationReachedTrigger);
 				trigger.trigger(e);
 			}
 

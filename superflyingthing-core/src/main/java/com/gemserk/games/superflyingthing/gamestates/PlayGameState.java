@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
@@ -37,7 +36,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.gui.Container;
@@ -47,7 +45,6 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.EntityBuilder;
-import com.gemserk.games.entities.EntityLifeCycleHandler;
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfEntityDeadBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
@@ -62,13 +59,14 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
+import com.gemserk.games.superflyingthing.Triggers;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
-public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandler {
+public class PlayGameState extends GameStateImpl  {
 
 	// temporal
 
@@ -212,7 +210,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
-							put("entityDeadTrigger", new Trigger() {
+							put(Triggers.entityDeadTrigger, new Trigger() {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -228,7 +226,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 									PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 300, false);
 								}
 							});
-							put("noEntityTrigger", new Trigger() {
+							put(Triggers.noEntityTrigger, new Trigger() {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -370,7 +368,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
-							put("entityDeadTrigger", new Trigger() {
+							put(Triggers.entityDeadTrigger, new Trigger() {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -384,7 +382,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 									Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
 								}
 							});
-							put("noEntityTrigger", new Trigger() {
+							put(Triggers.noEntityTrigger, new Trigger() {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -500,7 +498,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
-							put("noEntityTrigger", new Trigger() {
+							put(Triggers.noEntityTrigger, new Trigger() {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
@@ -558,57 +556,15 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		// Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
 	}
 
-	@Override
-	public void init(Entity e) {
-
-	}
-
-	@Override
-	public void dispose(Entity e) {
-		diposeJoints(e);
-		disposeBody(e);
-	}
-
-	private void disposeBody(Entity e) {
-		Physics physics = ComponentWrapper.getPhysics(e);
-		if (physics == null)
-			return;
-
-		Body body = physics.getBody();
-		body.setUserData(null);
-
-		com.gemserk.commons.gdx.box2d.Contact contact = physics.getContact();
-
-		// removes contact from the other entity
-		for (int i = 0; i < contact.getContactCount(); i++) {
-			if (!contact.isInContact(i))
-				continue;
-
-			Body otherBody = contact.getBody(i);
-			if (otherBody == null)
-				continue;
-
-			Entity otherEntity = (Entity) otherBody.getUserData();
-			if (otherEntity == null)
-				continue;
-
-			Physics otherPhysics = ComponentWrapper.getPhysics(otherEntity);
-			otherPhysics.getContact().removeContact(body);
-		}
-
-		physicsWorld.destroyBody(body);
-		Gdx.app.log("SuperFlyingThing", "removing body from physics world");
-	}
-
-	private void diposeJoints(Entity e) {
-		AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
-		if (entityAttachment == null)
-			return;
-		if (entityAttachment.getJoint() == null)
-			return;
-		physicsWorld.destroyJoint(entityAttachment.getJoint());
-		Gdx.app.log("SuperFlyingThing", "removing joints from physics world");
-	}
+	// private void diposeJoints(Entity e) {
+	// AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
+	// if (entityAttachment == null)
+	// return;
+	// if (entityAttachment.getJoint() == null)
+	// return;
+	// physicsWorld.destroyJoint(entityAttachment.getJoint());
+	// Gdx.app.log("SuperFlyingThing", "removing joints from physics world");
+	// }
 
 	@Override
 	public void render(int delta) {
@@ -623,32 +579,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		spriteBatch.begin();
 		container.draw(spriteBatch);
 		spriteBatch.end();
-	}
-
-	// private void renderEntityWithShape(Entity e) {
-	// ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
-	// if (shapeComponent != null) {
-	// Spatial spatial = ComponentWrapper.getSpatial(e);
-	// if (spatial == null)
-	// return;
-	// if (shapeComponent.triangulator == null)
-	// shapeComponent.triangulator = ShapeUtils.triangulate(shapeComponent.getVertices());
-	// ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
-	// }
-	// }
-
-	private void renderMovementDebug(Entity e) {
-		Spatial spatial = ComponentWrapper.getSpatial(e);
-		if (spatial == null)
-			return;
-		Vector2 position = spatial.getPosition();
-		MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-		if (movementComponent == null)
-			return;
-		Vector2 direction = movementComponent.getDirection();
-		float x = position.x + direction.tmp().mul(0.5f).x;
-		float y = position.y + direction.tmp().mul(0.5f).y;
-		ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 	}
 
 	@Override
@@ -686,8 +616,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		worldWrapper.update(delta);
-		// physicsWorld.step(delta * 0.001f, 3, 3);
-		// entityManager.update(delta);
 	}
 
 	@Override

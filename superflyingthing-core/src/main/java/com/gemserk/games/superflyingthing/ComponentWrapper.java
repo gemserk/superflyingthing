@@ -53,7 +53,6 @@ public class ComponentWrapper {
 		e.addComponent(movementComponent);
 	}
 
-
 	static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
 		if (e == null)
 			return null;

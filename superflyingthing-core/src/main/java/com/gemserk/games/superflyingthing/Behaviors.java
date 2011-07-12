@@ -377,7 +377,7 @@ public class Behaviors {
 				return;
 			
 			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-			Trigger trigger = triggerComponent.getTrigger("noEntityTrigger");
+			Trigger trigger = triggerComponent.getTrigger(Triggers.noEntityTrigger);
 			trigger.trigger(e);
 		}
 	}
@@ -400,7 +400,7 @@ public class Behaviors {
 				return;
 
 			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-			Trigger trigger = triggerComponent.getTrigger("entityDeadTrigger");
+			Trigger trigger = triggerComponent.getTrigger(Triggers.entityDeadTrigger);
 			trigger.trigger(e);
 		}
 	}

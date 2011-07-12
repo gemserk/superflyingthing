@@ -38,7 +38,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
 
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
-
+		
 		config.useGL20 = false;
 		config.useAccelerometer = false;
 		config.useCompass = false;
