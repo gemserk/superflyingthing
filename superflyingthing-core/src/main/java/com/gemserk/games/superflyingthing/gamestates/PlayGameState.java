@@ -217,8 +217,8 @@ public class PlayGameState extends GameStateImpl  {
 									world.deleteEntity(gameDataComponent.ship);
 
 									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
-									// I don't like the world.createEntity() !!
+									entityTemplates.deadShip(superSheepSpatial);
+									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!
 									// world.(deadSuperSheepEntity);
 
 									gameDataComponent.ship = null;
@@ -284,8 +284,6 @@ public class PlayGameState extends GameStateImpl  {
 			// simulate a step to put everything on their places
 			worldWrapper.update(1);
 			worldWrapper.update(1);
-			// physicsWorld.step(1, 1, 1);
-			// entityManager.update(1);
 		}
 	}
 
@@ -411,9 +409,6 @@ public class PlayGameState extends GameStateImpl  {
 					})).build();
 
 			// simulate a step to put everything on their places
-			// entityManager.update(1);
-			// physicsWorld.step(1, 1, 1);
-			// entityManager.update(1);
 
 			worldWrapper.update(1);
 			worldWrapper.update(1);
@@ -524,10 +519,6 @@ public class PlayGameState extends GameStateImpl  {
 					})).build();
 
 			// simulate a step to put everything on their places
-			// entityManager.update(1);
-			// physicsWorld.step(1, 1, 1);
-			// entityManager.update(1);
-
 			worldWrapper.update(1);
 			worldWrapper.update(1);
 		}
