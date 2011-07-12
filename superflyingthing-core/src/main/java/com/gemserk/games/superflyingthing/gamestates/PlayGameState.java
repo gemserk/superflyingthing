@@ -13,6 +13,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
@@ -193,7 +194,11 @@ public class PlayGameState extends GameStateImpl  {
 
 			for (int i = 0; i < level.obstacles.size(); i++) {
 				Obstacle o = level.obstacles.get(i);
-				entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				if (o.bodyType == BodyType.StaticBody)
+					entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				else {
+					entityTemplates.movingObstacle(o.vertices, o.path, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				}
 			}
 
 			for (int i = 0; i < level.items.size(); i++) {

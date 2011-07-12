@@ -347,7 +347,7 @@ public class EntityTemplates {
 
 		Body body = bodyBuilder //
 				.mass(500f) //
-				.inertia(1f) //
+				 .inertia(1f) //
 				.fixtures(fixtureDefs) //
 				.position(x, y) //
 				.type(BodyType.DynamicBody) //
@@ -356,7 +356,7 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		e.addComponent(new ShapeComponent(vertices, Color.BLUE, triangulator));
+		e.addComponent(new ShapeComponent(vertices, Color.RED, triangulator));
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
@@ -379,9 +379,9 @@ public class EntityTemplates {
 				Body body = physics.getBody();
 				
 				Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
-				force.nor().mul(50000f);
+				force.nor().mul(10000f);
 				body.applyForce(force, spatial.getPosition());
-				body.applyTorque(10f);
+				 body.applyTorque(10f);
 				
 				if (spatial.getPosition().dst(getCurrentTargetPosition()) < 1f) {
 					currentTarget++;

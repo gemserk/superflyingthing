@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.gamestates;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 
 public class Level {
 
@@ -11,6 +12,10 @@ public class Level {
 		public float x, y;
 		public float angle;
 		public Vector2[] vertices;
+		
+		public BodyType bodyType = BodyType.StaticBody;
+		
+		public Vector2[] path;
 		
 		public Obstacle() {
 			

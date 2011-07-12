@@ -27,8 +27,8 @@
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
  inkscape:zoom="25.2818"
- inkscape:cx="19.6336"
- inkscape:cy="13.0318"
+ inkscape:cx="13.5988"
+ inkscape:cy="11.522"
  inkscape:document-units="px"
  inkscape:current-layer="layer2"
  showgrid="true"
@@ -40,7 +40,7 @@
  inkscape:window-maximized="1"
  showguides="true"
  inkscape:guide-bbox="true"
- inkscape:snap-global="true">
+ inkscape:snap-global="false">
 <inkscape:grid
  type="xygrid"
  id="grid3765"
@@ -126,7 +126,8 @@
 <g
  inkscape:groupmode="layer"
  id="layer2"
- inkscape:label="Obstacles">
+ inkscape:label="Obstacles"
+ style="display:inline">
 <path
  style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
  d="M 13,25 13.2679,23.3783 14.1381,21.6775 14.4545,20.4908 14.0194,18.9087 13.0701,17.7616 11.6462,15.7048 10.5387,14.6368 8.3236,15.3884 6.97878,15.6652 5.47573,15.2697 5.11974,14.2413 4.96152,12.5009 6.66235,10.4045 7.88853,8.38728 8.5609,6.88422 10.5387,6.44912 12.3581,6.84467 14.3754,7.00288 15.0478,7.00288 15.6807,9.61345 17.1837,11.6307 17.5793,13.4106 17.6979,14.8741 17.9353,16.6541 19.0032,17.5243 19.4383,18.9482 19.913,20.7282 21.416,21.8357 22.6027,22.6663 23.3542,23.4178 23.9475,24.2089 25.6483,24.288 26.4131,24.5593 27,25 z"
@@ -139,6 +140,13 @@
  id="path3011"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="ccccccccccccccccccccccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 3.75764,5.85585 4.11364,6.35025 4.72674,5.91515 4.76624,5.20315 4.33124,4.59015 3.63904,5.06475 3.06544,5.18345 z"
+ id="path3798"
+ inkscape:connector-curvature="0"
+ bodyType="DynamicBody"
+ movementPath="movingObstacle01" />
 </g>
 <g
  inkscape:groupmode="layer"
@@ -165,5 +173,17 @@
  height="2"
  width="2"
  destinationPlanet="" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer4"
+ inkscape:label="Paths"
+ style="display:inline">
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 17.5304,2.92376 5.31323,5.16217"
+ id="movingObstacle01"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cc" />
 </g>
 </svg>
