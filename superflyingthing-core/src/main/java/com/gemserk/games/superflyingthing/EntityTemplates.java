@@ -32,6 +32,8 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
+import com.gemserk.games.superflyingthing.Components.ScriptComponent;
+import com.gemserk.games.superflyingthing.Components.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
@@ -70,7 +72,17 @@ public class EntityTemplates {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera)) //
 				.component(new TargetComponent(null)) //
-				.behavior(new CameraFollowBehavior()) //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					private Behavior cameraFollowBehavior = new CameraFollowBehavior();
+
+					@Override
+					public void update(EntityManager world, Entity e) {
+						cameraFollowBehavior.update(world.getDelta(), e);
+					}
+
+				})) //
+				// .behavior(new CameraFollowBehavior()) //
 				.build();
 	}
 

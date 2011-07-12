@@ -7,8 +7,49 @@ import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Entity;
+import com.gemserk.games.entities.EntityManager;
 
 public class Components {
+	
+	public static interface Script {
+		
+		void init(EntityManager world, Entity e);
+		
+		void update(EntityManager world, Entity e);
+		
+		void dispose(EntityManager world, Entity e);
+		
+	}
+	
+	public static class ScriptJavaImpl implements Script {
+		
+		public void init(EntityManager world, Entity e) {
+			
+		}
+		
+		public void update(EntityManager world, Entity e) {
+			
+		}
+		
+		public void dispose(EntityManager world, Entity e) {
+			
+		}
+		
+	}
+	
+	public static class ScriptComponent {
+		
+		private final Script script;
+		
+		public Script getScript() {
+			return script;
+		}
+
+		public ScriptComponent(Script script) {
+			this.script = script;
+		}
+		
+	}
 
 	public static class CameraComponent {
 

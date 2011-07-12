@@ -13,6 +13,13 @@ public class EntityManagerImpl implements EntityManager {
 
 	EntityLifeCycleHandler entityLifeCycleHandler;
 
+	private int delta;
+	
+	@Override
+	public int getDelta() {
+		return delta;
+	}
+
 	public EntityManagerImpl() {
 		this(new EntityLifeCycleHandlerNullImpl());
 	}
@@ -36,6 +43,7 @@ public class EntityManagerImpl implements EntityManager {
 
 	@Override
 	public void update(int delta) {
+		this.delta = delta;
 		updateAdd(delta);
 		updateEntities(delta);
 		updateRemove(delta);

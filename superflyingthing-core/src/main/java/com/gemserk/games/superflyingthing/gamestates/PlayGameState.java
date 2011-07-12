@@ -49,6 +49,7 @@ import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.ScriptComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
@@ -693,7 +694,16 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		physicsWorld.step(delta * 0.001f, 3, 3);
+		
 		entityManager.update(delta);
+		
+		for (int i = 0; i < entityManager.entitiesCount(); i++) {
+			Entity e = entityManager.get(i);
+			ScriptComponent scriptComponent = e.getComponent(ScriptComponent.class);
+			if (scriptComponent == null)
+				continue;
+			scriptComponent.getScript().update(entityManager, e);
+		}
 	}
 
 	@Override

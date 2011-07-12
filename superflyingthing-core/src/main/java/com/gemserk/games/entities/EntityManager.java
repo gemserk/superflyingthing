@@ -42,4 +42,9 @@ public interface EntityManager {
 	 */
 	Entity get(int index);
 	
+	/**
+	 * Returns time from the last update.
+	 */
+	int getDelta();
+	
 }
