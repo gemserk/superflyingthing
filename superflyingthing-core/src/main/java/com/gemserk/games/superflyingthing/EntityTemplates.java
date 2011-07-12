@@ -16,7 +16,7 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
-import com.gemserk.commons.gdx.graphics.NeatTriangulator;
+import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
@@ -244,11 +244,7 @@ public class EntityTemplates {
 	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
 		Entity e = new Entity();
 
-		Triangulator triangulator = new NeatTriangulator();
-
-		for (int i = 0; i < vertices.length; i++)
-			triangulator.addPolyPoint(vertices[i].x, vertices[i].y);
-		triangulator.triangulate();
+		Triangulator triangulator = ShapeUtils.triangulate(vertices);
 
 		FixtureDef[] fixtureDefs = new FixtureDef[triangulator.getTriangleCount()];
 		FixtureDefBuilder fixtureDefBuilder = new FixtureDefBuilder();
