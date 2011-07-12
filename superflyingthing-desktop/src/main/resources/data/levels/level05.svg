@@ -142,7 +142,7 @@
  sodipodi:nodetypes="ccccccccccccccccccccccccccccccccc" />
 <path
  style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
- d="M 3.75764,5.85585 4.11364,6.35025 4.72674,5.91515 4.76624,5.20315 4.33124,4.59015 3.63904,5.06475 3.06544,5.18345 z"
+ d="M 24.2467,23.7739 24.6027,24.2683 25.2158,23.8332 25.2553,23.1212 24.8203,22.5082 24.1281,22.9828 23.5545,23.1015 z"
  id="path3798"
  inkscape:connector-curvature="0"
  bodyType="DynamicBody"
@@ -181,7 +181,7 @@
  style="display:inline">
 <path
  style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
- d="M 17.5304,2.92376 5.31323,5.16217"
+ d="M 28.0122,15.6997 24.6157,23.3571"
  id="movingObstacle01"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="cc" />
