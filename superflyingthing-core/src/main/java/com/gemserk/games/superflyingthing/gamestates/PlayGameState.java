@@ -178,7 +178,7 @@ public class PlayGameState extends GameStateImpl  {
 			float x = worldWidth * 0.5f;
 			float y = worldHeight * 0.5f;
 
-			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 40f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f);
 
