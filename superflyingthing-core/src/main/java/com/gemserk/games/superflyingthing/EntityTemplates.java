@@ -82,7 +82,6 @@ public class EntityTemplates {
 					}
 
 				})) //
-				// .behavior(new CameraFollowBehavior()) //
 				.build();
 	}
 
@@ -120,10 +119,21 @@ public class EntityTemplates {
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
 
-		e.addBehavior(new Behaviors.FixMovementBehavior());
-		e.addBehavior(new Behaviors.FixDirectionFromControllerBehavior());
-		e.addBehavior(new Behaviors.CalculateInputDirectionBehavior());
-		e.addBehavior(new Behaviors.CollisionHandlerBehavior());
+		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+
+			Behavior fixMovementBehavior = new Behaviors.FixMovementBehavior();
+			Behavior fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerBehavior();
+			Behavior calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionBehavior();
+			Behavior collisionHandlerBehavior = new Behaviors.CollisionHandlerBehavior();
+
+			@Override
+			public void update(EntityManager world, Entity e) {
+				fixMovementBehavior.update(world.getDelta(), e);
+				fixDirectionFromControllerBehavior.update(world.getDelta(), e);
+				calculateInputDirectionBehavior.update(world.getDelta(), e);
+				collisionHandlerBehavior.update(world.getDelta(), e);
+			}
+		}));
 
 		return e;
 	}
