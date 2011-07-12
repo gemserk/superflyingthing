@@ -2,6 +2,8 @@ package com.gemserk.games.entities;
 
 import java.util.ArrayList;
 
+import com.gemserk.games.superflyingthing.Components.ScriptComponent;
+
 public class EntityManagerImpl implements EntityManager {
 	
 	static class EntityLifeCycleHandlerNullImpl implements EntityLifeCycleHandler {
@@ -67,8 +69,10 @@ public class EntityManagerImpl implements EntityManager {
 	}
 
 	private void updateEntity(int delta, Entity e) {
-		for (int i = 0; i < e.behaviors.size(); i++)
-			e.behaviors.get(i).update(delta, e);
+		ScriptComponent scriptComponent = e.getComponent(ScriptComponent.class);
+		if (scriptComponent == null)
+			return;
+		scriptComponent.getScript().update(this, e);
 	}
 
 	private void updateRemove(int delta) {

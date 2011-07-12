@@ -1,14 +1,11 @@
 package com.gemserk.games.entities;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Entity {
 
 	Map<String, Object> components;
-
-	ArrayList<Behavior> behaviors;
 
 	@SuppressWarnings("unchecked")
 	public <T> T getComponent(Class<T> clazz) {
@@ -22,7 +19,6 @@ public class Entity {
 	
 	public Entity() {
 		components = new HashMap<String, Object>();
-		behaviors = new ArrayList<Behavior>();
 	}
 
 	public void addComponent(Object component) {
@@ -35,10 +31,6 @@ public class Entity {
 
 	public void addComponent(String name, Object component) {
 		components.put(name, component);
-	}
-
-	public void addBehavior(Behavior behavior) {
-		behaviors.add(behavior);
 	}
 
 }

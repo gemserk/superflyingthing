@@ -11,6 +11,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -64,7 +65,7 @@ public class EntityTemplates {
 		this.jointBuilder = new JointBuilder(world);
 	}
 
-	public Entity camera(Camera camera) {
+	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera)) //
 				.component(new TargetComponent(null)) //
@@ -75,6 +76,11 @@ public class EntityTemplates {
 					@Override
 					public void update(EntityManager world, Entity e) {
 						cameraFollowBehavior.update(world.getDelta(), e);
+
+						Camera camera = ComponentWrapper.getCamera(e);
+						libgdxCamera.move(camera.getX(), camera.getY());
+						libgdxCamera.zoom(camera.getZoom());
+						libgdxCamera.rotate(camera.getAngle());
 					}
 
 				})) //

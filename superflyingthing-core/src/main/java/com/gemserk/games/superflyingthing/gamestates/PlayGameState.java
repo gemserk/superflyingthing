@@ -50,6 +50,7 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ScriptComponent;
+import com.gemserk.games.superflyingthing.Components.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
@@ -152,18 +153,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				}
 			}));
 
-			Entity cameraEntity = entityTemplates.camera(camera);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
 			entityManager.add(cameraEntity);
-
-			cameraEntity.addBehavior(new Behavior() {
-				@Override
-				public void update(int delta, Entity e) {
-					Camera camera = ComponentWrapper.getCamera(e);
-					worldCamera.move(camera.getX(), camera.getY());
-					worldCamera.zoom(camera.getZoom());
-					worldCamera.rotate(camera.getAngle());
-				}
-			});
 
 			for (int i = 0; i < level.obstacles.size(); i++) {
 				Obstacle o = level.obstacles.get(i);
@@ -197,7 +188,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 300, false);
 						}
 					}) //
-					.behavior(new CallTriggerIfEntityDeadBehavior()) //
 					.component("noEntityTrigger", new Trigger() {
 						@Override
 						public void onTrigger(Entity e) {
@@ -212,8 +202,20 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							triggered();
 						}
 					}) //
-					.behavior(new CallTriggerIfNoShipBehavior()) //
-					.behavior(new FixCameraTargetBehavior()) //
+					.component(new ScriptComponent(new ScriptJavaImpl() {
+
+						Behavior callTriggerIfEntityDeadBehavior = new CallTriggerIfEntityDeadBehavior();
+						Behavior callTriggerIfNoShipBehavior = new CallTriggerIfNoShipBehavior();
+						Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
+
+						@Override
+						public void update(EntityManager world, Entity e) {
+							callTriggerIfEntityDeadBehavior.update(world.getDelta(), e);
+							callTriggerIfNoShipBehavior.update(world.getDelta(), e);
+							fixCameraTargetBehavior.update(world.getDelta(), e);
+						}
+
+					}))
 					.build();
 			entityManager.add(game);
 
@@ -317,18 +319,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				entityManager.add(entityTemplates.diamond(x, y, w));
 			}
 
-			Entity cameraEntity = entityTemplates.camera(camera);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
 			entityManager.add(cameraEntity);
-
-			cameraEntity.addBehavior(new Behavior() {
-				@Override
-				public void update(int delta, Entity e) {
-					Camera camera = ComponentWrapper.getCamera(e);
-					worldCamera.move(camera.getX(), camera.getY());
-					worldCamera.zoom(camera.getZoom());
-					worldCamera.rotate(camera.getAngle());
-				}
-			});
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -367,7 +359,6 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
 						}
 					}) //
-					.behavior(new CallTriggerIfEntityDeadBehavior()) //
 					.component("noEntityTrigger", new Trigger() {
 						@Override
 						public void onTrigger(Entity e) {
@@ -380,8 +371,20 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							gameDataComponent.ship = ship;
 						}
 					}) //
-					.behavior(new CallTriggerIfNoShipBehavior()) //
-					.behavior(new FixCameraTargetBehavior()) //
+					.component(new ScriptComponent(new ScriptJavaImpl() {
+
+						Behavior callTriggerIfEntityDeadBehavior = new CallTriggerIfEntityDeadBehavior();
+						Behavior callTriggerIfNoShipBehavior = new CallTriggerIfNoShipBehavior();
+						Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
+
+						@Override
+						public void update(EntityManager world, Entity e) {
+							callTriggerIfEntityDeadBehavior.update(world.getDelta(), e);
+							callTriggerIfNoShipBehavior.update(world.getDelta(), e);
+							fixCameraTargetBehavior.update(world.getDelta(), e);
+						}
+
+					}))
 					.build();
 			entityManager.add(game);
 
@@ -458,18 +461,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 				entityManager.add(entityTemplates.diamond(x, y, w));
 			}
 
-			Entity cameraEntity = entityTemplates.camera(camera);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
 			entityManager.add(cameraEntity);
-
-			cameraEntity.addBehavior(new Behavior() {
-				@Override
-				public void update(int delta, Entity e) {
-					Camera camera = ComponentWrapper.getCamera(e);
-					worldCamera.move(camera.getX(), camera.getY());
-					worldCamera.zoom(camera.getZoom());
-					worldCamera.rotate(camera.getAngle());
-				}
-			});
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -498,9 +491,18 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 							gameDataComponent.ship = ship;
 						}
 					}) //
-					.behavior(new CallTriggerIfNoShipBehavior()) //
-					.behavior(new FixCameraTargetBehavior()) //
-					.build();
+					.component(new ScriptComponent(new ScriptJavaImpl() {
+
+						Behavior callTriggerIfNoShipBehavior = new CallTriggerIfNoShipBehavior();
+						Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
+
+						@Override
+						public void update(EntityManager world, Entity e) {
+							callTriggerIfNoShipBehavior.update(world.getDelta(), e);
+							fixCameraTargetBehavior.update(world.getDelta(), e);
+						}
+
+					})).build();
 			entityManager.add(game);
 
 			// simulate a step to put everything on their places
@@ -688,16 +690,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		}
 
 		physicsWorld.step(delta * 0.001f, 3, 3);
-		
+
 		entityManager.update(delta);
-		
-		for (int i = 0; i < entityManager.entitiesCount(); i++) {
-			Entity e = entityManager.get(i);
-			ScriptComponent scriptComponent = e.getComponent(ScriptComponent.class);
-			if (scriptComponent == null)
-				continue;
-			scriptComponent.getScript().update(entityManager, e);
-		}
 	}
 
 	@Override

@@ -22,11 +22,6 @@ public class EntityBuilder {
 		return this;
 	}
 	
-	public EntityBuilder behavior(Behavior behavior) {
-		e.addBehavior(behavior);
-		return this;
-	}
-
 	public Entity build() {
 		Entity newEntity = e;
 		reset();
