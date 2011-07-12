@@ -21,13 +21,13 @@ public class Levels {
 		"data/levels/level02.svg", //
 		"data/levels/level03.svg", //
 		"data/levels/level04.svg", //
-		"data/levels/level03.svg", //
-		"data/levels/level03.svg", //
-		"data/levels/level03.svg", //
-		"data/levels/level03.svg", //
-		"data/levels/level03.svg", //
-		"data/levels/level03.svg", //
-		"data/levels/level03.svg", //
+		"data/levels/level05.svg", //
+		"data/levels/level06.svg", //
+//		"data/levels/level03.svg", //
+//		"data/levels/level03.svg", //
+//		"data/levels/level03.svg", //
+//		"data/levels/level03.svg", //
+//		"data/levels/level03.svg", //
 		};
 	
 	// TODO: cache levels...

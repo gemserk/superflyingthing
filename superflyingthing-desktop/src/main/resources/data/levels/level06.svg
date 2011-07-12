@@ -11,12 +11,12 @@
  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
  width="40"
- height="15"
+ height="25"
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level04.svg"
- levelName="Hunting high and low">
+ sodipodi:docname="level06.svg"
+ levelName="Caves of doom">
 <defs
  id="defs4" />
 <sodipodi:namedview
@@ -26,9 +26,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="35.7539"
- inkscape:cx="15.7783"
- inkscape:cy="8.2112"
+ inkscape:zoom="17.877"
+ inkscape:cx="16.6648"
+ inkscape:cy="18.4508"
  inkscape:document-units="px"
  inkscape:current-layer="layer2"
  showgrid="true"
@@ -65,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title />
+<dc:title></dc:title>
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -129,22 +129,33 @@
  inkscape:label="Obstacles">
 <path
  style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 0,6 1.3844,4.12259 3.44122,3.56883 5.57714,2.54042 8.22728,2.26354 10.3237,1.59112 12.064,0.641819 13,0 0,0 z"
- id="path3112"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccc" />
+ d="M 10.1259,7.99173 11.1543,7.43798 13.132,6.96333 15.2679,8.14995 16.2963,8.1895 17.8785,7.71486 19.5397,8.26861 22.4667,7.87307 24.1676,6.96333 25.9475,6.84467 27.9648,7.24021 30.9313,6.64689 32.0784,6.80511 32.7112,8.46638 31.9993,9.5739 32.8695,11.3934 32.2366,13.1338 32.553,14.6764 32.5135,16.575 32.0388,17.4452 29.9425,17.2869 28.3207,19.0273 27.2132,19.0273 24.9191,18.3945 23.0996,17.8407 21.3592,17.2869 19.2628,17.4847 17.0874,17.2869 14.7537,18.5922 13.3693,18.078 12.6178,16.219 9.96763,16.4959 7.2384,17.8803 6.60554,16.1794 7.00108,14.795 6.05178,13.1733 6.60554,11.9076 6.80331,9.96944 7.08019,8.58505 7.6735,7.43798 8.34592,7.51709 9.6512,7.95218 z"
+ id="path3033"
+ inkscape:connector-curvature="0" />
 <path
  style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 18,15 18.9638,14.2089 19.5175,12.9432 19.557,11.6774 20.1504,10.8073 21.6139,9.62063 23.0378,9.73929 24.264,9.50196 25.9253,9.97662 27.903,9.66018 28.8918,8.55266 29.0896,7.01005 28.4172,5.50699 27.0723,4.2017 24.976,3.7666 23.2751,3.33151 21.2975,3.48973 19.7153,4.43902 18.4495,6.25852 16.7883,6.69361 15.0479,6.21896 13.4657,6.17941 12.2395,7.01005 11.5275,8.39445 9.7476,9.42286 7.45346,9.97661 5.59441,11.4401 4.80333,12.5081 3.69581,13.6156 2.50918,13.8925 1.36211,14.1694 0.21504,14.7627 0,15 z"
- id="path3110"
+ d="M 35,0 34.5307,1.14887 35.0845,2.37505 34.8867,3.64078 35.0845,5.57893 35.6778,9.25747 35.2427,11.1165 34.7681,14.3204 35.2032,16.575 34.3725,19.8184 35.1636,21.4006 35.7174,23.7343 36,25 40,25 40,0 z"
+ id="path3037"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccccccccccccccccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccc" />
 <path
  style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 36.2712,8.15712 37.0227,9.22508 37.4578,10.4908 39.396,12.7454 40,13 40,0 31,0 32.2762,1.11647 34.0166,1.31424 35.2428,2.61953 35.1242,3.88526 35.8756,4.91368 36.5085,6.17941 36.1526,6.97049 z"
- id="path3116"
+ d="M 7,0 6.17044,2.17728 5.14203,3.56167 5.41891,7.08199 4.94426,12.8964 5.41891,15.1906 6.05178,19.502 5.10248,21.0446 5.02337,23.2201 5.2607,24.8418 4,25 0,25 0,0 z"
+ id="path3039"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 5.49802,2.01906 5.93312,2.01906 8.26681,4.35276 10.5214,5.1834 13.132,5.2625 15.3866,4.59008 17.4039,2.49372 22.5854,1.78174 29.3491,2.53327 32.5135,3.24524 35.0449,1.9004 35.3614,0.001805 5,0 z"
+ id="path3043"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 4.74649,24.1694 6.84286,23.932 8.42502,24.4067 11.0751,24.4067 12.6573,23.932 14.279,23.9716 19.6584,24.0507 21.0428,24.5254 24.4444,24.3671 27.4505,23.3387 29.7447,22.9036 32.9486,23.8134 34.6098,23.8529 36.3107,24.1694 37,25 4,25 z"
+ id="path3045"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="ccccccccccccccccc" />
 </g>
 <g
  inkscape:groupmode="layer"
@@ -156,16 +167,16 @@
  id="path3806"
  inkscape:connector-curvature="0" />
 <image
- y="4.97771"
- x="5"
+ y="4"
+ x="19"
  id="image3824-5-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
  width="2"
  startPlanet="" />
 <image
- y="11.6725"
- x="22.4067"
+ y="19"
+ x="19"
  id="image3824-5-1-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
