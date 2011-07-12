@@ -14,6 +14,7 @@ import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -35,7 +36,6 @@ import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
-import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.resources.ResourceManager;
@@ -112,7 +112,7 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-		e.addComponent(new SpriteComponent(sprite));
+		e.addComponent(new SpriteComponent(sprite, 1));
 
 		Components.MovementComponent movementComponent = new Components.MovementComponent(direction.x, direction.y);
 		ComponentWrapper.addMovementComponent(e, movementComponent);
@@ -164,7 +164,7 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		
-		e.addComponent(new SpriteComponent(sprite));
+		e.addComponent(new SpriteComponent(sprite, 0));
 		e.addComponent(new GrabbableComponent());
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
@@ -186,7 +186,7 @@ public class EntityTemplates {
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(spatial))) //
-				.component(new SpriteComponent(sprite, Color.RED)) //
+				.component(new SpriteComponent(sprite, -1, Color.RED)) //
 				.build();
 	}
 
@@ -208,7 +208,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
-		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
@@ -249,7 +249,7 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		
-		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 

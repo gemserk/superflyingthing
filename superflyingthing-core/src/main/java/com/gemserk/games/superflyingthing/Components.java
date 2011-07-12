@@ -6,7 +6,6 @@ import java.util.Map;
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -47,36 +46,6 @@ public class Components {
 
 		public CameraComponent(Camera camera) {
 			setCamera(camera);
-		}
-
-	}
-
-	public static class SpriteComponent extends Component {
-
-		private Sprite sprite;
-
-		private Color color;
-
-		public void setSprite(Sprite sprite) {
-			this.sprite = sprite;
-		}
-
-		public Sprite getSprite() {
-			return sprite;
-		}
-
-		public Color getColor() {
-			return color;
-		}
-
-		public SpriteComponent(Sprite sprite) {
-			setSprite(sprite);
-			this.color = new Color(1f, 1f, 1f, 1f);
-		}
-
-		public SpriteComponent(Sprite sprite, Color color) {
-			setSprite(sprite);
-			this.color = new Color(color);
 		}
 
 	}
