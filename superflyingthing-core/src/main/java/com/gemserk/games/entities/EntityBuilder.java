@@ -25,6 +25,7 @@ public class EntityBuilder {
 
 	public Entity build() {
 		Entity newEntity = e;
+		newEntity.refresh();
 		reset();
 		return newEntity;
 	}

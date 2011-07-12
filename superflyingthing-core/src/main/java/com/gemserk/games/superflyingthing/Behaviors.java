@@ -14,7 +14,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
-import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
@@ -180,17 +179,17 @@ public class Behaviors {
 
 	public static class RemoveWhenGrabbedBehavior extends Behavior {
 
-		private final EntityManager entityManager;
+		private final com.artemis.World world;
 
-		public RemoveWhenGrabbedBehavior(EntityManager entityManager) {
-			this.entityManager = entityManager;
+		public RemoveWhenGrabbedBehavior(com.artemis.World world) {
+			this.world = world;
 		}
 
 		@Override
 		public void update(int delta, Entity e) {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 			if (grabbableComponent.grabbed)
-				entityManager.remove(e);
+				world.deleteEntity(e);
 		}
 	}
 

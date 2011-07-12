@@ -27,7 +27,6 @@ import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.EntityBuilder;
-import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
@@ -53,20 +52,20 @@ public class EntityTemplates {
 
 	}
 
-	private final World world;
-	private final EntityManager entityManager;
+	private final World physicsWorld;
+	private final com.artemis.World world;
 	private final BodyBuilder bodyBuilder;
 	private final JointBuilder jointBuilder;
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 
-	public EntityTemplates(World world, EntityManager entityManager, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
+	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
+		this.physicsWorld = physicsWorld;
 		this.world = world;
-		this.entityManager = entityManager;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
-		this.bodyBuilder = new BodyBuilder(world);
-		this.jointBuilder = new JointBuilder(world);
+		this.bodyBuilder = new BodyBuilder(physicsWorld);
+		this.jointBuilder = new JointBuilder(physicsWorld);
 	}
 
 	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera) {
@@ -142,6 +141,7 @@ public class EntityTemplates {
 
 		}));
 
+		e.refresh();
 		return e;
 	}
 
@@ -169,7 +169,7 @@ public class EntityTemplates {
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
-			Behavior removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(entityManager);
+			Behavior removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(world);
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
@@ -177,7 +177,8 @@ public class EntityTemplates {
 			}
 
 		}));
-
+		
+		e.refresh();
 		return e;
 	}
 
@@ -211,7 +212,7 @@ public class EntityTemplates {
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
-			Behavior releaseAttachmentBehavior = new Behaviors.ReleaseAttachmentBehavior(world);
+			Behavior releaseAttachmentBehavior = new Behaviors.ReleaseAttachmentBehavior(physicsWorld);
 			Behavior attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
 			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 
@@ -223,7 +224,7 @@ public class EntityTemplates {
 			}
 
 		}));
-
+		e.refresh();
 		return e;
 	}
 
@@ -276,7 +277,7 @@ public class EntityTemplates {
 			}
 
 		}));
-
+		e.refresh();
 		return e;
 	}
 
@@ -310,7 +311,7 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(vertices, Color.BLUE, triangulator));
-
+		e.refresh();
 		return e;
 	}
 
@@ -335,6 +336,7 @@ public class EntityTemplates {
 						new Vector2(-w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, h * 0.5f), //
 				}, Color.BLUE));
+		e.refresh();
 		return e;
 	}
 
