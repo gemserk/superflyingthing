@@ -11,12 +11,12 @@
  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
  width="40"
- height="15"
+ height="25"
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level03.svg"
- levelName="The level with no name">
+ sodipodi:docname="level07.svg"
+ levelName="Discover the way">
 <defs
  id="defs4" />
 <sodipodi:namedview
@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="35.7538"
- inkscape:cx="8.39812"
- inkscape:cy="14.0801"
+ inkscape:zoom="50.5636"
+ inkscape:cx="36.5399"
+ inkscape:cy="5.6594"
  inkscape:document-units="px"
- inkscape:current-layer="layer3"
+ inkscape:current-layer="layer2"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -39,7 +39,8 @@
  inkscape:window-y="24"
  inkscape:window-maximized="1"
  showguides="true"
- inkscape:guide-bbox="true">
+ inkscape:guide-bbox="true"
+ inkscape:snap-global="false">
 <inkscape:grid
  type="xygrid"
  id="grid3765"
@@ -64,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title />
+<dc:title></dc:title>
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -126,86 +127,78 @@
  inkscape:groupmode="layer"
  id="layer2"
  inkscape:label="Obstacles"
- transform="translate(0,0)">
+ style="display:inline">
 <path
- style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 21,1.00689 22,0.006886 17,0.006886 z"
- id="path2994"
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 19.6595,11.9928 20.4076,12.2038 21.0207,11.7687 21.0602,11.0567 20.6252,10.4437 19.8143,10.4832 19.3594,11.037 z"
+ id="path3798"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccc" />
-<path
- style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 34,15.0063 35,11.0063 17,13.0063 20,15.0063 z"
- id="path3000"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccc" />
-<path
- style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 10,15.0063 9,13.0063 0,11.0063 0,15.0063 z"
- id="path3002"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccc" />
-<path
- style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 40,15.0063 40,8.0069 35,11.0063 34,15.0063 z"
- id="path3004"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccc" />
-<path
- style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
- d="M 21,1.00689 17,0.006886 0,0.006886 0,2.0069 12,3.0069 17,2.0069 z"
- id="path3006"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccc" />
-<path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 20,15.0063 17,13.0063 15.0756,11.6489 12.3952,12.5733 9,13.0063 10,15.0063 z"
- id="path4762"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccc" />
-<path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 18,8.0069 22,7.0069 26,7.0069 27,5.0069 26,3.0069 22,4.0069 20,5.0069 z"
- id="path4764"
- inkscape:connector-curvature="0"
+ bodyType="DynamicBody"
+ movementPath="movingObstacle01"
  sodipodi:nodetypes="cccccccc" />
 <path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 18,8.0069 20,5.0069 17,5.0069 15,7.0069 z"
- id="path4766"
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 0,0 0,7 2.74096,7.71516 5.09036,8.10672 7.66351,9.33736 9.67728,12.0783 11.0757,14.2599 12.1385,15.7702 13.4251,17.1687 15.4948,18.3434 16.3898,17.9518 16.3339,16.0499 15.9983,13.7005 15.2711,12.4139 15.2711,10.4002 15.7186,8.55423 16.278,6.37264 16.9492,4.19106 17.9561,2.96042 18.8511,2.34511 20.1377,1.84166 21.8718,1.78573 23.2702,1.56197 24.6127,2.23323 25.8993,4.47075 26.6265,6.65233 27.4656,9.33736 27.8012,11.4071 28.0809,13.5886 28.5284,14.7633 29.1996,16.3296 29.5912,16.889 30.9337,17.2246 31.9406,16.7212 32.6119,15.099 33.0034,12.1343 32.9475,10.568 33.0034,8.55423 33.2272,6.42858 33.7306,4.80638 34.7934,3.68762 35.7444,3.12824 37.4225,2.51292 38.5972,2.45698 39.4363,2.45698 40,3 40,0"
+ id="path3819"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccc" />
+ sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 0,18 2.85284,19.5181 4.58692,19.574 6.37693,20.2453 8.3907,21.1403 9.00602,21.8115 10.1807,23.3778 10.7401,24.2728 11.2156,24.5525 12.0826,24.6644 14.3481,24.5525 16.5576,24.4686 18.4595,24.3847 19.4664,22.7625 20.6971,20.525 20.8649,18.0637 20.8089,16.3855 20.9208,14.5955 21.5921,12.6936 22.9346,12.4139 23.7737,13.3649 24.5008,14.8193 25.0602,16.3296 25.3959,17.784 25.0043,19.3503 25.8993,21.0284 26.4587,22.4828 29.0878,22.8184 31.0456,22.8744 33.7866,22.4828 35.0172,21.1962 36.3038,19.2943 37.1428,17.5602 37.5903,16.889 38.821,14.4837 39.2685,14.204 40,14 40,25 0,25 z"
+ id="path3821"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+ d="M 12.4779,24.6455 13.1386,24.2895 13.8553,24.6887 13.5314,24.0438 13.8226,23.2339 13.1499,23.6138 12.4369,23.3037 12.8071,24.0113 z"
+ id="path3798-8"
+ inkscape:connector-curvature="0"
+ bodyType="DynamicBody"
+ movementPath="movingObstacle02"
+ sodipodi:nodetypes="ccccccccc" />
 </g>
 <g
  inkscape:groupmode="layer"
  id="layer3"
- inkscape:label="World"
- transform="translate(0,0)">
+ inkscape:label="World">
 <path
  style="color:#000000;fill:none;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
  d="M -1,5 z"
  id="path3806"
  inkscape:connector-curvature="0" />
 <image
- y="7.0069"
- x="2"
+ y="13.9396"
+ x="3.11341"
  id="image3824-5-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
  width="2"
  startPlanet="" />
 <image
- y="4.0069"
- x="32"
+ y="6.45449"
+ x="35.2548"
  id="image3824-5-1-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
  width="2"
  destinationPlanet="" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer4"
+ inkscape:label="Paths"
+ style="display:inline">
 <path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 40,3.0069 40,0.006886 32,0.006886 36,1.00689 38,2.0069 z"
- id="path4768"
- inkscape:connector-curvature="0" />
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 27.021,9.84521 16.1883,12.2815"
+ id="movingObstacle01"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:#ff0000;stroke-width:0.1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
+ d="M 15.2055,18.7195 13.155,24.0366"
+ id="movingObstacle02"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cc" />
 </g>
 </svg>

@@ -25,7 +25,7 @@ public class Levels {
 			"data/levels/level04.svg", //
 			"data/levels/level05.svg", //
 			"data/levels/level06.svg", //
-	// "data/levels/level03.svg", //
+			"data/levels/level07.svg", //
 	// "data/levels/level03.svg", //
 	// "data/levels/level03.svg", //
 	// "data/levels/level03.svg", //
@@ -58,7 +58,7 @@ public class Levels {
 		}.process(document);
 
 		new LayerProcessor("Obstacles") {
-			
+
 			// protected void handleDocument(com.gemserk.commons.svg.inkscape.SvgDocument document, Element element) {
 			// level.w = document.getWidth();
 			// level.h = document.getHeight();
@@ -68,7 +68,7 @@ public class Levels {
 			@Override
 			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
 				Obstacle obstacle = new Obstacle(vertices);
-				
+
 				Vector2 center = new Vector2();
 				calculateCenter(center, vertices);
 				obstacle.x = center.x;
@@ -101,9 +101,9 @@ public class Levels {
 
 		return level;
 	}
-	
+
 	public static void calculateCenter(Vector2 center, Vector2[] vertices) {
-		center.set(0,0);
+		center.set(0, 0);
 		for (int i = 0; i < vertices.length; i++) {
 			center.x += vertices[i].x;
 			center.y += vertices[i].y;
@@ -111,7 +111,7 @@ public class Levels {
 		center.x /= vertices.length;
 		center.y /= vertices.length;
 	}
-	
+
 	public static void centerVertices(Vector2 center, Vector2[] vertices) {
 		for (int i = 0; i < vertices.length; i++) {
 			vertices[i].x -= center.x;

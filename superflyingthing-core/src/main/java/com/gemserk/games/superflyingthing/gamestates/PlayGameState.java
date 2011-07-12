@@ -484,6 +484,11 @@ public class PlayGameState extends GameStateImpl  {
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
+				@Override
+				protected void onTrigger(Entity e) {
+					gameFinished();
+					triggered();
+				}
 			});
 
 			float x = worldWidth * 0.5f;
