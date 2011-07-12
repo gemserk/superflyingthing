@@ -20,6 +20,7 @@ import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
+import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.AttachedEntityDirectionBehavior;
@@ -54,21 +55,23 @@ public class EntityTemplates {
 	private final BodyBuilder bodyBuilder;
 	private final JointBuilder jointBuilder;
 	private final ResourceManager<String> resourceManager;
+	private final EntityBuilder entityBuilder;
 
-	public EntityTemplates(World world, EntityManager entityManager, ResourceManager<String> resourceManager) {
+	public EntityTemplates(World world, EntityManager entityManager, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
 		this.world = world;
 		this.entityManager = entityManager;
 		this.resourceManager = resourceManager;
+		this.entityBuilder = entityBuilder;
 		this.bodyBuilder = new BodyBuilder(world);
 		this.jointBuilder = new JointBuilder(world);
 	}
 
 	public Entity camera(Camera camera) {
-		Entity e = new Entity();
-		e.addComponent(new Components.CameraComponent(camera));
-		e.addComponent(new TargetComponent(null));
-		e.addBehavior(new CameraFollowBehavior());
-		return e;
+		return entityBuilder //
+				.component(new Components.CameraComponent(camera)) //
+				.component(new TargetComponent(null)) //
+				.behavior(new CameraFollowBehavior()) //
+				.build();
 	}
 
 	public Entity ship(float x, float y, Vector2 direction) {
@@ -77,7 +80,7 @@ public class EntityTemplates {
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 
-		Entity e = new Entity();
+		Entity e = entityBuilder.build();
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -114,7 +117,7 @@ public class EntityTemplates {
 	}
 
 	public Entity diamond(float x, float y, float radius) {
-		Entity e = new Entity();
+		Entity e = entityBuilder.build();
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 
@@ -140,15 +143,15 @@ public class EntityTemplates {
 
 	public Entity deadShip(Spatial spatial) {
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
-		Entity e = new Entity();
-		e.addComponent(Spatial.class, new SpatialImpl(spatial));
-		e.addComponent(new SpriteComponent(sprite, Color.RED));
-		return e;
+		return entityBuilder //
+				.component(Spatial.class.getName(), new SpatialImpl(spatial)) //
+				.component(new SpriteComponent(sprite, Color.RED)) //
+				.build();
 	}
 
 	public Entity startPlanet(float x, float y, float radius) {
-		Entity e = new Entity();
 		Sprite sprite = resourceManager.getResourceValue("Planet");
+		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //
@@ -172,8 +175,8 @@ public class EntityTemplates {
 	}
 
 	public Entity planetBlur(float x, float y, float radius) {
-		Entity e = new Entity();
 		Sprite sprite = resourceManager.getResourceValue("PlanetBlur");
+		Entity e = entityBuilder.build();
 		e.addComponent(Spatial.class, new SpatialImpl(x, y, radius * 2, radius * 2, 0f));
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 
@@ -199,10 +202,8 @@ public class EntityTemplates {
 	}
 
 	public Entity destinationPlanet(float x, float y, float radius, Trigger destinationReachedTrigger) {
-		Entity e = new Entity();
-
 		Sprite sprite = resourceManager.getResourceValue("Planet");
-
+		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //
@@ -242,7 +243,7 @@ public class EntityTemplates {
 	}
 
 	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
-		Entity e = new Entity();
+		Entity e = entityBuilder.build();
 
 		Triangulator triangulator = ShapeUtils.triangulate(vertices);
 
@@ -276,7 +277,7 @@ public class EntityTemplates {
 	}
 
 	public Entity boxObstacle(float x, float y, float w, float h, float angle) {
-		Entity e = new Entity();
+		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.boxShape(w * 0.5f, h * 0.5f) //

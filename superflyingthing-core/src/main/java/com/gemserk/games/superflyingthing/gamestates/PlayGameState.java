@@ -238,7 +238,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			ResourceManager<String> resourceManager = p.resourceManager;
 
 			final EntityManager entityManager = new EntityManagerImpl(p);
-			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager, entityBuilder);
 
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
@@ -276,7 +276,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			ResourceManager<String> resourceManager = p.resourceManager;
 
 			final EntityManager entityManager = new EntityManagerImpl(p);
-			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager, entityBuilder);
 
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
@@ -419,7 +419,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			ResourceManager<String> resourceManager = p.resourceManager;
 
 			final EntityManager entityManager = new EntityManagerImpl(p);
-			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager);
+			final EntityTemplates entityTemplates = new EntityTemplates(physicsWorld, entityManager, resourceManager, entityBuilder);
 
 			p.entityManager = entityManager;
 			p.entityTemplates = entityTemplates;
