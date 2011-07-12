@@ -2,7 +2,8 @@ package com.gemserk.games.entities;
 
 import java.util.ArrayList;
 
-import com.gemserk.games.superflyingthing.Components.ScriptComponent;
+import com.artemis.Entity;
+import com.gemserk.commons.artemis.components.ScriptComponent;
 
 public class EntityManagerImpl implements EntityManager {
 	
@@ -72,7 +73,7 @@ public class EntityManagerImpl implements EntityManager {
 		ScriptComponent scriptComponent = e.getComponent(ScriptComponent.class);
 		if (scriptComponent == null)
 			return;
-		scriptComponent.getScript().update(this, e);
+		scriptComponent.getScript().update(null, e);
 	}
 
 	private void updateRemove(int delta) {

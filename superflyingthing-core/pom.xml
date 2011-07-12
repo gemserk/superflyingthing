@@ -51,6 +51,12 @@
 			<artifactId>commons-gdx-core</artifactId>
 			<version>${commons.gdx.version}</version>
 		</dependency>
+		
+				<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-artemis</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
 
 		<dependency>
 			<groupId>com.gemserk.resources</groupId>

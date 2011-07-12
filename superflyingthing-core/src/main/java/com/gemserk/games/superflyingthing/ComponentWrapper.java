@@ -1,27 +1,37 @@
 package com.gemserk.games.superflyingthing;
 
+import com.artemis.Component;
+import com.artemis.Entity;
+import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.entities.Entity;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
+import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
 public class ComponentWrapper {
 	
 	public static Physics getPhysics(Entity e) {
-		return getComponent(e, Physics.class);
+		PhysicsComponent physicsComponent = getComponent(e, PhysicsComponent.class);
+		return physicsComponent.getPhysics();
 	}
 
 	public static Spatial getSpatial(Entity e) {
-		return getComponent(e, Spatial.class);
+		SpatialComponent spatialComponent = getComponent(e, SpatialComponent.class);
+		return spatialComponent.getSpatial();
 	}
 
 	public static SpriteComponent getSprite(Entity e) {
 		return getComponent(e, SpriteComponent.class);
+	}
+	
+	public static TriggerComponent getTriggers(Entity e) {
+		return getComponent(e, TriggerComponent.class);
 	}
 
 	public static Camera getCamera(Entity e) {
@@ -39,20 +49,19 @@ public class ComponentWrapper {
 		return getComponent(e, MovementComponent.class);
 	}
 	
-	public static void addMovementComponent(Entity e, Object o) {
-		e.addComponent(MovementComponent.class, o);
+	public static void addMovementComponent(Entity e, MovementComponent movementComponent) {
+		e.addComponent(movementComponent);
 	}
 
 
-	@SuppressWarnings("unchecked")
-	static <T> T getComponent(Entity e, Class<?> clazz) {
+	static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
 		if (e == null)
 			return null;
 		return (T) e.getComponent(clazz);
 	}
 
 	public static GameDataComponent getGameData(Entity e) {
-		return getComponent(e, GameDataComponent.class);
+		return e.getComponent(GameDataComponent.class);
 	}
 
 }

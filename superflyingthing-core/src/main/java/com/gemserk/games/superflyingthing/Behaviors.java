@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
+import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -13,7 +14,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
-import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
@@ -24,6 +24,7 @@ import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
 public class Behaviors {
 
@@ -375,7 +376,9 @@ public class Behaviors {
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
-			Trigger trigger = e.getComponent("noEntityTrigger");
+			
+			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
+			Trigger trigger = triggerComponent.getTrigger("noEntityTrigger");
 			trigger.trigger(e);
 		}
 	}
@@ -397,7 +400,8 @@ public class Behaviors {
 			if (!aliveComponent.isDead())
 				return;
 
-			Trigger trigger = e.getComponent("entityDeadTrigger");
+			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
+			Trigger trigger = triggerComponent.getTrigger("entityDeadTrigger");
 			trigger.trigger(e);
 		}
 	}

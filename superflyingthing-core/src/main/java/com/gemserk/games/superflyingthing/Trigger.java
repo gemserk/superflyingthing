@@ -1,6 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
-import com.gemserk.games.entities.Entity;
+import com.artemis.Entity;
 
 public class Trigger {
 

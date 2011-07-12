@@ -1,5 +1,7 @@
 package com.gemserk.games.entities;
 
+import com.artemis.Entity;
+
 
 
 /**

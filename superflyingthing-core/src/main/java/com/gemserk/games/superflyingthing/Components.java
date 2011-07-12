@@ -1,57 +1,39 @@
 package com.gemserk.games.superflyingthing;
 
+import java.util.HashMap;
+import java.util.Map;
+
+import com.artemis.Component;
+import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.graphics.Triangulator;
-import com.gemserk.games.entities.Entity;
-import com.gemserk.games.entities.EntityManager;
 
 public class Components {
 	
-	public static interface Script {
+	public static class TriggerComponent extends Component {
 		
-		void init(EntityManager world, Entity e);
-		
-		void update(EntityManager world, Entity e);
-		
-		void dispose(EntityManager world, Entity e);
-		
-	}
-	
-	public static class ScriptJavaImpl implements Script {
-		
-		public void init(EntityManager world, Entity e) {
-			
-		}
-		
-		public void update(EntityManager world, Entity e) {
-			
-		}
-		
-		public void dispose(EntityManager world, Entity e) {
-			
-		}
-		
-	}
-	
-	public static class ScriptComponent {
-		
-		private final Script script;
-		
-		public Script getScript() {
-			return script;
-		}
+		private Map<String, Trigger> triggers;
 
-		public ScriptComponent(Script script) {
-			this.script = script;
+		public Trigger getTrigger(String name) {
+			return triggers.get(name);
 		}
+		
+		public TriggerComponent() {
+			this(new HashMap<String, Trigger>());
+		}
+		
+		public TriggerComponent(Map<String, Trigger> triggers) {
+			this.triggers = triggers;
+		}
+		
 		
 	}
 
-	public static class CameraComponent {
+	public static class CameraComponent extends Component {
 
 		private Camera camera;
 
@@ -69,7 +51,7 @@ public class Components {
 
 	}
 
-	public static class SpriteComponent {
+	public static class SpriteComponent extends Component {
 
 		private Sprite sprite;
 
@@ -98,19 +80,19 @@ public class Components {
 		}
 
 	}
-	
-	public static class ShapeComponent {
+
+	public static class ShapeComponent extends Component {
 
 		private final Vector2[] vertices;
-		
+
 		public Triangulator triangulator;
-		
+
 		public Color color;
-		
+
 		public Vector2[] getVertices() {
 			return vertices;
 		}
-		
+
 		public ShapeComponent(Vector2[] vertices, Color color) {
 			this.vertices = vertices;
 			this.color = color;
@@ -124,7 +106,7 @@ public class Components {
 
 	}
 
-	public static class MovementComponent {
+	public static class MovementComponent extends Component {
 
 		final Vector2 direction = new Vector2();
 		float angularVelocity = 0f;
@@ -167,7 +149,7 @@ public class Components {
 
 	}
 
-	public static class AliveComponent {
+	public static class AliveComponent extends Component {
 
 		boolean dead;
 
@@ -181,7 +163,7 @@ public class Components {
 
 	}
 
-	public static class TargetComponent {
+	public static class TargetComponent extends Component {
 
 		Entity target;
 
@@ -195,7 +177,7 @@ public class Components {
 
 	}
 
-	public static class AttachmentComponent {
+	public static class AttachmentComponent extends Component {
 
 		Entity entity;
 
@@ -219,7 +201,7 @@ public class Components {
 
 	}
 
-	public static class AttachableComponent {
+	public static class AttachableComponent extends Component {
 
 		Entity owner;
 
@@ -229,25 +211,25 @@ public class Components {
 
 	}
 
-	public static class ReleaseEntityComponent {
+	public static class ReleaseEntityComponent extends Component {
 
 		int releaseTime;
 
 	}
 
-	public static class GrabbableComponent {
+	public static class GrabbableComponent extends Component {
 
 		boolean grabbed;
 
 	}
 
-	public static class ShipControllerComponent {
+	public static class ShipControllerComponent extends Component {
 
 		float direction;
 
 	}
 
-	public static class GameDataComponent {
+	public static class GameDataComponent extends Component {
 
 		public Entity ship;
 		public Entity startPlanet;

@@ -1,5 +1,8 @@
 package com.gemserk.games.superflyingthing;
 
+import java.util.HashMap;
+
+import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -7,12 +10,15 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -20,7 +26,6 @@ import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
-import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.entities.EntityManager;
 import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
@@ -29,12 +34,11 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
-import com.gemserk.games.superflyingthing.Components.ScriptComponent;
-import com.gemserk.games.superflyingthing.Components.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.SpriteComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -74,7 +78,7 @@ public class EntityTemplates {
 					private Behavior cameraFollowBehavior = new CameraFollowBehavior();
 
 					@Override
-					public void update(EntityManager world, Entity e) {
+					public void update(com.artemis.World world, Entity e) {
 						cameraFollowBehavior.update(world.getDelta(), e);
 
 						Camera camera = ComponentWrapper.getCamera(e);
@@ -107,8 +111,8 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
-		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, width, height));
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 		e.addComponent(new SpriteComponent(sprite));
 
 		Components.MovementComponent movementComponent = new Components.MovementComponent(direction.x, direction.y);
@@ -129,7 +133,7 @@ public class EntityTemplates {
 			Behavior collisionHandlerBehavior = new Behaviors.CollisionHandlerBehavior();
 
 			@Override
-			public void update(EntityManager world, Entity e) {
+			public void update(com.artemis.World world, Entity e) {
 				fixMovementBehavior.update(world.getDelta(), e);
 				fixDirectionFromControllerBehavior.update(world.getDelta(), e);
 				calculateInputDirectionBehavior.update(world.getDelta(), e);
@@ -157,8 +161,9 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
-		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+		
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new GrabbableComponent());
 
@@ -167,7 +172,7 @@ public class EntityTemplates {
 			Behavior removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(entityManager);
 
 			@Override
-			public void update(EntityManager world, Entity e) {
+			public void update(com.artemis.World world, Entity e) {
 				removeWhenGrabbedBehavior.update(world.getDelta(), e);
 			}
 
@@ -179,7 +184,7 @@ public class EntityTemplates {
 	public Entity deadShip(Spatial spatial) {
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 		return entityBuilder //
-				.component(Spatial.class.getName(), new SpatialImpl(spatial)) //
+				.component(new SpatialComponent(new SpatialImpl(spatial))) //
 				.component(new SpriteComponent(sprite, Color.RED)) //
 				.build();
 	}
@@ -198,8 +203,8 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
-		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
@@ -211,7 +216,7 @@ public class EntityTemplates {
 			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 
 			@Override
-			public void update(EntityManager world, Entity e) {
+			public void update(com.artemis.World world, Entity e) {
 				releaseAttachmentBehavior.update(world.getDelta(), e);
 				attachEntityBehavior.update(world.getDelta(), e);
 				calculateInputDirectionBehavior.update(world.getDelta(), e);
@@ -222,7 +227,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity destinationPlanet(float x, float y, float radius, Trigger destinationReachedTrigger) {
+	public Entity destinationPlanet(float x, float y, float radius, final Trigger destinationReachedTrigger) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
@@ -240,13 +245,17 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
-		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+		
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 
-		e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
+		// e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
+		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {{ 
+			put("destinationReachedTrigger", destinationReachedTrigger);
+		}}));
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
@@ -254,14 +263,15 @@ public class EntityTemplates {
 			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 
 			@Override
-			public void update(EntityManager world, Entity e) {
+			public void update(com.artemis.World world, Entity e) {
 				attachEntityBehavior.update(world.getDelta(), e);
 				calculateInputDirectionBehavior.update(world.getDelta(), e);
 
 				AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
 				if (attachmentComponent.entity == null)
 					return;
-				Trigger trigger = e.getComponent("destinationReachedTrigger");
+				TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
+				Trigger trigger = triggerComponent.getTrigger("destinationReachedTrigger");
 				trigger.trigger(e);
 			}
 
@@ -297,9 +307,9 @@ public class EntityTemplates {
 				.angle(angle) //
 				.build();
 
-		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
-		e.addComponent(ShapeComponent.class, new ShapeComponent(vertices, Color.BLUE, triangulator));
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
+		e.addComponent(new ShapeComponent(vertices, Color.BLUE, triangulator));
 
 		return e;
 	}
@@ -317,9 +327,9 @@ public class EntityTemplates {
 				.position(x, y) //
 				.angle(angle) //
 				.build();
-		e.addComponent(Physics.class, new PhysicsImpl(body));
-		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, 1f, 1f));
-		e.addComponent(ShapeComponent.class, new ShapeComponent(new Vector2[] { //
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
+		e.addComponent(new ShapeComponent(new Vector2[] { //
 				new Vector2(w * 0.5f, h * 0.5f), //
 						new Vector2(w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, -h * 0.5f), //
