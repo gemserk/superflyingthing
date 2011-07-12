@@ -3,12 +3,12 @@ package com.gemserk.games.superflyingthing.gamestates;
 import java.util.HashMap;
 
 import com.artemis.Entity;
+import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -26,7 +26,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteRendererSystem;
@@ -40,8 +40,6 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
-import com.gemserk.commons.gdx.graphics.ShapeUtils;
-import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
@@ -66,6 +64,7 @@ import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
+import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
@@ -94,7 +93,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	public PlayGameState(Game game) {
 		this.game = game;
 	}
-
+	
 	@Override
 	public void init() {
 		resetPressed = false;
@@ -109,13 +108,32 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		world = new com.artemis.World();
 		worldWrapper = new WorldWrapper(world);
 		// add render and all stuff...
-		
+
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
-		
+
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(worldCamera));
-		
+
+		worldWrapper.addRenderSystem(new ShapeRenderSystem(ShapeComponent.class));
+
+		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
+			@Override
+			protected void process(Entity e) {
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				if (spatial == null)
+					return;
+				Vector2 position = spatial.getPosition();
+				MovementComponent movementComponent = e.getComponent(MovementComponent.class);
+				if (movementComponent == null)
+					return;
+				Vector2 direction = movementComponent.getDirection();
+				float x = position.x + direction.tmp().mul(0.5f).x;
+				float y = position.y + direction.tmp().mul(0.5f).y;
+				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
+			}
+		});
+
 		worldWrapper.init();
 
 		entityBuilder = new EntityBuilder(world);
@@ -127,7 +145,7 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
 		container = new Container();
-		
+
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder);
 
 		if (GameData.gameMode == GameData.RandomGameMode) {
@@ -595,11 +613,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		// renderEntities(spriteBatch);
 
 		worldWrapper.render();
 
-		// worldCamera.apply(spriteBatch);
 		if (Game.isShowBox2dDebug())
 			box2dCustomDebugRenderer.render();
 
@@ -609,44 +625,17 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 		spriteBatch.end();
 	}
 
-	// void renderEntities(SpriteBatch spriteBatch) {
-	// spriteBatch.begin();
-	// for (int i = 0; i < entityManager.entitiesCount(); i++)
-	// renderEntitySprite(entityManager.get(i));
-	// spriteBatch.end();
-	//
-	// for (int i = 0; i < entityManager.entitiesCount(); i++) {
-	// Entity e = entityManager.get(i);
-	// renderMovementDebug(e);
-	// renderEntityWithShape(e);
+	// private void renderEntityWithShape(Entity e) {
+	// ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
+	// if (shapeComponent != null) {
+	// Spatial spatial = ComponentWrapper.getSpatial(e);
+	// if (spatial == null)
+	// return;
+	// if (shapeComponent.triangulator == null)
+	// shapeComponent.triangulator = ShapeUtils.triangulate(shapeComponent.getVertices());
+	// ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 	// }
 	// }
-
-	private void renderEntitySprite(Entity e) {
-		Spatial spatial = ComponentWrapper.getSpatial(e);
-		if (spatial == null)
-			return;
-		SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
-		if (spriteComponent == null)
-			return;
-		Sprite sprite = spriteComponent.getSprite();
-		sprite.setSize(spatial.getWidth(), spatial.getHeight());
-		sprite.setColor(spriteComponent.getColor());
-		Vector2 position = spatial.getPosition();
-		SpriteBatchUtils.drawCentered(spriteBatch, sprite, position.x, position.y, spatial.getAngle());
-	}
-
-	private void renderEntityWithShape(Entity e) {
-		ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
-		if (shapeComponent != null) {
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			if (spatial == null)
-				return;
-			if (shapeComponent.triangulator == null)
-				shapeComponent.triangulator = ShapeUtils.triangulate(shapeComponent.getVertices());
-			ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
-		}
-	}
 
 	private void renderMovementDebug(Entity e) {
 		Spatial spatial = ComponentWrapper.getSpatial(e);
