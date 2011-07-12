@@ -242,7 +242,7 @@ public class EntityTemplates {
 						.categoryBits(CategoryBits.MiniPlanetCategoryBits) //
 						.restitution(0f)) //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.circleShape(radius) //
+						.circleShape(radius * 1.5f) //
 						.categoryBits(CategoryBits.AllCategoryBits) //
 						.sensor()) //
 				.position(x, y) //
