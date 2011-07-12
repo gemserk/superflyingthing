@@ -141,11 +141,9 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 32f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f);
-			entityManager.add(entityTemplates.planetBlur(level.startPlanet.x, level.startPlanet.y, 1f));
 
 			entityManager.add(startPlanet);
 
-			entityManager.add(entityTemplates.planetBlur(level.destinationPlanet.x, level.destinationPlanet.y, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
@@ -334,10 +332,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
-			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
 			entityManager.add(startPlanet);
 
-			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
 				protected void onTrigger(Entity e) {
@@ -476,10 +472,8 @@ public class PlayGameState extends GameStateImpl implements EntityLifeCycleHandl
 			});
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
-			entityManager.add(entityTemplates.planetBlur(5f, worldHeight * 0.5f, 1f));
 
 			entityManager.add(startPlanet);
-			entityManager.add(entityTemplates.planetBlur(worldWidth - 5f, worldHeight * 0.5f, 1f));
 			entityManager.add(entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 			}));
 

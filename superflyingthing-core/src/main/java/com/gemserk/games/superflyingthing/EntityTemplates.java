@@ -22,11 +22,7 @@ import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.Entity;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.entities.EntityManager;
-import com.gemserk.games.superflyingthing.Behaviors.AttachEntityBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.AttachedEntityDirectionBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.ReleaseAttachmentBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.RemoveWhenGrabbedBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
@@ -133,6 +129,7 @@ public class EntityTemplates {
 				calculateInputDirectionBehavior.update(world.getDelta(), e);
 				collisionHandlerBehavior.update(world.getDelta(), e);
 			}
+
 		}));
 
 		return e;
@@ -158,7 +155,17 @@ public class EntityTemplates {
 		e.addComponent(Spatial.class, new SpatialPhysicsImpl(body, radius * 2, radius * 2));
 		e.addComponent(new SpriteComponent(sprite));
 		e.addComponent(new GrabbableComponent());
-		e.addBehavior(new RemoveWhenGrabbedBehavior(entityManager));
+
+		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+
+			Behavior removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(entityManager);
+
+			@Override
+			public void update(EntityManager world, Entity e) {
+				removeWhenGrabbedBehavior.update(world.getDelta(), e);
+			}
+
+		}));
 
 		return e;
 	}
@@ -190,35 +197,21 @@ public class EntityTemplates {
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
-		e.addBehavior(new ReleaseAttachmentBehavior(world));
-		e.addBehavior(new AttachEntityBehavior(jointBuilder));
-		e.addBehavior(new AttachedEntityDirectionBehavior());
-		return e;
-	}
 
-	public Entity planetBlur(float x, float y, float radius) {
-		Sprite sprite = resourceManager.getResourceValue("PlanetBlur");
-		Entity e = entityBuilder.build();
-		e.addComponent(Spatial.class, new SpatialImpl(x, y, radius * 2, radius * 2, 0f));
-		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
-		e.addBehavior(new Behavior() {
+			Behavior releaseAttachmentBehavior = new Behaviors.ReleaseAttachmentBehavior(world);
+			Behavior attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
+			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 
-			float diff = 0.5f;
+			@Override
+			public void update(EntityManager world, Entity e) {
+				releaseAttachmentBehavior.update(world.getDelta(), e);
+				attachEntityBehavior.update(world.getDelta(), e);
+				calculateInputDirectionBehavior.update(world.getDelta(), e);
+			}
 
-			public void update(int delta, Entity e) {
-				SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
-				Color color = spriteComponent.getColor();
-
-				color.a += diff * delta * 0.001f;
-
-				if (color.a >= 0.9f)
-					diff = -0.5f;
-
-				if (color.a <= 0.4)
-					diff = 0.5f;
-			};
-		});
+		}));
 
 		return e;
 	}
@@ -246,20 +239,27 @@ public class EntityTemplates {
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
-		e.addBehavior(new AttachEntityBehavior(jointBuilder));
-		e.addBehavior(new AttachedEntityDirectionBehavior());
 
 		e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
-		e.addBehavior(new Behavior() {
+
+		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+
+			Behavior attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
+			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
+
 			@Override
-			public void update(int delta, Entity e) {
+			public void update(EntityManager world, Entity e) {
+				attachEntityBehavior.update(world.getDelta(), e);
+				calculateInputDirectionBehavior.update(world.getDelta(), e);
+
 				AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
 				if (attachmentComponent.entity == null)
 					return;
 				Trigger trigger = e.getComponent("destinationReachedTrigger");
 				trigger.trigger(e);
 			}
-		});
+
+		}));
 
 		return e;
 	}
