@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.artemis.Entity;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -29,6 +31,7 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
+import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteRendererSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
@@ -108,6 +111,13 @@ public class PlayGameState extends GameStateImpl {
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		
+		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		
+		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
+		
+		renderLayers.add(new RenderLayer(-1000, -100, backgroundLayerCamera));
+		renderLayers.add(new RenderLayer(-100, 100, worldCamera));
 
 		world = new com.artemis.World();
 		worldWrapper = new WorldWrapper(world);
@@ -117,7 +127,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
-		worldWrapper.addRenderSystem(new SpriteRendererSystem(worldCamera));
+		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
 		worldWrapper.addRenderSystem(new ShapeRenderSystem(ShapeComponent.class));
 
@@ -163,6 +173,9 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		container.add(itemsTakenLabel);
+		
+		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
+		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
 		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			new RandomMode().create(this);

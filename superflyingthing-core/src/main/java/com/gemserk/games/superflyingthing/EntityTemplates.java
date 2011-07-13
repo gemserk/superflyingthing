@@ -72,6 +72,13 @@ public class EntityTemplates {
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.jointBuilder = new JointBuilder(physicsWorld);
 	}
+	
+	public Entity staticSprite(Sprite sprite, float x, float y, float width, float height, float angle, int layer, float centerx, float centery, Color color) {
+		return entityBuilder //
+			.component(new SpatialComponent(new SpatialImpl(x, y, width, height, angle))) //
+			.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
+			.build();
+	}
 
 	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera) {
 		return entityBuilder //

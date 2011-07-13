@@ -38,6 +38,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		texture("PlanetBlurTexture", "data/images/planet_blur.png");
 		sprite("PlanetBlur", "PlanetBlurTexture");
+		
+		texture("BackgroundTexture", "data/images/background01-1024x512.jpg", false);
+		sprite("BackgroundSprite", "BackgroundTexture");
 
 	}
 
