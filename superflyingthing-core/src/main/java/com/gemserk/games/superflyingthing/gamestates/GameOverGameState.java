@@ -120,12 +120,24 @@ public class GameOverGameState extends GameStateImpl {
 
 	private void nextLevel() {
 		if (!Levels.hasLevel(GameInformation.level + 1)) {
-			game.transition(game.getLevelSelectionScreen(), 200, 300);
+			GameInformation.level = 0;
+			game.transition(game.getLevelSelectionScreen()) //
+					.disposeCurrent() //
+					.leaveTime(250) //
+					.enterTime(250) //
+					.leaveTransitionHandler(new TransitionHandler() {
+						@Override
+						public void onEnd() {
+							game.getPlayScreen().dispose();
+						}
+					}).start();
+
 		} else {
 			GameInformation.level++;
 			game.transition(game.getPlayScreen()) //
 					.leaveTime(250) //
 					.enterTime(250) //
+					.disposeCurrent() //
 					.leaveTransitionHandler(new TransitionHandler() {
 						@Override
 						public void onEnd() {
@@ -139,6 +151,7 @@ public class GameOverGameState extends GameStateImpl {
 		game.transition(game.getMainMenuScreen()) //
 				.leaveTime(250) //
 				.enterTime(250) //
+				.disposeCurrent() //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
 					public void onEnd() {

@@ -26,9 +26,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="25.2818"
- inkscape:cx="13.5988"
- inkscape:cy="11.522"
+ inkscape:zoom="17.085"
+ inkscape:cx="38.1301"
+ inkscape:cy="12.9228"
  inkscape:document-units="px"
  inkscape:current-layer="layer2"
  showgrid="true"
@@ -147,6 +147,17 @@
  inkscape:connector-curvature="0"
  bodyType="DynamicBody"
  movementPath="movingObstacle01" />
+<path
+ style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 13,25 14,24 10.5539,24.2964 7.6981,24.2136 4.55264,23.3859 2.27632,23.3859 0.993304,20.2818 0.53804,10.5971 0.786366,7.98967 1.20024,3.76813 2.73159,2.40234 5.17346,2.23679 7.40839,2.27817 10.678,1.57458 14.4029,1.45042 17.7967,0.995157 21.4802,0.291567 21,0 0,0 0,25 z"
+ id="path3959"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="ccccccccccccccccccccc" />
+<path
+ style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 27,25 40,25 40,0 39.2158,0.18286 39.6255,1.6754 39.6255,4.39709 39.2743,8.17234 39.6547,10.1624 39.3621,18.2104 39.5962,20.815 39.4792,23.8586 37.1086,24.3562 27.3047,24.561 26.2804,24.7659 z"
+ id="path3961"
+ inkscape:connector-curvature="0" />
 </g>
 <g
  inkscape:groupmode="layer"
