@@ -149,8 +149,12 @@ public class EntityTemplates {
 		e.refresh();
 		return e;
 	}
-
+	
 	public Entity diamond(float x, float y, float radius) {
+		return diamond(x, y, radius, new Trigger());
+	}
+
+	public Entity diamond(float x, float y, float radius, final Trigger trigger) {
 		Entity e = entityBuilder.build();
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
@@ -171,6 +175,12 @@ public class EntityTemplates {
 
 		e.addComponent(new SpriteComponent(sprite, 0));
 		e.addComponent(new GrabbableComponent());
+		
+		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
+			{
+				put(Triggers.itemGrabbedTrigger, trigger);
+			}
+		}));
 
 		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
@@ -179,6 +189,16 @@ public class EntityTemplates {
 			@Override
 			public void update(com.artemis.World world, Entity e) {
 				removeWhenGrabbedBehavior.update(world.getDelta(), e);
+				
+				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+				if (!grabbableComponent.grabbed)
+					return;
+				
+				TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
+				Trigger trigger = triggerComponent.getTrigger(Triggers.itemGrabbedTrigger);
+
+				trigger.trigger(e);
+				trigger.triggered();
 			}
 
 		}));
@@ -258,7 +278,6 @@ public class EntityTemplates {
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 
-		// e.addComponent("destinationReachedTrigger", destinationReachedTrigger);
 		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
 			{
 				put(Triggers.destinationReachedTrigger, destinationReachedTrigger);

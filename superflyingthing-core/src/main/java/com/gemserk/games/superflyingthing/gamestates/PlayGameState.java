@@ -212,7 +212,7 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity, level.items.size())) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
 							put(Triggers.entityDeadTrigger, new Trigger() {
@@ -325,6 +325,8 @@ public class PlayGameState extends GameStateImpl {
 				obstacleX += 8f;
 			}
 
+			int itemsCount = 0;
+
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, worldWidth - 10f);
 				float y = MathUtils.random(2f, worldHeight - 2f);
@@ -345,6 +347,8 @@ public class PlayGameState extends GameStateImpl {
 					continue;
 
 				entityTemplates.diamond(x, y, w);
+
+				itemsCount++;
 			}
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
@@ -368,7 +372,7 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity, itemsCount)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
 							put(Triggers.entityDeadTrigger, new Trigger() {
@@ -457,6 +461,8 @@ public class PlayGameState extends GameStateImpl {
 				entityTemplates.obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f));
 				obstacleX += 8f;
 			}
+			
+			int itemsCount = 0;
 
 			for (int i = 0; i < 10; i++) {
 				float x = MathUtils.random(10f, worldWidth - 10f);
@@ -478,6 +484,8 @@ public class PlayGameState extends GameStateImpl {
 					continue;
 
 				entityTemplates.diamond(x, y, w);
+				
+				itemsCount++;
 			}
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
@@ -500,7 +508,7 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity, itemsCount)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
 							put(Triggers.noEntityTrigger, new Trigger() {

@@ -203,11 +203,18 @@ public class Components {
 		public Entity ship;
 		public Entity startPlanet;
 		public Entity camera;
+		public int deaths;
+	
+		public int totalItems;
+		public int currentItems;
 
-		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera) {
+		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera, int totalItems) {
 			this.ship = ship;
 			this.startPlanet = startPlanet;
 			this.camera = camera;
+			this.deaths = 0;
+			this.currentItems = 0;
+			this.totalItems = totalItems;
 		}
 
 	}

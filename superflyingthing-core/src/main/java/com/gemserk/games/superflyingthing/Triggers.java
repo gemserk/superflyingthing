@@ -7,5 +7,7 @@ public class Triggers {
 	public static final String entityDeadTrigger = "entityDeadTrigger".intern();
 	
 	public static final String destinationReachedTrigger = "destinationReachedTrigger".intern();
+	
+	public static final String itemGrabbedTrigger = "itemGrabbedTrigger".intern();
 
 }
