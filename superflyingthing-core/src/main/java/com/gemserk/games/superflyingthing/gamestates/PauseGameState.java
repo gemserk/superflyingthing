@@ -52,7 +52,7 @@ public class PauseGameState extends GameStateImpl {
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
-		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
+		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
 		container.add(GuiControls.label("Game Paused") //
 				.position(centerX, height * 0.9f) //
@@ -69,7 +69,7 @@ public class PauseGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getPlayScreen(), 500, 250);
+						resumeLevel();
 					}
 				})//
 				.build());
@@ -98,15 +98,7 @@ public class PauseGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getPlayScreen()) //
-								.leaveTime(250) //
-								.enterTime(250) //
-								.leaveTransitionHandler(new TransitionHandler() {
-									@Override
-									public void onEnd() {
-										game.getPlayScreen().restart();
-									}
-								}).start();
+						restartLevel();
 					}
 				})//
 				.build());
@@ -120,25 +112,7 @@ public class PauseGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-
-						game.transition(game.getMainMenuScreen()) //
-						.leaveTime(250) //
-						.enterTime(250) //
-						.leaveTransitionHandler(new TransitionHandler() {
-							@Override
-							public void onEnd() {
-								game.getPlayScreen().dispose();
-							}
-						}).start();
-
-						if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-							Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
-						} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-							Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
-						} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-							Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
-						}
-
+						mainMenu();
 					}
 				})//
 				.build());
@@ -146,9 +120,45 @@ public class PauseGameState extends GameStateImpl {
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				monitorKeys("resume", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("resume", Keys.BACK, Keys.ESCAPE, Keys.SPACE, Keys.ENTER);
 			}
 		};
+	}
+
+	private void restartLevel() {
+		game.transition(game.getPlayScreen()) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.leaveTransitionHandler(new TransitionHandler() {
+					@Override
+					public void onEnd() {
+						game.getPlayScreen().restart();
+					}
+				}).start();
+	}
+
+	private void mainMenu() {
+		game.transition(game.getMainMenuScreen()) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.leaveTransitionHandler(new TransitionHandler() {
+					@Override
+					public void onEnd() {
+						game.getPlayScreen().dispose();
+					}
+				}).start();
+
+		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
+		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
+		}
+	}
+	
+	private void resumeLevel() {
+		game.transition(game.getPlayScreen(), 500, 250);
 	}
 
 	@Override
@@ -191,7 +201,7 @@ public class PauseGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("resume").isReleased())
-			game.transition(game.getPlayScreen(), 500, 250);
+			resumeLevel();
 	}
 
 	@Override

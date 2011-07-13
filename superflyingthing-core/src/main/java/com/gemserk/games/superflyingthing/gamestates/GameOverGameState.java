@@ -51,7 +51,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
-		whiteRectangle.setColor(0f, 0f, 0f, 0.2f);
+		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
 		container.add(GuiControls.label("YOUR SCORE HERE") //
 				.position(centerX, height * 0.9f) //
