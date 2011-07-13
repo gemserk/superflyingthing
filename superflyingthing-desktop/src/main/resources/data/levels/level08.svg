@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:svg="http://www.w3.org/2000/svg"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+ xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+ width="60"
+ height="25"
+ id="svg2"
+ version="1.1"
+ inkscape:version="0.48.1 r9760"
+ sodipodi:docname="level08.svg"
+ levelName="Uncertain">
+<defs
+ id="defs4" />
+<sodipodi:namedview
+ id="base"
+ pagecolor="#000000"
+ bordercolor="#666666"
+ borderopacity="1.0"
+ inkscape:pageopacity="1"
+ inkscape:pageshadow="2"
+ inkscape:zoom="50.5635"
+ inkscape:cx="8.26499"
+ inkscape:cy="10.9269"
+ inkscape:document-units="px"
+ inkscape:current-layer="layer2"
+ showgrid="true"
+ units="px"
+ inkscape:window-width="1440"
+ inkscape:window-height="849"
+ inkscape:window-x="0"
+ inkscape:window-y="24"
+ inkscape:window-maximized="1"
+ showguides="true"
+ inkscape:guide-bbox="true"
+ inkscape:snap-global="false">
+<inkscape:grid
+ type="xygrid"
+ id="grid3765"
+ empspacing="5"
+ visible="true"
+ enabled="true"
+ snapvisiblegridlinesonly="true" />
+<sodipodi:guide
+ orientation="1,0"
+ position="-1840,4810"
+ id="guide3838" />
+<sodipodi:guide
+ orientation="1,0"
+ position="-960,5720"
+ id="guide3840" />
+</sodipodi:namedview>
+<metadata
+ id="metadata7">
+<rdf:RDF>
+<cc:Work
+ rdf:about="">
+<dc:format>image/svg+xml</dc:format>
+<dc:type
+ rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+<dc:title></dc:title>
+</cc:Work>
+</rdf:RDF>
+</metadata>
+<g
+ inkscape:label="templates"
+ inkscape:groupmode="layer"
+ id="layer1"
+ transform="translate(0,5)">
+<text
+ xml:space="preserve"
+ style="font-size:0.420555px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+ x="-3.82528"
+ y="2.5579183"
+ id="text3800"
+ sodipodi:linespacing="125%"
+ transform="scale(1.09098,0.916607)"><tspan
+ sodipodi:role="line"
+ id="tspan3802"
+ x="-3.82528"
+ y="2.5579183">start planet</tspan><tspan
+ sodipodi:role="line"
+ x="-3.82528"
+ y="3.083612"
+ id="tspan3804" /></text>
+<image
+ y="0"
+ x="-4"
+ id="image3824-5"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ startPlanet="" />
+<image
+ y="5"
+ x="-4"
+ id="image3824-5-1"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ destinationPlanet="" />
+<text
+ xml:space="preserve"
+ style="font-size:0.420555px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+ x="-4.2697434"
+ y="8.116293"
+ id="text3800-7"
+ sodipodi:linespacing="125%"
+ transform="scale(1.09098,0.916607)"><tspan
+ sodipodi:role="line"
+ x="-4.2697434"
+ y="8.116293"
+ id="tspan3906">destination planet</tspan><tspan
+ sodipodi:role="line"
+ x="-4.2697434"
+ y="8.6419868"
+ id="tspan3804-9" /></text>
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer2"
+ inkscape:label="Obstacles"
+ style="display:inline">
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 60,13 59,13 58.9011,15.4265 58.013,17.0886 56.5692,16.9105 55.0069,15.7635 52.8315,15.2888 51.6052,16.7326 50.2802,17.939 49.3902,19.5014 47.5905,20.4704 44.9008,19.9958 39.4423,19.7584 37.1482,19.6793 36.1989,20.154 35.0122,20.3913 31.215,20.3913 28.5253,19.6793 25.4401,18.4136 22.3549,17.7016 19.0323,17.1479 14.1276,18.018 11.6752,19.442 9.85579,19.9958 7.79897,19.6793 4.15998,17.8598 2.34048,16.8314 1.23297,15.4866 1,13 0,13 0,25 60,25"
+ id="path3013"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 9.06197,13.9802 9.73323,13.1411 11.1876,12.5258 12.4216,11.6161 13.9252,11.142 14.6089,9.71303 16.3402,8.48971 17.9561,9.11357 19.858,10.512 21.9837,11.463 23.1024,11.9105 25.284,11.6867 28.0809,10.8477 29.5912,10.2324 32.556,9.16951 34.6257,9.11357 36.8632,9.22545 38.4854,9.84078 40.1076,10.4002 42.8486,10.4002 44.8623,10.3442 47.9949,10.7358 49.3374,11.463 51.2393,12.9733 52.1163,15.1097 50.6088,16.3929 48.3317,16.5121 46.4286,14.7633 44.4708,14.0361 42.0654,14.0921 40.1635,14.9312 38.877,15.994 37.5904,16.7771 35.7444,17.6162 34.4579,18.0637 33.1153,18.1756 30.6541,18.0637 29.4794,17.4484 26.6825,16.4974 25.6196,16.0499 23.8856,15.6024 21.4802,15.2668 20.1575,15.781 18.9545,16.515 15.534,16.8022 12.4742,15.8262 10.2367,16.1059 9.22978,15.2668 z"
+ id="path3015"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccc" />
+<path
+ style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+ d="M 60,0 0,0 0.020313,13.1867 1,13 1.71432,11.2049 2.82182,11.6005 3.61292,10.9676 4.72042,9.2272 6.85642,8.4362 8.91322,9.3855 11.5237,9.6228 13.9563,9.5041 16.3691,7.13083 18.1688,5.5883 21.4914,4.7972 25.1304,4.7972 28.6111,5.1136 31.1624,6.95287 33.0214,7.98127 37.412,8.61414 40.4774,8.09995 42.5342,6.854 44.1164,7.0913 46.0941,8.0406 46.4896,8.4362 49.0211,9.2272 53.9258,9.4646 56.4575,7.8033 58.7515,7.0913 58.6475,8.2971 59,13 60,13"
+ id="path3013-3"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccc" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer3"
+ inkscape:label="World">
+<path
+ style="color:#000000;fill:none;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+ d="M -1,5 z"
+ id="path3806"
+ inkscape:connector-curvature="0" />
+<image
+ y="13.0694"
+ x="3.9045"
+ id="image3824-5-8"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ startPlanet="" />
+<image
+ y="12.1503"
+ x="53.8453"
+ id="image3824-5-1-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ destinationPlanet="" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer4"
+ inkscape:label="Paths"
+ style="display:inline" />
+</svg>

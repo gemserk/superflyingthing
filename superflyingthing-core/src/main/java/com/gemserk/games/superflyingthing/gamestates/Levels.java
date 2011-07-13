@@ -26,6 +26,7 @@ public class Levels {
 			"data/levels/level05.svg", //
 			"data/levels/level06.svg", //
 			"data/levels/level07.svg", //
+			"data/levels/level08.svg", //
 	// "data/levels/level03.svg", //
 	// "data/levels/level03.svg", //
 	// "data/levels/level03.svg", //
