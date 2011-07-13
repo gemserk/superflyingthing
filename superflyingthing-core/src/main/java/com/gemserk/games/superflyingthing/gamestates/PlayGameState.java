@@ -204,10 +204,10 @@ public class PlayGameState extends GameStateImpl {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
 
-		entityTemplates.boxObstacle(centerX, -1f, worldWidth, 0.1f, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + 1f, worldWidth, 0.1f, 0f);
-		entityTemplates.boxObstacle(-1f, centerY, 0.1f, worldHeight, 0f);
-		entityTemplates.boxObstacle(worldWidth + 1f, centerY, 0.1f, worldHeight, 0f);
+		entityTemplates.boxObstacle(centerX, -0.2f, worldWidth, 0.1f, 0f);
+		entityTemplates.boxObstacle(centerX, worldHeight + 0.2f, worldWidth, 0.1f, 0f);
+		entityTemplates.boxObstacle(-0.2f, centerY, 0.1f, worldHeight, 0f);
+		entityTemplates.boxObstacle(worldWidth + 0.2f, centerY, 0.1f, worldHeight, 0f);
 	}
 
 	class ChallengeMode {

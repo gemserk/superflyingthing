@@ -31,6 +31,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private Sprite backgroundSprite;
 
 	public LevelSelectionGameState(Game game) {
 		this.game = game;
@@ -123,12 +124,16 @@ public class LevelSelectionGameState extends GameStateImpl {
 			}
 		};
 
+		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
+		backgroundSprite.setPosition(0, 0);
+		backgroundSprite.setSize(width, height);
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
+		backgroundSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 		// GuiControls.debugRender(scene);

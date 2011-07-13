@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -29,6 +30,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private Sprite backgroundSprite;
 
 	public SelectPlayModeGameState(Game game) {
 		this.game = game;
@@ -122,12 +124,17 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					monitorKey("back", Keys.ESCAPE);
 			}
 		};
+		
+		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
+		backgroundSprite.setPosition(0, 0);
+		backgroundSprite.setSize(width, height);
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
+		backgroundSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}

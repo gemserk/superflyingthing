@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -25,6 +26,7 @@ public class MainMenuGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	
 	Container container;
+	private Sprite backgroundSprite;
 
 	public MainMenuGameState(Game game) {
 		this.game = game;
@@ -45,7 +47,7 @@ public class MainMenuGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 		container = new Container();
 
-		Text text = new Text("Super Flying Thing - Prototype", centerX, height * 0.9f).setColor(Color.GREEN);
+		Text text = new Text("Super Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
 		text.setFont(titleFont);
 		
 		TextButton playButton = GuiControls.textButton() //
@@ -83,12 +85,17 @@ public class MainMenuGameState extends GameStateImpl {
 		if (Gdx.app.getType() != ApplicationType.Applet)
 			container.add(exitButton);
 		
+		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
+		backgroundSprite.setPosition(0, 0);
+		backgroundSprite.setSize(width, height);
+		
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
+		backgroundSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}

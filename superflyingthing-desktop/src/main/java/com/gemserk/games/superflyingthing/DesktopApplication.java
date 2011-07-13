@@ -31,7 +31,7 @@ public class DesktopApplication {
 		config.width = 800;
 		config.height = 480;
 		config.fullscreen = false;
-		config.title = "Super Flying Thing - Prototype";
+		config.title = "Super Flying Thing";
 		config.useGL20 = false;
 		config.useCPUSynch = false;
 		config.forceExit = true;
