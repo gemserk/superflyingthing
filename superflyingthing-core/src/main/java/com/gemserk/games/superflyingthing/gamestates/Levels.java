@@ -28,7 +28,7 @@ public class Levels {
 			"data/levels/level06.svg", //
 			"data/levels/level07.svg", //
 			"data/levels/level08.svg", //
-	// "data/levels/level03.svg", //
+			"data/levels/level09.svg", //
 	// "data/levels/level03.svg", //
 	// "data/levels/level03.svg", //
 	// "data/levels/level03.svg", //
@@ -83,7 +83,7 @@ public class Levels {
 				level.obstacles.add(obstacle);
 			}
 		}.process(document);
-		
+
 		new LayerProcessor("Items") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				Item i = new Item();

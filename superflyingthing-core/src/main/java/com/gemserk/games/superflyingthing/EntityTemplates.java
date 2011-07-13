@@ -405,7 +405,7 @@ public class EntityTemplates {
 				Body body = physics.getBody();
 				
 				Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
-				force.nor().mul(10000f);
+				force.nor().mul(50000f);
 				body.applyForce(force, spatial.getPosition());
 				 body.applyTorque(10f);
 				
