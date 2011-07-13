@@ -67,7 +67,7 @@ import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
-public class PlayGameState extends GameStateImpl  {
+public class PlayGameState extends GameStateImpl {
 
 	// temporal
 
@@ -92,7 +92,7 @@ public class PlayGameState extends GameStateImpl  {
 	public PlayGameState(Game game) {
 		this.game = game;
 	}
-	
+
 	@Override
 	public void init() {
 		resetPressed = false;
@@ -221,14 +221,14 @@ public class PlayGameState extends GameStateImpl  {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									world.deleteEntity(gameDataComponent.ship);
 
-									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									entityTemplates.deadShip(superSheepSpatial);
+									// Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+									// entityTemplates.deadShip(superSheepSpatial);
 									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!
 									// world.(deadSuperSheepEntity);
 
 									gameDataComponent.ship = null;
 
-									PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 300, false);
+									// PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 300, false);
 								}
 							});
 							put(Triggers.noEntityTrigger, new Trigger() {
@@ -243,7 +243,7 @@ public class PlayGameState extends GameStateImpl  {
 									attachmentComponent.setEntity(ship);
 									gameDataComponent.ship = ship;
 									// PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 500, 500, false);
-									triggered();
+									// triggered();
 								}
 							});
 						}
@@ -366,7 +366,7 @@ public class PlayGameState extends GameStateImpl  {
 			entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f);
 			entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f);
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
-			
+
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
