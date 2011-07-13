@@ -199,7 +199,7 @@ public class PlayGameState extends GameStateImpl {
 		};
 
 	}
-	
+
 	private void createWorldLimits(float worldWidth, float worldHeight) {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
@@ -265,15 +265,9 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									world.deleteEntity(gameDataComponent.ship);
-
-									// Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									// entityTemplates.deadShip(superSheepSpatial);
 									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!
-									// world.(deadSuperSheepEntity);
-
 									gameDataComponent.ship = null;
-
-									// PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 200, 300, false);
+									gameData.deaths++;
 								}
 							});
 							put(Triggers.noEntityTrigger, new Trigger() {
@@ -430,9 +424,10 @@ public class PlayGameState extends GameStateImpl {
 									world.deleteEntity(gameDataComponent.ship);
 
 									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									Entity deadSuperSheepEntity = entityTemplates.deadShip(superSheepSpatial);
+									entityTemplates.deadShip(superSheepSpatial);
 
 									gameDataComponent.ship = null;
+									gameData.deaths++;
 
 									Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
 								}
@@ -664,12 +659,16 @@ public class PlayGameState extends GameStateImpl {
 		if (done) {
 			if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
-				if (!Levels.hasLevel(GameInformation.level + 1))
-					game.transition(game.getLevelSelectionScreen(), 200, 300);
-				else {
-					GameInformation.level++;
-					game.getPlayScreen().restart();
-				}
+
+				game.transition(game.getGameOverScreen(), 0, 300, false);
+
+				// if (!Levels.hasLevel(GameInformation.level + 1))
+				// game.transition(game.getLevelSelectionScreen(), 200, 300);
+				// else {
+				// GameInformation.level++;
+				// game.getPlayScreen().restart();
+				// }
+				
 			} else {
 				game.getPlayScreen().restart();
 			}

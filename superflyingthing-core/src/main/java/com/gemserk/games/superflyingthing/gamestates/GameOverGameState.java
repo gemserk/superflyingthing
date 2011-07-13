@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -52,13 +51,14 @@ public class GameOverGameState extends GameStateImpl {
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
-		whiteRectangle.setColor(0f, 0f, 0f, 0.75f);
+		whiteRectangle.setColor(0f, 0f, 0f, 0.2f);
 
-		container.add(GuiControls.label("Game Over") //
+		container.add(GuiControls.label("YOUR SCORE HERE") //
 				.position(centerX, height * 0.9f) //
 				.color(Color.GREEN) //
 				.font(titleFont)//
 				.build());
+
 		container.add(GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
 				.text("Try Again") //
@@ -69,18 +69,30 @@ public class GameOverGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getPlayScreen()) //
-								.leaveTime(250) //
-								.enterTime(250) //
-								.leaveTransitionHandler(new TransitionHandler() {
-									@Override
-									public void onEnd() {
-										game.getPlayScreen().restart();
-									}
-								}).start();
+						restartLevel();
 					}
 				})//
 				.build());
+
+		String nextLevelText = "Next Level";
+		if (!Levels.hasLevel(GameInformation.level + 1))
+			nextLevelText = "Select Level";
+
+		container.add(GuiControls.textButton() //
+				.position(centerX, height * 0.5f) //
+				.text(nextLevelText) //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.boundsOffset(20, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						nextLevel();
+					}
+				})//
+				.build());
+
 		container.add(GuiControls.textButton() //
 				.position(centerX, height * 0.3f) //
 				.text("Main Menu") //
@@ -91,15 +103,7 @@ public class GameOverGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getMainMenuScreen()) //
-								.leaveTime(250) //
-								.enterTime(250) //
-								.leaveTransitionHandler(new TransitionHandler() {
-									@Override
-									public void onEnd() {
-										game.getPlayScreen().dispose();
-									}
-								}).start();
+						mainMenu();
 					}
 				})//
 				.build());
@@ -107,12 +111,52 @@ public class GameOverGameState extends GameStateImpl {
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				if (Gdx.app.getType() == ApplicationType.Android)
-					monitorKey("mainMenu", Keys.BACK);
-				else
-					monitorKey("mainMenu", Keys.ESCAPE);
+				monitorKeys("mainMenu", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("restartLevel", Keys.R);
+				monitorKeys("nextLevel", Keys.SPACE, Keys.ENTER, Keys.N);
 			}
 		};
+	}
+
+	private void nextLevel() {
+		if (!Levels.hasLevel(GameInformation.level + 1)) {
+			game.transition(game.getLevelSelectionScreen(), 200, 300);
+		} else {
+			GameInformation.level++;
+			game.transition(game.getPlayScreen()) //
+					.leaveTime(250) //
+					.enterTime(250) //
+					.leaveTransitionHandler(new TransitionHandler() {
+						@Override
+						public void onEnd() {
+							game.getPlayScreen().restart();
+						}
+					}).start();
+		}
+	}
+
+	private void mainMenu() {
+		game.transition(game.getMainMenuScreen()) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.leaveTransitionHandler(new TransitionHandler() {
+					@Override
+					public void onEnd() {
+						game.getPlayScreen().dispose();
+					}
+				}).start();
+	}
+
+	private void restartLevel() {
+		game.transition(game.getPlayScreen()) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.leaveTransitionHandler(new TransitionHandler() {
+					@Override
+					public void onEnd() {
+						game.getPlayScreen().restart();
+					}
+				}).start();
 	}
 
 	@Override
@@ -154,10 +198,15 @@ public class GameOverGameState extends GameStateImpl {
 		Synchronizers.synchronize(delta);
 		inputDevicesMonitor.update();
 		container.update();
-		if (inputDevicesMonitor.getButton("mainMenu").isReleased()) {
-			game.transition(game.getMainMenuScreen(), 500, 500);
-			game.getPlayScreen().dispose();
-		}
+
+		if (inputDevicesMonitor.getButton("mainMenu").isReleased())
+			mainMenu();
+
+		if (inputDevicesMonitor.getButton("restartLevel").isReleased())
+			restartLevel();
+
+		if (inputDevicesMonitor.getButton("nextLevel").isReleased())
+			nextLevel();
 	}
 
 	@Override
