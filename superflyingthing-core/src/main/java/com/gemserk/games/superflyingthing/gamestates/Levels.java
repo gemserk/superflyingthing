@@ -13,6 +13,7 @@ import com.gemserk.commons.svg.inkscape.DocumentParser;
 import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
 import com.gemserk.games.superflyingthing.LayerProcessor;
 import com.gemserk.games.superflyingthing.gamestates.Level.DestinationPlanet;
+import com.gemserk.games.superflyingthing.gamestates.Level.Item;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.gamestates.Level.StartPlanet;
 
@@ -59,13 +60,6 @@ public class Levels {
 		}.process(document);
 
 		new LayerProcessor("Obstacles") {
-
-			// protected void handleDocument(com.gemserk.commons.svg.inkscape.SvgDocument document, Element element) {
-			// level.w = document.getWidth();
-			// level.h = document.getHeight();
-			// level.name = element.getAttribute("levelName");
-			// };
-
 			@Override
 			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
 				Obstacle obstacle = new Obstacle(vertices);
@@ -88,6 +82,15 @@ public class Levels {
 
 				level.obstacles.add(obstacle);
 			}
+		}.process(document);
+		
+		new LayerProcessor("Items") {
+			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
+				Item i = new Item();
+				i.x = x;
+				i.y = y;
+				level.items.add(i);
+			};
 		}.process(document);
 
 		new LayerProcessor("World") {
