@@ -131,11 +131,11 @@ public class PauseGameState extends GameStateImpl {
 							}
 						}).start();
 
-						if (GameData.gameMode == GameData.RandomGameMode) {
+						if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 							Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
-						} else if (GameData.gameMode == GameData.PracticeGameMode) {
+						} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 							Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
-						} else if (GameData.gameMode == GameData.ChallengeGameMode) {
+						} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 							Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
 						}
 

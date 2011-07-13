@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.text.MessageFormat;
 import java.util.HashMap;
 
 import com.artemis.Entity;
@@ -51,6 +52,7 @@ import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
@@ -88,6 +90,9 @@ public class PlayGameState extends GameStateImpl {
 	EntityBuilder entityBuilder;
 	private com.artemis.World world;
 	private WorldWrapper worldWrapper;
+
+	GameData gameData;
+	private Text itemsTakenLabel;
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -147,13 +152,25 @@ public class PlayGameState extends GameStateImpl {
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder);
 
-		if (GameData.gameMode == GameData.RandomGameMode) {
+		gameData = new GameData();
+
+		BitmapFont font = resourceManager.getResourceValue("GameFont");
+
+		itemsTakenLabel = GuiControls.label("") //
+				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.95f) //
+				.font(font) //
+				.color(1f, 1f, 1f, 1f) //
+				.build();
+
+		container.add(itemsTakenLabel);
+
+		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			new RandomMode().create(this);
 			Analytics.traker.trackPageView("/startChallengeMode", "/startChallengeMode", null);
-		} else if (GameData.gameMode == GameData.PracticeGameMode) {
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			new PracticeMode().create(this);
 			Analytics.traker.trackPageView("/startPracticeMode", "/startPracticeMode", null);
-		} else if (GameData.gameMode == GameData.ChallengeGameMode) {
+		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			new ChallengeMode().create(this);
 			Analytics.traker.trackPageView("/startRandomMode", "/startRandomMode", null);
 		}
@@ -167,6 +184,7 @@ public class PlayGameState extends GameStateImpl {
 				monitorKeys("restart", Keys.MENU, Keys.R);
 			}
 		};
+
 	}
 
 	class ChallengeMode {
@@ -203,8 +221,18 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.items.size(); i++) {
 				Level.Item item = level.items.get(i);
-				entityTemplates.diamond(item.x, item.y, 0.2f);
+				entityTemplates.diamond(item.x, item.y, 0.2f, new Trigger() {
+					@Override
+					protected void onTrigger(Entity e) {
+						gameData.currentItems++;
+						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+					}
+				});
 			}
+
+			gameData.totalItems = level.items.size();
+			if (gameData.totalItems > 0)
+				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f);
 			entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f);
@@ -212,7 +240,7 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity, level.items.size())) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
 							put(Triggers.entityDeadTrigger, new Trigger() {
@@ -265,7 +293,7 @@ public class PlayGameState extends GameStateImpl {
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-			Text levelNameText = GuiControls.label("Level " + (GameData.level + 1) + ": " + level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
+			Text levelNameText = GuiControls.label("Level " + (GameInformation.level + 1) + ": " + level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
 					.font(font) //
 					.color(1f, 1f, 1f, 1f) //
 					.build();
@@ -281,8 +309,8 @@ public class PlayGameState extends GameStateImpl {
 		void create(PlayGameState p) {
 			p.entityTemplates = entityTemplates;
 
-			if (Levels.hasLevel(GameData.level)) {
-				Level level = Levels.level(GameData.level);
+			if (Levels.hasLevel(GameInformation.level)) {
+				Level level = Levels.level(GameInformation.level);
 				loadLevel(entityTemplates, level);
 			}
 
@@ -346,10 +374,19 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.diamond(x, y, w);
+				entityTemplates.diamond(x, y, w, new Trigger() {
+					@Override
+					protected void onTrigger(Entity e) {
+						gameData.currentItems++;
+						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+					}
+				});
 
 				itemsCount++;
 			}
+
+			gameData.totalItems = itemsCount;
+			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
 
@@ -372,7 +409,7 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity, itemsCount)) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
 							put(Triggers.entityDeadTrigger, new Trigger() {
@@ -461,7 +498,7 @@ public class PlayGameState extends GameStateImpl {
 				entityTemplates.obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f));
 				obstacleX += 8f;
 			}
-			
+
 			int itemsCount = 0;
 
 			for (int i = 0; i < 10; i++) {
@@ -483,10 +520,19 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.diamond(x, y, w);
-				
+				entityTemplates.diamond(x, y, w, new Trigger() {
+					@Override
+					protected void onTrigger(Entity e) {
+						gameData.currentItems++;
+						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+					}
+				});
+
 				itemsCount++;
 			}
+
+			gameData.totalItems = itemsCount;
+			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
@@ -508,7 +554,7 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity, itemsCount)) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
 							put(Triggers.noEntityTrigger, new Trigger() {
@@ -611,12 +657,12 @@ public class PlayGameState extends GameStateImpl {
 			game.transition(game.getPauseScreen(), 200, 300, false);
 
 		if (done) {
-			if (GameData.gameMode == GameData.ChallengeGameMode) {
+			if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
-				if (!Levels.hasLevel(GameData.level + 1))
+				if (!Levels.hasLevel(GameInformation.level + 1))
 					game.transition(game.getLevelSelectionScreen(), 200, 300);
 				else {
-					GameData.level++;
+					GameInformation.level++;
 					game.getPlayScreen().restart();
 				}
 			} else {

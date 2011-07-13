@@ -86,7 +86,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased() {
-							GameData.level = levelIndex;
+							GameInformation.level = levelIndex;
 							game.transition(game.getPlayScreen(), 500, 250);
 						}
 					}) //

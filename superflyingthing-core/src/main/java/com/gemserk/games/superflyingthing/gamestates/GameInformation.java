@@ -1,6 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-public class GameData {
+public class GameInformation {
 	
 	public static final int RandomGameMode = 0;
 

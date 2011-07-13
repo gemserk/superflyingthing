@@ -197,24 +197,33 @@ public class Components {
 		float direction;
 
 	}
+	
+	public static class GameData {
+		
+		public int deaths;
+		
+		public int totalItems;
+		
+		public int currentItems;
+		
+		public GameData() {
+			this.deaths = 0;
+			this.currentItems = 0;
+			this.totalItems = 0;
+		}
+		
+	}
 
 	public static class GameDataComponent extends Component {
 
 		public Entity ship;
 		public Entity startPlanet;
 		public Entity camera;
-		public int deaths;
-	
-		public int totalItems;
-		public int currentItems;
 
-		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera, int totalItems) {
+		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera) {
 			this.ship = ship;
 			this.startPlanet = startPlanet;
 			this.camera = camera;
-			this.deaths = 0;
-			this.currentItems = 0;
-			this.totalItems = totalItems;
 		}
 
 	}
