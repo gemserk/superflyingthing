@@ -111,11 +111,11 @@ public class PlayGameState extends GameStateImpl {
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		
+
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		
+
 		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
-		
+
 		renderLayers.add(new RenderLayer(-1000, -100, backgroundLayerCamera));
 		renderLayers.add(new RenderLayer(-100, 100, worldCamera));
 
@@ -173,7 +173,7 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		container.add(itemsTakenLabel);
-		
+
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
@@ -199,15 +199,22 @@ public class PlayGameState extends GameStateImpl {
 		};
 
 	}
+	
+	private void createWorldLimits(float worldWidth, float worldHeight) {
+		float centerX = worldWidth * 0.5f;
+		float centerY = worldHeight * 0.5f;
+
+		entityTemplates.boxObstacle(centerX, -1f, worldWidth, 0.1f, 0f);
+		entityTemplates.boxObstacle(centerX, worldHeight + 1f, worldWidth, 0.1f, 0f);
+		entityTemplates.boxObstacle(-1f, centerY, 0.1f, worldHeight, 0f);
+		entityTemplates.boxObstacle(worldWidth + 1f, centerY, 0.1f, worldHeight, 0f);
+	}
 
 	class ChallengeMode {
 
 		void loadLevel(EntityTemplates templates, Level level) {
 			float worldWidth = level.w;
 			float worldHeight = level.h;
-
-			float x = worldWidth * 0.5f;
-			float y = worldHeight * 0.5f;
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, 40f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
@@ -247,10 +254,7 @@ public class PlayGameState extends GameStateImpl {
 			if (gameData.totalItems > 0)
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f);
-			entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f);
-			entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f);
-			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
+			createWorldLimits(worldWidth, worldHeight);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -413,13 +417,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 
-			float x = worldWidth * 0.5f;
-			float y = worldHeight * 0.5f;
-
-			entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f);
-			entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f);
-			entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f);
-			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
+			createWorldLimits(worldWidth, worldHeight);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -558,13 +556,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 
-			float x = worldWidth * 0.5f;
-			float y = worldHeight * 0.5f;
-
-			entityTemplates.boxObstacle(x, 0f, worldWidth, 0.1f, 0f);
-			entityTemplates.boxObstacle(x, worldHeight, worldWidth, 0.1f, 0f);
-			entityTemplates.boxObstacle(0, y, 0.1f, worldHeight, 0f);
-			entityTemplates.boxObstacle(worldWidth, y, 0.1f, worldHeight, 0f);
+			createWorldLimits(worldWidth, worldHeight);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //

@@ -79,7 +79,7 @@ public class EntityTemplates {
 			.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
 			.build();
 	}
-
+	
 	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera)) //
