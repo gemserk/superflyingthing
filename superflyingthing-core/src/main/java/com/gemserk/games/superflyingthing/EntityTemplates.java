@@ -30,6 +30,7 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.superflyingthing.Behaviors.CameraFollowBehavior;
+import com.gemserk.games.superflyingthing.Behaviors.EntityFollowBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
@@ -80,18 +81,22 @@ public class EntityTemplates {
 			.build();
 	}
 	
-	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera) {
+	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, float x, float y) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera)) //
 				.component(new TargetComponent(null)) //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 0f, 0f, 0f))) //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					private Behavior cameraFollowBehavior = new CameraFollowBehavior();
+					private Behavior entityFollowBehavior = new EntityFollowBehavior();
 
 					@Override
 					public void update(com.artemis.World world, Entity e) {
+						// entity follow another entity behavior
+						entityFollowBehavior.update(world.getDelta(), e);
 						cameraFollowBehavior.update(world.getDelta(), e);
-
+						
 						Camera camera = ComponentWrapper.getCamera(e);
 						libgdxCamera.move(camera.getX(), camera.getY());
 						libgdxCamera.zoom(camera.getZoom());

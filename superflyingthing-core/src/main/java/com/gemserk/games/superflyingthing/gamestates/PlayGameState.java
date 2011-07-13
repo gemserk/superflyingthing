@@ -228,7 +228,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y);
 
 			for (int i = 0; i < level.obstacles.size(); i++) {
 				Obstacle o = level.obstacles.get(i);
@@ -399,7 +399,7 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = itemsCount;
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
@@ -540,7 +540,7 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = itemsCount;
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f);
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {

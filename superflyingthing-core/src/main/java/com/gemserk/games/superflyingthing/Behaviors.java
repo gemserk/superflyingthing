@@ -30,16 +30,29 @@ public class Behaviors {
 	public static class CameraFollowBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity entity) {
-			TargetComponent targetComponent = entity.getComponent(TargetComponent.class);
+		public void update(int delta, Entity e) {
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Camera camera = ComponentWrapper.getCamera(e);
+			camera.setPosition(spatial.getX(), spatial.getY());
+		}
+
+	}
+
+	public static class EntityFollowBehavior extends Behavior {
+
+		@Override
+		public void update(int delta, Entity e) {
+			TargetComponent targetComponent = e.getComponent(TargetComponent.class);
 			Entity target = targetComponent.target;
 			if (target == null)
 				return;
-			Spatial spatial = ComponentWrapper.getSpatial(target);
+			Spatial targetSpatial = ComponentWrapper.getSpatial(target);
+			if (targetSpatial == null)
+				return;
+			Spatial spatial = ComponentWrapper.getSpatial(e);
 			if (spatial == null)
 				return;
-			Camera camera = ComponentWrapper.getCamera(entity);
-			camera.setPosition(spatial.getX(), spatial.getY());
+			spatial.set(targetSpatial);
 		}
 
 	}
@@ -375,7 +388,7 @@ public class Behaviors {
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
-			
+
 			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
 			Trigger trigger = triggerComponent.getTrigger(Triggers.noEntityTrigger);
 			trigger.trigger(e);
