@@ -4,7 +4,8 @@ import com.artemis.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.gemserk.animation4j.transitions.FloatTransition;
+import com.gemserk.animation4j.interpolator.FloatInterpolator;
+import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -22,11 +23,10 @@ public class Scripts {
 
 		private final Libgdx2dCamera libgdxCamera;
 
-		FloatTransition xTransition = new FloatTransition();
-		FloatTransition yTransition = new FloatTransition();
-
-		float originX;
-		float originY;
+		float startX;
+		float startY;
+		
+		TimeTransition timeTransition = new TimeTransition();
 
 		public CameraScript(Libgdx2dCamera libgdxCamera) {
 			this.libgdxCamera = libgdxCamera;
@@ -35,10 +35,8 @@ public class Scripts {
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
-			xTransition.set(spatial.getX());
-			yTransition.set(spatial.getY());
-			originX = spatial.getX();
-			originY = spatial.getY();
+			startX = spatial.getX();
+			startY = spatial.getY();
 		}
 
 		@Override
@@ -66,20 +64,19 @@ public class Scripts {
 				return;
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 
-			xTransition.update(world.getDelta());
-			yTransition.update(world.getDelta());
+			timeTransition.update(world.getDelta());
 
-			if (!xTransition.isFinished() && !yTransition.isFinished()) {
-				spatial.setPosition(xTransition.get(), yTransition.get());
+			if (!timeTransition.isFinished()) {
+				float x = FloatInterpolator.interpolate(startX, targetSpatial.getX(), timeTransition.get());
+				float y = FloatInterpolator.interpolate(startY, targetSpatial.getY(), timeTransition.get());
+				spatial.setPosition(x, y);
 			} else {
-
-				if (spatial.getPosition().dst(targetSpatial.getPosition()) < 2f) {
+				if (spatial.getPosition().dst(targetSpatial.getPosition()) < 3f) {
 					spatial.set(targetSpatial);
-					xTransition.set(spatial.getX());
-					yTransition.set(spatial.getY());
 				} else {
-					xTransition.set(originX, 1000);
-					yTransition.set(originY, 1000);
+					startX = spatial.getX();
+					startY = spatial.getY();
+					timeTransition.start(1500);
 				}
 
 			}
