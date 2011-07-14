@@ -25,6 +25,7 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.commons.gdx.graphics.ParticleEmitterUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
@@ -86,9 +87,19 @@ public class EntityTemplates {
 	public Entity explosionEffect(float x, float y) {
 		ParticleEmitter explosionEmitter = resourceManager.getResourceValue("ExplosionEmitter");
 		explosionEmitter.start();
+		ParticleEmitterUtils.scaleEmitter(explosionEmitter, 0.02f);
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
-				.component(new ParticleEmitterComponent(explosionEmitter, 0.02f)) //
+				.component(new ParticleEmitterComponent(explosionEmitter)) //
+				.component(new ScriptComponent(new ScriptJavaImpl(){
+					@Override
+					public void update(com.artemis.World world, Entity e) {
+						ParticleEmitterComponent particleEmitterComponent = ComponentWrapper.getParticleEmitter(e);
+						ParticleEmitter particleEmitter = particleEmitterComponent.getParticleEmitter();
+						if (particleEmitter.isComplete())
+							world.deleteEntity(e);
+					}
+				})) //
 				.build();
 	}
 
@@ -135,11 +146,15 @@ public class EntityTemplates {
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
 		e.addComponent(new ScriptComponent(new ShipScript()));
+		
+		ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
+		ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.01f);
+		e.addComponent(new ParticleEmitterComponent(thrustEmitter));
 
 		e.refresh();
 		return e;
 	}
-
+	
 	public Entity diamond(float x, float y, float radius) {
 		return diamond(x, y, radius, new Trigger());
 	}

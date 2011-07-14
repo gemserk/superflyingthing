@@ -4,9 +4,7 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter.ScaledNumericValue;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -19,8 +17,6 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 	SpriteBatch spriteBatch;
 
 	private final Libgdx2dCamera libgdx2dCamera;
-
-	final Vector2 center = new Vector2(0.5f, 0.5f);
 
 	public ParticleEmitterSystem(Libgdx2dCamera libgdx2dCamera) {
 		super(ParticleEmitterComponent.class);
@@ -51,29 +47,24 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 		SpatialComponent spatialComponent = e.getComponent(SpatialComponent.class);
 
 		ParticleEmitter emitter = particleEmitterComponent.getParticleEmitter();
-		float scale = particleEmitterComponent.getScale();
 
 		Spatial spatial = spatialComponent.getSpatial();
 
-		center.set(spatial.getPosition());
+		float hmin = emitter.getAngle().getHighMin();
+		float hmax = emitter.getAngle().getHighMax();
 
-		scaleValue(emitter.getScale(), scale);
-		scaleValue(emitter.getVelocity(), scale);
-		scaleValue(emitter.getGravity(), scale);
-		scaleValue(emitter.getWind(), scale);
+		float lmin = emitter.getAngle().getLowMin();
+		float lmax = emitter.getAngle().getLowMax();
 
-		// camera.project(center);
+		emitter.getAngle().setHigh(hmin + spatial.getAngle(), hmax + spatial.getAngle());
+		emitter.getAngle().setLow(lmin + spatial.getAngle(), lmax + spatial.getAngle());
 
-		emitter.setPosition(center.x, center.y);
+		emitter.setPosition(spatial.getX(), spatial.getY());
+
 		emitter.draw(spriteBatch, deltaF);
-
-		if (emitter.isComplete())
-			world.deleteEntity(e);
-	}
-
-	private void scaleValue(ScaledNumericValue value, float s) {
-		value.setHigh(value.getHighMin() * s, value.getHighMax() * s);
-		value.setLow(value.getLowMin() * s, value.getLowMax() * s);
+		
+		emitter.getAngle().setHigh(hmin, hmax);
+		emitter.getAngle().setLow(lmin, lmax);
 	}
 
 	@Override

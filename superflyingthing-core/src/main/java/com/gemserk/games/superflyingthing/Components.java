@@ -232,19 +232,13 @@ public class Components {
 	public static class ParticleEmitterComponent extends Component {
 		
 		private final ParticleEmitter particleEmitter;
-		private final float scale;
 		
 		public ParticleEmitter getParticleEmitter() {
 			return particleEmitter;
 		}
 		
-		public float getScale() {
-			return scale;
-		}
-		
-		public ParticleEmitterComponent(ParticleEmitter particleEmitter, float scale) {
+		public ParticleEmitterComponent(ParticleEmitter particleEmitter) {
 			this.particleEmitter = particleEmitter;
-			this.scale = scale;
 		}
 		
 	}
