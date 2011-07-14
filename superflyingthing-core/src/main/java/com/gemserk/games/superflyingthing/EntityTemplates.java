@@ -148,7 +148,7 @@ public class EntityTemplates {
 		e.addComponent(new ScriptComponent(new ShipScript()));
 		
 		ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
-		ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.01f);
+		ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.005f);
 		e.addComponent(new ParticleEmitterComponent(thrustEmitter));
 
 		e.refresh();
