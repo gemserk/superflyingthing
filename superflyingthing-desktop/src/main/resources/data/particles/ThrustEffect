@@ -98,11 +98,11 @@ active: false
 - Tint - 
 colorsCount: 6
 colors0: 1.0
-colors1: 0.5882353
-colors2: 0.0
-colors3: 1.0
-colors4: 0.0
-colors5: 0.0
+colors1: 1.0
+colors2: 1.0
+colors3: 0.7294118
+colors4: 0.7294118
+colors5: 0.7294118
 timelineCount: 2
 timeline0: 0.0
 timeline1: 1.0
@@ -114,7 +114,7 @@ highMax: 1.0
 relative: false
 scalingCount: 4
 scaling0: 0.0
-scaling1: 0.98421054
+scaling1: 0.98421055
 scaling2: 0.2614035
 scaling3: 0.0
 timelineCount: 4
@@ -126,7 +126,7 @@ timeline3: 0.9931507
 attached: false
 continuous: true
 aligned: false
-additive: true
+additive: false
 behind: false
 - Image Path -
 particle.png

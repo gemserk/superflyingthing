@@ -2,11 +2,11 @@ Explosion
 - Delay -
 active: false
 - Duration - 
-lowMin: 1000.0
-lowMax: 1000.0
+lowMin: 150.0
+lowMax: 150.0
 - Count - 
-min: 20
-max: 20
+min: 30
+max: 50
 - Emission - 
 lowMin: 10.0
 lowMax: 10.0
@@ -20,8 +20,8 @@ timeline0: 0.0
 - Life - 
 lowMin: 0.0
 lowMax: 0.0
-highMin: 1000.0
-highMax: 1000.0
+highMin: 500.0
+highMax: 500.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -70,7 +70,7 @@ active: true
 lowMin: 30.0
 lowMax: 50.0
 highMin: 50.0
-highMax: 80.0
+highMax: 125.0
 relative: false
 scalingCount: 1
 scaling0: 1.0
@@ -94,28 +94,20 @@ active: false
 - Gravity - 
 active: false
 - Tint - 
-colorsCount: 15
-colors0: 0.78039217
-colors1: 0.0
-colors2: 0.0
-colors3: 0.8627451
-colors4: 0.57254905
-colors5: 0.17254902
+colorsCount: 9
+colors0: 1.0
+colors1: 0.94509804
+colors2: 0.85882354
+colors3: 1.0
+colors4: 0.87058824
+colors5: 0.0
 colors6: 1.0
-colors7: 0.2
-colors8: 0.2
-colors9: 1.0
-colors10: 0.2
-colors11: 0.2
-colors12: 0.8784314
-colors13: 0.0
-colors14: 0.0
-timelineCount: 5
+colors7: 0.0
+colors8: 0.0
+timelineCount: 3
 timeline0: 0.0
 timeline1: 0.26229507
-timeline2: 0.89724773
-timeline3: 0.94495416
-timeline4: 1.0
+timeline2: 1.0
 - Transparency - 
 lowMin: 0.0
 lowMax: 0.0
@@ -133,10 +125,10 @@ timeline1: 0.30821916
 timeline2: 0.74657536
 timeline3: 1.0
 - Options - 
-attached: true
+attached: false
 continuous: false
 aligned: false
-additive: true
+additive: false
 behind: false
 - Image Path -
-particle.png
+/tmp/explosion.png
