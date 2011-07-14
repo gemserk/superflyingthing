@@ -41,6 +41,7 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
+import com.gemserk.games.superflyingthing.artemis.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -82,7 +83,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, float x, float y) {
+	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, final float x, final float y) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera)) //
 				.component(new TargetComponent(null)) //
@@ -91,28 +92,30 @@ public class EntityTemplates {
 
 					private Behavior cameraFollowBehavior = new CameraFollowBehavior();
 					private Behavior entityFollowBehavior = new EntityFollowBehavior();
-					
+
 					FloatTransition xTransition = new FloatTransition();
 					FloatTransition yTransition = new FloatTransition();
 					
+					float originX;
+					float originY;
+
 					@Override
 					public void init(com.artemis.World world, Entity e) {
 						Spatial spatial = ComponentWrapper.getSpatial(e);
-						
 						xTransition.set(spatial.getX());
 						yTransition.set(spatial.getY());
-						
-						xTransition.update(world.getDelta());
-						yTransition.update(world.getDelta());
+						originX = x;
+						originY = y;
 					}
 
 					@Override
 					public void update(com.artemis.World world, Entity e) {
 						// entity follow another entity behavior
-						cameraFollowBehavior.update(world.getDelta(), e);
-						entityFollowBehavior.update(world.getDelta(), e);
+						// entityFollowBehavior.update(world.getDelta(), e);
+
+						updatePosition(world, e);
 						
-						// updatePosition(world, e);
+						cameraFollowBehavior.update(world.getDelta(), e);
 
 						Camera camera = ComponentWrapper.getCamera(e);
 						libgdxCamera.move(camera.getX(), camera.getY());
@@ -123,23 +126,33 @@ public class EntityTemplates {
 					private void updatePosition(com.artemis.World world, Entity e) {
 						TargetComponent targetComponent = e.getComponent(TargetComponent.class);
 						Entity target = targetComponent.target;
+
 						if (target == null)
 							return;
+
 						Spatial targetSpatial = ComponentWrapper.getSpatial(target);
 						if (targetSpatial == null)
 							return;
 						Spatial spatial = ComponentWrapper.getSpatial(e);
-						
+
 						xTransition.update(world.getDelta());
 						yTransition.update(world.getDelta());
-						
-						if (xTransition.isFinished()) 
-							xTransition.set(targetSpatial.getX(), 1500);
 
-						if (yTransition.isFinished()) 
-							yTransition.set(targetSpatial.getY(), 1500);
+						if (!xTransition.isFinished() && !yTransition.isFinished()) {
+							spatial.setPosition(xTransition.get(), yTransition.get());
+						} else {
 
-						spatial.setPosition(xTransition.get(), yTransition.get());
+							if (spatial.getPosition().dst(targetSpatial.getPosition()) < 2f) {
+								spatial.set(targetSpatial);
+								xTransition.set(spatial.getX());
+								yTransition.set(spatial.getY());
+							} else {
+								xTransition.set(originX, 1000);
+								yTransition.set(originY, 1000);
+							}
+
+						}
+
 					}
 
 				})) //
@@ -279,6 +292,8 @@ public class EntityTemplates {
 				.type(BodyType.StaticBody) //
 				.userData(e) //
 				.build();
+
+		e.setGroup(Groups.planets);
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
