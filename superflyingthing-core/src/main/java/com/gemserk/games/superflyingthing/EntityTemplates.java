@@ -41,7 +41,6 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
-import com.gemserk.games.superflyingthing.artemis.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -292,8 +291,6 @@ public class EntityTemplates {
 				.type(BodyType.StaticBody) //
 				.userData(e) //
 				.build();
-
-		e.setGroup(Groups.planets);
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
