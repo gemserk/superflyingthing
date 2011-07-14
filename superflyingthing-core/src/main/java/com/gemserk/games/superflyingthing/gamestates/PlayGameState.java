@@ -59,6 +59,7 @@ import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
+import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
@@ -430,6 +431,11 @@ public class PlayGameState extends GameStateImpl {
 									gameData.deaths++;
 
 									Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
+									
+									TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
+									targetComponent.setTarget(null);
+									
+									
 								}
 							});
 							put(Triggers.noEntityTrigger, new Trigger() {

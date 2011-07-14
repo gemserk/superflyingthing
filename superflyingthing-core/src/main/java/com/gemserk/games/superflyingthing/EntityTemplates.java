@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.animation4j.transitions.FloatTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -51,9 +52,9 @@ public class EntityTemplates {
 		public static short ShipCategoryBits = 1;
 
 		public static short MiniPlanetCategoryBits = 2;
-		
+
 		public static short MovingObstacleCategoryBits = 4;
-		
+
 		public static short ObstacleCategoryBits = 8;
 
 	}
@@ -73,14 +74,14 @@ public class EntityTemplates {
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.jointBuilder = new JointBuilder(physicsWorld);
 	}
-	
+
 	public Entity staticSprite(Sprite sprite, float x, float y, float width, float height, float angle, int layer, float centerx, float centery, Color color) {
 		return entityBuilder //
-			.component(new SpatialComponent(new SpatialImpl(x, y, width, height, angle))) //
-			.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
-			.build();
+				.component(new SpatialComponent(new SpatialImpl(x, y, width, height, angle))) //
+				.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
+				.build();
 	}
-	
+
 	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, float x, float y) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera)) //
@@ -90,17 +91,55 @@ public class EntityTemplates {
 
 					private Behavior cameraFollowBehavior = new CameraFollowBehavior();
 					private Behavior entityFollowBehavior = new EntityFollowBehavior();
+					
+					FloatTransition xTransition = new FloatTransition();
+					FloatTransition yTransition = new FloatTransition();
+					
+					@Override
+					public void init(com.artemis.World world, Entity e) {
+						Spatial spatial = ComponentWrapper.getSpatial(e);
+						
+						xTransition.set(spatial.getX());
+						yTransition.set(spatial.getY());
+						
+						xTransition.update(world.getDelta());
+						yTransition.update(world.getDelta());
+					}
 
 					@Override
 					public void update(com.artemis.World world, Entity e) {
 						// entity follow another entity behavior
-						entityFollowBehavior.update(world.getDelta(), e);
 						cameraFollowBehavior.update(world.getDelta(), e);
+						entityFollowBehavior.update(world.getDelta(), e);
 						
+						// updatePosition(world, e);
+
 						Camera camera = ComponentWrapper.getCamera(e);
 						libgdxCamera.move(camera.getX(), camera.getY());
 						libgdxCamera.zoom(camera.getZoom());
 						libgdxCamera.rotate(camera.getAngle());
+					}
+
+					private void updatePosition(com.artemis.World world, Entity e) {
+						TargetComponent targetComponent = e.getComponent(TargetComponent.class);
+						Entity target = targetComponent.target;
+						if (target == null)
+							return;
+						Spatial targetSpatial = ComponentWrapper.getSpatial(target);
+						if (targetSpatial == null)
+							return;
+						Spatial spatial = ComponentWrapper.getSpatial(e);
+						
+						xTransition.update(world.getDelta());
+						yTransition.update(world.getDelta());
+						
+						if (xTransition.isFinished()) 
+							xTransition.set(targetSpatial.getX(), 1500);
+
+						if (yTransition.isFinished()) 
+							yTransition.set(targetSpatial.getY(), 1500);
+
+						spatial.setPosition(xTransition.get(), yTransition.get());
 					}
 
 				})) //
@@ -161,7 +200,7 @@ public class EntityTemplates {
 		e.refresh();
 		return e;
 	}
-	
+
 	public Entity diamond(float x, float y, float radius) {
 		return diamond(x, y, radius, new Trigger());
 	}
@@ -187,7 +226,7 @@ public class EntityTemplates {
 
 		e.addComponent(new SpriteComponent(sprite, 0));
 		e.addComponent(new GrabbableComponent());
-		
+
 		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
 			{
 				put(Triggers.itemGrabbedTrigger, trigger);
@@ -201,11 +240,11 @@ public class EntityTemplates {
 			@Override
 			public void update(com.artemis.World world, Entity e) {
 				removeWhenGrabbedBehavior.update(world.getDelta(), e);
-				
+
 				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 				if (!grabbableComponent.grabbed)
 					return;
-				
+
 				TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
 				Trigger trigger = triggerComponent.getTrigger(Triggers.itemGrabbedTrigger);
 
@@ -372,13 +411,13 @@ public class EntityTemplates {
 					.polygonShape(v) //
 					.restitution(0f) //
 					.categoryBits(CategoryBits.MovingObstacleCategoryBits) //
-					.maskBits((short)(CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
+					.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
 					.build();
 		}
 
 		Body body = bodyBuilder //
 				.mass(500f) //
-				 .inertia(1f) //
+				.inertia(1f) //
 				.fixtures(fixtureDefs) //
 				.position(x, y) //
 				.type(BodyType.DynamicBody) //
@@ -406,14 +445,14 @@ public class EntityTemplates {
 			public void update(com.artemis.World world, Entity e) {
 				Physics physics = ComponentWrapper.getPhysics(e);
 				Spatial spatial = ComponentWrapper.getSpatial(e);
-				
+
 				Body body = physics.getBody();
-				
+
 				Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
 				force.nor().mul(50000f);
 				body.applyForce(force, spatial.getPosition());
-				 body.applyTorque(10f);
-				
+				body.applyTorque(10f);
+
 				if (spatial.getPosition().dst(getCurrentTargetPosition()) < 1f) {
 					currentTarget++;
 					if (currentTarget >= points.length)
@@ -424,15 +463,15 @@ public class EntityTemplates {
 				float speed = linearVelocity.len();
 
 				float maxSpeed = 5f;
-				
+
 				if (speed > maxSpeed) {
 					linearVelocity.mul(maxSpeed / speed);
 					body.setLinearVelocity(linearVelocity);
 				}
-				
+
 				float angularVelocity = body.getAngularVelocity();
 				float maxAngularVelocity = 1f;
-				
+
 				if (angularVelocity > maxAngularVelocity) {
 					angularVelocity = maxAngularVelocity / angularVelocity;
 					body.setAngularVelocity(angularVelocity);

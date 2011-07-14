@@ -371,10 +371,16 @@ public class Behaviors {
 			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
 			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
 
-			if (attachableComponent.getOwner() != null)
-				targetComponent.setTarget(attachableComponent.getOwner());
-			else
+			// if (attachableComponent.getOwner() != null)
+			// targetComponent.setTarget(attachableComponent.getOwner());
+			// else
+			// targetComponent.setTarget(ship);
+
+			if (attachableComponent.getOwner() == null)
 				targetComponent.setTarget(ship);
+			else
+				targetComponent.setTarget(null);
+
 		}
 	}
 
