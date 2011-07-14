@@ -10,7 +10,6 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.gemserk.animation4j.transitions.FloatTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -21,7 +20,6 @@ import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -39,6 +37,11 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
+import com.gemserk.games.superflyingthing.Scripts.CameraScript;
+import com.gemserk.games.superflyingthing.Scripts.GrabbableItemScript;
+import com.gemserk.games.superflyingthing.Scripts.MovingObstacleScript;
+import com.gemserk.games.superflyingthing.Scripts.ShipScript;
+import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -58,7 +61,6 @@ public class EntityTemplates {
 	}
 
 	private final World physicsWorld;
-	private final com.artemis.World world;
 	private final BodyBuilder bodyBuilder;
 	private final JointBuilder jointBuilder;
 	private final ResourceManager<String> resourceManager;
@@ -66,7 +68,6 @@ public class EntityTemplates {
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
 		this.physicsWorld = physicsWorld;
-		this.world = world;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
@@ -85,69 +86,7 @@ public class EntityTemplates {
 				.component(new Components.CameraComponent(camera)) //
 				.component(new TargetComponent(null)) //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 0f, 0f, 0f))) //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					FloatTransition xTransition = new FloatTransition();
-					FloatTransition yTransition = new FloatTransition();
-					
-					float originX;
-					float originY;
-
-					@Override
-					public void init(com.artemis.World world, Entity e) {
-						Spatial spatial = ComponentWrapper.getSpatial(e);
-						xTransition.set(spatial.getX());
-						yTransition.set(spatial.getY());
-						originX = x;
-						originY = y;
-					}
-
-					@Override
-					public void update(com.artemis.World world, Entity e) {
-						updatePosition(world, e);
-						
-						Spatial spatial = ComponentWrapper.getSpatial(e);
-						Camera camera = ComponentWrapper.getCamera(e);
-						camera.setPosition(spatial.getX(), spatial.getY());
-
-						libgdxCamera.move(camera.getX(), camera.getY());
-						libgdxCamera.zoom(camera.getZoom());
-						libgdxCamera.rotate(camera.getAngle());
-					}
-
-					private void updatePosition(com.artemis.World world, Entity e) {
-						TargetComponent targetComponent = e.getComponent(TargetComponent.class);
-						Entity target = targetComponent.target;
-
-						if (target == null)
-							return;
-
-						Spatial targetSpatial = ComponentWrapper.getSpatial(target);
-						if (targetSpatial == null)
-							return;
-						Spatial spatial = ComponentWrapper.getSpatial(e);
-
-						xTransition.update(world.getDelta());
-						yTransition.update(world.getDelta());
-
-						if (!xTransition.isFinished() && !yTransition.isFinished()) {
-							spatial.setPosition(xTransition.get(), yTransition.get());
-						} else {
-
-							if (spatial.getPosition().dst(targetSpatial.getPosition()) < 2f) {
-								spatial.set(targetSpatial);
-								xTransition.set(spatial.getX());
-								yTransition.set(spatial.getY());
-							} else {
-								xTransition.set(originX, 1000);
-								yTransition.set(originY, 1000);
-							}
-
-						}
-
-					}
-
-				})) //
+				.component(new ScriptComponent(new CameraScript(libgdxCamera))) //
 				.build();
 	}
 
@@ -184,23 +123,7 @@ public class EntityTemplates {
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
-
-		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-			Behavior fixMovementBehavior = new Behaviors.FixMovementBehavior();
-			Behavior fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerBehavior();
-			Behavior calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionBehavior();
-			Behavior collisionHandlerBehavior = new Behaviors.CollisionHandlerBehavior();
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				fixMovementBehavior.update(world.getDelta(), e);
-				fixDirectionFromControllerBehavior.update(world.getDelta(), e);
-				calculateInputDirectionBehavior.update(world.getDelta(), e);
-				collisionHandlerBehavior.update(world.getDelta(), e);
-			}
-
-		}));
+		e.addComponent(new ScriptComponent(new ShipScript()));
 
 		e.refresh();
 		return e;
@@ -238,26 +161,7 @@ public class EntityTemplates {
 			}
 		}));
 
-		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-			Behavior removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(world);
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				removeWhenGrabbedBehavior.update(world.getDelta(), e);
-
-				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
-				if (!grabbableComponent.grabbed)
-					return;
-
-				TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-				Trigger trigger = triggerComponent.getTrigger(Triggers.itemGrabbedTrigger);
-
-				trigger.trigger(e);
-				trigger.triggered();
-			}
-
-		}));
+		e.addComponent(new ScriptComponent(new GrabbableItemScript()));
 
 		e.refresh();
 		return e;
@@ -290,21 +194,8 @@ public class EntityTemplates {
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
+		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder)));
 
-		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-			Behavior releaseAttachmentBehavior = new Behaviors.ReleaseAttachmentBehavior(physicsWorld);
-			Behavior attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
-			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				releaseAttachmentBehavior.update(world.getDelta(), e);
-				attachEntityBehavior.update(world.getDelta(), e);
-				calculateInputDirectionBehavior.update(world.getDelta(), e);
-			}
-
-		}));
 		e.refresh();
 		return e;
 	}
@@ -432,58 +323,7 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(vertices, Color.RED, triangulator));
-
-		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-			int currentTarget;
-
-			@Override
-			public void init(com.artemis.World world, Entity e) {
-				currentTarget = 0;
-			}
-
-			private Vector2 getCurrentTargetPosition() {
-				return points[currentTarget];
-			}
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				Physics physics = ComponentWrapper.getPhysics(e);
-				Spatial spatial = ComponentWrapper.getSpatial(e);
-
-				Body body = physics.getBody();
-
-				Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
-				force.nor().mul(50000f);
-				body.applyForce(force, spatial.getPosition());
-				body.applyTorque(10f);
-
-				if (spatial.getPosition().dst(getCurrentTargetPosition()) < 1f) {
-					currentTarget++;
-					if (currentTarget >= points.length)
-						currentTarget = 0;
-				}
-
-				Vector2 linearVelocity = body.getLinearVelocity();
-				float speed = linearVelocity.len();
-
-				float maxSpeed = 5f;
-
-				if (speed > maxSpeed) {
-					linearVelocity.mul(maxSpeed / speed);
-					body.setLinearVelocity(linearVelocity);
-				}
-
-				float angularVelocity = body.getAngularVelocity();
-				float maxAngularVelocity = 1f;
-
-				if (angularVelocity > maxAngularVelocity) {
-					angularVelocity = maxAngularVelocity / angularVelocity;
-					body.setAngularVelocity(angularVelocity);
-				}
-			}
-
-		}));
+		e.addComponent(new ScriptComponent(new MovingObstacleScript(points)));
 
 		e.refresh();
 		return e;
