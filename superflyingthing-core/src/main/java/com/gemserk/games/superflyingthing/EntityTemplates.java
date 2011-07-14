@@ -88,7 +88,7 @@ public class EntityTemplates {
 		explosionEmitter.start();
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
-				.component(new ParticleEmitterComponent(explosionEmitter)) //
+				.component(new ParticleEmitterComponent(explosionEmitter, 0.02f)) //
 				.build();
 	}
 
