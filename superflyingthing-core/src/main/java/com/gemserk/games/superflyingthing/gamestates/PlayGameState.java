@@ -431,6 +431,10 @@ public class PlayGameState extends GameStateImpl {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+									
+									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
+									
 									world.deleteEntity(gameDataComponent.ship);
 
 									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
