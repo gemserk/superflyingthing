@@ -6,6 +6,7 @@ import java.util.Map;
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -226,6 +227,20 @@ public class Components {
 			this.camera = camera;
 		}
 
+	}
+	
+	public static class ParticleEmitterComponent extends Component {
+		
+		private final ParticleEmitter particleEmitter;
+		
+		public ParticleEmitter getParticleEmitter() {
+			return particleEmitter;
+		}
+		
+		public ParticleEmitterComponent(ParticleEmitter particleEmitter) {
+			this.particleEmitter = particleEmitter;
+		}
+		
 	}
 
 }

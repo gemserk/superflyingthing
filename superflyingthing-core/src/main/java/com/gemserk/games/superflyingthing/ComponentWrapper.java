@@ -12,6 +12,7 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
 public class ComponentWrapper {
@@ -47,6 +48,10 @@ public class ComponentWrapper {
 	
 	public static MovementComponent getMovementComponent(Entity e) {
 		return getComponent(e, MovementComponent.class);
+	}
+	
+	public static ParticleEmitterComponent getParticleEmitter(Entity e) {
+		return getComponent(e, ParticleEmitterComponent.class);
 	}
 	
 	public static void addMovementComponent(Entity e, MovementComponent movementComponent) {

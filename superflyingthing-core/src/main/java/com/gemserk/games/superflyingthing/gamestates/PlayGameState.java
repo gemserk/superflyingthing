@@ -69,6 +69,7 @@ import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.Triggers;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
+import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
@@ -131,7 +132,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
 		worldWrapper.addRenderSystem(new ShapeRenderSystem(ShapeComponent.class));
-
+		
 		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
 			@Override
 			protected void process(Entity e) {
@@ -148,7 +149,9 @@ public class PlayGameState extends GameStateImpl {
 				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
 			}
 		});
-
+		
+		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
+		
 		worldWrapper.init();
 
 		entityBuilder = new EntityBuilder(world);
@@ -256,7 +259,7 @@ public class PlayGameState extends GameStateImpl {
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			createWorldLimits(worldWidth, worldHeight);
-
+			
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
@@ -265,10 +268,16 @@ public class PlayGameState extends GameStateImpl {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+									
+									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
+
 									world.deleteEntity(gameDataComponent.ship);
 									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!
 									gameDataComponent.ship = null;
 									gameData.deaths++;
+									
+									
 								}
 							});
 							put(Triggers.noEntityTrigger, new Trigger() {

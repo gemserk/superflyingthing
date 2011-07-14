@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -28,7 +27,6 @@ public class MainMenuGameState extends GameStateImpl {
 	
 	Container container;
 	private Sprite backgroundSprite;
-	private ParticleEmitter explosionEmitter;
 
 	public MainMenuGameState(Game game) {
 		this.game = game;
@@ -90,11 +88,6 @@ public class MainMenuGameState extends GameStateImpl {
 		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		backgroundSprite.setPosition(0, 0);
 		backgroundSprite.setSize(width, height);
-		
-		explosionEmitter = resourceManager.getResourceValue("ExplosionEmitter");
-		explosionEmitter.setContinuous(true);
-//		explosionEmitter.setAdditive(false);
-		
 	}
 
 	@Override
@@ -103,7 +96,6 @@ public class MainMenuGameState extends GameStateImpl {
 		spriteBatch.begin();
 		backgroundSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
-		explosionEmitter.draw(spriteBatch, Gdx.graphics.getDeltaTime());
 		spriteBatch.end();
 	}
 
@@ -111,7 +103,6 @@ public class MainMenuGameState extends GameStateImpl {
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 		container.update();
-		explosionEmitter.setPosition(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 	}
 
 	@Override

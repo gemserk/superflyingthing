@@ -4,6 +4,7 @@ import java.util.HashMap;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -32,6 +33,7 @@ import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
@@ -78,6 +80,15 @@ public class EntityTemplates {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, width, height, angle))) //
 				.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
+				.build();
+	}
+	
+	public Entity explosionEffect(float x, float y) {
+		ParticleEmitter explosionEmitter = resourceManager.getResourceValue("ExplosionEmitter");
+		explosionEmitter.start();
+		return entityBuilder //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
+				.component(new ParticleEmitterComponent(explosionEmitter)) //
 				.build();
 	}
 
