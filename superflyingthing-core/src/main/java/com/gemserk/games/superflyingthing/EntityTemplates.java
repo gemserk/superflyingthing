@@ -83,7 +83,7 @@ public class EntityTemplates {
 				.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
 				.build();
 	}
-	
+
 	public Entity explosionEffect(float x, float y) {
 		ParticleEmitter explosionEmitter = resourceManager.getResourceValue("ExplosionEmitter");
 		explosionEmitter.start();
@@ -91,7 +91,7 @@ public class EntityTemplates {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
 				.component(new ParticleEmitterComponent(explosionEmitter)) //
-				.component(new ScriptComponent(new ScriptJavaImpl(){
+				.component(new ScriptComponent(new ScriptJavaImpl() {
 					@Override
 					public void update(com.artemis.World world, Entity e) {
 						ParticleEmitterComponent particleEmitterComponent = ComponentWrapper.getParticleEmitter(e);
@@ -146,7 +146,7 @@ public class EntityTemplates {
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
 		e.addComponent(new ScriptComponent(new ShipScript()));
-		
+
 		ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
 		ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.005f);
 		e.addComponent(new ParticleEmitterComponent(thrustEmitter));
@@ -154,7 +154,7 @@ public class EntityTemplates {
 		e.refresh();
 		return e;
 	}
-	
+
 	public Entity diamond(float x, float y, float radius) {
 		return diamond(x, y, radius, new Trigger());
 	}
