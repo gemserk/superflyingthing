@@ -208,6 +208,10 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void update(int delta) {
+		
+		if (GameInformation.worldWrapper != null)
+			GameInformation.worldWrapper.update(delta);
+
 		Synchronizers.synchronize(delta);
 		inputDevicesMonitor.update();
 		container.update();

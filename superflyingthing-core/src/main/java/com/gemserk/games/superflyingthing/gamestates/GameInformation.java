@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import com.gemserk.commons.artemis.WorldWrapper;
+
 public class GameInformation {
 	
 	public static final int RandomGameMode = 0;
@@ -11,5 +13,7 @@ public class GameInformation {
 	public static int gameMode = 0;
 	
 	public static int level = 0;
+	
+	public static WorldWrapper worldWrapper;
 
 }

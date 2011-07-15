@@ -124,6 +124,7 @@ public class PlayGameState extends GameStateImpl {
 		world = new com.artemis.World();
 		worldWrapper = new WorldWrapper(world);
 		// add render and all stuff...
+		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
@@ -678,16 +679,7 @@ public class PlayGameState extends GameStateImpl {
 		if (done) {
 			if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
-
 				game.transition(game.getGameOverScreen(), 0, 300, false);
-
-				// if (!Levels.hasLevel(GameInformation.level + 1))
-				// game.transition(game.getLevelSelectionScreen(), 200, 300);
-				// else {
-				// GameInformation.level++;
-				// game.getPlayScreen().restart();
-				// }
-				
 			} else {
 				game.getPlayScreen().restart();
 			}
