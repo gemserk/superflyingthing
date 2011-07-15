@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="17.085"
- inkscape:cx="38.1301"
- inkscape:cy="12.9228"
+ inkscape:zoom="23.0914"
+ inkscape:cx="20.7685"
+ inkscape:cy="11.6521"
  inkscape:document-units="px"
- inkscape:current-layer="layer2"
+ inkscape:current-layer="layer8"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -158,6 +158,60 @@
  d="M 27,25 40,25 40,0 39.2158,0.18286 39.6255,1.6754 39.6255,4.39709 39.2743,8.17234 39.6547,10.1624 39.3621,18.2104 39.5962,20.815 39.4792,23.8586 37.1086,24.3562 27.3047,24.561 26.2804,24.7659 z"
  id="path3961"
  inkscape:connector-curvature="0" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer8"
+ inkscape:label="Items">
+<image
+ y="16.1754"
+ x="27.3793"
+ id="image3019-7"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="7.68744"
+ x="31.7532"
+ id="image3019-7-1"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="19.943"
+ x="12.0923"
+ id="image3019-7-8"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="2.10088"
+ x="20.2771"
+ id="image3019-7-7"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="22.9311"
+ x="24.3912"
+ id="image3019-7-2"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="8.8567"
+ x="5.7262"
+ id="image3019-7-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="3.87647"
+ x="2.56489"
+ id="image3019-7-10"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
 </g>
 <g
  inkscape:groupmode="layer"

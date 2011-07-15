@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="48.3235"
- inkscape:cx="11.1781"
- inkscape:cy="11.246"
+ inkscape:zoom="23.0914"
+ inkscape:cx="26.2441"
+ inkscape:cy="13.0497"
  inkscape:document-units="px"
- inkscape:current-layer="layer2"
+ inkscape:current-layer="layer10"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -161,6 +161,53 @@
  d="M 0,10 0,16 0.310408,16.4948 0.827755,13.4942 1.42788,10.3074 0.786367,10.5557 0.64151,10.1004 0.393183,9.1485 z"
  id="path3963"
  inkscape:connector-curvature="0" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer10"
+ inkscape:label="Items">
+<image
+ y="10.8054"
+ x="4.86013"
+ id="image3019-7"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="23.4942"
+ x="13.0017"
+ id="image3019-7-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="10.0692"
+ x="25.3007"
+ id="image3019-7-8"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="11.5416"
+ x="17.852"
+ id="image3019-7-93"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="4.09293"
+ x="21.0567"
+ id="image3019-7-1"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="20.8958"
+ x="27.3794"
+ id="image3019-7-0"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
 </g>
 <g
  inkscape:groupmode="layer"

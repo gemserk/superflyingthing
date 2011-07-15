@@ -10,13 +10,13 @@
  xmlns:xlink="http://www.w3.org/1999/xlink"
  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
- width="40"
+ width="100"
  height="15"
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level04.svg"
- levelName="Hunting high and low">
+ sodipodi:docname="level10.svg"
+ levelName="Long way home">
 <defs
  id="defs4" />
 <sodipodi:namedview
@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="31.2095"
- inkscape:cx="15.3379"
- inkscape:cy="6.754"
+ inkscape:zoom="17.0849"
+ inkscape:cx="87.8053"
+ inkscape:cy="9.82389"
  inkscape:document-units="px"
- inkscape:current-layer="layer7"
+ inkscape:current-layer="layer2"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -65,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title />
+<dc:title></dc:title>
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -126,79 +126,126 @@
 <g
  inkscape:groupmode="layer"
  id="layer2"
- inkscape:label="Obstacles">
-<path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 0,6 1.3844,4.12259 3.44122,3.56883 5.57714,2.54042 8.22728,2.26354 10.3237,1.59112 12.064,0.641819 13,0 0,0 z"
- id="path3112"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccc" />
-<path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 18,15 18.9638,14.2089 19.5175,12.9432 19.557,11.6774 20.1504,10.8073 21.6139,9.62063 23.0378,9.73929 24.264,9.50196 25.9253,9.97662 27.903,9.66018 28.8918,8.55266 29.0896,7.01005 28.4172,5.50699 27.0723,4.2017 24.976,3.7666 23.2751,3.33151 21.2975,3.48973 19.7153,4.43902 18.4495,6.25852 16.7883,6.69361 15.0479,6.21896 13.4657,6.17941 12.2395,7.01005 11.5275,8.39445 9.7476,9.42286 7.45346,9.97661 5.59441,11.4401 4.80333,12.5081 3.69581,13.6156 2.50918,13.8925 1.36211,14.1694 0.21504,14.7627 0,15 z"
- id="path3110"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccccccccccccccccccccccccccc" />
-<path
- style="fill:#0000f2;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 36.2712,8.15712 37.0227,9.22508 37.4578,10.4908 39.396,12.7454 40,13 40,0 31,0 32.2762,1.11647 34.0166,1.31424 35.2428,2.61953 35.1242,3.88526 35.8756,4.91368 36.5085,6.17941 36.1526,6.97049 z"
- id="path3116"
- inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccccccccccc" />
+ inkscape:label="Obstacles"
+ style="display:inline">
 <path
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 0,6 0,15 1,15 0.848699,14.3269 0.468247,12.7466 0.351186,11.3126 0.380451,10.3175 0.585309,9.08838 0.556044,7.77143 0.438982,7.03979 0.380451,6.0155 0.32192,5.02048 0,5 z"
- id="path3873"
+ d="M 0,8 0.643842,6.86418 1.05356,5.34237 1.63887,4.64 3.5704,3.17672 5.73605,4.93265 7.84317,4.40587 9.54057,5.81062 11.2965,7.56655 13.3451,7.80068 15.1596,7.74214 17.4423,7.74214 19.6079,6.63005 20.4859,4.93265 22.4174,3.82056 24.466,3.58644 26.9243,3.46937 29.9094,2.59141 32.075,2.53288 34.5333,2.88406 37.0502,2.88406 38.9232,2.0061 40.9718,2.53288 42.6692,6.39593 43.1374,8.09333 43.8398,10.6687 46.2981,12.249 49.4588,12.4246 52.1512,12.7758 55.3119,12.1905 56.424,12.249 58.7067,12.7173 61.6918,12.249 64.033,12.132 67.0181,11.9564 67.779,10.6102 69.3593,6.74712 71.0567,3.52791 73.8662,2.18169 77.4952,2.12316 81.2997,2.41581 83.0556,3.23525 84.6945,3.35231 85.0457,0.01604 68.0351,0.072566 64.9732,4.3736 64.0184,9.61113 59.4439,10.6496 55.3375,9.34674 50.5288,10.4437 46.6566,9.08234 45.8189,3.60868 42.5228,0.00802 31.8921,0.006015 21.2614,0.00401 10.6307,0.002005 0,0 z"
+ id="path3601"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
 <path
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 13,0 31,0 32.2505,0.86478 29.8215,0.250205 21.7735,0.250205 17.1496,0.835514 14.3986,0.484329 11.3257,0.191674 12,0 z"
- id="path3875"
+ d="M 0,7 0.585311,6.92271 1.11209,7.85921 0.819435,8.91277 0.760904,10.3175 1.34622,12.1905 2.51684,12.6588 4.21424,11.6637 5.61899,11.3125 7.66757,11.1955 10.0673,9.32248 11.0624,9.02983 13.7548,8.9713 16.4472,8.67864 19.2567,9.38101 20.72,11.4881 22.8857,13.127 29.7923,14.4147 33.1286,14.2976 36.1137,13.7123 38.8061,14.005 43.7813,14.2391 46.064,14.5903 51.5074,14.5318 54.551,14.1806 57.7702,14.5318 66.3157,14.4732 68.9496,14.4147 71.525,14.0635 74.393,12.7759 77.3196,10.9614 79.5547,11.2869 81.8265,12.3076 84.2263,11.3125 86.2748,11.7808 86,15 0,15 z"
+ id="path3603"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccc" />
 <path
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 18,15 40,15 40,13 39.7114,12.7858 39.7528,13.4687 39.4424,13.9032 37.5179,14.6689 36.0072,14.731 35.0139,12.6409 34.807,13.2824 34.0827,14.2343 31.8064,14.6275 29.4266,14.524 25.5775,14.8965 20.611,14.7931 18.3347,14.3585 z"
- id="path3877"
+ d="M 21.2468,7.15683 21.5394,7.03977 23.3539,5.98621 26.9243,5.34237 29.9679,5.86915 30.4947,7.62508 30.2606,10.0249 28.7973,11.4881 25.9878,10.7272 24.1733,11.1955 22.3003,9.79073 21.2468,8.26892 z"
+ id="path3605"
+ inkscape:connector-curvature="0" />
+<path
+ style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 31.958,4.99118 34.5333,4.40587 37.2843,4.28881 39.45,4.75706 40.9718,7.44949 41.8497,9.43955 41.5571,11.254 39.0988,12.132 35.9381,11.8979 33.4213,12.249 32.3677,11.1369 32.4848,8.67864 32.3677,6.39593 z"
+ id="path3607"
+ inkscape:connector-curvature="0" />
+<path
+ style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 69.8861,11.5467 70.4129,10.0834 71.7006,8.32746 72.3444,6.51299 74.5686,4.4644 77.9634,4.58146 79.9535,5.4009 82.4703,5.4009 83.6409,5.57649 82.5288,7.39096 82.5288,8.62011 81.8265,9.96633 80.4217,9.79073 78.8414,9.02983 76.5587,9.14689 75.0369,10.259 72.8127,11.7223 70.8226,12.6588 69.4179,12.4246 z"
+ id="path3609"
+ inkscape:connector-curvature="0" />
+<path
+ style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 85,0 100,0 100,15 86,15 86.1578,11.8979 88.0308,11.9564 90.0208,13.0099 91.4841,13.127 92.245,10.9028 94.2351,9.32248 93.5327,6.86418 94.0009,4.75706 93.9424,3.35231 92.1279,3.29378 89.3185,2.88406 87.8552,3.35231 86.1578,2.82553 84.5774,3.35231 z"
+ id="path3611"
  inkscape:connector-curvature="0" />
 </g>
 <g
  inkscape:groupmode="layer"
- id="layer7"
+ id="layer5"
  inkscape:label="Items">
 <image
- y="5.23368"
- x="17.0525"
- id="image3019-7"
+ y="5.91686"
+ x="7.0059"
+ id="image3019-4"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="2.12565"
- x="33.6178"
- id="image3019-7-1"
+ y="9.4822"
+ x="6.59814"
+ id="image3019-4-3"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="13.3082"
- x="32.9771"
- id="image3019-7-9"
+ y="7.96037"
+ x="19.1823"
+ id="image3019-4-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="10.6807"
- x="26.8571"
- id="image3019-7-6"
+ y="12.4673"
+ x="30.7715"
+ id="image3019-4-6"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="0.908083"
- x="12.5987"
- id="image3019-7-3"
+ y="3.6291"
+ x="30.5374"
+ id="image3019-4-5"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="3.33644"
+ x="39.4926"
+ id="image3019-4-37"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="12.6429"
+ x="43.0045"
+ id="image3019-4-55"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="13.1111"
+ x="67.6461"
+ id="image3019-4-557"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="3.57056"
+ x="72.7382"
+ id="image3019-4-65"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="4.33147"
+ x="82.9227"
+ id="image3019-4-2"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="9.71632"
+ x="77.6549"
+ id="image3019-4-4"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="11.5308"
+ x="25.3866"
+ id="image3019-4-1"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
@@ -213,20 +260,25 @@
  id="path3806"
  inkscape:connector-curvature="0" />
 <image
- y="8.5288"
- x="2.29337"
+ y="7.05083"
+ x="2.45368"
  id="image3824-5-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
  width="2"
  startPlanet="" />
 <image
- y="11.6725"
- x="22.4067"
+ y="6.20349"
+ x="87.1867"
  id="image3824-5-1-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
  width="2"
  destinationPlanet="" />
 </g>
+<g
+ inkscape:groupmode="layer"
+ id="layer4"
+ inkscape:label="Paths"
+ style="display:inline" />
 </svg>
