@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.Transitions;
-import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.gdx.GameTransitions;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.Screen;
@@ -19,6 +19,7 @@ public class FadeInTransition extends GameTransitions.EnterTransition {
 	ResourceManager<String> resourceManager;
 	SpriteBatch spriteBatch;
 	private final int time;
+	private Synchronizer synchronizer;
 
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
@@ -41,7 +42,8 @@ public class FadeInTransition extends GameTransitions.EnterTransition {
 		GameResources.load(resourceManager);
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		spriteBatch = new SpriteBatch();
-		Synchronizers.transition(this, "alpha", Transitions.transitionBuilder(1f).end(0f).time(time));
+		synchronizer = new Synchronizer();
+		synchronizer.transition(this, "alpha", Transitions.transitionBuilder(alpha).end(0f).time(time));
 	}
 
 	@Override
@@ -63,6 +65,6 @@ public class FadeInTransition extends GameTransitions.EnterTransition {
 	@Override
 	public void internalUpdate(int delta) {
 		super.internalUpdate(delta);
-		Synchronizers.synchronize(delta);
+		synchronizer.synchronize(delta);
 	}
 }

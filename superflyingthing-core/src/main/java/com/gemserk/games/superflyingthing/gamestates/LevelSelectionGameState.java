@@ -88,7 +88,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 						@Override
 						public void onReleased() {
 							GameInformation.level = levelIndex;
-							game.transition(game.getPlayScreen(), 500, 250);
+							game.transition(game.getPlayScreen(), 500, 500);
 						}
 					}) //
 					.build());
