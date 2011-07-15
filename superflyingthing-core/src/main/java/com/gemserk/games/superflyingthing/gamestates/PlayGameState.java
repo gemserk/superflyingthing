@@ -205,13 +205,17 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
+		createWorldLimits(worldWidth, worldHeight, 0.2f);
+	}
+
+	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
-
-		entityTemplates.boxObstacle(centerX, -0.2f, worldWidth, 0.1f, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + 0.2f, worldWidth, 0.1f, 0f);
-		entityTemplates.boxObstacle(-0.2f, centerY, 0.1f, worldHeight, 0f);
-		entityTemplates.boxObstacle(worldWidth + 0.2f, centerY, 0.1f, worldHeight, 0f);
+		float limitWidth = 0.1f;
+		entityTemplates.boxObstacle(centerX, -offset, worldWidth, limitWidth, 0f);
+		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth, limitWidth, 0f);
+		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight, 0f);
+		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight, 0f);
 	}
 
 	class ChallengeMode {
@@ -357,7 +361,6 @@ public class PlayGameState extends GameStateImpl {
 
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
-			ResourceManager<String> resourceManager = p.resourceManager;
 
 			float worldWidth = MathUtils.random(30f, 150f);
 			float worldHeight = MathUtils.random(10f, 20f);
@@ -421,7 +424,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 
-			createWorldLimits(worldWidth, worldHeight);
+			createWorldLimits(worldWidth, worldHeight, 0f);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -483,9 +486,7 @@ public class PlayGameState extends GameStateImpl {
 
 			worldWrapper.update(1);
 			worldWrapper.update(1);
-
-			// if R and MENU doesn't generate N levels per second
-			// Analytics.traker.trackPageView("/randomMode/newLevel", "/randomMode/newLevel", null);
+			
 		}
 	}
 
@@ -505,7 +506,6 @@ public class PlayGameState extends GameStateImpl {
 
 		void create(PlayGameState p) {
 			World physicsWorld = p.physicsWorld;
-			ResourceManager<String> resourceManager = p.resourceManager;
 
 			p.entityTemplates = entityTemplates;
 
@@ -570,7 +570,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 
-			createWorldLimits(worldWidth, worldHeight);
+			createWorldLimits(worldWidth, worldHeight, 0f);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
