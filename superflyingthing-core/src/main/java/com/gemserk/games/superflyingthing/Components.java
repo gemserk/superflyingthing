@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 
 public class Components {
@@ -35,6 +36,7 @@ public class Components {
 
 	public static class CameraComponent extends Component {
 
+		private final Libgdx2dCamera libgdx2dCamera;
 		private Camera camera;
 
 		public void setCamera(Camera camera) {
@@ -44,8 +46,13 @@ public class Components {
 		public Camera getCamera() {
 			return camera;
 		}
+		
+		public Libgdx2dCamera getLibgdx2dCamera() {
+			return libgdx2dCamera;
+		}
 
-		public CameraComponent(Camera camera) {
+		public CameraComponent(Camera camera, Libgdx2dCamera libgdx2dCamera) {
+			this.libgdx2dCamera = libgdx2dCamera;
 			setCamera(camera);
 		}
 

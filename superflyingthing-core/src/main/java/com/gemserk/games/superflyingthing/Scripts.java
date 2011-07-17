@@ -13,6 +13,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
@@ -21,16 +22,10 @@ public class Scripts {
 
 	public static class CameraScript extends ScriptJavaImpl {
 
-		private final Libgdx2dCamera libgdxCamera;
-
 		float startX;
 		float startY;
 		
 		TimeTransition timeTransition = new TimeTransition();
-
-		public CameraScript(Libgdx2dCamera libgdxCamera) {
-			this.libgdxCamera = libgdxCamera;
-		}
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
@@ -44,8 +39,11 @@ public class Scripts {
 			updatePosition(world, e);
 
 			Spatial spatial = ComponentWrapper.getSpatial(e);
-			Camera camera = ComponentWrapper.getCamera(e);
+			CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(e);
+			Camera camera = cameraComponent.getCamera();
 			camera.setPosition(spatial.getX(), spatial.getY());
+			
+			Libgdx2dCamera libgdxCamera = cameraComponent.getLibgdx2dCamera();
 
 			libgdxCamera.move(camera.getX(), camera.getY());
 			libgdxCamera.zoom(camera.getZoom());
@@ -76,7 +74,7 @@ public class Scripts {
 				} else {
 					startX = spatial.getX();
 					startY = spatial.getY();
-					timeTransition.start(1500);
+					timeTransition.start(1000);
 				}
 
 			}

@@ -42,6 +42,10 @@ public class ComponentWrapper {
 		return component.getCamera();
 	}
 
+	public static CameraComponent getCameraComponent(Entity e) {
+		return getComponent(e, CameraComponent.class);
+	}
+	
 	public static AttachmentComponent getEntityAttachment(Entity e) {
 		return getComponent(e, AttachmentComponent.class);
 	}

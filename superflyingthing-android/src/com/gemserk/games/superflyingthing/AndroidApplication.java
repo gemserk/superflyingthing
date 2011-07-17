@@ -64,7 +64,7 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		}, config);
 		
 		int diWidth = 800;
-		int diHeight = 75;
+		int diHeight = 50;
 		
 		float density = getResources().getDisplayMetrics().density;
 
