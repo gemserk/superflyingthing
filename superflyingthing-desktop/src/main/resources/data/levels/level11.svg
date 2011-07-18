@@ -10,12 +10,12 @@
  xmlns:xlink="http://www.w3.org/1999/xlink"
  xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
  xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
- width="100"
- height="15"
+ width="40"
+ height="40"
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level10.svg"
+ sodipodi:docname="level11.svg"
  levelName="Long way home">
 <defs
  id="defs4" />
@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="6.04042"
- inkscape:cx="66.1712"
- inkscape:cy="-1.8455"
+ inkscape:zoom="17.0849"
+ inkscape:cx="23.0468"
+ inkscape:cy="17.6663"
  inkscape:document-units="px"
- inkscape:current-layer="layer2"
+ inkscape:current-layer="layer3"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -65,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title />
+<dc:title></dc:title>
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -129,123 +129,89 @@
  inkscape:label="Obstacles"
  style="display:inline">
 <path
- style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 0,8 0.643842,6.86418 1.05356,5.34237 1.63887,4.64 3.5704,3.17672 5.73605,4.93265 7.84317,4.40587 9.54057,5.81062 11.2965,7.56655 13.3451,7.80068 15.1596,7.74214 17.4423,7.74214 19.6079,6.63005 20.4859,4.93265 22.4174,3.82056 24.466,3.58644 26.9243,3.46937 29.9094,2.59141 32.075,2.53288 34.5333,2.88406 37.0502,2.88406 38.9232,2.0061 40.9718,2.53288 42.6692,6.39593 43.1374,8.09333 43.8398,10.6687 46.2981,12.249 49.4588,12.4246 52.1512,12.7758 55.3119,12.1905 56.424,12.249 58.7067,12.7173 61.6918,12.249 64.033,12.132 67.0181,11.9564 67.779,10.6102 69.3593,6.74712 71.0567,3.52791 73.8662,2.18169 77.4952,2.12316 81.2997,2.41581 83.0556,3.23525 84.6945,3.35231 85.0457,0.01604 68.0351,0.072566 47.5591,0.021547 31.8921,0.006015 21.2614,0.00401 10.6307,0.002005 0,0 z"
- id="path3601"
+ style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 0,10 2,10 3.64213,11.7735 2.81437,13.9257 3.97323,15.1673 4.13878,17.4022 5.13209,20.8788 5.21487,24.6865 5.38042,27.9148 4.30433,32.3019 4.63544,34.1229 5.04931,36.0268 6.37372,37.0201 9.1881,37.0201 11.0092,36.1095 13.7408,35.5301 16.1413,32.8813 16.224,30.0669 16.224,27.9975 16.6379,25.0176 16.4724,24.4382 16.1413,21.4583 16.3068,17.9817 16.1413,15.3329 16.969,13.3462 17.2173,9.29024 18.2934,6.80697 19.5351,5.31701 22.3494,5.89644 24.1705,7.30362 24.4188,9.70412 24.5016,10.6146 26.6538,12.684 29.7165,14.174 29.5509,15.5812 29.3026,16.9884 30.1303,19.72 29.9648,21.8721 30.9581,23.4449 31.2064,25.9281 31.035,30.9684 27.9901,30.7648 28.2669,26.778 26.6122,25.1911 23.7284,24.0724 20.3763,25.4705 18.0304,27.5511 18.3183,32.968 20.7134,33.9951 30.601,32.3587 29.4162,35.0819 30.2741,37.2359 32.2624,38.8446 36.0677,39.3998 38.5409,37.6255 38.9548,35.5745 38.3352,33.1438 39,30 40,30 40,40 0,40 z"
+ id="path3045"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccccccccccccccccccccccccccccccccccccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
 <path
- style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 0,7 0.585311,6.92271 1.11209,7.85921 0.819435,8.91277 0.760904,10.3175 1.34622,12.1905 2.51684,12.6588 4.21424,11.6637 5.61899,11.3125 7.66757,11.1955 10.0673,9.32248 11.0624,9.02983 13.7548,8.9713 16.4472,8.67864 19.2567,9.38101 20.72,11.4881 22.8857,13.127 29.7923,14.4147 33.1286,14.2976 36.1137,13.7123 38.8061,14.005 43.7813,14.2391 46.064,14.5903 51.5074,14.5318 54.551,14.1806 57.7702,14.5318 66.3157,14.4732 68.9496,14.4147 71.525,14.0635 74.393,12.7759 77.3196,10.9614 79.5547,11.2869 81.8265,12.3076 84.2263,11.3125 86.2748,11.7808 86,15 0,15 z"
- id="path3603"
+ style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 0,10 2,10 1.07608,8.54526 1.15886,6.88974 1.73829,4.82035 1.82106,3.90982 3.47658,3.90982 4.71821,4.90313 6.53928,4.48925 8.60867,3.49594 9.8503,4.24092 9.35365,7.05529 9.27087,9.12469 10.5953,13.0979 9.60197,18.5611 8.77422,22.2032 9.27087,28.4942 9.8503,31.5569 11.3403,31.4741 12.0852,30.7291 12.4991,28.3286 12.5819,23.6104 13.8235,20.1338 14.3202,16.5745 14.403,14.8362 14.1546,10.9457 14.0719,8.46248 14.403,6.22754 15.5618,3.9926 18.1279,2.83374 20.1973,1.75765 23.6738,1.84043 27.2332,1.9232 28.3093,4.6548 28.0609,6.88974 29.882,7.88305 32.1169,8.13138 33.5241,7.7175 35.0141,9.53856 32.1169,17.0711 32.6136,22.286 33.3586,26.6731 33.5826,28.7549 36.52,28.2323 37.275,26.6413 37.5091,23.5786 34.7138,20.7902 33.9873,18.9366 33.9813,15.8721 35.596,12.6237 36.6738,9.66219 38.4079,9.53856 39.6495,10.0352 39.6689,12.7931 39.5768,15.6941 39.5668,18.5611 39.3184,20.2166 38.8218,24.521 39,30 40,30 40,13 40,0 0,0 z"
+ id="path3047"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccc" />
-<path
- style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 21.2468,7.15683 21.5394,7.03977 23.3539,5.98621 26.9243,5.34237 29.9679,5.86915 30.4947,7.62508 30.2606,10.0249 28.7973,11.4881 25.9878,10.7272 24.1733,11.1955 22.3003,9.79073 21.2468,8.26892 z"
- id="path3605"
- inkscape:connector-curvature="0" />
-<path
- style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 31.958,4.99118 34.5333,4.40587 37.2843,4.28881 39.45,4.75706 40.9718,7.44949 41.8497,9.43955 41.5571,11.254 39.0988,12.132 35.9381,11.8979 33.4213,12.249 32.3677,11.1369 32.4848,8.67864 32.3677,6.39593 z"
- id="path3607"
- inkscape:connector-curvature="0" />
-<path
- style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 69.8861,11.5467 70.4129,10.0834 71.7006,8.32746 72.3444,6.51299 74.5686,4.4644 77.9634,4.58146 79.9535,5.4009 82.4703,5.4009 83.6409,5.57649 82.5288,7.39096 82.5288,8.62011 81.8265,9.96633 80.4217,9.79073 78.8414,9.02983 76.5587,9.14689 75.0369,10.259 72.8127,11.7223 70.8226,12.6588 69.4179,12.4246 z"
- id="path3609"
- inkscape:connector-curvature="0" />
-<path
- style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none"
- d="M 85,0 100,0 100,15 86,15 86.1578,11.8979 88.0308,11.9564 90.0208,13.0099 91.4841,13.127 92.245,10.9028 94.2351,9.32248 93.5327,6.86418 94.0009,4.75706 93.9424,3.35231 92.1279,3.29378 89.3185,2.88406 87.8552,3.35231 86.1578,2.82553 84.5774,3.35231 z"
- id="path3611"
- inkscape:connector-curvature="0" />
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
 </g>
 <g
  inkscape:groupmode="layer"
  id="layer5"
  inkscape:label="Items">
 <image
- y="5.91686"
- x="7.0059"
+ y="13.1162"
+ x="8.82037"
  id="image3019-4"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="9.4822"
- x="6.59814"
- id="image3019-4-3"
+ y="33.7213"
+ x="5.54459"
+ id="image3019-4-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="7.96037"
- x="19.1823"
- id="image3019-4-9"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="12.4673"
- x="30.7715"
- id="image3019-4-6"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="3.6291"
- x="30.5374"
- id="image3019-4-5"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="3.33644"
- x="39.4926"
- id="image3019-4-37"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="12.6429"
- x="43.0045"
- id="image3019-4-55"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="13.1111"
- x="67.6461"
- id="image3019-4-557"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="3.57056"
- x="72.7382"
- id="image3019-4-65"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="4.33147"
- x="82.9227"
- id="image3019-4-2"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="9.71632"
- x="77.6549"
+ y="32.375"
+ x="13.5634"
  id="image3019-4-4"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="11.5308"
- x="25.3866"
- id="image3019-4-1"
+ y="31.0874"
+ x="19.9433"
+ id="image3019-4-0"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="27.8682"
+ x="20.236"
+ id="image3019-4-6"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="26.7561"
+ x="24.5672"
+ id="image3019-4-06"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="4.51416"
+ x="24.8013"
+ id="image3019-4-3"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="10.0746"
+ x="28.0206"
+ id="image3019-4-5"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="16.279"
+ x="35.0443"
+ id="image3019-4-54"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="31.1459"
+ x="34.6346"
+ id="image3019-4-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
@@ -268,8 +234,8 @@
  width="2"
  startPlanet="" />
 <image
- y="6.20349"
- x="87.1867"
+ y="35.0008"
+ x="33.3966"
  id="image3824-5-1-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"
