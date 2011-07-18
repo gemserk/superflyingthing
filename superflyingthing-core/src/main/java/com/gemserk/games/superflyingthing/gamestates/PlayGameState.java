@@ -58,7 +58,6 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.Controller;
@@ -76,8 +75,6 @@ import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 
 public class PlayGameState extends GameStateImpl {
-
-	// temporal
 
 	private final Game game;
 	SpriteBatch spriteBatch;
@@ -110,7 +107,6 @@ public class PlayGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		physicsWorld = new World(new Vector2(), false);
-		// physicsWorld.setContactListener(new PhysicsContactListener());
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -133,7 +129,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
-		worldWrapper.addRenderSystem(new ShapeRenderSystem(ShapeComponent.class));
+		worldWrapper.addRenderSystem(new ShapeRenderSystem());
 		
 		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
 			@Override

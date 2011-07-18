@@ -59,14 +59,14 @@ public class Level {
 
 	public float w, h;
 	
-	ArrayList<Obstacle> obstacles = new ArrayList<Level.Obstacle>();
+	public ArrayList<Obstacle> obstacles = new ArrayList<Level.Obstacle>();
 	
-	ArrayList<Item> items = new ArrayList<Level.Item>();
+	public ArrayList<Item> items = new ArrayList<Level.Item>();
 	
-	StartPlanet startPlanet;
+	public StartPlanet startPlanet;
 	
-	DestinationPlanet destinationPlanet;
+	public DestinationPlanet destinationPlanet;
 	
-	String name;
+	public String name;
 	
 }

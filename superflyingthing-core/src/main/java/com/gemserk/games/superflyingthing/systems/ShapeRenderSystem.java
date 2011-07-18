@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.systems;
 
-import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.GL10;
@@ -11,8 +10,8 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 
 public class ShapeRenderSystem extends EntityProcessingSystem {
 
-	public ShapeRenderSystem(Class<? extends Component> requiredType) {
-		super(requiredType);
+	public ShapeRenderSystem() {
+		super(ShapeComponent.class);
 	}
 
 	@Override
