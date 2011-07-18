@@ -10,7 +10,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
@@ -75,7 +74,6 @@ public class GenerateLevelThumbnailApplication {
 					private EntityTemplates templates;
 					private WorldWrapper worldWrapper;
 					private Libgdx2dCamera worldCamera;
-					private SpriteBatch spriteBatch;
 					
 					private boolean done = false;
 					private Camera camera;
@@ -94,7 +92,7 @@ public class GenerateLevelThumbnailApplication {
 						World world = new World();
 						
 						worldWrapper = new WorldWrapper(world);
-						worldWrapper.addRenderSystem(new ShapeRenderSystem());
+						worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
 		
 						worldWrapper.init();
 		
@@ -118,17 +116,11 @@ public class GenerateLevelThumbnailApplication {
 						
 						worldWrapper.update(1);
 						worldWrapper.update(1);
-						
-						spriteBatch = new SpriteBatch();
-						
 					}
 					
 					@Override
 					public void render(int delta) {
 						Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-						worldCamera.apply(spriteBatch);
-						spriteBatch.begin();
-						spriteBatch.end();
 						worldWrapper.render();
 						
 						if (!done) {

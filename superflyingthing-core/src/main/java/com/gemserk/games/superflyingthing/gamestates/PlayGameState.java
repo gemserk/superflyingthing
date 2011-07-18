@@ -129,7 +129,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
-		worldWrapper.addRenderSystem(new ShapeRenderSystem());
+		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
 		
 		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
 			@Override

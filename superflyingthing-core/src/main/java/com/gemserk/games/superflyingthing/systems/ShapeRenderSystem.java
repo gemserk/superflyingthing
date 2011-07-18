@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.systems;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.GL10;
+import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
@@ -10,10 +11,18 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 
 public class ShapeRenderSystem extends EntityProcessingSystem {
 
-	public ShapeRenderSystem() {
-		super(ShapeComponent.class);
-	}
+	private final Libgdx2dCamera camera;
 
+	public ShapeRenderSystem(Libgdx2dCamera camera) {
+		super(ShapeComponent.class);
+		this.camera = camera;
+	}
+	
+	@Override
+	protected void begin() {
+		camera.apply();
+	}
+	
 	@Override
 	protected void process(Entity e) {
 		ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
