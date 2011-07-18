@@ -15,6 +15,20 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 
 public class Components {
 	
+	public static class ControllerComponent extends Component {
+		
+		private final Controller controller;
+		
+		public Controller getController() {
+			return controller;
+		}
+
+		public ControllerComponent(Controller controller) {
+			this.controller = controller;
+		}
+		
+	}
+	
 	public static class TriggerComponent extends Component {
 		
 		private Map<String, Trigger> triggers;

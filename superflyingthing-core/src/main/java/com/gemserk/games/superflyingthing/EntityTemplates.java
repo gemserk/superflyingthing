@@ -33,6 +33,7 @@ import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
@@ -112,7 +113,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity ship(float x, float y, Vector2 direction) {
+	public Entity ship(float x, float y, Vector2 direction, Controller controller) {
 		float width = 0.4f;
 		float height = 0.2f;
 
@@ -145,6 +146,7 @@ public class EntityTemplates {
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
+		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(new ShipScript()));
 
 		ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
@@ -201,7 +203,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity startPlanet(float x, float y, float radius) {
+	public Entity startPlanet(float x, float y, float radius, Controller controller) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
@@ -220,6 +222,7 @@ public class EntityTemplates {
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ReleaseEntityComponent());
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
+		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder)));
 
 		e.refresh();

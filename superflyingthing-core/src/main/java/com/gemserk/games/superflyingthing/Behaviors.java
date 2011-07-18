@@ -1,9 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
 import com.artemis.Entity;
-import com.badlogic.gdx.Application.ApplicationType;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -17,6 +14,7 @@ import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
@@ -147,29 +145,10 @@ public class Behaviors {
 
 	public static class ReleaseAttachmentBehavior extends Behavior {
 
-		class Controller {
-
-			public boolean shouldReleaseShip() {
-				if (Gdx.app.getType() == ApplicationType.Android) {
-					if (Gdx.input.isTouched())
-						return true;
-				}
-
-				if (Gdx.input.isKeyPressed(Keys.SPACE))
-					return true;
-
-				return false;
-			}
-
-		}
-
 		private final World world;
-
-		private Controller controller;
 
 		public ReleaseAttachmentBehavior(World world) {
 			this.world = world;
-			this.controller = new Controller();
 		}
 
 		@Override
@@ -184,6 +163,9 @@ public class Behaviors {
 
 			if (releaseEntityComponent.releaseTime > 0)
 				releaseEntityComponent.releaseTime -= delta;
+			
+			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
+			Controller controller = controllerComponent.getController();
 
 			if (!controller.shouldReleaseShip())
 				return;
@@ -277,42 +259,10 @@ public class Behaviors {
 			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
 			if (shipControllerComponent == null)
 				return;
-			shipControllerComponent.direction = getMovementDirection();
-		}
-
-		private float getMovementDirection() {
-			if (Gdx.app.getType() == ApplicationType.Android)
-				return getMovementDirectionAndroid();
-			else
-				return getMovementDirectionPC();
-		}
-
-		private float getMovementDirectionPC() {
-			float movementDirection = 0f;
-
-			if (Gdx.input.isKeyPressed(Keys.LEFT))
-				movementDirection += 1f;
-
-			if (Gdx.input.isKeyPressed(Keys.RIGHT))
-				movementDirection -= 1f;
-
-			return movementDirection;
-		}
-
-		private float getMovementDirectionAndroid() {
-			float movementDirection = 0f;
-
-			for (int i = 0; i < 5; i++) {
-				if (!Gdx.input.isTouched(i))
-					continue;
-				float x = Gdx.input.getX(i);
-				if (x < Gdx.graphics.getWidth() / 2)
-					movementDirection += 1f;
-				else
-					movementDirection -= 1f;
-			}
-
-			return movementDirection;
+			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
+			if (controllerComponent == null)
+				return;
+			shipControllerComponent.direction = controllerComponent.getController().getMovementDirection();
 		}
 
 	}

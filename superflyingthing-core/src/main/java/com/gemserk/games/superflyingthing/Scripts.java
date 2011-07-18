@@ -1,6 +1,8 @@
 package com.gemserk.games.superflyingthing;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Application.ApplicationType;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -13,7 +15,10 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.superflyingthing.Components.AttachableComponent;
+import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
+import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
@@ -24,7 +29,7 @@ public class Scripts {
 
 		float startX;
 		float startY;
-		
+
 		TimeTransition timeTransition = new TimeTransition();
 
 		@Override
@@ -42,7 +47,7 @@ public class Scripts {
 			CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(e);
 			Camera camera = cameraComponent.getCamera();
 			camera.setPosition(spatial.getX(), spatial.getY());
-			
+
 			Libgdx2dCamera libgdxCamera = cameraComponent.getLibgdx2dCamera();
 
 			libgdxCamera.move(camera.getX(), camera.getY());
@@ -129,7 +134,10 @@ public class Scripts {
 		Behavior attachEntityBehavior;
 		Behavior calculateInputDirectionBehavior;
 
+		private final World physicsWorld;
+
 		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder) {
+			this.physicsWorld = physicsWorld;
 			releaseAttachmentBehavior = new Behaviors.ReleaseAttachmentBehavior(physicsWorld);
 			attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
@@ -137,9 +145,46 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			releaseAttachmentBehavior.update(world.getDelta(), e);
+
+			// releaseAttachmentBehavior.update(world.getDelta(), e);
+
+			updateReleaseAttachment(world, e);
+
 			attachEntityBehavior.update(world.getDelta(), e);
 			calculateInputDirectionBehavior.update(world.getDelta(), e);
+		}
+
+		private void updateReleaseAttachment(com.artemis.World world, Entity e) {
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			Entity attachedEntity = entityAttachment.entity;
+
+			if (attachedEntity == null)
+				return;
+
+			if (!shouldReleaseShip(world, e))
+				return;
+
+			if (entityAttachment.joint != null)
+				physicsWorld.destroyJoint(entityAttachment.joint);
+
+			AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
+			attachableComponent.owner = null;
+
+			entityAttachment.joint = null;
+			entityAttachment.entity = null;
+		}
+
+		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {
+			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
+			Controller controller = controllerComponent.getController();
+			if (Gdx.app.getType() == ApplicationType.Android) {
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				return (spatial.getPosition().dst(controller.getPosition()) < 5f);
+			} else {
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				return (spatial.getPosition().dst(controller.getPosition()) < 5f);
+				// return controller.releaseButtonPressed();
+			}
 		}
 
 	}
