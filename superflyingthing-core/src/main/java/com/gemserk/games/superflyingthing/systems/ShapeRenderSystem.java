@@ -30,6 +30,6 @@ public class ShapeRenderSystem extends EntityProcessingSystem {
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 		if (spatial == null)
 			return;
-		ImmediateModeRendererUtils.render(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
+		ImmediateModeRendererUtils.draw(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 	}
 }
