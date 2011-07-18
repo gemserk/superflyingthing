@@ -145,8 +145,8 @@ public class EntityTemplates {
 		MovementComponent movementComponent = new MovementComponent(direction.x, direction.y);
 		ComponentWrapper.addMovementComponent(e, movementComponent);
 
-//		if (Game.isDebugMode())
-//			DebugComponents.getMovementComponentDebugWindow().setMovementComponent(movementComponent);
+		// if (Game.isDebugMode())
+		// DebugComponents.getMovementComponentDebugWindow().setMovementComponent(movementComponent);
 
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
@@ -169,7 +169,7 @@ public class EntityTemplates {
 	public Entity diamond(float x, float y, float radius, final Trigger trigger) {
 		Entity e = entityBuilder.build();
 
-		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		Sprite sprite = resourceManager.getResourceValue("Item");
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -178,7 +178,7 @@ public class EntityTemplates {
 						.circleShape(radius)) //
 				.mass(50f) //
 				.position(x, y) //
-				.type(BodyType.StaticBody) //
+				.type(BodyType.DynamicBody) //
 				.userData(e) //
 				.build();
 
@@ -305,7 +305,7 @@ public class EntityTemplates {
 
 				mesh2dBuilder.color(0.8f, 0.8f, 0.8f, 1f);
 				mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
-//				mesh2dBuilder.texCoord(pt[0], pt[1]);
+				// mesh2dBuilder.texCoord(pt[0], pt[1]);
 				mesh2dBuilder.vertex(pt[0], pt[1]);
 
 			}

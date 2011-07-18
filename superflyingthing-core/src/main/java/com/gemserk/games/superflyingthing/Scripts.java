@@ -107,16 +107,23 @@ public class Scripts {
 	public static class GrabbableItemScript extends ScriptJavaImpl {
 
 		Behavior removeWhenGrabbedBehavior;
+		
+		float rotationSpeed = 1f;
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(world);
+			Physics physics = ComponentWrapper.getPhysics(e);
+			physics.getBody().setAngularVelocity(rotationSpeed);
 		}
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior.update(world.getDelta(), e);
+			updateGrabbable(e);
+		}
 
+		private void updateGrabbable(Entity e) {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 			if (!grabbableComponent.grabbed)
 				return;
