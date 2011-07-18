@@ -15,5 +15,5 @@ public class GameInformation {
 	public static int level = 0;
 	
 	public static WorldWrapper worldWrapper;
-
+	
 }

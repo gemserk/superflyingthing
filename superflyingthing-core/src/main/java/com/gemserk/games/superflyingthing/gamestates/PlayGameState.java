@@ -686,7 +686,8 @@ public class PlayGameState extends GameStateImpl {
 				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
 				game.transition(game.getGameOverScreen(), 0, 300, false);
 			} else {
-				game.getPlayScreen().restart();
+				game.transition(game.getGameOverScreen(), 0, 300, false);
+//				game.getPlayScreen().restart();
 			}
 		}
 
