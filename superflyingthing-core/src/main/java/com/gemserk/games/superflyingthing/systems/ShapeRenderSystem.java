@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.systems;
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
+import com.badlogic.gdx.graphics.GL10;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
@@ -29,6 +30,20 @@ public class ShapeRenderSystem extends EntityProcessingSystem {
 			return;
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 		if (spatial == null)
+			return;
+		drawTriangulator(shapeComponent, spatial);
+		drawMesh(shapeComponent, spatial);
+	}
+
+	private void drawMesh(ShapeComponent shapeComponent, Spatial spatial) {
+		if (shapeComponent.mesh2d == null)
+			return;
+		shapeComponent.texture.bind();
+		ImmediateModeRendererUtils.draw(GL10.GL_TRIANGLES, shapeComponent.mesh2d, spatial.getX(), spatial.getY(), spatial.getAngle());
+	}
+
+	private void drawTriangulator(ShapeComponent shapeComponent, Spatial spatial) {
+		if (shapeComponent.triangulator == null)
 			return;
 		ImmediateModeRendererUtils.draw(shapeComponent.triangulator, spatial.getX(), spatial.getY(), spatial.getAngle(), shapeComponent.color);
 	}

@@ -6,11 +6,13 @@ import java.util.Map;
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.graphics.Mesh2d;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 
 public class Components {
@@ -80,6 +82,10 @@ public class Components {
 
 		public Color color;
 
+		public Mesh2d mesh2d;
+
+		public Texture texture;
+
 		public Vector2[] getVertices() {
 			return vertices;
 		}
@@ -93,6 +99,13 @@ public class Components {
 			this.vertices = vertices;
 			this.color = color;
 			this.triangulator = triangulator;
+		}
+		
+		public ShapeComponent(Vector2[] vertices, Color color, Mesh2d mesh2d, Texture texture) {
+			this.vertices = vertices;
+			this.color = color;
+			this.mesh2d = mesh2d;
+			this.texture = texture;
 		}
 
 	}

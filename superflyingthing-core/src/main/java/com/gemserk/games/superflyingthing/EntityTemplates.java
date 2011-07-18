@@ -4,6 +4,8 @@ import java.util.HashMap;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
@@ -25,6 +27,7 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
+import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.ParticleEmitterUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
@@ -68,6 +71,7 @@ public class EntityTemplates {
 	private final JointBuilder jointBuilder;
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
+	private final Mesh2dBuilder mesh2dBuilder;
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
 		this.physicsWorld = physicsWorld;
@@ -75,6 +79,7 @@ public class EntityTemplates {
 		this.entityBuilder = entityBuilder;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.jointBuilder = new JointBuilder(physicsWorld);
+		this.mesh2dBuilder = new Mesh2dBuilder();
 	}
 
 	public Entity staticSprite(Sprite sprite, float x, float y, float width, float height, float angle, int layer, float centerx, float centery, Color color) {
@@ -282,6 +287,9 @@ public class EntityTemplates {
 
 	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
 		Entity e = entityBuilder.build();
+		
+		Texture obstacleTexture = resourceManager.getResourceValue("ObstacleTexture");
+		obstacleTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
 		Triangulator triangulator = ShapeUtils.triangulate(vertices);
 
@@ -293,6 +301,11 @@ public class EntityTemplates {
 			for (int p = 0; p < 3; p++) {
 				float[] pt = triangulator.getTrianglePoint(i, p);
 				v[p] = new Vector2(pt[0], pt[1]);
+				
+				mesh2dBuilder.color(1f, 1f, 1f, 1f);
+				mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
+				mesh2dBuilder.vertex(pt[0], pt[1]);
+				
 			}
 			fixtureDefs[i] = fixtureDefBuilder //
 					.polygonShape(v) //
@@ -310,7 +323,7 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		e.addComponent(new ShapeComponent(vertices, Color.BLUE, triangulator));
+		e.addComponent(new ShapeComponent(vertices, Color.BLUE, mesh2dBuilder.build(), obstacleTexture));
 		e.refresh();
 		return e;
 	}
