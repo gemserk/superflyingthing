@@ -5,7 +5,6 @@ import java.util.Map;
 
 import com.artemis.Component;
 import com.artemis.Entity;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
@@ -13,14 +12,13 @@ import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
-import com.gemserk.commons.gdx.graphics.Triangulator;
 
 public class Components {
-	
+
 	public static class ControllerComponent extends Component {
-		
+
 		private final Controller controller;
-		
+
 		public Controller getController() {
 			return controller;
 		}
@@ -28,26 +26,25 @@ public class Components {
 		public ControllerComponent(Controller controller) {
 			this.controller = controller;
 		}
-		
+
 	}
-	
+
 	public static class TriggerComponent extends Component {
-		
+
 		private Map<String, Trigger> triggers;
 
 		public Trigger getTrigger(String name) {
 			return triggers.get(name);
 		}
-		
+
 		public TriggerComponent() {
 			this(new HashMap<String, Trigger>());
 		}
-		
+
 		public TriggerComponent(Map<String, Trigger> triggers) {
 			this.triggers = triggers;
 		}
-		
-		
+
 	}
 
 	public static class CameraComponent extends Component {
@@ -62,7 +59,7 @@ public class Components {
 		public Camera getCamera() {
 			return camera;
 		}
-		
+
 		public Libgdx2dCamera getLibgdx2dCamera() {
 			return libgdx2dCamera;
 		}
@@ -76,36 +73,17 @@ public class Components {
 
 	public static class ShapeComponent extends Component {
 
-		private final Vector2[] vertices;
-
-		public Triangulator triangulator;
-
-		public Color color;
-
 		public Mesh2d mesh2d;
 
 		public Texture texture;
 
-		public Vector2[] getVertices() {
-			return vertices;
-		}
-
-		public ShapeComponent(Vector2[] vertices, Color color) {
-			this.vertices = vertices;
-			this.color = color;
-		}
-
-		public ShapeComponent(Vector2[] vertices, Color color, Triangulator triangulator) {
-			this.vertices = vertices;
-			this.color = color;
-			this.triangulator = triangulator;
-		}
-		
-		public ShapeComponent(Vector2[] vertices, Color color, Mesh2d mesh2d, Texture texture) {
-			this.vertices = vertices;
-			this.color = color;
+		public ShapeComponent(Mesh2d mesh2d, Texture texture) {
 			this.mesh2d = mesh2d;
 			this.texture = texture;
+		}
+		
+		public ShapeComponent(Mesh2d mesh2d) {
+			this(mesh2d, null);
 		}
 
 	}
@@ -226,21 +204,21 @@ public class Components {
 		float direction;
 
 	}
-	
+
 	public static class GameData {
-		
+
 		public int deaths;
-		
+
 		public int totalItems;
-		
+
 		public int currentItems;
-		
+
 		public GameData() {
 			this.deaths = 0;
 			this.currentItems = 0;
 			this.totalItems = 0;
 		}
-		
+
 	}
 
 	public static class GameDataComponent extends Component {
@@ -256,19 +234,19 @@ public class Components {
 		}
 
 	}
-	
+
 	public static class ParticleEmitterComponent extends Component {
-		
+
 		private final ParticleEmitter particleEmitter;
-		
+
 		public ParticleEmitter getParticleEmitter() {
 			return particleEmitter;
 		}
-		
+
 		public ParticleEmitterComponent(ParticleEmitter particleEmitter) {
 			this.particleEmitter = particleEmitter;
 		}
-		
+
 	}
 
 }

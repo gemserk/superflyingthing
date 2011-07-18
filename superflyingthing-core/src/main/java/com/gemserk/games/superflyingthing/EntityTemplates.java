@@ -287,7 +287,7 @@ public class EntityTemplates {
 
 	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
 		Entity e = entityBuilder.build();
-		
+
 		Texture obstacleTexture = resourceManager.getResourceValue("ObstacleTexture");
 		obstacleTexture.setWrap(TextureWrap.Repeat, TextureWrap.Repeat);
 
@@ -301,11 +301,11 @@ public class EntityTemplates {
 			for (int p = 0; p < 3; p++) {
 				float[] pt = triangulator.getTrianglePoint(i, p);
 				v[p] = new Vector2(pt[0], pt[1]);
-				
+
 				mesh2dBuilder.color(1f, 1f, 1f, 1f);
 				mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
 				mesh2dBuilder.vertex(pt[0], pt[1]);
-				
+
 			}
 			fixtureDefs[i] = fixtureDefBuilder //
 					.polygonShape(v) //
@@ -323,7 +323,7 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		e.addComponent(new ShapeComponent(vertices, Color.BLUE, mesh2dBuilder.build(), obstacleTexture));
+		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
 		e.refresh();
 		return e;
 	}
@@ -341,6 +341,10 @@ public class EntityTemplates {
 			for (int p = 0; p < 3; p++) {
 				float[] pt = triangulator.getTrianglePoint(i, p);
 				v[p] = new Vector2(pt[0], pt[1]);
+
+				mesh2dBuilder.color(1f, 0f, 0f, 1f);
+				// mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
+				mesh2dBuilder.vertex(pt[0], pt[1]);
 			}
 			fixtureDefs[i] = fixtureDefBuilder //
 					.polygonShape(v) //
@@ -361,7 +365,7 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		e.addComponent(new ShapeComponent(vertices, Color.RED, triangulator));
+		e.addComponent(new ShapeComponent(mesh2dBuilder.build()));
 		e.addComponent(new ScriptComponent(new MovingObstacleScript(points)));
 
 		e.refresh();
@@ -369,28 +373,7 @@ public class EntityTemplates {
 	}
 
 	public Entity boxObstacle(float x, float y, float w, float h, float angle) {
-		Entity e = entityBuilder.build();
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.boxShape(w * 0.5f, h * 0.5f) //
-						.restitution(1f) //
-						.friction(0f) //
-				) //
-				.type(BodyType.StaticBody) //
-				.mass(1f)//
-				.position(x, y) //
-				.angle(angle) //
-				.build();
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		e.addComponent(new ShapeComponent(new Vector2[] { //
-				new Vector2(w * 0.5f, h * 0.5f), //
-						new Vector2(w * 0.5f, -h * 0.5f), //
-						new Vector2(-w * 0.5f, -h * 0.5f), //
-						new Vector2(-w * 0.5f, h * 0.5f), //
-				}, Color.BLUE));
-		e.refresh();
-		return e;
+		return obstacle(new Vector2[] { new Vector2(w * 0.5f, h * 0.5f), new Vector2(w * 0.5f, -h * 0.5f), new Vector2(-w * 0.5f, -h * 0.5f), new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
 }
