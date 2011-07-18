@@ -147,10 +147,29 @@ public class Behaviors {
 
 	public static class ReleaseAttachmentBehavior extends Behavior {
 
+		class Controller {
+
+			public boolean shouldReleaseShip() {
+				if (Gdx.app.getType() == ApplicationType.Android) {
+					if (Gdx.input.isTouched())
+						return true;
+				}
+
+				if (Gdx.input.isKeyPressed(Keys.SPACE))
+					return true;
+
+				return false;
+			}
+
+		}
+
 		private final World world;
+
+		private Controller controller;
 
 		public ReleaseAttachmentBehavior(World world) {
 			this.world = world;
+			this.controller = new Controller();
 		}
 
 		@Override
@@ -166,11 +185,7 @@ public class Behaviors {
 			if (releaseEntityComponent.releaseTime > 0)
 				releaseEntityComponent.releaseTime -= delta;
 
-			if (Gdx.app.getType() == ApplicationType.Android) {
-				if (!Gdx.input.isTouched()) {
-					return;
-				}
-			} else if (!Gdx.input.isKeyPressed(Keys.SPACE))
+			if (!controller.shouldReleaseShip())
 				return;
 
 			if (releaseEntityComponent.releaseTime > 0)
