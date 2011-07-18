@@ -84,7 +84,7 @@ public class PauseGameState extends GameStateImpl {
 					@Override
 					public void onReleased() {
 						game.getGamePreferences().setTutorialEnabled(true);
-						game.transition(game.getPlayScreen(), 500, 0);
+						game.transition(game.getInstructionsScreen(), 500, 0);
 					}
 				})//
 				.build());

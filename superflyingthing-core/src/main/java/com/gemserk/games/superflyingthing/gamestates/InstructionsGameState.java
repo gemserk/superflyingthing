@@ -92,17 +92,19 @@ public class InstructionsGameState extends GameStateImpl {
 		inputProcessor = new InputAdapter() {
 			@Override
 			public boolean keyUp(int keycode) {
-				game.transition(game.getPlayScreen(), 0, 0);
+				game.getGamePreferences().setTutorialEnabled(false);
+				game.transition(game.getPlayScreen(), 0, 0, true);
 				return true;
 			}
-			
+
 			@Override
 			public boolean touchUp(int x, int y, int pointer, int button) {
-				game.transition(game.getPlayScreen(), 0, 0);
+				game.getGamePreferences().setTutorialEnabled(false);
+				game.transition(game.getPlayScreen(), 0, 0, true);
 				return true;
 			}
 		};
-		
+
 	}
 
 	@Override

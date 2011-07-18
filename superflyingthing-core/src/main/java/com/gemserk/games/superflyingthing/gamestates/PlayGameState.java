@@ -662,7 +662,7 @@ public class PlayGameState extends GameStateImpl {
 
 		GamePreferences gamePreferences = game.getGamePreferences();
 		if (gamePreferences.isTutorialEnabled()) {
-			gamePreferences.setTutorialEnabled(false);
+			// gamePreferences.setTutorialEnabled(false);
 			game.transition(game.getInstructionsScreen(), 0, 300, false);
 			return;
 		}

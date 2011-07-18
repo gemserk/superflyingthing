@@ -38,6 +38,7 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
@@ -141,11 +142,11 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 		e.addComponent(new SpriteComponent(sprite, 1));
 
-		Components.MovementComponent movementComponent = new Components.MovementComponent(direction.x, direction.y);
+		MovementComponent movementComponent = new MovementComponent(direction.x, direction.y);
 		ComponentWrapper.addMovementComponent(e, movementComponent);
 
-		if (Game.isDebugMode())
-			DebugComponents.getMovementComponentDebugWindow().setMovementComponent(movementComponent);
+//		if (Game.isDebugMode())
+//			DebugComponents.getMovementComponentDebugWindow().setMovementComponent(movementComponent);
 
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
