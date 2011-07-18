@@ -36,7 +36,6 @@ import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
-import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
@@ -220,7 +219,6 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
-		e.addComponent(new ReleaseEntityComponent());
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder)));
@@ -252,7 +250,6 @@ public class EntityTemplates {
 
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
-		e.addComponent(new ReleaseEntityComponent());
 
 		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
 			{

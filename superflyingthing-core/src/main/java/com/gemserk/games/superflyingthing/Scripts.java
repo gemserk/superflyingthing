@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing;
 import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
@@ -130,7 +131,6 @@ public class Scripts {
 
 	public static class StartPlanetScript extends ScriptJavaImpl {
 
-		Behavior releaseAttachmentBehavior;
 		Behavior attachEntityBehavior;
 		Behavior calculateInputDirectionBehavior;
 
@@ -138,18 +138,13 @@ public class Scripts {
 
 		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder) {
 			this.physicsWorld = physicsWorld;
-			releaseAttachmentBehavior = new Behaviors.ReleaseAttachmentBehavior(physicsWorld);
 			attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 		}
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-
-			// releaseAttachmentBehavior.update(world.getDelta(), e);
-
 			updateReleaseAttachment(world, e);
-
 			attachEntityBehavior.update(world.getDelta(), e);
 			calculateInputDirectionBehavior.update(world.getDelta(), e);
 		}
@@ -178,12 +173,12 @@ public class Scripts {
 			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
 			Controller controller = controllerComponent.getController();
 			if (Gdx.app.getType() == ApplicationType.Android) {
+				if (!controller.isDown())
+					return false;
 				Spatial spatial = ComponentWrapper.getSpatial(e);
-				return (spatial.getPosition().dst(controller.getPosition()) < 5f);
+				return (spatial.getPosition().dst(controller.getPosition()) < 1f);
 			} else {
-				Spatial spatial = ComponentWrapper.getSpatial(e);
-				return (spatial.getPosition().dst(controller.getPosition()) < 5f);
-				// return controller.releaseButtonPressed();
+				return Gdx.input.isKeyPressed(Keys.SPACE);
 			}
 		}
 

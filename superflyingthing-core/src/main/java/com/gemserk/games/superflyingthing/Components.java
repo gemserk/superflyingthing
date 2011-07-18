@@ -202,12 +202,6 @@ public class Components {
 
 	}
 
-	public static class ReleaseEntityComponent extends Component {
-
-		int releaseTime;
-
-	}
-
 	public static class GrabbableComponent extends Component {
 
 		boolean grabbed;

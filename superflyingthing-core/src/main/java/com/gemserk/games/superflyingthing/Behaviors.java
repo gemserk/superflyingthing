@@ -4,7 +4,6 @@ import com.artemis.Entity;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -18,7 +17,6 @@ import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.ReleaseEntityComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
@@ -139,50 +137,6 @@ public class Behaviors {
 					.collideConnected(false) //
 					.length(spatial.getWidth() * 0.5f * 1.5f) //
 					.build();
-		}
-
-	}
-
-	public static class ReleaseAttachmentBehavior extends Behavior {
-
-		private final World world;
-
-		public ReleaseAttachmentBehavior(World world) {
-			this.world = world;
-		}
-
-		@Override
-		public void update(int delta, Entity e) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
-			Entity attachedEntity = entityAttachment.entity;
-
-			if (attachedEntity == null)
-				return;
-
-			ReleaseEntityComponent releaseEntityComponent = e.getComponent(ReleaseEntityComponent.class);
-
-			if (releaseEntityComponent.releaseTime > 0)
-				releaseEntityComponent.releaseTime -= delta;
-			
-			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
-			Controller controller = controllerComponent.getController();
-
-			if (!controller.shouldReleaseShip())
-				return;
-
-			if (releaseEntityComponent.releaseTime > 0)
-				return;
-
-			if (entityAttachment.joint != null)
-				world.destroyJoint(entityAttachment.joint);
-
-			AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
-			attachableComponent.owner = null;
-
-			entityAttachment.joint = null;
-			entityAttachment.entity = null;
-
-			releaseEntityComponent.releaseTime = 300;
 		}
 
 	}
