@@ -302,8 +302,9 @@ public class EntityTemplates {
 				float[] pt = triangulator.getTrianglePoint(i, p);
 				v[p] = new Vector2(pt[0], pt[1]);
 
-				mesh2dBuilder.color(1f, 1f, 1f, 1f);
+				mesh2dBuilder.color(0.8f, 0.8f, 0.8f, 1f);
 				mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
+//				mesh2dBuilder.texCoord(pt[0], pt[1]);
 				mesh2dBuilder.vertex(pt[0], pt[1]);
 
 			}
