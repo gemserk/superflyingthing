@@ -44,6 +44,9 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		particleEffect("ExplosionEffect", "data/particles/ExplosionEffect", "data/particles");
 		particleEmitter("ExplosionEmitter", "ExplosionEffect", "Explosion");
+
+		texture("ThrustTexture", "data/particles/particle.png");
+		sprite("ThrustSprite", "ThrustTexture");
 		
 		particleEffect("ThrustEffect", "data/particles/ThrustEffect", "data/particles");
 		particleEmitter("ThrustEmitter", "ThrustEffect", "Thrust");

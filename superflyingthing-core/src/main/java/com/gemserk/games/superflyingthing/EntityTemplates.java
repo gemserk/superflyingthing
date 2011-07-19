@@ -14,6 +14,7 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -121,8 +122,8 @@ public class EntityTemplates {
 	}
 
 	public Entity ship(float x, float y, Vector2 direction, Controller controller) {
-		float width = 0.5f;
-		float height = 0.5f;
+		float width = 0.8f;
+		float height = 0.8f;
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
@@ -134,7 +135,7 @@ public class EntityTemplates {
 						.restitution(0f) //
 						.categoryBits(CategoryBits.ShipCategoryBits) //
 						.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-						.boxShape(width * 0.3f, height * 0.3f)) //
+						.boxShape(width * 0.125f, height * 0.125f)) //
 				.mass(50f) //
 				.position(x, y) //
 				.type(BodyType.DynamicBody) //
@@ -142,7 +143,7 @@ public class EntityTemplates {
 				.build();
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width * 2, height * 2)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 		e.addComponent(new SpriteComponent(sprite, 1));
 
 		MovementComponent movementComponent = new MovementComponent(direction.x, direction.y);
@@ -158,12 +159,44 @@ public class EntityTemplates {
 		e.addComponent(new ScriptComponent(new ShipScript()));
 		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 
-		ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
-		ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.005f);
-		e.addComponent(new ParticleEmitterComponent(thrustEmitter));
+		// ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
+		// ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.005f);
+		// e.addComponent(new ParticleEmitterComponent(thrustEmitter));
 
 		e.refresh();
 		return e;
+	}
+
+	public Entity thrustParticle(float x, float y) {
+		Sprite sprite = resourceManager.getResourceValue("ThrustSprite");
+		return entityBuilder //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 0.2f, 0.2f, 0f))) //
+				.component(new SpriteComponent(sprite, -1)) //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					float aliveTime = 100;
+
+					@Override
+					public void update(com.artemis.World world, Entity e) {
+						aliveTime -= world.getDelta();
+
+						if (aliveTime <= 0) {
+							world.deleteEntity(e);
+							return;
+						}
+
+						SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+						spriteComponent.getColor().a = FloatInterpolator.interpolate(0f, 1f, aliveTime / 100);
+						// spriteComponent.getColor().r = FloatInterpolator.interpolate(1f, 1f, aliveTime / 200);
+						// spriteComponent.getColor().g = FloatInterpolator.interpolate(0f, 0.7f, aliveTime / 200);
+						// spriteComponent.getColor().b = FloatInterpolator.interpolate(0f, 0f, aliveTime / 200);
+
+						Spatial spatial = ComponentWrapper.getSpatial(e);
+						spatial.setSize(FloatInterpolator.interpolate(0.1f, 0.2f, aliveTime / 100), FloatInterpolator.interpolate(0.1f, 0.2f, aliveTime / 100));
+
+					}
+				})) //
+				.build();
 	}
 
 	public Entity diamond(float x, float y, float radius) {

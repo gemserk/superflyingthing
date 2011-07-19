@@ -107,23 +107,30 @@ public class Scripts {
 			calculateInputDirectionBehavior.update(world.getDelta(), e);
 			collisionHandlerBehavior.update(world.getDelta(), e);
 
-//			Spatial spatial = ComponentWrapper.getSpatial(e);
 			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
 			SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
 
-//			float angle = spatial.getAngle();
+			// float angle = spatial.getAngle();
 			float angle = movementComponent.getDirection().angle();
 			Animation animation = animationComponent.getCurrentAnimation();
 
-			int frameIndex = getAnimationForAngle(angle);
+			int frameIndex = getAnimationForAngle(angle - 5f);
 			Sprite frame = animation.getFrame(frameIndex);
 
 			spriteComponent.setSprite(frame);
+
+			// Spatial spatial = ComponentWrapper.getSpatial(e);
+			//
+			// templates.thrustParticle(spatial.getX() - movementComponent.getDirection().x * 0.25f, spatial.getY() - movementComponent.getDirection().y * 0.25f);
+			// templates.thrustParticle(spatial.getX() - movementComponent.getDirection().x * 0.3f, spatial.getY() - movementComponent.getDirection().y * 0.3f);
+
 		}
 
 		private int getAnimationForAngle(float angle) {
 			// return 0;
+			if (angle < 360f)
+				angle+=360f;
 			angle %= 360f;
 			double floor = Math.floor(angle * 0.1f);
 			return (int) (floor);
