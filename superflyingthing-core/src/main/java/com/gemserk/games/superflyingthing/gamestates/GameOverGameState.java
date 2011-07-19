@@ -59,20 +59,21 @@ public class GameOverGameState extends GameStateImpl {
 				.font(titleFont)//
 				.build());
 
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.7f) //
-				.text("Try Again") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						restartLevel();
-					}
-				})//
-				.build());
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
+			container.add(GuiControls.textButton() //
+					.position(centerX, height * 0.7f) //
+					.text("Try Again") //
+					.font(buttonFont) //
+					.overColor(Color.GREEN) //
+					.notOverColor(Color.WHITE)//
+					.boundsOffset(20, 20f) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased() {
+							restartLevel();
+						}
+					})//
+					.build());
 
 		String nextLevelText = "Next Level";
 		if (!Levels.hasLevel(GameInformation.level + 1))
@@ -208,7 +209,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void update(int delta) {
-		
+
 		if (GameInformation.worldWrapper != null)
 			GameInformation.worldWrapper.update(delta);
 
