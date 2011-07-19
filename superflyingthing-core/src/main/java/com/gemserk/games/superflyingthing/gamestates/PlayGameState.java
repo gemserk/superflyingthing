@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import com.artemis.Entity;
-import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -29,7 +28,6 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -42,7 +40,6 @@ import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
@@ -57,7 +54,6 @@ import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.Controller;
@@ -130,26 +126,26 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
 		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
-		
-		worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
-			@Override
-			protected void process(Entity e) {
-				Spatial spatial = ComponentWrapper.getSpatial(e);
-				if (spatial == null)
-					return;
-				Vector2 position = spatial.getPosition();
-				MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-				if (movementComponent == null)
-					return;
-				Vector2 direction = movementComponent.getDirection();
-				float x = position.x + direction.tmp().mul(0.5f).x;
-				float y = position.y + direction.tmp().mul(0.5f).y;
-				ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
-			}
-		});
-		
+
+		// worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
+		// @Override
+		// protected void process(Entity e) {
+		// Spatial spatial = ComponentWrapper.getSpatial(e);
+		// if (spatial == null)
+		// return;
+		// Vector2 position = spatial.getPosition();
+		// MovementComponent movementComponent = e.getComponent(MovementComponent.class);
+		// if (movementComponent == null)
+		// return;
+		// Vector2 direction = movementComponent.getDirection();
+		// float x = position.x + direction.tmp().mul(0.5f).x;
+		// float y = position.y + direction.tmp().mul(0.5f).y;
+		// ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
+		// }
+		// });
+
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
-		
+
 		worldWrapper.init();
 
 		entityBuilder = new EntityBuilder(world);
@@ -225,7 +221,7 @@ public class PlayGameState extends GameStateImpl {
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			final Controller controller = new Controller(worldCamera);
-			
+
 			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
 
 			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
@@ -263,7 +259,7 @@ public class PlayGameState extends GameStateImpl {
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			createWorldLimits(worldWidth, worldHeight);
-			
+
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
@@ -272,7 +268,7 @@ public class PlayGameState extends GameStateImpl {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									
+
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
 
@@ -280,8 +276,7 @@ public class PlayGameState extends GameStateImpl {
 									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!
 									gameDataComponent.ship = null;
 									gameData.deaths++;
-									
-									
+
 								}
 							});
 							put(Triggers.noEntityTrigger, new Trigger() {
@@ -435,10 +430,10 @@ public class PlayGameState extends GameStateImpl {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									
+
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
-									
+
 									world.deleteEntity(gameDataComponent.ship);
 
 									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
@@ -448,11 +443,10 @@ public class PlayGameState extends GameStateImpl {
 									gameData.deaths++;
 
 									Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
-									
+
 									TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
 									targetComponent.setTarget(null);
-									
-									
+
 								}
 							});
 							put(Triggers.noEntityTrigger, new Trigger() {
@@ -487,7 +481,7 @@ public class PlayGameState extends GameStateImpl {
 
 			worldWrapper.update(1);
 			worldWrapper.update(1);
-			
+
 		}
 	}
 
@@ -683,7 +677,7 @@ public class PlayGameState extends GameStateImpl {
 				game.transition(game.getGameOverScreen(), 0, 300, false);
 			} else {
 				game.transition(game.getGameOverScreen(), 0, 300, false);
-//				game.getPlayScreen().restart();
+				// game.getPlayScreen().restart();
 			}
 		}
 
