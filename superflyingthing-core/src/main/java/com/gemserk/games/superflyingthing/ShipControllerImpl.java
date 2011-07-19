@@ -4,6 +4,7 @@ import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
+import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 
 public class ShipControllerImpl implements ShipController {
@@ -42,31 +43,21 @@ public class ShipControllerImpl implements ShipController {
 	}
 
 	private float getMovementDirectionAndroid() {
-
 		for (int i = 0; i < 5; i++) {
 			if (!Gdx.input.isTouched(i))
 				continue;
-
-			float x = Gdx.input.getX(i);
-			float d = Gdx.graphics.getWidth() * 0.5f - x;
-			d /= Gdx.graphics.getWidth() * 0.5f;
-
-			if (d > 0 && d < 0.2f)
-				d = 0.2f;
-
-			if (d < 0 && d > -0.2f)
-				d = -0.2f;
-
-			if (d > 1f)
-				d = 1f;
-
-			if (d < -1f)
-				d = -1f;
-
-			return d;
+			return -value(Gdx.graphics.getWidth() * 0.5f, Gdx.input.getX(i), 0.2f, Gdx.graphics.getWidth() * 0.25f);
 		}
-
 		return 0f;
+	}
+
+	public float value(float center, int x, float minValue, float distanceToMax) {
+		float distance = Math.abs(x - center);
+		if (x > center)
+			return FloatInterpolator.interpolate(minValue, 1f, distance / distanceToMax);
+		else if (x < center)
+			return FloatInterpolator.interpolate(-minValue, -1f, distance / distanceToMax);
+		return 0;
 	}
 
 	float movementDirection = 0f;
@@ -85,7 +76,7 @@ public class ShipControllerImpl implements ShipController {
 		} else {
 			movementDirection = 0f;
 		}
-		
+
 		if (movementDirection > 1f)
 			movementDirection = 1f;
 
