@@ -37,18 +37,6 @@ public class Controller implements com.gemserk.commons.gdx.controllers.Controlle
 	private float getMovementDirectionPC() {
 		float movementDirection = 0f;
 
-		// float x = Gdx.input.getX();
-		// float d = Gdx.graphics.getWidth() * 0.5f - x;
-		// d /= Gdx.graphics.getWidth() * 0.25f;
-		//
-		// if (d > 1f)
-		// d = 1f;
-		//
-		// if (d < -1f)
-		// d = -1f;
-		//
-		// return d;
-
 		if (Gdx.input.isKeyPressed(Keys.LEFT))
 			movementDirection += 1f;
 
@@ -67,7 +55,7 @@ public class Controller implements com.gemserk.commons.gdx.controllers.Controlle
 			float x = Gdx.input.getX(i);
 			float d = Gdx.graphics.getWidth() * 0.5f - x;
 			d /= Gdx.graphics.getWidth() * 0.5f;
-			
+
 			if (d > 0 && d < 0.2f)
 				d = 0.2f;
 
@@ -81,31 +69,10 @@ public class Controller implements com.gemserk.commons.gdx.controllers.Controlle
 				d = -1f;
 
 			return d;
-
-			// if (x < Gdx.graphics.getWidth() / 2)
-			// return 1f;
-			// else
-			// return 1f;
 		}
 
 		return 0f;
 	}
-
-	// private float getMovementDirectionAndroid() {
-	// float movementDirection = 0f;
-	//
-	// for (int i = 0; i < 5; i++) {
-	// if (!Gdx.input.isTouched(i))
-	// continue;
-	// float x = Gdx.input.getX(i);
-	// if (x < Gdx.graphics.getWidth() / 2)
-	// return 1f;
-	// else
-	// return -1f;
-	// }
-	//
-	// return movementDirection;
-	// }
 
 	@Override
 	public void update(int delta) {

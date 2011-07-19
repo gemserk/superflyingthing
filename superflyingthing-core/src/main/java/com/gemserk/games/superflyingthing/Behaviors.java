@@ -181,16 +181,8 @@ public class Behaviors {
 			angularVelocity = (1 - movementDirection) * minAngularVelocity + movementDirection * maxAngularVelocity;
 			rotationAngle = angularVelocity * delta * 0.001f;
 			
-			System.out.println(angularVelocity);
-			
-			
-
 			movementComponent.angularVelocity = angularVelocity;
 			direction.rotate(rotationAngle);
-		}
-
-		private boolean changedDirection(float movementDirection, float angularVelocity) {
-			return (movementDirection > 0 && angularVelocity < 0) || (movementDirection < 0 && angularVelocity > 0);
 		}
 
 	}
