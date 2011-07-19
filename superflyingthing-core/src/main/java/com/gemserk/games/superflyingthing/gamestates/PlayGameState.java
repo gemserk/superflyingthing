@@ -58,6 +58,7 @@ import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
@@ -204,9 +205,9 @@ public class PlayGameState extends GameStateImpl {
 
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			final ShipController shipController = new ShipController(worldCamera);
+			final ShipController shipControllerImpl = new ShipControllerImpl(worldCamera);
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, shipController);
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, shipControllerImpl);
 
 			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
 				@Override
@@ -271,7 +272,7 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), shipController);
+									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), shipControllerImpl);
 									// I don't like the world.createEntity() !!
 									// world.add(ship);
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
@@ -396,8 +397,8 @@ public class PlayGameState extends GameStateImpl {
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
 
-			final ShipController shipController = new ShipController(worldCamera);
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, shipController);
+			final ShipController shipControllerImpl = new ShipControllerImpl(worldCamera);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, shipControllerImpl);
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -442,7 +443,7 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), shipController);
+									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), shipControllerImpl);
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									gameDataComponent.ship = ship;
@@ -543,8 +544,8 @@ public class PlayGameState extends GameStateImpl {
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
-			final ShipController shipController = new ShipController(worldCamera);
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, shipController);
+			final ShipController shipControllerImpl = new ShipControllerImpl(worldCamera);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, shipControllerImpl);
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -564,7 +565,7 @@ public class PlayGameState extends GameStateImpl {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), shipController);
+									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), shipControllerImpl);
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									gameDataComponent.ship = ship;

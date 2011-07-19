@@ -38,14 +38,14 @@ public class Components {
 	
 	public static class ControllerComponent extends Component {
 
-		private final ShipController shipController;
+		private final ShipController shipControllerImpl;
 
 		public ShipController getController() {
-			return shipController;
+			return shipControllerImpl;
 		}
 
-		public ControllerComponent(ShipController shipController) {
-			this.shipController = shipController;
+		public ControllerComponent(ShipController shipControllerImpl) {
+			this.shipControllerImpl = shipControllerImpl;
 		}
 
 	}

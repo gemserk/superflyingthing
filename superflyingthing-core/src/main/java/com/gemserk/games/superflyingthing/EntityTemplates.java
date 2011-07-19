@@ -121,7 +121,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity ship(float x, float y, Vector2 direction, ShipController shipController) {
+	public Entity ship(float x, float y, Vector2 direction, ShipController shipControllerImpl) {
 		float width = 0.8f;
 		float height = 0.8f;
 
@@ -155,7 +155,7 @@ public class EntityTemplates {
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
-		e.addComponent(new ControllerComponent(shipController));
+		e.addComponent(new ControllerComponent(shipControllerImpl));
 		e.addComponent(new ScriptComponent(new ShipScript()));
 		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 
@@ -244,7 +244,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity startPlanet(float x, float y, float radius, ShipController shipController) {
+	public Entity startPlanet(float x, float y, float radius, ShipController shipControllerImpl) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
@@ -262,7 +262,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
-		e.addComponent(new ControllerComponent(shipController));
+		e.addComponent(new ControllerComponent(shipControllerImpl));
 		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder)));
 
 		e.refresh();
