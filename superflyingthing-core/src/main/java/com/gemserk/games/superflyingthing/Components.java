@@ -81,7 +81,7 @@ public class Components {
 			this.mesh2d = mesh2d;
 			this.texture = texture;
 		}
-		
+
 		public ShapeComponent(Mesh2d mesh2d) {
 			this(mesh2d, null);
 		}
@@ -94,8 +94,6 @@ public class Components {
 		float angularVelocity = 0f;
 		float maxLinearSpeed = 5f;
 		private float maxAngularVelocity = 300f;
-		private float minAngularVelocity = 100f;
-		private float angularAcceleration = 0.7f;
 
 		public Vector2 getDirection() {
 			return direction;
@@ -103,22 +101,6 @@ public class Components {
 
 		public MovementComponent(float dx, float dy) {
 			direction.set(dx, dy);
-		}
-
-		public void setAngularAcceleration(float angularAcceleration) {
-			this.angularAcceleration = angularAcceleration;
-		}
-
-		public float getAngularAcceleration() {
-			return angularAcceleration;
-		}
-
-		public void setMinAngularVelocity(float minAngularVelocity) {
-			this.minAngularVelocity = minAngularVelocity;
-		}
-
-		public float getMinAngularVelocity() {
-			return minAngularVelocity;
 		}
 
 		public void setMaxAngularVelocity(float maxAngularVelocity) {
