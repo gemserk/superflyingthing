@@ -122,8 +122,8 @@ public class EntityTemplates {
 	}
 
 	public Entity ship(float x, float y, Vector2 direction, Controller controller) {
-		float width = 1f;
-		float height = 1f;
+		float width = 0.8f;
+		float height = 0.8f;
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
