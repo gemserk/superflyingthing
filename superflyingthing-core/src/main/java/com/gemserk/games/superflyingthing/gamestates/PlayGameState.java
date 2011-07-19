@@ -420,7 +420,7 @@ public class PlayGameState extends GameStateImpl {
 
 									world.deleteEntity(gameDataComponent.ship);
 
-									SpriteComponent spriteComponent = ComponentWrapper.getSprite(gameDataComponent.ship);
+									SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 									entityTemplates.deadShip(superSheepSpatial, spriteComponent.getSprite());
 

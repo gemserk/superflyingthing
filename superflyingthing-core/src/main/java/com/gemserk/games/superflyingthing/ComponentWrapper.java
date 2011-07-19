@@ -29,7 +29,7 @@ public class ComponentWrapper {
 		return spatialComponent.getSpatial();
 	}
 
-	public static SpriteComponent getSprite(Entity e) {
+	public static SpriteComponent getSpriteComponent(Entity e) {
 		return getComponent(e, SpriteComponent.class);
 	}
 	

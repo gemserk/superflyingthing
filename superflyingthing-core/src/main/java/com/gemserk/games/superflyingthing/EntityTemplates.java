@@ -185,7 +185,7 @@ public class EntityTemplates {
 							return;
 						}
 
-						SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+						SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 						spriteComponent.getColor().a = FloatInterpolator.interpolate(0f, 1f, aliveTime / 100);
 						// spriteComponent.getColor().r = FloatInterpolator.interpolate(1f, 1f, aliveTime / 200);
 						// spriteComponent.getColor().g = FloatInterpolator.interpolate(0f, 0.7f, aliveTime / 200);

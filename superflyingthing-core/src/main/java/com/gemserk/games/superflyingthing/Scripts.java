@@ -109,7 +109,7 @@ public class Scripts {
 
 			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
-			SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 
 			// float angle = spatial.getAngle();
 			float angle = movementComponent.getDirection().angle();
