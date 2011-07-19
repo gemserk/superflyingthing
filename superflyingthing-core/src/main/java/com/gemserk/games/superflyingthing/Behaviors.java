@@ -176,30 +176,11 @@ public class Behaviors {
 			float angularVelocity = movementComponent.angularVelocity;
 
 			float maxAngularVelocity = movementComponent.getMaxAngularVelocity();
-			float acceleration = movementComponent.getAngularAcceleration();
-			float minimumAngularVelocity = movementComponent.getMinAngularVelocity();
+			float minAngularVelocity = 0f;
 
-			if (movementDirection > 0) {
-				if (angularVelocity < 0)
-					angularVelocity = minimumAngularVelocity;
-				angularVelocity += acceleration * delta;
-				if (angularVelocity > maxAngularVelocity)
-					angularVelocity = maxAngularVelocity;
-				rotationAngle = angularVelocity * delta * 0.001f;
-			} else if (movementDirection < 0) {
-				if (angularVelocity > 0)
-					angularVelocity = -minimumAngularVelocity;
-				angularVelocity -= acceleration * delta;
-				if (angularVelocity < -maxAngularVelocity)
-					angularVelocity = -maxAngularVelocity;
-				rotationAngle = angularVelocity * delta * 0.001f;
-			} else {
-				if (angularVelocity > 0)
-					angularVelocity = minimumAngularVelocity;
-				if (angularVelocity < 0)
-					angularVelocity = -minimumAngularVelocity;
-			}
-
+			angularVelocity = (1 - movementDirection) * minAngularVelocity + movementDirection * maxAngularVelocity;
+			rotationAngle = angularVelocity * delta * 0.001f;
+			
 			movementComponent.angularVelocity = angularVelocity;
 			direction.rotate(rotationAngle);
 		}

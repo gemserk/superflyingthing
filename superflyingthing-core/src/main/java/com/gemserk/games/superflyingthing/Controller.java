@@ -6,21 +6,21 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 
-public class Controller {
-	
+public class Controller implements com.gemserk.commons.gdx.controllers.Controller {
+
 	private final Libgdx2dCamera libgdx2dCamera;
-	
+
 	private final Vector2 position;
 
 	public Controller(Libgdx2dCamera libgdx2dCamera) {
 		this.libgdx2dCamera = libgdx2dCamera;
 		this.position = new Vector2(0f, 0f);
 	}
-	
+
 	public boolean isDown() {
 		return Gdx.input.isTouched();
 	}
-	
+
 	public Vector2 getPosition() {
 		position.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
 		libgdx2dCamera.unproject(position);
@@ -47,19 +47,36 @@ public class Controller {
 	}
 
 	private float getMovementDirectionAndroid() {
-		float movementDirection = 0f;
 
 		for (int i = 0; i < 5; i++) {
 			if (!Gdx.input.isTouched(i))
 				continue;
+
 			float x = Gdx.input.getX(i);
-			if (x < Gdx.graphics.getWidth() / 2)
-				movementDirection += 1f;
-			else
-				movementDirection -= 1f;
+			float d = Gdx.graphics.getWidth() * 0.5f - x;
+			d /= Gdx.graphics.getWidth() * 0.5f;
+
+			if (d > 0 && d < 0.2f)
+				d = 0.2f;
+
+			if (d < 0 && d > -0.2f)
+				d = -0.2f;
+
+			if (d > 1f)
+				d = 1f;
+
+			if (d < -1f)
+				d = -1f;
+
+			return d;
 		}
 
-		return movementDirection;
+		return 0f;
+	}
+
+	@Override
+	public void update(int delta) {
+
 	}
 
 }
