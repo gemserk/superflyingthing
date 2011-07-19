@@ -16,6 +16,7 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.controllers.Controller;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
@@ -279,4 +280,18 @@ public class Scripts {
 		}
 	}
 
+	public static class UpdateControllerScript extends ScriptJavaImpl {
+		
+		private final Controller controller;
+
+		public UpdateControllerScript(Controller controller) {
+			this.controller = controller;
+		}
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			controller.update(world.getDelta());
+		}
+		
+	}
 }

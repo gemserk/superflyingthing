@@ -17,17 +17,11 @@ public class ShipControllerImpl implements ShipController {
 		this.position = new Vector2(0f, 0f);
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gemserk.games.superflyingthing.ShipController#isDown()
-	 */
 	@Override
 	public boolean isDown() {
 		return Gdx.input.isTouched();
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gemserk.games.superflyingthing.ShipController#getPosition()
-	 */
 	@Override
 	public Vector2 getPosition() {
 		position.set(Gdx.input.getX(), Gdx.graphics.getHeight() - Gdx.input.getY());
@@ -35,9 +29,6 @@ public class ShipControllerImpl implements ShipController {
 		return position;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gemserk.games.superflyingthing.ShipController#getMovementDirection()
-	 */
 	@Override
 	public float getMovementDirection() {
 		if (Gdx.app.getType() == ApplicationType.Android)
@@ -47,14 +38,6 @@ public class ShipControllerImpl implements ShipController {
 	}
 
 	private float getMovementDirectionPC() {
-		float movementDirection = 0f;
-
-		if (Gdx.input.isKeyPressed(Keys.LEFT))
-			movementDirection += 1f;
-
-		if (Gdx.input.isKeyPressed(Keys.RIGHT))
-			movementDirection -= 1f;
-
 		return movementDirection;
 	}
 
@@ -86,11 +69,28 @@ public class ShipControllerImpl implements ShipController {
 		return 0f;
 	}
 
-	/* (non-Javadoc)
-	 * @see com.gemserk.games.superflyingthing.ShipController#update(int)
-	 */
+	float movementDirection = 0f;
+
 	@Override
 	public void update(int delta) {
+
+		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+			if (movementDirection < 0)
+				movementDirection = 0f;
+			movementDirection += 0.008f * delta;
+		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			if (movementDirection > 0)
+				movementDirection = 0f;
+			movementDirection -= 0.008f * delta;
+		} else {
+			movementDirection = 0f;
+		}
+		
+		if (movementDirection > 1f)
+			movementDirection = 1f;
+
+		if (movementDirection < -1f)
+			movementDirection = -1f;
 
 	}
 

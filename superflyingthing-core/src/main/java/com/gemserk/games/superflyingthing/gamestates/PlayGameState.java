@@ -57,12 +57,13 @@ import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
-import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
+import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
+import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.Triggers;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
@@ -128,7 +129,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
 		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
-		
+
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
 
 		worldWrapper.init();
@@ -205,9 +206,9 @@ public class PlayGameState extends GameStateImpl {
 
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			final ShipController shipControllerImpl = new ShipControllerImpl(worldCamera);
+			final ShipController controller = new ShipControllerImpl(worldCamera);
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, shipControllerImpl);
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
 
 			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
 				@Override
@@ -246,6 +247,10 @@ public class PlayGameState extends GameStateImpl {
 			createWorldLimits(worldWidth, worldHeight);
 
 			entityBuilder //
+					.component(new ScriptComponent(new UpdateControllerScript(controller))) //
+					.build();
+
+			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
@@ -256,7 +261,7 @@ public class PlayGameState extends GameStateImpl {
 
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
-									
+
 									SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 									entityTemplates.deadShip(spatial, spriteComponent.getSprite());
 
@@ -272,7 +277,7 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), shipControllerImpl);
+									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
 									// I don't like the world.createEntity() !!
 									// world.add(ship);
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
@@ -397,8 +402,8 @@ public class PlayGameState extends GameStateImpl {
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
 
-			final ShipController shipControllerImpl = new ShipControllerImpl(worldCamera);
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, shipControllerImpl);
+			final ShipController controller = new ShipControllerImpl(worldCamera);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller);
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -409,6 +414,10 @@ public class PlayGameState extends GameStateImpl {
 			});
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
+
+			entityBuilder //
+					.component(new ScriptComponent(new UpdateControllerScript(controller))) //
+					.build();
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -443,7 +452,7 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), shipControllerImpl);
+									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									gameDataComponent.ship = ship;
@@ -544,8 +553,8 @@ public class PlayGameState extends GameStateImpl {
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
-			final ShipController shipControllerImpl = new ShipControllerImpl(worldCamera);
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, shipControllerImpl);
+			final ShipController controller = new ShipControllerImpl(worldCamera);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller);
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -558,6 +567,10 @@ public class PlayGameState extends GameStateImpl {
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
 			entityBuilder //
+					.component(new ScriptComponent(new UpdateControllerScript(controller))) //
+					.build();
+
+			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new TriggerComponent(new HashMap<String, Trigger>() {
 						{
@@ -565,7 +578,7 @@ public class PlayGameState extends GameStateImpl {
 								@Override
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), shipControllerImpl);
+									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), controller);
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									gameDataComponent.ship = ship;
