@@ -46,7 +46,7 @@ public class ShipControllerImpl implements ShipController {
 		for (int i = 0; i < 5; i++) {
 			if (!Gdx.input.isTouched(i))
 				continue;
-			return -value(Gdx.graphics.getWidth() * 0.5f, Gdx.input.getX(i), 0.2f, Gdx.graphics.getWidth() * 0.25f);
+			return -value(Gdx.graphics.getWidth() * 0.5f, Gdx.input.getX(i), 0.2f, Gdx.graphics.getWidth() * 0.375f);
 		}
 		return 0f;
 	}
