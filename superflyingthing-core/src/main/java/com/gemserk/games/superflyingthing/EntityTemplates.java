@@ -240,7 +240,7 @@ public class EntityTemplates {
 	public Entity deadShip(Spatial spatial, Sprite sprite) {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(spatial))) //
-				.component(new SpriteComponent(sprite, -1, Color.BLACK)) //
+				.component(new SpriteComponent(sprite, -1, Colors.semiBlack)) //
 				.build();
 	}
 

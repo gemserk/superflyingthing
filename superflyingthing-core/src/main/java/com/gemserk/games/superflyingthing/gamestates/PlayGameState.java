@@ -255,6 +255,9 @@ public class PlayGameState extends GameStateImpl {
 
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
+									
+									SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
+									entityTemplates.deadShip(spatial, spriteComponent.getSprite());
 
 									world.deleteEntity(gameDataComponent.ship);
 									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!

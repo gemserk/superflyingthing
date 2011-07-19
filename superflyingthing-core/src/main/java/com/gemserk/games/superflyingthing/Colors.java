@@ -14,4 +14,6 @@ public class Colors {
 	
 	public static final Color darkBlue = new Color(0f, 0f, 0.6f, 1f);
 	
+	public static final Color semiBlack = new Color(0f, 0f, 0f, 0.5f);
+	
 }
