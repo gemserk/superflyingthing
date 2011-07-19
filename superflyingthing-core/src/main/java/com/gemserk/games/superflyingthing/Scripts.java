@@ -211,12 +211,12 @@ public class Scripts {
 
 		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {
 			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
-			Controller controller = controllerComponent.getController();
+			ShipController shipController = controllerComponent.getController();
 			if (Gdx.app.getType() == ApplicationType.Android) {
-				if (!controller.isDown())
+				if (!shipController.isDown())
 					return false;
 				Spatial spatial = ComponentWrapper.getSpatial(e);
-				return (spatial.getPosition().dst(controller.getPosition()) < 1f);
+				return (spatial.getPosition().dst(shipController.getPosition()) < 1f);
 			} else {
 				return Gdx.input.isKeyPressed(Keys.SPACE);
 			}

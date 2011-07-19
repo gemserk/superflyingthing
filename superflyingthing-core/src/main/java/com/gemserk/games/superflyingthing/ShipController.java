@@ -5,14 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.controllers.Controller;
 
-public class Controller implements com.gemserk.commons.gdx.controllers.Controller {
+public class ShipController implements Controller {
 
 	private final Libgdx2dCamera libgdx2dCamera;
 
 	private final Vector2 position;
 
-	public Controller(Libgdx2dCamera libgdx2dCamera) {
+	public ShipController(Libgdx2dCamera libgdx2dCamera) {
 		this.libgdx2dCamera = libgdx2dCamera;
 		this.position = new Vector2(0f, 0f);
 	}
