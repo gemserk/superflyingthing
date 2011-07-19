@@ -28,6 +28,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -419,8 +420,9 @@ public class PlayGameState extends GameStateImpl {
 
 									world.deleteEntity(gameDataComponent.ship);
 
+									SpriteComponent spriteComponent = ComponentWrapper.getSprite(gameDataComponent.ship);
 									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									entityTemplates.deadShip(superSheepSpatial);
+									entityTemplates.deadShip(superSheepSpatial, spriteComponent.getSprite());
 
 									gameDataComponent.ship = null;
 									gameData.deaths++;

@@ -237,11 +237,10 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity deadShip(Spatial spatial) {
-		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+	public Entity deadShip(Spatial spatial, Sprite sprite) {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(spatial))) //
-				.component(new SpriteComponent(sprite, -1, Color.RED)) //
+				.component(new SpriteComponent(sprite, -1, Color.BLACK)) //
 				.build();
 	}
 
