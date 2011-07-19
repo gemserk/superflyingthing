@@ -1,7 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
 import com.artemis.Entity;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.commons.gdx.box2d.Contact;
@@ -67,7 +66,8 @@ public class Behaviors {
 			Vector2 position = body.getTransform().getPosition();
 			float desiredAngle = direction.angle();
 
-			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
+			body.getTransform().getPosition().set(position);
+//			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
 			body.applyForce(direction.tmp().mul(5000f), position);
 
 			Vector2 linearVelocity = body.getLinearVelocity();

@@ -13,6 +13,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -34,6 +35,7 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
@@ -119,10 +121,11 @@ public class EntityTemplates {
 	}
 
 	public Entity ship(float x, float y, Vector2 direction, Controller controller) {
-		float width = 0.4f;
-		float height = 0.2f;
+		float width = 0.5f;
+		float height = 0.5f;
 
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
 
@@ -139,7 +142,7 @@ public class EntityTemplates {
 				.build();
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width * 2, height * 2)));
 		e.addComponent(new SpriteComponent(sprite, 1));
 
 		MovementComponent movementComponent = new MovementComponent(direction.x, direction.y);
@@ -153,6 +156,7 @@ public class EntityTemplates {
 		e.addComponent(new ShipControllerComponent());
 		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(new ShipScript()));
+		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 
 		ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
 		ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.005f);

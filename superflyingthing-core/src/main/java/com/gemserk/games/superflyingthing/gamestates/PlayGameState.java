@@ -126,24 +126,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
 
 		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
-
-		// worldWrapper.addRenderSystem(new EntityProcessingSystem(SpatialComponent.class, MovementComponent.class) {
-		// @Override
-		// protected void process(Entity e) {
-		// Spatial spatial = ComponentWrapper.getSpatial(e);
-		// if (spatial == null)
-		// return;
-		// Vector2 position = spatial.getPosition();
-		// MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-		// if (movementComponent == null)
-		// return;
-		// Vector2 direction = movementComponent.getDirection();
-		// float x = position.x + direction.tmp().mul(0.5f).x;
-		// float y = position.y + direction.tmp().mul(0.5f).y;
-		// ImmediateModeRendererUtils.drawLine(position.x, position.y, x, y, Color.GREEN);
-		// }
-		// });
-
+		
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
 
 		worldWrapper.init();
@@ -362,7 +345,7 @@ public class PlayGameState extends GameStateImpl {
 
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
-			final Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			final Camera camera = new CameraRestrictedImpl(0f, 0f, 64f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			float obstacleX = 12f;
 
@@ -509,7 +492,7 @@ public class PlayGameState extends GameStateImpl {
 
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
-			Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, 64f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			float obstacleX = 12f;
 

@@ -8,6 +8,7 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
@@ -30,6 +31,10 @@ public class ComponentWrapper {
 
 	public static SpriteComponent getSprite(Entity e) {
 		return getComponent(e, SpriteComponent.class);
+	}
+	
+	public static AnimationComponent getAnimation(Entity e) {
+		return getComponent(e, AnimationComponent.class);
 	}
 	
 	public static TriggerComponent getTriggers(Entity e) {

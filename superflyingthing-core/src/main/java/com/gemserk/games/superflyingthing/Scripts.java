@@ -4,23 +4,28 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
@@ -101,13 +106,34 @@ public class Scripts {
 			fixDirectionFromControllerBehavior.update(world.getDelta(), e);
 			calculateInputDirectionBehavior.update(world.getDelta(), e);
 			collisionHandlerBehavior.update(world.getDelta(), e);
+
+//			Spatial spatial = ComponentWrapper.getSpatial(e);
+			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
+			SpriteComponent spriteComponent = ComponentWrapper.getSprite(e);
+
+//			float angle = spatial.getAngle();
+			float angle = movementComponent.getDirection().angle();
+			Animation animation = animationComponent.getCurrentAnimation();
+
+			int frameIndex = getAnimationForAngle(angle);
+			Sprite frame = animation.getFrame(frameIndex);
+
+			spriteComponent.setSprite(frame);
+		}
+
+		private int getAnimationForAngle(float angle) {
+			// return 0;
+			angle %= 360f;
+			double floor = Math.floor(angle * 0.1f);
+			return (int) (floor);
 		}
 	}
 
 	public static class GrabbableItemScript extends ScriptJavaImpl {
 
 		Behavior removeWhenGrabbedBehavior;
-		
+
 		float rotationSpeed = 1f;
 
 		@Override
