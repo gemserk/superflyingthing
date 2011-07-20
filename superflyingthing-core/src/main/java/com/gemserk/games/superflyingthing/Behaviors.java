@@ -253,6 +253,9 @@ public class Behaviors {
 			if (e2 != null)
 				return;
 			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
+			AttachableComponent attachableComponent = e.getComponent(AttachableComponent.class);
+			if (attachableComponent.owner != null)
+				return;
 			if (aliveComponent == null)
 				return;
 			aliveComponent.dead = true;

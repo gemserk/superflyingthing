@@ -189,6 +189,10 @@ public class Components {
 	public static class AttachableComponent extends Component {
 
 		Entity owner;
+		
+		public void setOwner(Entity owner) {
+			this.owner = owner;
+		}
 
 		public Entity getOwner() {
 			return owner;

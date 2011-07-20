@@ -52,6 +52,7 @@ import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfEntityDeadBehav
 import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.ComponentWrapper;
+import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
@@ -282,6 +283,9 @@ public class PlayGameState extends GameStateImpl {
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									attachmentComponent.setJoint(null);
+									
+									AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+									attachableComponent.setOwner(gameDataComponent.startPlanet);
 									
 									gameDataComponent.ship = ship;
 									
