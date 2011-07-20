@@ -231,6 +231,7 @@ public class Components {
 	public static class GameDataComponent extends Component {
 
 		public Entity ship;
+		public Entity attachedShip;
 		public Entity startPlanet;
 		public Entity camera;
 

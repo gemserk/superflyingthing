@@ -56,6 +56,7 @@ import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
@@ -273,24 +274,24 @@ public class PlayGameState extends GameStateImpl {
 
 								}
 							});
-							put(Triggers.noEntityTrigger, new Trigger() {
-								@Override
-								public void onTrigger(Entity e) {
-									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									// Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-									Entity ship = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-
-									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-									attachmentComponent.setEntity(ship);
-									attachmentComponent.setJoint(null);
-									
-									AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-									attachableComponent.setOwner(gameDataComponent.startPlanet);
-									
-									gameDataComponent.ship = ship;
-								}
-							});
+							// put(Triggers.noEntityTrigger, new Trigger() {
+							// @Override
+							// public void onTrigger(Entity e) {
+							// GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+							// Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+							// // Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
+							// Entity ship = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
+							//
+							// AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+							// attachmentComponent.setEntity(ship);
+							// attachmentComponent.setJoint(null);
+							//
+							// AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+							// attachableComponent.setOwner(gameDataComponent.startPlanet);
+							//
+							// gameDataComponent.ship = ship;
+							// }
+							// });
 						}
 					})) //
 					.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -302,8 +303,54 @@ public class PlayGameState extends GameStateImpl {
 						@Override
 						public void update(com.artemis.World world, Entity e) {
 							callTriggerIfEntityDeadBehavior.update(world, e);
-							callTriggerIfNoShipBehavior.update(world, e);
+							// callTriggerIfNoShipBehavior.update(world, e);
+							regenerateShipIfNoShip(world, e);
+							generateShipIfAttachedShipReleased(world, e);
 							fixCameraTargetBehavior.update(world, e);
+
+						}
+
+						private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+
+							if (gameDataComponent.attachedShip != null)
+								return;
+
+							if (gameDataComponent.ship != null)
+								return;
+
+							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+							Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
+
+							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+							attachmentComponent.setEntity(attachedShip);
+							attachmentComponent.setJoint(null);
+
+							AttachableComponent attachableComponent = attachedShip.getComponent(AttachableComponent.class);
+							attachableComponent.setOwner(gameDataComponent.startPlanet);
+
+							gameDataComponent.attachedShip = attachedShip;
+						}
+						
+						private void generateShipIfAttachedShipReleased(com.artemis.World world, Entity e) {
+							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+
+							if (gameDataComponent.attachedShip == null)
+								return;
+
+							if (gameDataComponent.ship != null)
+								return;
+							
+							AttachableComponent attachableComponent = gameDataComponent.attachedShip.getComponent(AttachableComponent.class);
+							if (attachableComponent.getOwner() != null)
+								return;
+
+							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
+							MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
+							gameDataComponent.ship = entityTemplates.ship(spatial.getX(), spatial.getY(), movementComponent.getDirection(), controller);
+
+							world.deleteEntity(gameDataComponent.attachedShip);
+							gameDataComponent.attachedShip = null;
 						}
 
 					})).build();
@@ -457,11 +504,11 @@ public class PlayGameState extends GameStateImpl {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
 									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-									
+
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									attachmentComponent.setJoint(null);
-									
+
 									gameDataComponent.ship = ship;
 								}
 							});
@@ -586,11 +633,11 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), controller);
-									
+
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
 									attachmentComponent.setJoint(null);
-									
+
 									gameDataComponent.ship = ship;
 								}
 							});

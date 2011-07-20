@@ -120,7 +120,7 @@ public class EntityTemplates {
 				.component(new ScriptComponent(new CameraScript())) //
 				.build();
 	}
-
+	
 	public Entity ship(float x, float y, Vector2 direction, ShipController shipControllerImpl) {
 		float width = 0.8f;
 		float height = 0.8f;

@@ -304,13 +304,15 @@ public class Behaviors {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship == null)
-				return;
-
-			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
 			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
 
+			Entity ship = gameDataComponent.ship;
+			if (ship == null) {
+				targetComponent.setTarget(gameDataComponent.startPlanet);
+				return;
+			}
+
+			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
 			if (attachableComponent.getOwner() != null)
 				targetComponent.setTarget(attachableComponent.getOwner());
 			else
