@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -17,11 +18,16 @@ import com.gemserk.commons.gdx.controllers.Controller;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
+import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
+import com.gemserk.games.superflyingthing.Components.GameData;
+import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
@@ -278,5 +284,100 @@ public class Scripts {
 			controller.update(world.getDelta());
 		}
 		
+	}
+	
+	public static class GameScript extends ScriptJavaImpl {
+		
+		private ShipController controller;
+		private EntityTemplates entityTemplates;
+		private GameData gameData;
+		private boolean invulnerable;
+
+		Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
+
+		public GameScript(ShipController controller, EntityTemplates entityTemplates, GameData gameData, boolean invulnerable) {
+			this.controller = controller;
+			this.entityTemplates = entityTemplates;
+			this.gameData = gameData;
+			this.invulnerable = invulnerable;
+		}
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			removeShipIfDead(world, e);
+			regenerateShipIfNoShip(world, e);
+			generateShipIfAttachedShipReleased(world, e);
+			fixCameraTargetBehavior.update(world, e);
+		}
+
+		private void removeShipIfDead(com.artemis.World world, Entity e) { 
+			if (invulnerable)
+				return;
+			
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+
+			Entity ship = gameDataComponent.ship;
+			if (ship == null)
+				return;
+			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
+
+			if (aliveComponent == null)
+				return;
+			if (!aliveComponent.isDead())
+				return;
+			
+			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+			entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
+
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
+			entityTemplates.deadShip(spatial, spriteComponent.getSprite());
+
+			world.deleteEntity(gameDataComponent.ship);
+			gameDataComponent.ship = null;
+			gameData.deaths++;
+		}
+
+		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+
+			if (gameDataComponent.attachedShip != null)
+				return;
+
+			if (gameDataComponent.ship != null)
+				return;
+
+			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+			Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
+
+			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+			attachmentComponent.setEntity(attachedShip);
+			attachmentComponent.setJoint(null);
+
+			AttachableComponent attachableComponent = attachedShip.getComponent(AttachableComponent.class);
+			attachableComponent.setOwner(gameDataComponent.startPlanet);
+
+			gameDataComponent.attachedShip = attachedShip;
+		}
+
+		private void generateShipIfAttachedShipReleased(com.artemis.World world, Entity e) {
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+
+			if (gameDataComponent.attachedShip == null)
+				return;
+
+			if (gameDataComponent.ship != null)
+				return;
+			
+			AttachableComponent attachableComponent = gameDataComponent.attachedShip.getComponent(AttachableComponent.class);
+			if (attachableComponent.getOwner() != null)
+				return;
+
+			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
+			gameDataComponent.ship = entityTemplates.ship(spatial.getX(), spatial.getY(), movementComponent.getDirection(), controller);
+
+			world.deleteEntity(gameDataComponent.attachedShip);
+			gameDataComponent.attachedShip = null;
+		}
 	}
 }

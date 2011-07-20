@@ -2,7 +2,6 @@ package com.gemserk.games.superflyingthing.gamestates;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
@@ -25,10 +24,8 @@ import com.gemserk.animation4j.transitions.Transition;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.event.TransitionEventHandler;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
-import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -40,34 +37,23 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
-import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.EntityBuilder;
-import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfEntityDeadBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.CallTriggerIfNoShipBehavior;
-import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
-import com.gemserk.games.superflyingthing.ComponentWrapper;
-import com.gemserk.games.superflyingthing.Components.AttachableComponent;
-import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
+import com.gemserk.games.superflyingthing.Scripts;
 import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.Trigger;
-import com.gemserk.games.superflyingthing.Triggers;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -254,106 +240,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new TriggerComponent(new HashMap<String, Trigger>() {
-						{
-							put(Triggers.entityDeadTrigger, new Trigger() {
-								@Override
-								public void onTrigger(Entity e) {
-									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-
-									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
-
-									SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-									entityTemplates.deadShip(spatial, spriteComponent.getSprite());
-
-									world.deleteEntity(gameDataComponent.ship);
-									// I don't like the world.createEntity() and explicit call to e.refresh() :( !!
-									gameDataComponent.ship = null;
-									gameData.deaths++;
-
-								}
-							});
-							// put(Triggers.noEntityTrigger, new Trigger() {
-							// @Override
-							// public void onTrigger(Entity e) {
-							// GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-							// Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-							// // Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-							// Entity ship = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-							//
-							// AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-							// attachmentComponent.setEntity(ship);
-							// attachmentComponent.setJoint(null);
-							//
-							// AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
-							// attachableComponent.setOwner(gameDataComponent.startPlanet);
-							//
-							// gameDataComponent.ship = ship;
-							// }
-							// });
-						}
-					})) //
-					.component(new ScriptComponent(new ScriptJavaImpl() {
-
-						Behavior callTriggerIfEntityDeadBehavior = new CallTriggerIfEntityDeadBehavior();
-						Behavior callTriggerIfNoShipBehavior = new CallTriggerIfNoShipBehavior();
-						Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
-
-						@Override
-						public void update(com.artemis.World world, Entity e) {
-							callTriggerIfEntityDeadBehavior.update(world, e);
-							// callTriggerIfNoShipBehavior.update(world, e);
-							regenerateShipIfNoShip(world, e);
-							generateShipIfAttachedShipReleased(world, e);
-							fixCameraTargetBehavior.update(world, e);
-
-						}
-
-						private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
-							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-
-							if (gameDataComponent.attachedShip != null)
-								return;
-
-							if (gameDataComponent.ship != null)
-								return;
-
-							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-							Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-
-							AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-							attachmentComponent.setEntity(attachedShip);
-							attachmentComponent.setJoint(null);
-
-							AttachableComponent attachableComponent = attachedShip.getComponent(AttachableComponent.class);
-							attachableComponent.setOwner(gameDataComponent.startPlanet);
-
-							gameDataComponent.attachedShip = attachedShip;
-						}
-						
-						private void generateShipIfAttachedShipReleased(com.artemis.World world, Entity e) {
-							GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-
-							if (gameDataComponent.attachedShip == null)
-								return;
-
-							if (gameDataComponent.ship != null)
-								return;
-							
-							AttachableComponent attachableComponent = gameDataComponent.attachedShip.getComponent(AttachableComponent.class);
-							if (attachableComponent.getOwner() != null)
-								return;
-
-							Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
-							MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
-							gameDataComponent.ship = entityTemplates.ship(spatial.getX(), spatial.getY(), movementComponent.getDirection(), controller);
-
-							world.deleteEntity(gameDataComponent.attachedShip);
-							gameDataComponent.attachedShip = null;
-						}
-
-					})).build();
+					.component(new ScriptComponent(new Scripts.GameScript(controller, entityTemplates, gameData, false))).build();
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
@@ -472,62 +359,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new TriggerComponent(new HashMap<String, Trigger>() {
-						{
-							put(Triggers.entityDeadTrigger, new Trigger() {
-								@Override
-								public void onTrigger(Entity e) {
-									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-
-									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
-
-									world.deleteEntity(gameDataComponent.ship);
-
-									SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-									Spatial superSheepSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-									entityTemplates.deadShip(superSheepSpatial, spriteComponent.getSprite());
-
-									gameDataComponent.ship = null;
-									gameData.deaths++;
-
-									Analytics.traker.trackPageView("/randomMode/shipDead", "/randomMode/shipDead", null);
-
-									TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
-									targetComponent.setTarget(null);
-
-								}
-							});
-							put(Triggers.noEntityTrigger, new Trigger() {
-								@Override
-								public void onTrigger(Entity e) {
-									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-
-									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-									attachmentComponent.setEntity(ship);
-									attachmentComponent.setJoint(null);
-
-									gameDataComponent.ship = ship;
-								}
-							});
-						}
-					})) //
-					.component(new ScriptComponent(new ScriptJavaImpl() {
-
-						Behavior callTriggerIfEntityDeadBehavior = new CallTriggerIfEntityDeadBehavior();
-						Behavior callTriggerIfNoShipBehavior = new CallTriggerIfNoShipBehavior();
-						Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
-
-						@Override
-						public void update(com.artemis.World world, Entity e) {
-							callTriggerIfEntityDeadBehavior.update(world, e);
-							callTriggerIfNoShipBehavior.update(world, e);
-							fixCameraTargetBehavior.update(world, e);
-						}
-
-					})).build();
+					.component(new ScriptComponent(new Scripts.GameScript(controller, entityTemplates, gameData, false))).build();
 
 			// simulate a step to put everything on their places
 
@@ -626,35 +458,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new TriggerComponent(new HashMap<String, Trigger>() {
-						{
-							put(Triggers.noEntityTrigger, new Trigger() {
-								@Override
-								public void onTrigger(Entity e) {
-									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), controller);
-
-									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
-									attachmentComponent.setEntity(ship);
-									attachmentComponent.setJoint(null);
-
-									gameDataComponent.ship = ship;
-								}
-							});
-						}
-					})) //
-					.component(new ScriptComponent(new ScriptJavaImpl() {
-
-						Behavior callTriggerIfNoShipBehavior = new CallTriggerIfNoShipBehavior();
-						Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
-
-						@Override
-						public void update(com.artemis.World world, Entity e) {
-							callTriggerIfNoShipBehavior.update(world, e);
-							fixCameraTargetBehavior.update(world, e);
-						}
-
-					})).build();
+					.component(new ScriptComponent(new Scripts.GameScript(controller, entityTemplates, gameData, true))).build();
 
 			// simulate a step to put everything on their places
 			worldWrapper.update(1);
@@ -684,16 +488,6 @@ public class PlayGameState extends GameStateImpl {
 
 		// Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
 	}
-
-	// private void diposeJoints(Entity e) {
-	// AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
-	// if (entityAttachment == null)
-	// return;
-	// if (entityAttachment.getJoint() == null)
-	// return;
-	// physicsWorld.destroyJoint(entityAttachment.getJoint());
-	// Gdx.app.log("SuperFlyingThing", "removing joints from physics world");
-	// }
 
 	@Override
 	public void render(int delta) {

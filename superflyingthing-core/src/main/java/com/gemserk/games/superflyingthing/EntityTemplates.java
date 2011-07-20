@@ -156,7 +156,7 @@ public class EntityTemplates {
 		return e;
 	}
 	
-	public Entity attachedShip(float x, float y, Vector2 direction, ShipController shipControllerImpl) {
+	public Entity attachedShip(float x, float y, Vector2 direction) {
 		float width = 0.8f;
 		float height = 0.8f;
 
