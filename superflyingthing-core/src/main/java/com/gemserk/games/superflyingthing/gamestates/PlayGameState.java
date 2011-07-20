@@ -278,13 +278,13 @@ public class PlayGameState extends GameStateImpl {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
 									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
-									// I don't like the world.createEntity() !!
-									// world.add(ship);
+
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
+									attachmentComponent.setJoint(null);
+									
 									gameDataComponent.ship = ship;
-									// PlayGameState.this.game.transition(PlayGameState.this.game.getGameOverScreen(), 500, 500, false);
-									// triggered();
+									
 								}
 							});
 						}
@@ -453,8 +453,11 @@ public class PlayGameState extends GameStateImpl {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
 									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
+									
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
+									attachmentComponent.setJoint(null);
+									
 									gameDataComponent.ship = ship;
 								}
 							});
@@ -579,8 +582,11 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Entity ship = entityTemplates.ship(5f, 6f, new Vector2(1f, 0f), controller);
+									
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
+									attachmentComponent.setJoint(null);
+									
 									gameDataComponent.ship = ship;
 								}
 							});

@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.commons.gdx.box2d.Contact;
@@ -126,6 +127,8 @@ public class Behaviors {
 				return;
 			if (entityAttachment.joint != null)
 				return;
+			
+			Gdx.app.log("SuperFlyingThing", "Building joint for ship with planet");
 
 			AttachableComponent attachableComponent = entityAttachment.entity.getComponent(AttachableComponent.class);
 			attachableComponent.owner = e;

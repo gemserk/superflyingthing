@@ -200,8 +200,10 @@ public class Scripts {
 			if (!shouldReleaseShip(world, e))
 				return;
 
-			if (entityAttachment.joint != null)
+			if (entityAttachment.joint != null) {
+				Gdx.app.log("SuperFlyingThing", "Destroying planet joint");
 				physicsWorld.destroyJoint(entityAttachment.joint);
+			}
 
 			AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
 			attachableComponent.owner = null;
