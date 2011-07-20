@@ -135,14 +135,35 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		fpsFont = resourceManager.getResourceValue("FpsFont");
 		spriteBatch = new SpriteBatch();
 
-		playScreen = new ScreenImpl(new PlayGameState(this));
-		pauseScreen = new ScreenImpl(new PauseGameState(this));
-		instructionsScreen = new ScreenImpl(new InstructionsGameState(this));
-		gameOverScreen = new ScreenImpl(new GameOverGameState(this));
-		levelSelectionScreen = new ScreenImpl(new LevelSelectionGameState(this));
+		PlayGameState playGameState = new PlayGameState(this);
+		playGameState.setResourceManager(resourceManager);
+		
+		PauseGameState pauseGameState = new PauseGameState(this);
+		pauseGameState.setResourceManager(resourceManager);
+
+		MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
+		mainMenuGameState.setResourceManager(resourceManager);
+
+		SelectPlayModeGameState selectPlayModeGameState = new SelectPlayModeGameState(this);
+		selectPlayModeGameState.setResourceManager(resourceManager);
+
+		LevelSelectionGameState levelSelectionGameState = new LevelSelectionGameState(this);
+		levelSelectionGameState.setResourceManager(resourceManager);
+
+		GameOverGameState gameOverGameState = new GameOverGameState(this);
+		gameOverGameState.setResourceManager(resourceManager);
+
+		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
+		instructionsGameState.setResourceManager(resourceManager);
+		
+		playScreen = new ScreenImpl(playGameState);
+		pauseScreen = new ScreenImpl(pauseGameState);
+		mainMenuScreen = new ScreenImpl(mainMenuGameState);
+		selectPlayModeScreen = new ScreenImpl(selectPlayModeGameState);
+		levelSelectionScreen = new ScreenImpl(levelSelectionGameState);
+		gameOverScreen = new ScreenImpl(gameOverGameState);
+		instructionsScreen = new ScreenImpl(instructionsGameState);
 		splashScreen = new ScreenImpl(new SplashGameState(this));
-		mainMenuScreen = new ScreenImpl(new MainMenuGameState(this));
-		selectPlayModeScreen = new ScreenImpl(new SelectPlayModeGameState(this));
 
 		setScreen(splashScreen);
 

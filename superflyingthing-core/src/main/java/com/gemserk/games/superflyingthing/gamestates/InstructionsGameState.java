@@ -13,9 +13,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 
 public class InstructionsGameState extends GameStateImpl {
 
@@ -25,6 +23,10 @@ public class InstructionsGameState extends GameStateImpl {
 	private Sprite whiteRectangle;
 	Container container;
 	private InputAdapter inputProcessor;
+	
+	public void setResourceManager(ResourceManager<String> resourceManager) {
+		this.resourceManager = resourceManager;
+	}
 
 	public InstructionsGameState(Game game) {
 		this.game = game;
@@ -37,9 +39,6 @@ public class InstructionsGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
-		resourceManager = new ResourceManagerImpl<String>();
-
-		GameResources.load(resourceManager);
 
 		container = new Container();
 
@@ -153,7 +152,6 @@ public class InstructionsGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		resourceManager.unloadAll();
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}

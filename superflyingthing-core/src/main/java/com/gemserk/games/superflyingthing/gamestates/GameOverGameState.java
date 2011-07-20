@@ -16,9 +16,7 @@ import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 
 public class GameOverGameState extends GameStateImpl {
 
@@ -28,6 +26,10 @@ public class GameOverGameState extends GameStateImpl {
 	private Sprite whiteRectangle;
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	
+	public void setResourceManager(ResourceManager<String> resourceManager) {
+		this.resourceManager = resourceManager;
+	}
 
 	public GameOverGameState(Game game) {
 		this.game = game;
@@ -40,9 +42,6 @@ public class GameOverGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
-		resourceManager = new ResourceManagerImpl<String>();
-
-		GameResources.load(resourceManager);
 
 		container = new Container();
 
@@ -229,7 +228,6 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		resourceManager.unloadAll();
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}

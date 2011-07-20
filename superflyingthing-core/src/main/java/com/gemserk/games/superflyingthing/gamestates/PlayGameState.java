@@ -55,11 +55,9 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
-import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 
 public class PlayGameState extends GameStateImpl {
 
@@ -83,6 +81,10 @@ public class PlayGameState extends GameStateImpl {
 
 	GameData gameData;
 	private Text itemsTakenLabel;
+	
+	public void setResourceManager(ResourceManager<String> resourceManager) {
+		this.resourceManager = resourceManager;
+	}
 
 	public PlayGameState(Game game) {
 		this.game = game;
@@ -128,8 +130,6 @@ public class PlayGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		resourceManager = new ResourceManagerImpl<String>();
-		GameResources.load(resourceManager);
 		container = new Container();
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder);
@@ -556,7 +556,6 @@ public class PlayGameState extends GameStateImpl {
 	public void dispose() {
 		spriteBatch.dispose();
 		physicsWorld.dispose();
-		resourceManager.unloadAll();
 	}
 
 }
