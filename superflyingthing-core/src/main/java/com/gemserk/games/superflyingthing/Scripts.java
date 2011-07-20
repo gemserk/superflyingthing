@@ -4,15 +4,12 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
-import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -20,13 +17,11 @@ import com.gemserk.commons.gdx.controllers.Controller;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
-import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
@@ -100,44 +95,32 @@ public class Scripts {
 		Behavior fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerBehavior();
 		Behavior calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionBehavior();
 		Behavior collisionHandlerBehavior = new Behaviors.CollisionHandlerBehavior();
-
+		Behavior updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimation();
+		
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			fixMovementBehavior.update(world, e);
 			fixDirectionFromControllerBehavior.update(world, e);
 			calculateInputDirectionBehavior.update(world, e);
 			collisionHandlerBehavior.update(world, e);
-
-			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-
-			// float angle = spatial.getAngle();
-			float angle = movementComponent.getDirection().angle();
-			Animation animation = animationComponent.getCurrentAnimation();
-
-			int frameIndex = getAnimationForAngle(angle - 5f);
-			Sprite frame = animation.getFrame(frameIndex);
-
-			spriteComponent.setSprite(frame);
-
-			// Spatial spatial = ComponentWrapper.getSpatial(e);
-			//
-			// templates.thrustParticle(spatial.getX() - movementComponent.getDirection().x * 0.25f, spatial.getY() - movementComponent.getDirection().y * 0.25f);
-			// templates.thrustParticle(spatial.getX() - movementComponent.getDirection().x * 0.3f, spatial.getY() - movementComponent.getDirection().y * 0.3f);
-
+			updateSpriteFromAnimation.update(world, e);
 		}
 
-		private int getAnimationForAngle(float angle) {
-			// return 0;
-			if (angle < 360f)
-				angle+=360f;
-			angle %= 360f;
-			double floor = Math.floor(angle * 0.1f);
-			return (int) (floor);
-		}
 	}
 
+	public static class AttachedShipScript extends ScriptJavaImpl {
+
+		Behavior fixMovementBehavior = new Behaviors.FixMovementBehavior();
+		Behavior updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimation();
+		
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			fixMovementBehavior.update(world, e);
+			updateSpriteFromAnimation.update(world, e);
+		}
+
+	}
+	
 	public static class GrabbableItemScript extends ScriptJavaImpl {
 
 		Behavior removeWhenGrabbedBehavior;

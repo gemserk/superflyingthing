@@ -278,7 +278,8 @@ public class PlayGameState extends GameStateImpl {
 								public void onTrigger(Entity e) {
 									GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 									Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-									Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
+									// Entity ship = entityTemplates.ship(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
+									Entity ship = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f), controller);
 
 									AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 									attachmentComponent.setEntity(ship);
@@ -288,7 +289,6 @@ public class PlayGameState extends GameStateImpl {
 									attachableComponent.setOwner(gameDataComponent.startPlanet);
 									
 									gameDataComponent.ship = ship;
-									
 								}
 							});
 						}

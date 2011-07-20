@@ -125,7 +125,6 @@ public class EntityTemplates {
 		float width = 0.8f;
 		float height = 0.8f;
 
-		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
@@ -144,14 +143,8 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-		e.addComponent(new SpriteComponent(sprite, 1));
-
-		MovementComponent movementComponent = new MovementComponent(direction.x, direction.y);
-		ComponentWrapper.addMovementComponent(e, movementComponent);
-
-		// if (Game.isDebugMode())
-		// DebugComponents.getMovementComponentDebugWindow().setMovementComponent(movementComponent);
-
+		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), 1));
+		e.addComponent(new MovementComponent(direction.x, direction.y));
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
@@ -159,9 +152,37 @@ public class EntityTemplates {
 		e.addComponent(new ScriptComponent(new ShipScript()));
 		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 
-		// ParticleEmitter thrustEmitter = resourceManager.getResourceValue("ThrustEmitter");
-		// ParticleEmitterUtils.scaleEmitter(thrustEmitter, 0.005f);
-		// e.addComponent(new ParticleEmitterComponent(thrustEmitter));
+		e.refresh();
+		return e;
+	}
+	
+	public Entity attachedShip(float x, float y, Vector2 direction, ShipController shipControllerImpl) {
+		float width = 0.8f;
+		float height = 0.8f;
+
+		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
+
+		Entity e = entityBuilder.build();
+		
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.restitution(0f) //
+						.categoryBits(CategoryBits.ShipCategoryBits) //
+						.maskBits((short) 0) //
+						.boxShape(width * 0.125f, height * 0.125f)) //
+				.mass(50f) //
+				.position(x, y) //
+				.type(BodyType.DynamicBody) //
+				.userData(e) //
+				.build();
+
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), 1));
+		e.addComponent(new MovementComponent(direction.x, direction.y));
+		e.addComponent(new AttachableComponent());
+		e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
+		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 
 		e.refresh();
 		return e;

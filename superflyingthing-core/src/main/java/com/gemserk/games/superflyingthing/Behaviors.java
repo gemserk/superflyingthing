@@ -3,8 +3,11 @@ package com.gemserk.games.superflyingthing;
 import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -12,6 +15,7 @@ import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.ControllerComponent;
@@ -69,7 +73,7 @@ public class Behaviors {
 			float desiredAngle = direction.angle();
 
 			body.getTransform().getPosition().set(position);
-//			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
+			// body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
 			body.applyForce(direction.tmp().mul(5000f), position);
 
 			Vector2 linearVelocity = body.getLinearVelocity();
@@ -128,7 +132,7 @@ public class Behaviors {
 				return;
 			if (entityAttachment.joint != null)
 				return;
-			
+
 			Gdx.app.log("SuperFlyingThing", "Building joint for ship with planet");
 
 			AttachableComponent attachableComponent = entityAttachment.entity.getComponent(AttachableComponent.class);
@@ -184,7 +188,7 @@ public class Behaviors {
 
 			angularVelocity = (1 - movementDirection) * minAngularVelocity + movementDirection * maxAngularVelocity;
 			rotationAngle = angularVelocity * world.getDelta() * 0.001f;
-			
+
 			movementComponent.angularVelocity = angularVelocity;
 			direction.rotate(rotationAngle);
 		}
@@ -202,6 +206,35 @@ public class Behaviors {
 			if (controllerComponent == null)
 				return;
 			shipControllerComponent.direction = controllerComponent.getController().getMovementDirection();
+		}
+
+	}
+
+	public static class UpdateSpriteFromAnimation extends Behavior {
+
+		@Override
+		public void update(World world, Entity e) {
+			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+
+			// float angle = spatial.getAngle();
+			float angle = movementComponent.getDirection().angle();
+			Animation animation = animationComponent.getCurrentAnimation();
+
+			int frameIndex = getAnimationForAngle(angle - 5f);
+			Sprite frame = animation.getFrame(frameIndex);
+
+			spriteComponent.setSprite(frame);
+		}
+
+		private int getAnimationForAngle(float angle) {
+			// return 0;
+			if (angle < 360f)
+				angle += 360f;
+			angle %= 360f;
+			double floor = Math.floor(angle * 0.1f);
+			return (int) (floor);
 		}
 
 	}
@@ -292,7 +325,12 @@ public class Behaviors {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
-			
+
+			Entity startPlanet = gameDataComponent.startPlanet;
+			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(startPlanet);
+			if (entityAttachment.entity != null)
+				return;
+
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
