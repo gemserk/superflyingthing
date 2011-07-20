@@ -103,10 +103,10 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			fixMovementBehavior.update(world.getDelta(), e);
-			fixDirectionFromControllerBehavior.update(world.getDelta(), e);
-			calculateInputDirectionBehavior.update(world.getDelta(), e);
-			collisionHandlerBehavior.update(world.getDelta(), e);
+			fixMovementBehavior.update(world, e);
+			fixDirectionFromControllerBehavior.update(world, e);
+			calculateInputDirectionBehavior.update(world, e);
+			collisionHandlerBehavior.update(world, e);
 
 			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
@@ -153,7 +153,7 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			removeWhenGrabbedBehavior.update(world.getDelta(), e);
+			removeWhenGrabbedBehavior.update(world, e);
 			updateGrabbable(e);
 		}
 
@@ -186,8 +186,8 @@ public class Scripts {
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			updateReleaseAttachment(world, e);
-			attachEntityBehavior.update(world.getDelta(), e);
-			calculateInputDirectionBehavior.update(world.getDelta(), e);
+			attachEntityBehavior.update(world, e);
+			calculateInputDirectionBehavior.update(world, e);
 		}
 
 		private void updateReleaseAttachment(com.artemis.World world, Entity e) {

@@ -129,7 +129,7 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
-
+		
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.restitution(0f) //
@@ -306,8 +306,8 @@ public class EntityTemplates {
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
-				attachEntityBehavior.update(world.getDelta(), e);
-				calculateInputDirectionBehavior.update(world.getDelta(), e);
+				attachEntityBehavior.update(world, e);
+				calculateInputDirectionBehavior.update(world, e);
 
 				AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
 				if (attachmentComponent.entity == null)

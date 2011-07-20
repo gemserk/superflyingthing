@@ -301,9 +301,9 @@ public class PlayGameState extends GameStateImpl {
 
 						@Override
 						public void update(com.artemis.World world, Entity e) {
-							callTriggerIfEntityDeadBehavior.update(world.getDelta(), e);
-							callTriggerIfNoShipBehavior.update(world.getDelta(), e);
-							fixCameraTargetBehavior.update(world.getDelta(), e);
+							callTriggerIfEntityDeadBehavior.update(world, e);
+							callTriggerIfNoShipBehavior.update(world, e);
+							fixCameraTargetBehavior.update(world, e);
 						}
 
 					})).build();
@@ -475,9 +475,9 @@ public class PlayGameState extends GameStateImpl {
 
 						@Override
 						public void update(com.artemis.World world, Entity e) {
-							callTriggerIfEntityDeadBehavior.update(world.getDelta(), e);
-							callTriggerIfNoShipBehavior.update(world.getDelta(), e);
-							fixCameraTargetBehavior.update(world.getDelta(), e);
+							callTriggerIfEntityDeadBehavior.update(world, e);
+							callTriggerIfNoShipBehavior.update(world, e);
+							fixCameraTargetBehavior.update(world, e);
 						}
 
 					})).build();
@@ -603,8 +603,8 @@ public class PlayGameState extends GameStateImpl {
 
 						@Override
 						public void update(com.artemis.World world, Entity e) {
-							callTriggerIfNoShipBehavior.update(world.getDelta(), e);
-							fixCameraTargetBehavior.update(world.getDelta(), e);
+							callTriggerIfNoShipBehavior.update(world, e);
+							fixCameraTargetBehavior.update(world, e);
 						}
 
 					})).build();

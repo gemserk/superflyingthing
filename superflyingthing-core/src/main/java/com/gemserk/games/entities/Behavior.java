@@ -1,6 +1,7 @@
 package com.gemserk.games.entities;
 
 import com.artemis.Entity;
+import com.artemis.World;
 
 
 
@@ -14,13 +15,11 @@ public class Behavior {
 
 	/**
 	 * Given an Entity it applies the behavior.
-	 * 
-	 * @param delta
-	 *            the time from the last update call.
+	 * @param world TODO
 	 * @param e
 	 *            the entity to apply the behavior.
 	 */
-	public void update(int delta, Entity e) {
+	public void update(World world, Entity e) {
 
 	}
 

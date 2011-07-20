@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -26,7 +27,7 @@ public class Behaviors {
 	public static class CameraFollowBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			Camera camera = ComponentWrapper.getCamera(e);
 			camera.setPosition(spatial.getX(), spatial.getY());
@@ -37,7 +38,7 @@ public class Behaviors {
 	public static class EntityFollowBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			TargetComponent targetComponent = e.getComponent(TargetComponent.class);
 			Entity target = targetComponent.target;
 			if (target == null)
@@ -56,7 +57,7 @@ public class Behaviors {
 	public static class FixMovementBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
 			Vector2 direction = movementComponent.direction;
 
@@ -89,7 +90,7 @@ public class Behaviors {
 	public static class AttachedEntityDirectionBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 
 			if (entityAttachment.entity == null)
@@ -121,7 +122,7 @@ public class Behaviors {
 		}
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 			if (entityAttachment.entity == null)
 				return;
@@ -153,7 +154,7 @@ public class Behaviors {
 		}
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 			if (grabbableComponent.grabbed)
 				world.deleteEntity(e);
@@ -163,7 +164,7 @@ public class Behaviors {
 	public static class FixDirectionFromControllerBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
 			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
 
@@ -182,7 +183,7 @@ public class Behaviors {
 			float minAngularVelocity = 0f;
 
 			angularVelocity = (1 - movementDirection) * minAngularVelocity + movementDirection * maxAngularVelocity;
-			rotationAngle = angularVelocity * delta * 0.001f;
+			rotationAngle = angularVelocity * world.getDelta() * 0.001f;
 			
 			movementComponent.angularVelocity = angularVelocity;
 			direction.rotate(rotationAngle);
@@ -193,7 +194,7 @@ public class Behaviors {
 	public static class CalculateInputDirectionBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
 			if (shipControllerComponent == null)
 				return;
@@ -207,7 +208,7 @@ public class Behaviors {
 
 	public static class CollisionHandlerBehavior extends Behavior {
 		@Override
-		public void update(int delta, Entity e1) {
+		public void update(World world, Entity e1) {
 			Physics physics = ComponentWrapper.getPhysics(e1);
 			if (physics == null)
 				return;
@@ -266,7 +267,7 @@ public class Behaviors {
 
 	public static class FixCameraTargetBehavior extends Behavior {
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
@@ -287,10 +288,11 @@ public class Behaviors {
 	public static class CallTriggerIfNoShipBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
+			
 			Entity ship = gameDataComponent.ship;
 			if (ship != null)
 				return;
@@ -304,7 +306,7 @@ public class Behaviors {
 	public static class CallTriggerIfEntityDeadBehavior extends Behavior {
 
 		@Override
-		public void update(int delta, Entity e) {
+		public void update(World world, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 			if (gameDataComponent == null)
 				return;
