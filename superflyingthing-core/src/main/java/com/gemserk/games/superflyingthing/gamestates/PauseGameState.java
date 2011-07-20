@@ -178,11 +178,6 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void pause() {
-		Gdx.input.setCatchBackKey(false);
-	}
-
-	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 

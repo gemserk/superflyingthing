@@ -153,11 +153,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void pause() {
-		Gdx.input.setCatchBackKey(false);
-	}
-
-	@Override
 	public void dispose() {
 		spriteBatch.dispose();
 		spriteBatch = null;

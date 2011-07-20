@@ -103,6 +103,12 @@ public class MainMenuGameState extends GameStateImpl {
 		Synchronizers.synchronize(delta);
 		container.update();
 	}
+	
+	@Override
+	public void resume() {
+		super.resume();
+		Gdx.input.setCatchBackKey(false);
+	}
 
 	@Override
 	public void dispose() {

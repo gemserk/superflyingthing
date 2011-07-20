@@ -137,7 +137,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		PlayGameState playGameState = new PlayGameState(this);
 		playGameState.setResourceManager(resourceManager);
-		
+
 		PauseGameState pauseGameState = new PauseGameState(this);
 		pauseGameState.setResourceManager(resourceManager);
 
@@ -155,7 +155,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
-		
+
 		playScreen = new ScreenImpl(playGameState);
 		pauseScreen = new ScreenImpl(pauseGameState);
 		mainMenuScreen = new ScreenImpl(mainMenuGameState);
@@ -237,7 +237,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 							if (shouldDisposeCurrentScreen)
 								currentScreen.dispose();
 						};
-					}))));
+					}))) {
+				@Override
+				public void resume() {
+					super.resume();
+					Gdx.input.setCatchBackKey(true);
+				}
+			});
 		}
 
 	}

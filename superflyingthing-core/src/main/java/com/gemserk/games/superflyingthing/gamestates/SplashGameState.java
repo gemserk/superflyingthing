@@ -106,6 +106,7 @@ public class SplashGameState extends GameStateImpl {
 	@Override
 	public void resume() {
 		game.getAdWhirlViewHandler().hide();
+		Gdx.input.setCatchBackKey(true);
 	}
 	
 	@Override

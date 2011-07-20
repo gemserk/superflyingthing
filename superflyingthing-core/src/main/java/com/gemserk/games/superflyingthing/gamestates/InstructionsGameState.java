@@ -127,7 +127,6 @@ public class InstructionsGameState extends GameStateImpl {
 
 	@Override
 	public void pause() {
-		Gdx.input.setCatchBackKey(false);
 		game.getAdWhirlViewHandler().show();
 		Gdx.input.setInputProcessor(null);
 	}
