@@ -28,19 +28,19 @@ public class ShipControllerImplTest {
 	@Test
 	public void testSensibilityCalculationForPc() {
 		ShipControllerImpl shipControllerImpl = new ShipControllerImpl(null);
-		assertThat(shipControllerImpl.valueForPc(0f, 0f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0f));
-		assertThat(shipControllerImpl.valueForPc(0f, 1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0.2f));
-		assertThat(shipControllerImpl.valueForPc(0f, -1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(-0.2f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0f, 0f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0f, 1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0.2f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0f, -1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(-0.2f));
 		
-		assertThat(shipControllerImpl.valueForPc(0.2f, 1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0.201f));
-		assertThat(shipControllerImpl.valueForPc(0.2f, 1f, 0.2f, 1f, 1f), IsEqual.equalTo(1f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0.2f, 1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0.201f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0.2f, 1f, 0.2f, 1f, 1f), IsEqual.equalTo(1f));
 
-		assertThat(shipControllerImpl.valueForPc(-0.2f, -1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(-0.201f));
-		assertThat(shipControllerImpl.valueForPc(-0.2f, -1f, 0.2f, 1f, 1f), IsEqual.equalTo(-1f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(-0.2f, -1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(-0.201f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(-0.2f, -1f, 0.2f, 1f, 1f), IsEqual.equalTo(-1f));
 		
-		assertThat(shipControllerImpl.valueForPc(0.5f, 0f, 0.2f, 0.05f, 1f), IsEqual.equalTo(0f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0.5f, 0f, 0.2f, 0.05f, 1f), IsEqual.equalTo(0f));
 		
-		assertThat(shipControllerImpl.valueForPc(0.5f, 1f, 0.2f, 0.001f, 5f), IsEqual.equalTo(0.505f));
+		assertThat(shipControllerImpl.calculateDirectionWithVariableSensibility(0.5f, 1f, 0.2f, 0.001f, 5f), IsEqual.equalTo(0.505f));
 		
 	}
 

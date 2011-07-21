@@ -43,12 +43,14 @@ public class ShipControllerImpl implements ShipController {
 	}
 
 	private float getMovementDirectionAndroid() {
-		for (int i = 0; i < 5; i++) {
-			if (!Gdx.input.isTouched(i))
-				continue;
-			return -value(Gdx.graphics.getWidth() * 0.5f, Gdx.input.getX(i), 0.2f, Gdx.graphics.getWidth() * 0.375f);
-		}
-		return 0f;
+		return movementDirection;
+		// for (int i = 0; i < 5; i++) {
+		// if (!Gdx.input.isTouched(i))
+		// continue;
+		//
+		// return -value(Gdx.graphics.getWidth() * 0.5f, Gdx.input.getX(i), 0.2f, Gdx.graphics.getWidth() * 0.375f);
+		// }
+		// return 0f;
 	}
 
 	public float value(float center, int x, float minValue, float distanceToMax) {
@@ -62,7 +64,7 @@ public class ShipControllerImpl implements ShipController {
 
 	float movementDirection = 0f;
 
-	public float valueForPc(float currentValue, float direction, float minValue, float delta, float speed) {
+	public float calculateDirectionWithVariableSensibility(float currentValue, float direction, float minValue, float delta, float speed) {
 		if (direction == 0)
 			return 0f;
 		if (currentValue <= 0 && direction > 0)
@@ -79,14 +81,37 @@ public class ShipControllerImpl implements ShipController {
 
 	@Override
 	public void update(int delta) {
-		float direction = 0f;
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT))
-			direction = 1f;
-		else if (Gdx.input.isKeyPressed(Keys.RIGHT))
-			direction = -1f;
+		if (Gdx.app.getType() != ApplicationType.Android) {
+			float direction = 0f;
 
-		movementDirection = valueForPc(movementDirection, direction, 0.3f, 0.001f * delta, 2f);
+			if (Gdx.input.isKeyPressed(Keys.LEFT))
+				direction = 1f;
+			else if (Gdx.input.isKeyPressed(Keys.RIGHT))
+				direction = -1f;
+
+			movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.3f, 0.001f * delta, 2f);
+		} else {
+
+			for (int i = 0; i < 5; i++) {
+				if (!Gdx.input.isTouched(i))
+					continue;
+
+				float direction = 0f;
+
+				if (Gdx.input.getX(i) < Gdx.graphics.getWidth() * 0.5f)
+					direction = 1f;
+				else if (Gdx.input.getX(i) > Gdx.graphics.getWidth() * 0.5f)
+					direction = -1f;
+
+				movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.3f, 0.001f * delta, 2f);
+
+				return;
+			}
+
+			movementDirection = 0f;
+
+		}
 	}
 
 }
