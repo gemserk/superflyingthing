@@ -62,27 +62,31 @@ public class ShipControllerImpl implements ShipController {
 
 	float movementDirection = 0f;
 
+	public float valueForPc(float currentValue, float direction, float minValue, float delta, float speed) {
+		if (direction == 0)
+			return 0f;
+		if (currentValue <= 0 && direction > 0)
+			return minValue;
+		if (currentValue >= 0 && direction < 0)
+			return -minValue;
+		float newValue = currentValue + direction * delta * speed;
+		if (newValue > 1f)
+			return 1f;
+		if (newValue < -1f)
+			return -1f;
+		return newValue;
+	}
+
 	@Override
 	public void update(int delta) {
+		float direction = 0f;
 
-		if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-			if (movementDirection < 0)
-				movementDirection = 0f;
-			movementDirection += 0.008f * delta;
-		} else if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			if (movementDirection > 0)
-				movementDirection = 0f;
-			movementDirection -= 0.008f * delta;
-		} else {
-			movementDirection = 0f;
-		}
+		if (Gdx.input.isKeyPressed(Keys.LEFT))
+			direction = 1f;
+		else if (Gdx.input.isKeyPressed(Keys.RIGHT))
+			direction = -1f;
 
-		if (movementDirection > 1f)
-			movementDirection = 1f;
-
-		if (movementDirection < -1f)
-			movementDirection = -1f;
-
+		movementDirection = valueForPc(movementDirection, direction, 0.3f, 0.001f * delta, 2f);
 	}
 
 }

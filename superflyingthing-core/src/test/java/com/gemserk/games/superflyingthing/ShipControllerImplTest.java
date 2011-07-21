@@ -5,33 +5,43 @@ import static org.junit.Assert.assertThat;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
-import com.gemserk.animation4j.interpolator.FloatInterpolator;
-
 public class ShipControllerImplTest {
-
-	public float value(float center, float x, float minValue, float distanceToMax) {
-		float distance = Math.abs(x - center);
-		if (x > center)
-			return FloatInterpolator.interpolate(minValue, 1f, distance / distanceToMax);
-		else if (x < center)
-			return FloatInterpolator.interpolate(-minValue, -1f, distance / distanceToMax);
-		return 0;
-	}
-
+	
 	@Test
-	public void test() {
-		assertThat(value(400f, 0f, 0f, 400f), IsEqual.equalTo(-1f));
-		assertThat(value(400f, 800f, 0f, 400f), IsEqual.equalTo(1f));
-		assertThat(value(400f, 400f, 0f, 400f), IsEqual.equalTo(0f));
+	public void testSensibilityCalculationForAndroid() {
+		ShipControllerImpl shipControllerImpl = new ShipControllerImpl(null);
+		
+		assertThat(shipControllerImpl.value(400f, 0, 0f, 400f), IsEqual.equalTo(-1f));
+		assertThat(shipControllerImpl.value(400f, 800, 0f, 400f), IsEqual.equalTo(1f));
+		assertThat(shipControllerImpl.value(400f, 400, 0f, 400f), IsEqual.equalTo(0f));
 
-		assertThat(value(400f, 600f, 0f, 400f), IsEqual.equalTo(0.5f));
-		assertThat(value(400f, 200f, 0f, 400f), IsEqual.equalTo(-0.5f));
+		assertThat(shipControllerImpl.value(400f, 600, 0f, 400f), IsEqual.equalTo(0.5f));
+		assertThat(shipControllerImpl.value(400f, 200, 0f, 400f), IsEqual.equalTo(-0.5f));
 		
-		assertThat(value(400f, 600f, 0.5f, 400f), IsEqual.equalTo(0.75f));
-		assertThat(value(400f, 200f, 0.5f, 400f), IsEqual.equalTo(-0.75f));
+		assertThat(shipControllerImpl.value(400f, 600, 0.5f, 400f), IsEqual.equalTo(0.75f));
+		assertThat(shipControllerImpl.value(400f, 200, 0.5f, 400f), IsEqual.equalTo(-0.75f));
 		
-		assertThat(value(400f, 500f, 0.5f, 50f), IsEqual.equalTo(1f));
-		assertThat(value(400f, 425f, 0.5f, 50f), IsEqual.equalTo(0.75f));
+		assertThat(shipControllerImpl.value(400f, 500, 0.5f, 50f), IsEqual.equalTo(1f));
+		assertThat(shipControllerImpl.value(400f, 425, 0.5f, 50f), IsEqual.equalTo(0.75f));
+	}
+	
+	@Test
+	public void testSensibilityCalculationForPc() {
+		ShipControllerImpl shipControllerImpl = new ShipControllerImpl(null);
+		assertThat(shipControllerImpl.valueForPc(0f, 0f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0f));
+		assertThat(shipControllerImpl.valueForPc(0f, 1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0.2f));
+		assertThat(shipControllerImpl.valueForPc(0f, -1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(-0.2f));
+		
+		assertThat(shipControllerImpl.valueForPc(0.2f, 1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(0.201f));
+		assertThat(shipControllerImpl.valueForPc(0.2f, 1f, 0.2f, 1f, 1f), IsEqual.equalTo(1f));
+
+		assertThat(shipControllerImpl.valueForPc(-0.2f, -1f, 0.2f, 0.001f, 1f), IsEqual.equalTo(-0.201f));
+		assertThat(shipControllerImpl.valueForPc(-0.2f, -1f, 0.2f, 1f, 1f), IsEqual.equalTo(-1f));
+		
+		assertThat(shipControllerImpl.valueForPc(0.5f, 0f, 0.2f, 0.05f, 1f), IsEqual.equalTo(0f));
+		
+		assertThat(shipControllerImpl.valueForPc(0.5f, 1f, 0.2f, 0.001f, 5f), IsEqual.equalTo(0.505f));
+		
 	}
 
 }
