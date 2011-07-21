@@ -203,7 +203,9 @@ public class PlayGameState extends GameStateImpl {
 			float worldWidth = level.w;
 			float worldHeight = level.h;
 
-			final Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
+			
+			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			final ShipController controller = new ShipControllerImpl(worldCamera);
 
