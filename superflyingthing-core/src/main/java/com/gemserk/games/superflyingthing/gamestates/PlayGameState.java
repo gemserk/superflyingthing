@@ -26,6 +26,8 @@ import com.gemserk.animation4j.transitions.event.TransitionEventHandler;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -33,6 +35,7 @@ import com.gemserk.commons.artemis.systems.SpriteRendererSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
+import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -49,6 +52,8 @@ import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.Scripts;
+import com.gemserk.games.superflyingthing.Scripts.CameraScript;
+import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -81,6 +86,8 @@ public class PlayGameState extends GameStateImpl {
 
 	GameData gameData;
 	private Text itemsTakenLabel;
+	private EventManager eventManager;
+	private JointBuilder jointBuilder;
 	
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -95,7 +102,10 @@ public class PlayGameState extends GameStateImpl {
 		resetPressed = false;
 		spriteBatch = new SpriteBatch();
 
+		eventManager = new EventManagerImpl();
 		physicsWorld = new World(new Vector2(), false);
+		
+		jointBuilder = new JointBuilder(physicsWorld);
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -196,7 +206,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final ShipController controller = new ShipControllerImpl(worldCamera);
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
 				@Override
@@ -206,7 +216,7 @@ public class PlayGameState extends GameStateImpl {
 				}
 			});
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager));
 
 			for (int i = 0; i < level.obstacles.size(); i++) {
 				Obstacle o = level.obstacles.get(i);
@@ -240,7 +250,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(controller, entityTemplates, gameData, false))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
@@ -338,10 +348,10 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = itemsCount;
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager));
 
 			final ShipController controller = new ShipControllerImpl(worldCamera);
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -359,7 +369,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(controller, entityTemplates, gameData, false))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
 			// simulate a step to put everything on their places
 
@@ -438,9 +448,9 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = itemsCount;
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f);
+			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager));
 			final ShipController controller = new ShipControllerImpl(worldCamera);
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller);
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
 				@Override
@@ -458,7 +468,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(controller, entityTemplates, gameData, true))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
 
 			// simulate a step to put everything on their places
 			worldWrapper.update(1);

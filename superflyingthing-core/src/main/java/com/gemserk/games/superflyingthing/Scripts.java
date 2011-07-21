@@ -11,6 +11,8 @@ import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -35,10 +37,18 @@ public class Scripts {
 
 	public static class CameraScript extends ScriptJavaImpl {
 
+		private final EventManager eventManager;
+
 		float startX;
 		float startY;
 
 		TimeTransition timeTransition = new TimeTransition();
+
+		boolean movingToTarget = false;
+
+		public CameraScript(EventManager eventManager) {
+			this.eventManager = eventManager;
+		}
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
@@ -82,12 +92,19 @@ public class Scripts {
 				float y = FloatInterpolator.interpolate(startY, targetSpatial.getY(), timeTransition.get());
 				spatial.setPosition(x, y);
 			} else {
+
+				if (movingToTarget) {
+					eventManager.registerEvent(Events.enablePlanetReleaseShip, e);
+					movingToTarget = false;
+				}
+
 				if (spatial.getPosition().dst(targetSpatial.getPosition()) < 3f) {
 					spatial.set(targetSpatial);
 				} else {
 					startX = spatial.getX();
 					startY = spatial.getY();
 					timeTransition.start(1000);
+					movingToTarget = true;
 				}
 
 			}
@@ -102,7 +119,7 @@ public class Scripts {
 		Behavior calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionBehavior();
 		Behavior collisionHandlerBehavior = new Behaviors.CollisionHandlerBehavior();
 		Behavior updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimation();
-		
+
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			fixMovementBehavior.update(world, e);
@@ -118,7 +135,7 @@ public class Scripts {
 
 		Behavior fixMovementBehavior = new Behaviors.FixMovementBehavior();
 		Behavior updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimation();
-		
+
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			fixMovementBehavior.update(world, e);
@@ -126,7 +143,7 @@ public class Scripts {
 		}
 
 	}
-	
+
 	public static class GrabbableItemScript extends ScriptJavaImpl {
 
 		Behavior removeWhenGrabbedBehavior;
@@ -161,25 +178,47 @@ public class Scripts {
 
 	public static class StartPlanetScript extends ScriptJavaImpl {
 
+		private final EventManager eventManager;
+		private final World physicsWorld;
+
 		Behavior attachEntityBehavior;
 		Behavior calculateInputDirectionBehavior;
 
-		private final World physicsWorld;
+		boolean enabled = true;
 
-		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder) {
+		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventManager eventManager) {
 			this.physicsWorld = physicsWorld;
+			this.eventManager = eventManager;
 			attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 		}
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
+
+			Event event = eventManager.getEvent(Events.disablePlanetReleaseShip);
+			if (event != null) {
+				enabled = false;
+				eventManager.handled(event);
+				Gdx.app.log("SuperFlyingShip", "Release ship from planet disabled");
+			}
+
+			event = eventManager.getEvent(Events.enablePlanetReleaseShip);
+			if (event != null) {
+				enabled = true;
+				eventManager.handled(event);
+				Gdx.app.log("SuperFlyingShip", "Release ship from planet enabled");
+			}
+
 			updateReleaseAttachment(world, e);
 			attachEntityBehavior.update(world, e);
 			calculateInputDirectionBehavior.update(world, e);
 		}
 
 		private void updateReleaseAttachment(com.artemis.World world, Entity e) {
+			if (!enabled)
+				return;
+
 			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
 			Entity attachedEntity = entityAttachment.entity;
 
@@ -203,12 +242,13 @@ public class Scripts {
 
 		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {
 			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
-			ShipController shipControllerImpl = controllerComponent.getController();
+			ShipController shipController = controllerComponent.getController();
 			if (Gdx.app.getType() == ApplicationType.Android) {
-				if (!shipControllerImpl.isDown())
-					return false;
-				Spatial spatial = ComponentWrapper.getSpatial(e);
-				return (spatial.getPosition().dst(shipControllerImpl.getPosition()) < 1f);
+				return shipController.isDown();
+				// if (!shipControllerImpl.isDown())
+				// return false;
+				// Spatial spatial = ComponentWrapper.getSpatial(e);
+				// return (spatial.getPosition().dst(shipControllerImpl.getPosition()) < 1f);
 			} else {
 				return Gdx.input.isKeyPressed(Keys.SPACE);
 			}
@@ -272,7 +312,7 @@ public class Scripts {
 	}
 
 	public static class UpdateControllerScript extends ScriptJavaImpl {
-		
+
 		private final Controller controller;
 
 		public UpdateControllerScript(Controller controller) {
@@ -283,11 +323,13 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			controller.update(world.getDelta());
 		}
-		
+
 	}
-	
+
 	public static class GameScript extends ScriptJavaImpl {
-		
+
+		private final EventManager eventManager;
+
 		private ShipController controller;
 		private EntityTemplates entityTemplates;
 		private GameData gameData;
@@ -295,7 +337,8 @@ public class Scripts {
 
 		Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
 
-		public GameScript(ShipController controller, EntityTemplates entityTemplates, GameData gameData, boolean invulnerable) {
+		public GameScript(EventManager eventManager, ShipController controller, EntityTemplates entityTemplates, GameData gameData, boolean invulnerable) {
+			this.eventManager = eventManager;
 			this.controller = controller;
 			this.entityTemplates = entityTemplates;
 			this.gameData = gameData;
@@ -310,10 +353,10 @@ public class Scripts {
 			fixCameraTargetBehavior.update(world, e);
 		}
 
-		private void removeShipIfDead(com.artemis.World world, Entity e) { 
+		private void removeShipIfDead(com.artemis.World world, Entity e) {
 			if (invulnerable)
 				return;
-			
+
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
 
 			Entity ship = gameDataComponent.ship;
@@ -325,7 +368,7 @@ public class Scripts {
 				return;
 			if (!aliveComponent.isDead())
 				return;
-			
+
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 			entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
 
@@ -335,6 +378,8 @@ public class Scripts {
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
 			gameData.deaths++;
+
+			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
@@ -367,7 +412,7 @@ public class Scripts {
 
 			if (gameDataComponent.ship != null)
 				return;
-			
+
 			AttachableComponent attachableComponent = gameDataComponent.attachedShip.getComponent(AttachableComponent.class);
 			if (attachableComponent.getOwner() != null)
 				return;

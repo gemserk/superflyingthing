@@ -15,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
+import com.gemserk.commons.artemis.Script;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -47,11 +48,9 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
-import com.gemserk.games.superflyingthing.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.Scripts.GrabbableItemScript;
 import com.gemserk.games.superflyingthing.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.Scripts.ShipScript;
-import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -112,12 +111,12 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, final float x, final float y) {
+	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, final float x, final float y, Script script) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera, libgdxCamera)) //
 				.component(new TargetComponent(null)) //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 0f, 0f, 0f))) //
-				.component(new ScriptComponent(new CameraScript())) //
+				.component(new ScriptComponent(script)) //
 				.build();
 	}
 	
@@ -265,7 +264,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity startPlanet(float x, float y, float radius, ShipController shipControllerImpl) {
+	public Entity startPlanet(float x, float y, float radius, ShipController shipControllerImpl, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
@@ -284,7 +283,7 @@ public class EntityTemplates {
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new ControllerComponent(shipControllerImpl));
-		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder)));
+		e.addComponent(new ScriptComponent(script));
 
 		e.refresh();
 		return e;
