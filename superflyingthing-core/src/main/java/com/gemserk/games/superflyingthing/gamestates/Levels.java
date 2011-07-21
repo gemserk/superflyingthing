@@ -32,10 +32,20 @@ public class Levels {
 			"data/levels/level10.svg", //
 			"data/levels/level11.svg", //
 	};
+	
+	private static Level[] cachedLevels = new Level[levels.length];
 
 	// TODO: cache levels...
 
 	public static Level level(int levelNumber) {
+		
+		if (cachedLevels[levelNumber] != null) {
+			Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from cache...");
+			return cachedLevels[levelNumber];
+		}
+		
+		Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from file...");
+		
 		InputStream svg = Gdx.files.internal(levels[levelNumber]).read();
 		Document document = new DocumentParser().parse(svg);
 
@@ -101,6 +111,8 @@ public class Levels {
 				}
 			};
 		}.process(document);
+		
+		cachedLevels[levelNumber] = level;
 
 		return level;
 	}
