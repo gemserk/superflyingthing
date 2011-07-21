@@ -50,7 +50,6 @@ import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.Scripts.ShipScript;
-import com.gemserk.games.superflyingthing.Scripts.StarScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -213,10 +212,6 @@ public class EntityTemplates {
 					}
 				})) //
 				.build();
-	}
-
-	public Entity star(float x, float y, float radius) {
-		return star(x, y, radius, new Trigger(), new StarScript());
 	}
 
 	public Entity star(float x, float y, float radius, final Trigger trigger, Script script) {

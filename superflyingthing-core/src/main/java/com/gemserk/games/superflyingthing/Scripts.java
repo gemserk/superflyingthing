@@ -149,16 +149,20 @@ public class Scripts {
 
 	public static class StarScript extends ScriptJavaImpl {
 
+		private final EventManager eventManager;
+
 		Behavior removeWhenGrabbedBehavior;
 
 		float rotationSpeed = 0.3f;
 		float angle = 0f;
 
+		public StarScript(EventManager eventManager) {
+			this.eventManager = eventManager;
+		}
+
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(world);
-			// Physics physics = ComponentWrapper.getPhysics(e);
-			// physics.getBody().setAngularVelocity(rotationSpeed);
 		}
 
 		@Override
@@ -175,10 +179,9 @@ public class Scripts {
 			angle += rotationSpeed * (float) world.getDelta();
 
 			Animation animation = animationComponent.getCurrentAnimation();
-
 			int frameIndex = getAnimationForAngle(angle - 5f);
+			
 			Sprite frame = animation.getFrame(frameIndex);
-
 			spriteComponent.setSprite(frame);
 		}
 

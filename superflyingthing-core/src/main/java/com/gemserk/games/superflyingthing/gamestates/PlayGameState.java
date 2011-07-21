@@ -236,7 +236,7 @@ public class PlayGameState extends GameStateImpl {
 						gameData.currentItems++;
 						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 					}
-				}, new StarScript());
+				}, new StarScript(eventManager));
 			}
 
 			gameData.totalItems = level.items.size();
@@ -251,7 +251,8 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))) //
+					.build();
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
@@ -341,7 +342,7 @@ public class PlayGameState extends GameStateImpl {
 						gameData.currentItems++;
 						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 					}
-				}, new StarScript());
+				}, new StarScript(eventManager));
 
 				itemsCount++;
 			}
@@ -441,7 +442,7 @@ public class PlayGameState extends GameStateImpl {
 						gameData.currentItems++;
 						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 					}
-				}, new StarScript());
+				}, new StarScript(eventManager));
 
 				itemsCount++;
 			}
