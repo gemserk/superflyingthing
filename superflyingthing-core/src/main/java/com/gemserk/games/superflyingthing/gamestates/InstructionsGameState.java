@@ -60,7 +60,7 @@ public class InstructionsGameState extends GameStateImpl {
 					+ "TOUCH SCREEN - releases the ship from the planet\n\n" + //
 					"Objective: get to the next planet alive,\n" + //
 					"if you hit an obstacle you die.") //
-					.position(width * 0.2f, height * 0.55f) //
+					.position(width * 0.1f, height * 0.55f) //
 					.center(0f, 0.5f) //
 					.color(Color.WHITE) //
 					.font(font)//
@@ -76,7 +76,7 @@ public class InstructionsGameState extends GameStateImpl {
 					+ "SPACE KEY - releases the ship from the planet\n\n" + //
 					"Objective: get to the next planet alive,\n" + //
 					"if you hit an obstacle you die.") //
-					.position(width * 0.2f, height * 0.55f) //
+					.position(width * 0.1f, height * 0.55f) //
 					.center(0f, 0.5f) //
 					.color(Color.WHITE) //
 					.font(font)//

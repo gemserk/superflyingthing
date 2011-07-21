@@ -28,8 +28,8 @@ public class DesktopApplication {
 		}
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 480;
+		config.width = 400;
+		config.height = 320;
 		config.fullscreen = false;
 		config.title = "Super Flying Thing";
 		config.useGL20 = false;
