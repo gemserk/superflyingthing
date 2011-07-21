@@ -57,7 +57,7 @@ public class InstructionsGameState extends GameStateImpl {
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			container.add(GuiControls.label("LEFT HALF SCREEN - rotates the ship to the left\n" + //
 					"RIGHT HALF SCREEN - rotates the ship to the right\n" //
-					+ "TOUCH PLANET - releases the ship\n\n" + //
+					+ "TOUCH SCREEN - releases the ship from the planet\n\n" + //
 					"Objective: get to the next planet alive,\n" + //
 					"if you hit an obstacle you die.") //
 					.position(width * 0.2f, height * 0.55f) //

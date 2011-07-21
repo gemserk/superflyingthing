@@ -245,10 +245,6 @@ public class Scripts {
 			ShipController shipController = controllerComponent.getController();
 			if (Gdx.app.getType() == ApplicationType.Android) {
 				return shipController.isDown();
-				// if (!shipControllerImpl.isDown())
-				// return false;
-				// Spatial spatial = ComponentWrapper.getSpatial(e);
-				// return (spatial.getPosition().dst(shipControllerImpl.getPosition()) < 1f);
 			} else {
 				return Gdx.input.isKeyPressed(Keys.SPACE);
 			}
