@@ -94,7 +94,7 @@ public class Scripts {
 			} else {
 
 				if (movingToTarget) {
-					eventManager.registerEvent(Events.enablePlanetReleaseShip, e);
+					eventManager.registerEvent(Events.cameraReachedTarget, e);
 					movingToTarget = false;
 				}
 
@@ -351,6 +351,14 @@ public class Scripts {
 			regenerateShipIfNoShip(world, e);
 			generateShipIfAttachedShipReleased(world, e);
 			fixCameraTargetBehavior.update(world, e);
+			
+			Event event = eventManager.getEvent(Events.cameraReachedTarget);
+			if (event != null) {
+				eventManager.handled(event);
+				Gdx.app.log("SuperFlyingShip", "Camera reached target.");
+				eventManager.registerEvent(Events.enablePlanetReleaseShip, e);
+			}
+			
 		}
 
 		private void removeShipIfDead(com.artemis.World world, Entity e) {
