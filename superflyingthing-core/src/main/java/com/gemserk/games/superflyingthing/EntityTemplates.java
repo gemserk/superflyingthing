@@ -133,7 +133,7 @@ public class EntityTemplates {
 						.restitution(0f) //
 						.categoryBits(CategoryBits.ShipCategoryBits) //
 						.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-						.boxShape(width * 0.125f, height * 0.125f)) //
+						.circleShape(width * 0.125f)) //
 				.mass(50f) //
 				.position(x, y) //
 				.type(BodyType.DynamicBody) //
@@ -207,13 +207,9 @@ public class EntityTemplates {
 
 						SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 						spriteComponent.getColor().a = FloatInterpolator.interpolate(0f, 1f, aliveTime / 100);
-						// spriteComponent.getColor().r = FloatInterpolator.interpolate(1f, 1f, aliveTime / 200);
-						// spriteComponent.getColor().g = FloatInterpolator.interpolate(0f, 0.7f, aliveTime / 200);
-						// spriteComponent.getColor().b = FloatInterpolator.interpolate(0f, 0f, aliveTime / 200);
 
 						Spatial spatial = ComponentWrapper.getSpatial(e);
 						spatial.setSize(FloatInterpolator.interpolate(0.1f, 0.2f, aliveTime / 100), FloatInterpolator.interpolate(0.1f, 0.2f, aliveTime / 100));
-
 					}
 				})) //
 				.build();
