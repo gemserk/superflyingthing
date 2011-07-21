@@ -53,6 +53,7 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.Scripts;
 import com.gemserk.games.superflyingthing.Scripts.CameraScript;
+import com.gemserk.games.superflyingthing.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
@@ -229,13 +230,13 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.items.size(); i++) {
 				Level.Item item = level.items.get(i);
-				entityTemplates.diamond(item.x, item.y, 0.2f, new Trigger() {
+				entityTemplates.star(item.x, item.y, 0.2f, new Trigger() {
 					@Override
 					protected void onTrigger(Entity e) {
 						gameData.currentItems++;
 						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 					}
-				});
+				}, new StarScript());
 			}
 
 			gameData.totalItems = level.items.size();
@@ -334,13 +335,13 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.diamond(x, y, w, new Trigger() {
+				entityTemplates.star(x, y, w, new Trigger() {
 					@Override
 					protected void onTrigger(Entity e) {
 						gameData.currentItems++;
 						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 					}
-				});
+				}, new StarScript());
 
 				itemsCount++;
 			}
@@ -434,13 +435,13 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.diamond(x, y, w, new Trigger() {
+				entityTemplates.star(x, y, w, new Trigger() {
 					@Override
 					protected void onTrigger(Entity e) {
 						gameData.currentItems++;
 						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 					}
-				});
+				}, new StarScript());
 
 				itemsCount++;
 			}

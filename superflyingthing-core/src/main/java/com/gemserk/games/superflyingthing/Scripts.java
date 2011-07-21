@@ -4,9 +4,11 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
@@ -22,6 +24,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.Components.CameraComponent;
@@ -144,23 +147,47 @@ public class Scripts {
 
 	}
 
-	public static class GrabbableItemScript extends ScriptJavaImpl {
+	public static class StarScript extends ScriptJavaImpl {
 
 		Behavior removeWhenGrabbedBehavior;
 
-		float rotationSpeed = 1f;
+		float rotationSpeed = 0.3f;
+		float angle = 0f;
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(world);
-			Physics physics = ComponentWrapper.getPhysics(e);
-			physics.getBody().setAngularVelocity(rotationSpeed);
+			// Physics physics = ComponentWrapper.getPhysics(e);
+			// physics.getBody().setAngularVelocity(rotationSpeed);
 		}
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior.update(world, e);
 			updateGrabbable(e);
+			updateAnimation(world, e);
+		}
+
+		public void updateAnimation(com.artemis.World world, Entity e) {
+			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+
+			angle += rotationSpeed * (float) world.getDelta();
+
+			Animation animation = animationComponent.getCurrentAnimation();
+
+			int frameIndex = getAnimationForAngle(angle - 5f);
+			Sprite frame = animation.getFrame(frameIndex);
+
+			spriteComponent.setSprite(frame);
+		}
+
+		private int getAnimationForAngle(float angle) {
+			if (angle < 360f)
+				angle += 360f;
+			angle %= 360f;
+			double floor = Math.floor(angle * 0.1f);
+			return (int) (floor);
 		}
 
 		private void updateGrabbable(Entity e) {
@@ -347,14 +374,14 @@ public class Scripts {
 			regenerateShipIfNoShip(world, e);
 			generateShipIfAttachedShipReleased(world, e);
 			fixCameraTargetBehavior.update(world, e);
-			
+
 			Event event = eventManager.getEvent(Events.cameraReachedTarget);
 			if (event != null) {
 				eventManager.handled(event);
 				Gdx.app.log("SuperFlyingShip", "Camera reached target.");
 				eventManager.registerEvent(Events.enablePlanetReleaseShip, e);
 			}
-			
+
 		}
 
 		private void removeShipIfDead(com.artemis.World world, Entity e) {

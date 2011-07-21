@@ -48,9 +48,9 @@ import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.Components.TriggerComponent;
-import com.gemserk.games.superflyingthing.Scripts.GrabbableItemScript;
 import com.gemserk.games.superflyingthing.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.Scripts.ShipScript;
+import com.gemserk.games.superflyingthing.Scripts.StarScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -215,14 +215,14 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity diamond(float x, float y, float radius) {
-		return diamond(x, y, radius, new Trigger());
+	public Entity star(float x, float y, float radius) {
+		return star(x, y, radius, new Trigger(), new StarScript());
 	}
 
-	public Entity diamond(float x, float y, float radius, final Trigger trigger) {
+	public Entity star(float x, float y, float radius, final Trigger trigger, Script script) {
 		Entity e = entityBuilder.build();
 
-		Sprite sprite = resourceManager.getResourceValue("Item");
+		Animation rotateAnimation = resourceManager.getResourceValue("StarAnimation");
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -238,8 +238,9 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 
-		e.addComponent(new SpriteComponent(sprite, 0));
+		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame(), 0));
 		e.addComponent(new GrabbableComponent());
+		e.addComponent(new AnimationComponent(new Animation[] {rotateAnimation}));
 
 		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
 			{
@@ -247,7 +248,7 @@ public class EntityTemplates {
 			}
 		}));
 
-		e.addComponent(new ScriptComponent(new GrabbableItemScript()));
+		e.addComponent(new ScriptComponent(script));
 
 		e.refresh();
 		return e;
