@@ -26,6 +26,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("LwjglLogo", "LwjglLogoTexture", 0, 0, 512, 185);
 		sprite("LibgdxLogo", "LibgdxLogoTexture", 0, 25, 512, 256 - 50);
 		sprite("WhiteRectangle", "WhiteRectangleTexture");
+		
+		texture("LevelButtonTexture", "data/images/level-button.png");
+		sprite("LevelButtonSprite", "LevelButtonTexture");
 
 		if (Gdx.graphics.getHeight() >= 480f) {
 			font("FpsFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);

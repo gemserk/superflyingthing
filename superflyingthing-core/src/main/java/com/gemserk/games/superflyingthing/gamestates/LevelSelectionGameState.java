@@ -58,7 +58,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		container = new Container();
 		container.add(title);
 
-		Sprite levelThumbnail = resourceManager.getResourceValue("WhiteRectangle");
+		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
 
 		// TODO: generate the levels list automatically from an array...
 		
@@ -91,9 +91,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 						}
 					}) //
 					.build());
-			container.add(GuiControls.label("" + i) //
+			container.add(GuiControls.label("" + (i + 1)) //
 					.position(x, y) //
-					.color(Color.BLUE) //
+					.color(Color.WHITE) //
 					.font(levelFont) //
 					.build());
 			
