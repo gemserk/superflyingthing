@@ -98,13 +98,15 @@ public class Scripts {
 					movingToTarget = false;
 				}
 
-				if (spatial.getPosition().dst(targetSpatial.getPosition()) < 3f) {
-					spatial.set(targetSpatial);
-				} else {
+				Event event = eventManager.getEvent(Events.moveCameraToPlanet);
+				if (event != null) {
 					startX = spatial.getX();
 					startY = spatial.getY();
-					timeTransition.start(1000);
+					timeTransition.start(800);
 					movingToTarget = true;
+					eventManager.handled(event);
+				} else {
+					spatial.set(targetSpatial);
 				}
 
 			}
@@ -446,6 +448,7 @@ public class Scripts {
 			gameData.deaths++;
 
 			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
+			eventManager.registerEvent(Events.moveCameraToPlanet, e);
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {

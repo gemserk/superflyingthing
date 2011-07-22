@@ -6,6 +6,8 @@ public class Events {
 	
 	public static final String disablePlanetReleaseShip = "disablePlanetReleaseShip".intern();
 	
+	public static final String moveCameraToPlanet = "moveCameraToPlanet".intern();
+	
 	public static final String cameraReachedTarget = "cameraReachedTarget".intern();
 	
 	public static final String itemTaken = "itemTaken".intern();
