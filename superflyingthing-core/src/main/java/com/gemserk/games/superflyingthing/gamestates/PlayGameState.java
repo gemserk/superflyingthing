@@ -174,6 +174,27 @@ public class PlayGameState extends GameStateImpl {
 			Analytics.traker.trackPageView("/startRandomMode", "/startRandomMode", null);
 		}
 
+		// entity with some game logic
+		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+				Event event = eventManager.getEvent(Events.itemTaken);
+				if (event != null) {
+					gameData.currentItems++;
+					itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+					eventManager.handled(event);
+				}
+
+				event = eventManager.getEvent(Events.destinationPlanetReached);
+				if (event != null) {
+					System.out.println("game finished");
+					gameFinished();
+					eventManager.handled(event);
+				}
+
+			}
+		})).build();
+
 		done = false;
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
@@ -260,28 +281,6 @@ public class PlayGameState extends GameStateImpl {
 					.end(new Color(1f, 1f, 1f, 0f)) //
 					.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
 					.time(3000));
-
-			entityBuilder //
-					.component(new ScriptComponent(new ScriptJavaImpl() {
-						@Override
-						public void update(com.artemis.World world, Entity e) {
-							Event event = eventManager.getEvent(Events.itemTaken);
-							if (event != null) {
-								gameData.currentItems++;
-								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-								eventManager.handled(event);
-							}
-
-							event = eventManager.getEvent(Events.destinationPlanetReached);
-							if (event != null) {
-								System.out.println("game finished");
-								gameFinished();
-								eventManager.handled(event);
-							}
-
-						}
-					})) //
-					.build();
 
 		}
 
@@ -376,28 +375,6 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
-			entityBuilder //
-					.component(new ScriptComponent(new ScriptJavaImpl() {
-						@Override
-						public void update(com.artemis.World world, Entity e) {
-							Event event = eventManager.getEvent(Events.itemTaken);
-							if (event != null) {
-								gameData.currentItems++;
-								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-								eventManager.handled(event);
-							}
-
-							event = eventManager.getEvent(Events.destinationPlanetReached);
-							if (event != null) {
-								System.out.println("game finished");
-								gameFinished();
-								eventManager.handled(event);
-							}
-
-						}
-					})) //
-					.build();
-
 			// simulate a step to put everything on their places
 
 			worldWrapper.update(1);
@@ -484,27 +461,6 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
-
-			entityBuilder //
-					.component(new ScriptComponent(new ScriptJavaImpl() {
-						@Override
-						public void update(com.artemis.World world, Entity e) {
-							Event event = eventManager.getEvent(Events.itemTaken);
-							if (event != null) {
-								gameData.currentItems++;
-								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-								eventManager.handled(event);
-							}
-
-							event = eventManager.getEvent(Events.destinationPlanetReached);
-							if (event != null) {
-								gameFinished();
-								eventManager.handled(event);
-							}
-
-						}
-					})) //
-					.build();
 
 			// simulate a step to put everything on their places
 			worldWrapper.update(1);
