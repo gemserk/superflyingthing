@@ -1,9 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import com.artemis.Entity;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -180,7 +178,7 @@ public class Scripts {
 
 			Animation animation = animationComponent.getCurrentAnimation();
 			int frameIndex = getAnimationForAngle(angle - 5f);
-			
+
 			Sprite frame = animation.getFrame(frameIndex);
 			spriteComponent.setSprite(frame);
 		}
@@ -273,11 +271,7 @@ public class Scripts {
 		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {
 			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
 			ShipController shipController = controllerComponent.getController();
-			if (Gdx.app.getType() == ApplicationType.Android) {
-				return shipController.isDown();
-			} else {
-				return Gdx.input.isKeyPressed(Keys.SPACE);
-			}
+			return shipController.shouldReleaseShip();
 		}
 
 	}

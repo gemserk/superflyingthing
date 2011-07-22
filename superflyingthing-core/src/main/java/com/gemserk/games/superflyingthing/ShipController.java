@@ -5,7 +5,7 @@ import com.gemserk.commons.gdx.controllers.Controller;
 
 public interface ShipController extends Controller {
 
-	boolean isDown();
+	boolean shouldReleaseShip();
 
 	Vector2 getPosition();
 
@@ -13,5 +13,7 @@ public interface ShipController extends Controller {
 	 * A value between -1 and 1 to determine ship angular velocity.
 	 */
 	float getMovementDirection();
+	
+	void setEnabled(boolean enabled);
 
 }

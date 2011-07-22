@@ -21,6 +21,7 @@ import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
@@ -57,6 +58,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
+	
 	private Screen splashScreen;
 	private Screen mainMenuScreen;
 	private Screen selectPlayModeScreen;
@@ -65,12 +67,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen pauseScreen;
 	private Screen gameOverScreen;
 	private Screen instructionsScreen;
+	
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	GamePreferences gamePreferences;
+
+	private Screen backgroundGameScreen;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -106,6 +111,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
+	}
+	
+	public Screen getBackgroundGameScreen() {
+		return backgroundGameScreen;
 	}
 
 	public GamePreferences getGamePreferences() {
@@ -155,6 +164,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
+		
+		BackgroundGameState backgroundGameState = new BackgroundGameState();
+		backgroundGameState.setResourceManager(resourceManager);
 
 		playScreen = new ScreenImpl(playGameState);
 		pauseScreen = new ScreenImpl(pauseGameState);
@@ -164,6 +176,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		gameOverScreen = new ScreenImpl(gameOverGameState);
 		instructionsScreen = new ScreenImpl(instructionsGameState);
 		splashScreen = new ScreenImpl(new SplashGameState(this));
+		backgroundGameScreen = new ScreenImpl(backgroundGameState);
 
 		setScreen(splashScreen);
 

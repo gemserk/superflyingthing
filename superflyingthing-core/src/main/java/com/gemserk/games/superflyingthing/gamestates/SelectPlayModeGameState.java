@@ -28,7 +28,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	private Sprite backgroundSprite;
+	private Sprite whiteRectangleSprite;
 	
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -124,16 +124,20 @@ public class SelectPlayModeGameState extends GameStateImpl {
 			}
 		};
 		
-		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		backgroundSprite.setPosition(0, 0);
-		backgroundSprite.setSize(width, height);
+		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
+		whiteRectangleSprite.setPosition(0, 0);
+		whiteRectangleSprite.setSize(width, height);
+		whiteRectangleSprite.setColor(0f, 0f, 0f, 0.2f);
+		
+		game.getBackgroundGameScreen().init();
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		game.getBackgroundGameScreen().render(delta);
 		spriteBatch.begin();
-		backgroundSprite.draw(spriteBatch);
+		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
@@ -145,11 +149,19 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			game.transition(game.getMainMenuScreen(), 500, 500);
+		game.getBackgroundGameScreen().update(delta);
+	}
+	
+	@Override
+	public void show() {
+		super.show();
+		game.getBackgroundGameScreen().show();	
 	}
 
 	@Override
 	public void resume() {
 		Gdx.input.setCatchBackKey(true);
+		game.getBackgroundGameScreen().resume();
 	}
 
 	@Override

@@ -10,8 +10,9 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 public class ShipControllerImpl implements ShipController {
 
 	private final Libgdx2dCamera libgdx2dCamera;
-
 	private final Vector2 position;
+	private boolean enabled = true;
+	private float movementDirection = 0f;
 
 	public ShipControllerImpl(Libgdx2dCamera libgdx2dCamera) {
 		this.libgdx2dCamera = libgdx2dCamera;
@@ -19,8 +20,13 @@ public class ShipControllerImpl implements ShipController {
 	}
 
 	@Override
-	public boolean isDown() {
-		return Gdx.input.isTouched();
+	public boolean shouldReleaseShip() {
+		if (!enabled) 
+			return false;
+		if (Gdx.app.getType() == ApplicationType.Android)
+			return Gdx.input.isTouched();
+		else
+			return Gdx.input.isKeyPressed(Keys.SPACE);
 	}
 
 	@Override
@@ -62,8 +68,6 @@ public class ShipControllerImpl implements ShipController {
 		return 0;
 	}
 
-	float movementDirection = 0f;
-
 	public float calculateDirectionWithVariableSensibility(float currentValue, float direction, float minValue, float delta, float speed) {
 		if (direction == 0)
 			return 0f;
@@ -81,6 +85,8 @@ public class ShipControllerImpl implements ShipController {
 
 	@Override
 	public void update(int delta) {
+		if (!enabled) 
+			return;
 
 		if (Gdx.app.getType() != ApplicationType.Android) {
 			float direction = 0f;
@@ -112,6 +118,11 @@ public class ShipControllerImpl implements ShipController {
 			movementDirection = 0f;
 
 		}
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }
