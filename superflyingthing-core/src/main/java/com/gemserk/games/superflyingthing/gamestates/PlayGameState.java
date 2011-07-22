@@ -319,7 +319,9 @@ public class PlayGameState extends GameStateImpl {
 
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
-			final Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
+			
+			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			float obstacleX = 12f;
 
@@ -406,8 +408,10 @@ public class PlayGameState extends GameStateImpl {
 			float worldHeight = MathUtils.random(15f, 15f);
 
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
+			
+			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 
-			Camera camera = new CameraRestrictedImpl(0f, 0f, 48f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			float obstacleX = 12f;
 
