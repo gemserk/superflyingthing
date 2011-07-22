@@ -56,13 +56,13 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.Scripts;
 import com.gemserk.games.superflyingthing.Scripts.CameraScript;
+import com.gemserk.games.superflyingthing.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
-import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
@@ -214,13 +214,7 @@ public class PlayGameState extends GameStateImpl {
 
 			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
-				@Override
-				protected void onTrigger(Entity e) {
-					gameFinished();
-					triggered();
-				}
-			});
+			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager));
 
@@ -273,11 +267,18 @@ public class PlayGameState extends GameStateImpl {
 						public void update(com.artemis.World world, Entity e) {
 							Event event = eventManager.getEvent(Events.itemTaken);
 							if (event != null) {
-								Gdx.app.log("SuperFlyingThing", "Star taken");
 								gameData.currentItems++;
 								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 								eventManager.handled(event);
 							}
+
+							event = eventManager.getEvent(Events.destinationPlanetReached);
+							if (event != null) {
+								System.out.println("game finished");
+								gameFinished();
+								eventManager.handled(event);
+							}
+
 						}
 					})) //
 					.build();
@@ -363,13 +364,7 @@ public class PlayGameState extends GameStateImpl {
 			final ShipController controller = new ShipControllerImpl(worldCamera);
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
-				@Override
-				protected void onTrigger(Entity e) {
-					gameFinished();
-					triggered();
-				}
-			});
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
@@ -382,19 +377,27 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
 			entityBuilder //
-			.component(new ScriptComponent(new ScriptJavaImpl() {
-				@Override
-				public void update(com.artemis.World world, Entity e) {
-					Event event = eventManager.getEvent(Events.itemTaken);
-					if (event != null) {
-						gameData.currentItems++;
-						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-						eventManager.handled(event);
-					}
-				}
-			})) //
-			.build();
-			
+					.component(new ScriptComponent(new ScriptJavaImpl() {
+						@Override
+						public void update(com.artemis.World world, Entity e) {
+							Event event = eventManager.getEvent(Events.itemTaken);
+							if (event != null) {
+								gameData.currentItems++;
+								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+								eventManager.handled(event);
+							}
+
+							event = eventManager.getEvent(Events.destinationPlanetReached);
+							if (event != null) {
+								System.out.println("game finished");
+								gameFinished();
+								eventManager.handled(event);
+							}
+
+						}
+					})) //
+					.build();
+
 			// simulate a step to put everything on their places
 
 			worldWrapper.update(1);
@@ -470,13 +473,7 @@ public class PlayGameState extends GameStateImpl {
 			final ShipController controller = new ShipControllerImpl(worldCamera);
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new Trigger() {
-				@Override
-				protected void onTrigger(Entity e) {
-					gameFinished();
-					triggered();
-				}
-			});
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
@@ -498,6 +495,13 @@ public class PlayGameState extends GameStateImpl {
 								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 								eventManager.handled(event);
 							}
+
+							event = eventManager.getEvent(Events.destinationPlanetReached);
+							if (event != null) {
+								gameFinished();
+								eventManager.handled(event);
+							}
+
 						}
 					})) //
 					.build();

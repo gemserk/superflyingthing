@@ -9,5 +9,7 @@ public class Events {
 	public static final String cameraReachedTarget = "cameraReachedTarget".intern();
 	
 	public static final String itemTaken = "itemTaken".intern();
+	
+	public static final String destinationPlanetReached = "destinationPlanetReached".intern();
 
 }

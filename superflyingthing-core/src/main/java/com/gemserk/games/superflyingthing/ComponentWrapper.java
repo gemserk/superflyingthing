@@ -15,7 +15,6 @@ import com.gemserk.games.superflyingthing.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
-import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
 public class ComponentWrapper {
 	
@@ -37,10 +36,6 @@ public class ComponentWrapper {
 		return getComponent(e, AnimationComponent.class);
 	}
 	
-	public static TriggerComponent getTriggers(Entity e) {
-		return getComponent(e, TriggerComponent.class);
-	}
-
 	public static Camera getCamera(Entity e) {
 		CameraComponent component = getComponent(e, CameraComponent.class);
 		if (component == null)

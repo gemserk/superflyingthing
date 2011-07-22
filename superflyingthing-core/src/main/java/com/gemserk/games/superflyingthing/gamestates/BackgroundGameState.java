@@ -37,12 +37,12 @@ import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Scripts;
 import com.gemserk.games.superflyingthing.Scripts.CameraScript;
+import com.gemserk.games.superflyingthing.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
-import com.gemserk.games.superflyingthing.Trigger;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
@@ -152,12 +152,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-		entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new Trigger() {
-			@Override
-			protected void onTrigger(Entity e) {
-				triggered();
-			}
-		});
+		entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 		Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager));
 

@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import java.util.HashMap;
-
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -34,7 +32,6 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.ParticleEmitterUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
-import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AnimationComponent;
@@ -47,7 +44,6 @@ import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 import com.gemserk.games.superflyingthing.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
@@ -274,7 +270,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity destinationPlanet(float x, float y, float radius, final Trigger destinationReachedTrigger) {
+	public Entity destinationPlanet(float x, float y, float radius, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
@@ -294,35 +290,10 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
-
-		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
-			{
-				put(Triggers.destinationReachedTrigger, destinationReachedTrigger);
-			}
-		}));
-
-		e.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-
-			Behavior attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
-			Behavior calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				attachEntityBehavior.update(world, e);
-				calculateInputDirectionBehavior.update(world, e);
-
-				AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
-				if (attachmentComponent.entity == null)
-					return;
-				TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-				Trigger trigger = triggerComponent.getTrigger(Triggers.destinationReachedTrigger);
-				trigger.trigger(e);
-			}
-
-		}));
+		e.addComponent(new ScriptComponent(script));
+		
 		e.refresh();
 		return e;
 	}

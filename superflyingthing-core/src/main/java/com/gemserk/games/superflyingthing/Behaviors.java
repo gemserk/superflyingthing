@@ -24,7 +24,6 @@ import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
 public class Behaviors {
 
@@ -317,52 +316,6 @@ public class Behaviors {
 				targetComponent.setTarget(attachableComponent.getOwner());
 			else
 				targetComponent.setTarget(ship);
-		}
-	}
-
-	public static class CallTriggerIfNoShipBehavior extends Behavior {
-
-		@Override
-		public void update(World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-
-			Entity startPlanet = gameDataComponent.startPlanet;
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(startPlanet);
-			if (entityAttachment.entity != null)
-				return;
-
-			Entity ship = gameDataComponent.ship;
-			if (ship != null)
-				return;
-
-			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-			Trigger trigger = triggerComponent.getTrigger(Triggers.noEntityTrigger);
-			trigger.trigger(e);
-		}
-	}
-
-	public static class CallTriggerIfEntityDeadBehavior extends Behavior {
-
-		@Override
-		public void update(World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
-			if (gameDataComponent == null)
-				return;
-			Entity ship = gameDataComponent.ship;
-			if (ship == null)
-				return;
-			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-
-			if (aliveComponent == null)
-				return;
-			if (!aliveComponent.isDead())
-				return;
-
-			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-			Trigger trigger = triggerComponent.getTrigger(Triggers.entityDeadTrigger);
-			trigger.trigger(e);
 		}
 	}
 

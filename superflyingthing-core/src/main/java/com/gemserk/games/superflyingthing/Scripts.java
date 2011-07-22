@@ -194,7 +194,7 @@ public class Scripts {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 			if (!grabbableComponent.grabbed)
 				return;
-			
+
 			Gdx.app.log("SuperFlyingThing", "Registering event for item taken");
 			eventManager.registerEvent(Events.itemTaken, e);
 		}
@@ -270,6 +270,48 @@ public class Scripts {
 			return shipController.shouldReleaseShip();
 		}
 
+	}
+
+	public static class DestinationPlanetScript extends ScriptJavaImpl {
+		private final EventManager eventManager;
+
+		Behavior attachEntityBehavior;
+		Behavior calculateInputDirectionBehavior;
+
+		boolean destinationReached;
+
+		public DestinationPlanetScript(EventManager eventManager, JointBuilder jointBuilder) {
+			this.eventManager = eventManager;
+			this.attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
+			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
+		}
+
+		@Override
+		public void init(com.artemis.World world, Entity e) {
+			destinationReached = false;
+		}
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			attachEntityBehavior.update(world, e);
+			calculateInputDirectionBehavior.update(world, e);
+
+			AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
+			if (attachmentComponent.entity == null)
+				return;
+
+			if (destinationReached)
+				return;
+
+			Gdx.app.log("SuperFlyingThing", "Registering event for destination reached");
+
+			eventManager.registerEvent(Events.destinationPlanetReached, e);
+			destinationReached = true;
+
+			// TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
+			// Trigger trigger = triggerComponent.getTrigger(Triggers.destinationReachedTrigger);
+			// trigger.trigger(e);
+		}
 	}
 
 	public static class MovingObstacleScript extends ScriptJavaImpl {
