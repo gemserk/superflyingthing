@@ -545,6 +545,7 @@ public class PlayGameState extends GameStateImpl {
 		game.getAdWhirlViewHandler().hide();
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
+		game.getBackgroundGameScreen().dispose();
 	}
 
 	@Override
