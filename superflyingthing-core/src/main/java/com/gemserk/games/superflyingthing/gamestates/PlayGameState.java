@@ -24,8 +24,10 @@ import com.gemserk.animation4j.transitions.Transition;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.event.TransitionEventHandler;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
@@ -49,6 +51,7 @@ import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.EntityTemplates;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.Scripts;
@@ -89,7 +92,7 @@ public class PlayGameState extends GameStateImpl {
 	private Text itemsTakenLabel;
 	private EventManager eventManager;
 	private JointBuilder jointBuilder;
-	
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -105,7 +108,7 @@ public class PlayGameState extends GameStateImpl {
 
 		eventManager = new EventManagerImpl();
 		physicsWorld = new World(new Vector2(), false);
-		
+
 		jointBuilder = new JointBuilder(physicsWorld);
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
@@ -204,7 +207,7 @@ public class PlayGameState extends GameStateImpl {
 			float worldHeight = level.h;
 
 			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
-			
+
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			final ShipController controller = new ShipControllerImpl(worldCamera);
@@ -232,13 +235,7 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.items.size(); i++) {
 				Level.Item item = level.items.get(i);
-				entityTemplates.star(item.x, item.y, 0.2f, new Trigger() {
-					@Override
-					protected void onTrigger(Entity e) {
-						gameData.currentItems++;
-						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-					}
-				}, new StarScript(eventManager));
+				entityTemplates.star(item.x, item.y, 0.2f, new StarScript(eventManager));
 			}
 
 			gameData.totalItems = level.items.size();
@@ -269,10 +266,25 @@ public class PlayGameState extends GameStateImpl {
 					.end(new Color(1f, 1f, 1f, 0f)) //
 					.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
 					.time(3000));
+
+			entityBuilder //
+					.component(new ScriptComponent(new ScriptJavaImpl() {
+						@Override
+						public void update(com.artemis.World world, Entity e) {
+							Event event = eventManager.getEvent(Events.itemTaken);
+							if (event != null) {
+								Gdx.app.log("SuperFlyingThing", "Star taken");
+								gameData.currentItems++;
+								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+								eventManager.handled(event);
+							}
+						}
+					})) //
+					.build();
+
 		}
 
 		void create(PlayGameState p) {
-			p.entityTemplates = entityTemplates;
 
 			if (Levels.hasLevel(GameInformation.level)) {
 				Level level = Levels.level(GameInformation.level);
@@ -338,13 +350,7 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.star(x, y, w, new Trigger() {
-					@Override
-					protected void onTrigger(Entity e) {
-						gameData.currentItems++;
-						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-					}
-				}, new StarScript(eventManager));
+				entityTemplates.star(x, y, w, new StarScript(eventManager));
 
 				itemsCount++;
 			}
@@ -375,6 +381,20 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
+			entityBuilder //
+			.component(new ScriptComponent(new ScriptJavaImpl() {
+				@Override
+				public void update(com.artemis.World world, Entity e) {
+					Event event = eventManager.getEvent(Events.itemTaken);
+					if (event != null) {
+						gameData.currentItems++;
+						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+						eventManager.handled(event);
+					}
+				}
+			})) //
+			.build();
+			
 			// simulate a step to put everything on their places
 
 			worldWrapper.update(1);
@@ -438,13 +458,7 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.star(x, y, w, new Trigger() {
-					@Override
-					protected void onTrigger(Entity e) {
-						gameData.currentItems++;
-						itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-					}
-				}, new StarScript(eventManager));
+				entityTemplates.star(x, y, w, new StarScript(eventManager));
 
 				itemsCount++;
 			}
@@ -473,6 +487,20 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
+
+			entityBuilder //
+					.component(new ScriptComponent(new ScriptJavaImpl() {
+						@Override
+						public void update(com.artemis.World world, Entity e) {
+							Event event = eventManager.getEvent(Events.itemTaken);
+							if (event != null) {
+								gameData.currentItems++;
+								itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+								eventManager.handled(event);
+							}
+						}
+					})) //
+					.build();
 
 			// simulate a step to put everything on their places
 			worldWrapper.update(1);

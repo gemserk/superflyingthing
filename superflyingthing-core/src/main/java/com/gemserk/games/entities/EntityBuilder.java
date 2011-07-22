@@ -1,33 +1,39 @@
 package com.gemserk.games.entities;
 
+import java.util.ArrayList;
+
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.artemis.World;
 
 public class EntityBuilder {
-	
-	private Entity e;
+
 	private final World world;
+
+	private ArrayList<Component> components;
 
 	public EntityBuilder(World world) {
 		this.world = world;
+		components = new ArrayList<Component>();
 		reset();
 	}
-	
+
 	private void reset() {
-		e = world.createEntity();
+		components.clear();
 	}
-	
+
 	public EntityBuilder component(Component component) {
-		e.addComponent(component);
+		components.add(component);
 		return this;
 	}
 
 	public Entity build() {
-		Entity newEntity = e;
-		newEntity.refresh();
+		Entity e = world.createEntity();
+		for (int i = 0; i < components.size(); i++)
+			e.addComponent(components.get(i));
+		e.refresh();
 		reset();
-		return newEntity;
+		return e;
 	}
 
 }

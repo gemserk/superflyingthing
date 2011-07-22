@@ -32,7 +32,6 @@ import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.Components.TriggerComponent;
 
 public class Scripts {
 
@@ -195,12 +194,9 @@ public class Scripts {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 			if (!grabbableComponent.grabbed)
 				return;
-
-			TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-			Trigger trigger = triggerComponent.getTrigger(Triggers.itemGrabbedTrigger);
-
-			trigger.trigger(e);
-			trigger.triggered();
+			
+			Gdx.app.log("SuperFlyingThing", "Registering event for item taken");
+			eventManager.registerEvent(Events.itemTaken, e);
 		}
 	}
 

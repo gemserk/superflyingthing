@@ -214,7 +214,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity star(float x, float y, float radius, final Trigger trigger, Script script) {
+	public Entity star(float x, float y, float radius, Script script) {
 		Entity e = entityBuilder.build();
 
 		Animation rotateAnimation = resourceManager.getResourceValue("StarAnimation");
@@ -236,13 +236,6 @@ public class EntityTemplates {
 		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame(), 0));
 		e.addComponent(new GrabbableComponent());
 		e.addComponent(new AnimationComponent(new Animation[] {rotateAnimation}));
-
-		e.addComponent(new TriggerComponent(new HashMap<String, Trigger>() {
-			{
-				put(Triggers.itemGrabbedTrigger, trigger);
-			}
-		}));
-
 		e.addComponent(new ScriptComponent(script));
 
 		e.refresh();
