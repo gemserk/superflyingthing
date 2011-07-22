@@ -113,7 +113,7 @@ public class Components {
 
 		final Vector2 direction = new Vector2();
 		float angularVelocity = 0f;
-		float maxLinearSpeed = 5f;
+		float maxLinearSpeed = 4.5f;
 		private float maxAngularVelocity = 300f;
 
 		public Vector2 getDirection() {
