@@ -112,6 +112,7 @@ public class MainMenuGameState extends GameStateImpl {
 	@Override
 	public void show() {
 		super.show();
+		game.getAdWhirlViewHandler().show();
 		game.getBackgroundGameScreen().show();
 	}
 

@@ -160,7 +160,9 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 	@Override
 	public void resume() {
+		super.resume();
 		Gdx.input.setCatchBackKey(true);
+		game.getAdWhirlViewHandler().show();
 		game.getBackgroundGameScreen().resume();
 	}
 

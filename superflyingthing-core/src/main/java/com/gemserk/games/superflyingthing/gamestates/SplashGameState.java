@@ -110,11 +110,6 @@ public class SplashGameState extends GameStateImpl {
 	}
 	
 	@Override
-	public void pause() {
-		game.getAdWhirlViewHandler().show();
-	}
-
-	@Override
 	public void dispose() {
 		resourceManager.unloadAll();
 		spriteBatch.dispose();

@@ -550,7 +550,6 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void pause() {
-		game.getAdWhirlViewHandler().show();
 		super.pause();
 	}
 
