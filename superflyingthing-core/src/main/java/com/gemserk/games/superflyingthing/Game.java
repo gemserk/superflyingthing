@@ -8,6 +8,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
@@ -18,6 +19,7 @@ import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
+import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -76,6 +78,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	GamePreferences gamePreferences;
 
 	private Screen backgroundGameScreen;
+
+	private Rectangle adsMaxArea;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -191,6 +195,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("toggleBox2dDebug", Keys.NUM_7);
 			}
 		};
+		
+		adsMaxArea = new Rectangle(1f, 1f, Gdx.graphics.getWidth() - 2f, Gdx.graphics.getHeight() * 0.105f - 2f);
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
@@ -205,8 +211,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		boolean shouldDisposeCurrentScreen;
 
 		TransitionHandler leaveTransitionHandler = new TransitionHandler();
-
-		// TransitionHandler enterTransitionHandler = new TransitionHandler();
 
 		public TransitionBuilder leaveTime(int leaveTime) {
 			this.leaveTime = leaveTime;
@@ -309,6 +313,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			} catch (IOException e) {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
+		}
+		
+		if (Game.isDebugMode()) {
+			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}
 	}
 

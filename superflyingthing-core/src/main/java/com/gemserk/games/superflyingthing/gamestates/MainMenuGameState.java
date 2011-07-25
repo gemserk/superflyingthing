@@ -87,8 +87,8 @@ public class MainMenuGameState extends GameStateImpl {
 		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangleSprite.setPosition(0, 0);
 		whiteRectangleSprite.setSize(width, height);
-		whiteRectangleSprite.setColor(0f, 0f, 0f, 0.2f);
-
+		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
+		
 		game.getBackgroundGameScreen().init();
 	}
 
