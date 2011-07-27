@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -397,14 +398,34 @@ public class EntityTemplates {
 				.component(new SpriteComponent(sprite, 2, Color.WHITE)) //
 				.build();
 	}
-	
+
 	public Entity laser(float x, float y, float length, float angle, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
-		return entityBuilder //
+
+		Entity e = entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, length, 0.1f, angle))) //
 				.component(new ScriptComponent(script)) //
 				.component(new SpriteComponent(sprite, 2, new Vector2(0f, 0.5f), Color.WHITE)) //
 				.build();
+
+		Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
+
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.polygonShape(vertices) //
+						.categoryBits(CategoryBits.AllCategoryBits) //
+						.sensor()) //
+				.position(x, y) //
+				.angle(angle * MathUtils.degreesToRadians) //
+				.mass(1f) //
+				.type(BodyType.StaticBody) //
+				.userData(e) //
+				.build();
+
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.refresh();
+
+		return e;
 	}
 
 }
