@@ -415,12 +415,12 @@ public class EntityTemplates {
 	}
 
 	public Entity laser(float x, float y, float length, float angle, Script script) {
-		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		Sprite sprite = resourceManager.getResourceValue("LaserSprite");
 
 		Entity e = entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, length, 0.1f, angle))) //
 				.component(new ScriptComponent(script)) //
-				.component(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Color.WHITE)) //
+				.component(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue)) //
 				.component(new RenderableComponent(2)) //
 				.build();
 

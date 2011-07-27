@@ -75,6 +75,9 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		texture("ItemTexture", "data/images/item.png");
 		sprite("Item", "ItemTexture");
+		
+		texture("LaserTexture", "data/images/laser-bullet.png");
+		sprite("LaserSprite", "LaserTexture");
 
 		texture("ShipSpriteSheet", "data/images/ship_animation.png");
 		animation("ShipAnimation", "ShipSpriteSheet", 0, 0, 64, 64, 36, false, 0);
@@ -83,7 +86,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		animation("StarAnimation", "StarSpriteSheet", 0, 0, 64, 64, 36, false, 0);
 
 		texture("LaserTurretSpriteSheet", "data/images/laser-turret-animation.png");
-		animation("LaserTurretAnimation", "LaserTurretSpriteSheet", 0, 0, 64, 64, 36, true, 50);
+		animation("LaserTurretAnimation", "LaserTurretSpriteSheet", 0, 0, 64, 64, 36, true, 100);
 
 	}
 

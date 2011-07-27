@@ -507,7 +507,7 @@ public class Scripts {
 
 		private final EntityTemplates entityTemplates;
 		private final World physicsWolrd;
-		
+
 		private static final Vector2 direction = new Vector2();
 		private static final Vector2 target = new Vector2();
 
@@ -527,10 +527,10 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			if (fireTimer.update(world.getDelta())) {
 				Spatial spatial = ComponentWrapper.getSpatial(e);
-				
+
 				direction.set(1f, 0f).rotate(spatial.getAngle());
 				target.set(spatial.getPosition()).add(direction.tmp().mul(100f));
-				
+
 				physicsWolrd.rayCast(new RayCastCallback() {
 					@Override
 					public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
@@ -538,15 +538,15 @@ public class Scripts {
 						return fraction;
 					}
 				}, new Vector2(spatial.getX(), spatial.getY()), target);
-				
+
 				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), new Scripts.LaserScript());
 				fireTimer.reset();
 			}
-			
+
 			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
 			Animation currentAnimation = animationComponent.getCurrentAnimation();
 			currentAnimation.update(world.getDelta());
-			
+
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 			spriteComponent.setSprite(currentAnimation.getCurrentFrame());
 		}
@@ -554,54 +554,55 @@ public class Scripts {
 	}
 
 	public static class LaserScript extends ScriptJavaImpl {
-		
+
 		private TimelineAnimation laserTimelineAnimation;
 
 		Timer aliveTimer;
-		
+
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-			aliveTimer = new CountDownTimer(500, true);
+			aliveTimer = new CountDownTimer(800, true);
 			laserTimelineAnimation = new TimelineAnimationBuilder() {
 				{
 					speed(1f);
 					value("alpha", new TimelineValueBuilder<Float>() //
 							.keyFrame(0, 0f) //
-							.keyFrame(250, 1f) //
-							.keyFrame(500, 0f));
+							.keyFrame(200, 1f) //
+							.keyFrame(600, 1f) //
+							.keyFrame(800, 0f));
 				}
 			}.build();
 			laserTimelineAnimation.start(1);
 		}
-		
+
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			laserTimelineAnimation.update((float) world.getDelta());
-			
+
 			if (aliveTimer.update(world.getDelta())) {
 				world.deleteEntity(e);
 				return;
 			}
-			
+
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 			spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
-			
+
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
-			
+
 			for (int i = 0; i < contact.getContactCount(); i++) {
 				if (!contact.isInContact(i))
 					continue;
 				Entity e2 = (Entity) contact.getUserData(i);
 				if (e2 == null)
 					continue;
-				
+
 				// send an event/message something
-				
+
 				AliveComponent aliveComponent = e2.getComponent(AliveComponent.class);
 				if (aliveComponent != null)
 					aliveComponent.dead = true;
-				
+
 			}
 		}
 
