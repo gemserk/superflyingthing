@@ -39,6 +39,7 @@ import com.gemserk.games.superflyingthing.Components.GameData;
 import com.gemserk.games.superflyingthing.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
 public class Scripts {
@@ -606,6 +607,36 @@ public class Scripts {
 			}
 		}
 
+	}
+	
+	public static class PortalScript extends ScriptJavaImpl {
+		
+		@Override
+		public void init(com.artemis.World world, Entity e) {
+			
+		}
+		
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			
+			PortalComponent portalComponent = e.getComponent(PortalComponent.class);
+			
+			Physics physics = ComponentWrapper.getPhysics(e);
+			Contact contact = physics.getContact();
+
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+				Entity e2 = (Entity) contact.getUserData(i);
+				if (e2 == null)
+					continue;
+
+				Gdx.app.log("SuperFlyingThing", "Teleporting entity " + e2.getUniqueId() + " to " + portalComponent.getTargetPortalId());
+
+			}
+			
+		}
+		
 	}
 
 }

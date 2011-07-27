@@ -187,8 +187,7 @@ public class EntityTemplates {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 0.2f, 0.2f, 0f))) //
 				.component(new SpriteComponent(sprite)) //
-				.component(new RenderableComponent(-1))
-				.component(new ScriptComponent(new ScriptJavaImpl() {
+				.component(new RenderableComponent(-1)).component(new ScriptComponent(new ScriptJavaImpl() {
 
 					float aliveTime = 100;
 
@@ -342,10 +341,10 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		
+
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
 		e.addComponent(new RenderableComponent(-60));
-		
+
 		e.refresh();
 		return e;
 	}
@@ -404,11 +403,11 @@ public class EntityTemplates {
 	}
 
 	public Entity laserTurret(float x, float y, float angle, Script script) {
-		Animation idleAnimation =  resourceManager.getResourceValue("LaserTurretAnimation");
+		Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
 				.component(new ScriptComponent(script)) //
-				.component(new AnimationComponent(new Animation[]{idleAnimation})) //
+				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
 				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
 				.component(new RenderableComponent(3))//
 				.build();
@@ -433,6 +432,35 @@ public class EntityTemplates {
 						.sensor()) //
 				.position(x, y) //
 				.angle(angle * MathUtils.degreesToRadians) //
+				.mass(1f) //
+				.type(BodyType.StaticBody) //
+				.userData(e) //
+				.build();
+
+		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		e.refresh();
+
+		return e;
+	}
+
+	public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
+		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+
+		Entity e = entityBuilder //
+				.tag(id) //
+				.component(new SpriteComponent(sprite)) //
+				.component(new Components.PortalComponent(targetPortalId)) //
+				.component(new RenderableComponent(4)) //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
+				.component(new ScriptComponent(script)) //
+				.build();
+
+		Body body = bodyBuilder //
+				.fixture(bodyBuilder.fixtureDefBuilder() //
+						.circleShape(0.5f) //
+						.categoryBits(CategoryBits.AllCategoryBits) //
+						.sensor()) //
+				.position(x, y) //
 				.mass(1f) //
 				.type(BodyType.StaticBody) //
 				.userData(e) //

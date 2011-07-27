@@ -256,5 +256,19 @@ public class Components {
 		}
 
 	}
+	
+	public static class PortalComponent extends Component {
+		
+		private final String targetPortalId;
+		
+		public String getTargetPortalId() {
+			return targetPortalId;
+		}
+
+		public PortalComponent(String targetPortalId) {
+			this.targetPortalId = targetPortalId;
+		}
+		
+	}
 
 }

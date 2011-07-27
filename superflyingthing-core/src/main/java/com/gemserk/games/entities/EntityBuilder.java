@@ -12,6 +12,8 @@ public class EntityBuilder {
 
 	private ArrayList<Component> components;
 
+	private String tag;
+
 	public EntityBuilder(World world) {
 		this.world = world;
 		components = new ArrayList<Component>();
@@ -20,15 +22,23 @@ public class EntityBuilder {
 
 	private void reset() {
 		components.clear();
+		tag = null;
 	}
 
 	public EntityBuilder component(Component component) {
 		components.add(component);
 		return this;
 	}
+	
+	public EntityBuilder tag(String tag) {
+		this.tag = tag;
+		return this;
+	}
 
 	public Entity build() {
 		Entity e = world.createEntity();
+		if (tag != null)
+			e.setTag(tag);
 		for (int i = 0; i < components.size(); i++)
 			e.addComponent(components.get(i));
 		e.refresh();
