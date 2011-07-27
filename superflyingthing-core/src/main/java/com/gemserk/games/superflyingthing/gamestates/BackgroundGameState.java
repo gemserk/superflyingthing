@@ -43,6 +43,7 @@ import com.gemserk.games.superflyingthing.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
+import com.gemserk.games.superflyingthing.gamestates.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
@@ -166,6 +167,11 @@ public class BackgroundGameState extends GameStateImpl {
 		for (int i = 0; i < level.items.size(); i++) {
 			Level.Item item = level.items.get(i);
 			entityTemplates.star(item.x, item.y, 0.2f, new StarScript(eventManager));
+		}
+		
+		for (int i = 0; i < level.laserTurrets.size(); i++) {
+			LaserTurret laserTurret = level.laserTurrets.get(i);
+			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
 		}
 
 		gameData.totalItems = level.items.size();

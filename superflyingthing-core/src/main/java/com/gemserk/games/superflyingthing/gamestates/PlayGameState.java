@@ -63,6 +63,7 @@ import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
+import com.gemserk.games.superflyingthing.gamestates.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
@@ -253,6 +254,11 @@ public class PlayGameState extends GameStateImpl {
 				entityTemplates.star(item.x, item.y, 0.2f, new StarScript(eventManager));
 			}
 
+			for (int i = 0; i < level.laserTurrets.size(); i++) {
+				LaserTurret laserTurret = level.laserTurrets.get(i);
+				entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+			}
+
 			gameData.totalItems = level.items.size();
 			if (gameData.totalItems > 0)
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
@@ -317,7 +323,7 @@ public class PlayGameState extends GameStateImpl {
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
 			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
-			
+
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			float obstacleX = 12f;
@@ -373,8 +379,8 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
-			
-			entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+
+			// entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
 
 		}
 	}
@@ -402,7 +408,7 @@ public class PlayGameState extends GameStateImpl {
 			float worldHeight = MathUtils.random(15f, 15f);
 
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
-			
+
 			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 
 			Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
@@ -459,10 +465,9 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
-			
-			entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
-			
-			
+
+			// entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+
 		}
 	}
 

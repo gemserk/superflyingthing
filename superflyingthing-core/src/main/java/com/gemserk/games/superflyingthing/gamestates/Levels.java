@@ -32,36 +32,36 @@ public class Levels {
 			"data/levels/level10.svg", //
 			"data/levels/level11.svg", //
 	};
-	
+
 	private static Level[] cachedLevels = new Level[levels.length];
 
 	public static Level backgroundLevel() {
 		Level level = new Level();
-		
+
 		level.w = 30f;
 		level.h = 30f;
-		
+
 		level.startPlanet = new StartPlanet(5f, 15f);
 		level.destinationPlanet = new DestinationPlanet(25f, 15f);
-		
-		Obstacle o = new Obstacle(new Vector2[] {new Vector2(1f, 1f), new Vector2(1f, -1f), new Vector2(-1f, 0f)});
+
+		Obstacle o = new Obstacle(new Vector2[] { new Vector2(1f, 1f), new Vector2(1f, -1f), new Vector2(-1f, 0f) });
 		o.x = 15f;
 		o.y = 15f;
-		
+
 		level.obstacles.add(o);
-		
+
 		return level;
 	}
 
 	public static Level level(int levelNumber) {
-		
+
 		if (cachedLevels[levelNumber] != null) {
 			Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from cache...");
 			return cachedLevels[levelNumber];
 		}
-		
+
 		Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from file...");
-		
+
 		InputStream svg = Gdx.files.internal(levels[levelNumber]).read();
 		Document document = new DocumentParser().parse(svg);
 
@@ -118,6 +118,12 @@ public class Levels {
 			};
 		}.process(document);
 
+		new LayerProcessor("Lasers") {
+			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
+				level.laserTurrets.add(new Level.LaserTurret(x, y, angle));
+			};
+		}.process(document);
+
 		new LayerProcessor("World") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				if (element.hasAttribute("startPlanet")) {
@@ -127,7 +133,7 @@ public class Levels {
 				}
 			};
 		}.process(document);
-		
+
 		cachedLevels[levelNumber] = level;
 
 		return level;

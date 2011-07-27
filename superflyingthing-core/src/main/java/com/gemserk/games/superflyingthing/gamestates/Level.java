@@ -56,12 +56,28 @@ public class Level {
 		}
 		
 	}
+	
+	public static class LaserTurret {
+		
+		float x;
+		float y;
+		float angle;
+
+		public LaserTurret(float x, float y, float angle) {
+			this.x = x;
+			this.y = y;
+			this.angle = angle;
+		}
+		
+	}
 
 	public float w, h;
 	
 	public ArrayList<Obstacle> obstacles = new ArrayList<Level.Obstacle>();
 	
 	public ArrayList<Item> items = new ArrayList<Level.Item>();
+	
+	public ArrayList<LaserTurret> laserTurrets = new ArrayList<Level.LaserTurret>();
 	
 	public StartPlanet startPlanet;
 	

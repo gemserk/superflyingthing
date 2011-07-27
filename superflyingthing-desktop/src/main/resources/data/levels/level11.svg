@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="17.0849"
- inkscape:cx="23.0468"
- inkscape:cy="17.6663"
+ inkscape:zoom="68.3396"
+ inkscape:cx="8.129"
+ inkscape:cy="6.92093"
  inkscape:document-units="px"
- inkscape:current-layer="layer3"
+ inkscape:current-layer="layer6"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -65,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title></dc:title>
+<dc:title />
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -241,6 +241,27 @@
  height="2"
  width="2"
  destinationPlanet="" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer6"
+ inkscape:label="Lasers">
+<image
+ y="19.6966"
+ x="-1.31975"
+ id="image3019-4-01"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.957756,-0.287582,0.287582,0.957756,0,0)" />
+<image
+ y="20.5956"
+ x="-31.8662"
+ id="image3019-4-01-2"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.358241,-0.933629,0.933629,0.358241,0,0)" />
 </g>
 <g
  inkscape:groupmode="layer"
