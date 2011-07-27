@@ -5,6 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
@@ -500,11 +502,16 @@ public class Scripts {
 	public static class LaserGunScript extends ScriptJavaImpl {
 
 		private final EntityTemplates entityTemplates;
+		private final World physicsWolrd;
+		
+		private static final Vector2 direction = new Vector2();
+		private static final Vector2 target = new Vector2();
 
 		Timer fireTimer;
 
-		public LaserGunScript(EntityTemplates entityTemplates) {
+		public LaserGunScript(EntityTemplates entityTemplates, World physicsWolrd) {
 			this.entityTemplates = entityTemplates;
+			this.physicsWolrd = physicsWolrd;
 		}
 
 		@Override
@@ -516,7 +523,19 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			if (fireTimer.update(world.getDelta())) {
 				Spatial spatial = ComponentWrapper.getSpatial(e);
-				entityTemplates.laser(spatial.getX(), spatial.getY(), 10f, spatial.getAngle(), new Scripts.LaserScript());
+				
+				direction.set(1f, 0f).rotate(spatial.getAngle());
+				target.set(spatial.getPosition()).add(direction.tmp().mul(100f));
+				
+				physicsWolrd.rayCast(new RayCastCallback() {
+					@Override
+					public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+						target.set(point);
+						return fraction;
+					}
+				}, new Vector2(spatial.getX(), spatial.getY()), target);
+				
+				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), new Scripts.LaserScript());
 				fireTimer.reset();
 			}
 		}

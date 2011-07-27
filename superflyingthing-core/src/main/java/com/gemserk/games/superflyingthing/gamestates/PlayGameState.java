@@ -458,7 +458,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
 			
-			entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates));
+			entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
 			
 			
 		}
