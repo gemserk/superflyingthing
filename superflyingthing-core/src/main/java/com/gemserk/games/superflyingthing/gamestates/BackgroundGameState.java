@@ -120,9 +120,6 @@ public class BackgroundGameState extends GameStateImpl {
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
 		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
-
-		worldWrapper.update(1);
-		worldWrapper.update(1);
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
@@ -143,9 +140,10 @@ public class BackgroundGameState extends GameStateImpl {
 		float worldWidth = level.w;
 		float worldHeight = level.h;
 
-		float cameraZoom = Gdx.graphics.getWidth() * 24f / 800f;
+		float cameraZoom = Gdx.graphics.getWidth() * 32f / 800f;
 
-		final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, // 
+				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 		final ShipController controller = new ShipControllerImpl(worldCamera);
 		controller.setEnabled(false);
