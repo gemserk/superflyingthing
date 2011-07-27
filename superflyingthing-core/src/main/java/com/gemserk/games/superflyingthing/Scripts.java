@@ -516,7 +516,7 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			if (fireTimer.update(world.getDelta())) {
 				Spatial spatial = ComponentWrapper.getSpatial(e);
-				entityTemplates.laser(spatial.getX() + 5f, spatial.getY(), spatial.getAngle(), new Scripts.LaserScript());
+				entityTemplates.laser(spatial.getX(), spatial.getY(), 10f, spatial.getAngle(), new Scripts.LaserScript());
 				fireTimer.reset();
 			}
 		}
