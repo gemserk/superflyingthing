@@ -21,7 +21,6 @@ import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
-import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
@@ -64,19 +63,15 @@ public class EntityTemplates {
 
 	}
 
-	private final World physicsWorld;
 	private final BodyBuilder bodyBuilder;
-	private final JointBuilder jointBuilder;
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 	private final Mesh2dBuilder mesh2dBuilder;
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
-		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
-		this.jointBuilder = new JointBuilder(physicsWorld);
 		this.mesh2dBuilder = new Mesh2dBuilder();
 	}
 
@@ -114,7 +109,7 @@ public class EntityTemplates {
 				.component(new ScriptComponent(script)) //
 				.build();
 	}
-	
+
 	public Entity ship(float x, float y, Vector2 direction, ShipController shipControllerImpl) {
 		float width = 0.8f;
 		float height = 0.8f;
@@ -122,7 +117,7 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
-		
+
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.restitution(0f) //
@@ -149,7 +144,7 @@ public class EntityTemplates {
 		e.refresh();
 		return e;
 	}
-	
+
 	public Entity attachedShip(float x, float y, Vector2 direction) {
 		float width = 0.8f;
 		float height = 0.8f;
@@ -157,7 +152,7 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
-		
+
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.restitution(0f) //
@@ -231,7 +226,7 @@ public class EntityTemplates {
 
 		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame(), 0));
 		e.addComponent(new GrabbableComponent());
-		e.addComponent(new AnimationComponent(new Animation[] {rotateAnimation}));
+		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
 		e.addComponent(new ScriptComponent(script));
 
 		e.refresh();
@@ -293,7 +288,7 @@ public class EntityTemplates {
 		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ScriptComponent(script));
-		
+
 		e.refresh();
 		return e;
 	}
@@ -387,7 +382,29 @@ public class EntityTemplates {
 	}
 
 	public Entity boxObstacle(float x, float y, float w, float h, float angle) {
-		return obstacle(new Vector2[] { new Vector2(w * 0.5f, h * 0.5f), new Vector2(w * 0.5f, -h * 0.5f), new Vector2(-w * 0.5f, -h * 0.5f), new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
+		return obstacle(new Vector2[] { //
+				new Vector2(w * 0.5f, h * 0.5f),//
+						new Vector2(w * 0.5f, -h * 0.5f), //
+						new Vector2(-w * 0.5f, -h * 0.5f),//
+						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
+	}
+
+	public Entity laserTurret(float x, float y, float angle, Script script) {
+		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		return entityBuilder //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
+				.component(new ScriptComponent(script)) //
+				.component(new SpriteComponent(sprite, 2, Color.WHITE)) //
+				.build();
+	}
+	
+	public Entity laser(float x, float y, float angle, Script script) {
+		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		return entityBuilder //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
+				.component(new ScriptComponent(script)) //
+				.component(new SpriteComponent(sprite, 2, Color.WHITE)) //
+				.build();
 	}
 
 }

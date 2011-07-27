@@ -19,6 +19,8 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.controllers.Controller;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.timers.CountDownTimer;
+import com.gemserk.componentsengine.utils.timers.Timer;
 import com.gemserk.games.entities.Behavior;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
@@ -494,4 +496,49 @@ public class Scripts {
 			gameDataComponent.attachedShip = null;
 		}
 	}
+
+	public static class LaserGunScript extends ScriptJavaImpl {
+
+		private final EntityTemplates entityTemplates;
+
+		Timer fireTimer;
+
+		public LaserGunScript(EntityTemplates entityTemplates) {
+			this.entityTemplates = entityTemplates;
+		}
+
+		@Override
+		public void init(com.artemis.World world, Entity e) {
+			fireTimer = new CountDownTimer(2000, true);
+		}
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			if (fireTimer.update(world.getDelta())) {
+				Spatial spatial = ComponentWrapper.getSpatial(e);
+				entityTemplates.laser(spatial.getX() + 5f, spatial.getY(), spatial.getAngle(), new Scripts.LaserScript());
+				fireTimer.reset();
+			}
+		}
+
+	}
+
+	public static class LaserScript extends ScriptJavaImpl {
+		
+		Timer aliveTimer;
+		
+		@Override
+		public void init(com.artemis.World world, Entity e) {
+			aliveTimer = new CountDownTimer(500, true);
+		}
+		
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			if (aliveTimer.update(world.getDelta())) {
+				world.deleteEntity(e);
+			}
+		}
+
+	}
+
 }
