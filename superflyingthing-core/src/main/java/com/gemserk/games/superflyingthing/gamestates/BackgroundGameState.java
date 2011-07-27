@@ -20,8 +20,9 @@ import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
+import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
-import com.gemserk.commons.artemis.systems.SpriteRendererSystem;
+import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
@@ -46,7 +47,7 @@ import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.gamestates.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
-import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
+import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
@@ -87,10 +88,11 @@ public class BackgroundGameState extends GameStateImpl {
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 
-		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
+		ArrayList<RenderLayer> renderLayerSpriteBatchImpls = new ArrayList<RenderLayer>();
 
-		renderLayers.add(new RenderLayer(-1000, -100, backgroundLayerCamera));
-		renderLayers.add(new RenderLayer(-100, 100, worldCamera));
+		renderLayerSpriteBatchImpls.add(new RenderLayerSpriteBatchImpl(-1000, -100, backgroundLayerCamera, spriteBatch));
+		renderLayerSpriteBatchImpls.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
+		renderLayerSpriteBatchImpls.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera, spriteBatch));
 
 		world = new com.artemis.World();
 		worldWrapper = new WorldWrapper(world);
@@ -101,9 +103,9 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
-		worldWrapper.addRenderSystem(new SpriteRendererSystem(renderLayers));
+		worldWrapper.addRenderSystem(new RenderableSystem(renderLayerSpriteBatchImpls));
 
-		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
+//		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
 
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
 

@@ -17,6 +17,7 @@ import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.Script;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
@@ -79,7 +80,8 @@ public class EntityTemplates {
 	public Entity staticSprite(Sprite sprite, float x, float y, float width, float height, float angle, int layer, float centerx, float centery, Color color) {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, width, height, angle))) //
-				.component(new SpriteComponent(sprite, layer, new Vector2(centerx, centery), new Color(color))) //
+				.component(new SpriteComponent(sprite, new Vector2(centerx, centery), new Color(color))) //
+				.component(new RenderableComponent(layer)) //
 				.build();
 	}
 
@@ -133,7 +135,8 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), 1));
+		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
+		e.addComponent(new RenderableComponent(1));
 		e.addComponent(new MovementComponent(direction.x, direction.y));
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
@@ -168,7 +171,8 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), 1));
+		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
+		e.addComponent(new RenderableComponent(1));
 		e.addComponent(new MovementComponent(direction.x, direction.y));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
@@ -182,7 +186,8 @@ public class EntityTemplates {
 		Sprite sprite = resourceManager.getResourceValue("ThrustSprite");
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 0.2f, 0.2f, 0f))) //
-				.component(new SpriteComponent(sprite, -1)) //
+				.component(new SpriteComponent(sprite)) //
+				.component(new RenderableComponent(-1))
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					float aliveTime = 100;
@@ -225,7 +230,8 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 
-		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame(), 0));
+		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame()));
+		e.addComponent(new RenderableComponent(0));
 		e.addComponent(new GrabbableComponent());
 		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
 		e.addComponent(new ScriptComponent(script));
@@ -237,7 +243,8 @@ public class EntityTemplates {
 	public Entity deadShip(Spatial spatial, Sprite sprite) {
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(spatial))) //
-				.component(new SpriteComponent(sprite, -1, Colors.semiBlack)) //
+				.component(new SpriteComponent(sprite, Colors.semiBlack)) //
+				.component(new RenderableComponent(-1))//
 				.build();
 	}
 
@@ -258,7 +265,8 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
-		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
+		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new ControllerComponent(shipControllerImpl));
 		e.addComponent(new ScriptComponent(script));
 
@@ -286,7 +294,8 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-		e.addComponent(new SpriteComponent(sprite, -2, Color.WHITE));
+		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ScriptComponent(script));
 
@@ -333,7 +342,11 @@ public class EntityTemplates {
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
+		
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
+//		e.addComponent(new SpriteComponent(new Sprite(), -60));
+		e.addComponent(new RenderableComponent(-60));
+		
 		e.refresh();
 		return e;
 	}
@@ -396,7 +409,8 @@ public class EntityTemplates {
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
 				.component(new ScriptComponent(script)) //
 				.component(new AnimationComponent(new Animation[]{idleAnimation})) //
-				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), 3, Color.WHITE)) //
+				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
+				.component(new RenderableComponent(3))//
 				.build();
 	}
 
@@ -406,7 +420,8 @@ public class EntityTemplates {
 		Entity e = entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, length, 0.1f, angle))) //
 				.component(new ScriptComponent(script)) //
-				.component(new SpriteComponent(sprite, 2, new Vector2(0f, 0.5f), Color.WHITE)) //
+				.component(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Color.WHITE)) //
+				.component(new RenderableComponent(2)) //
 				.build();
 
 		Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
