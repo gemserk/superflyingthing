@@ -15,6 +15,7 @@ import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -555,6 +556,25 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			if (aliveTimer.update(world.getDelta())) {
 				world.deleteEntity(e);
+				return;
+			}
+			
+			Physics physics = ComponentWrapper.getPhysics(e);
+			Contact contact = physics.getContact();
+			
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+				Entity e2 = (Entity) contact.getUserData(i);
+				if (e2 == null)
+					continue;
+				
+				// send an event/message something
+				
+				AliveComponent aliveComponent = e2.getComponent(AliveComponent.class);
+				if (aliveComponent != null)
+					aliveComponent.dead = true;
+				
 			}
 		}
 
