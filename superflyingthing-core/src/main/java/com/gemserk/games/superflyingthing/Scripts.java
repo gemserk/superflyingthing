@@ -584,7 +584,7 @@ public class Scripts {
 			}
 			
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			spriteComponent.getColor().a = laserTimelineAnimation.getValue("alpha");
+			spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
 			
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
