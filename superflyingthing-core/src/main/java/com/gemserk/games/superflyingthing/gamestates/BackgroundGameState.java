@@ -140,7 +140,7 @@ public class BackgroundGameState extends GameStateImpl {
 		float worldWidth = level.w;
 		float worldHeight = level.h;
 
-		float cameraZoom = Gdx.graphics.getWidth() * 32f / 800f;
+		float cameraZoom = Gdx.graphics.getWidth() * 10f / 800f;
 
 		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, // 
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
