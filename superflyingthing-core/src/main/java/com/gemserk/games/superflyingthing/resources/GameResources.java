@@ -82,6 +82,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		texture("StarSpriteSheet", "data/images/star_animation.png");
 		animation("StarAnimation", "StarSpriteSheet", 0, 0, 64, 64, 36, false, 0);
 
+		texture("LaserTurretSpriteSheet", "data/images/laser-turret-animation.png");
+		animation("LaserTurretAnimation", "LaserTurretSpriteSheet", 0, 0, 64, 64, 36, true, 50);
+
 	}
 
 }

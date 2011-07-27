@@ -10,6 +10,9 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
+import com.gemserk.animation4j.timeline.TimelineAnimation;
+import com.gemserk.animation4j.timeline.TimelineAnimationBuilder;
+import com.gemserk.animation4j.timeline.TimelineValueBuilder;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
@@ -539,25 +542,49 @@ public class Scripts {
 				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), new Scripts.LaserScript());
 				fireTimer.reset();
 			}
+			
+			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
+			Animation currentAnimation = animationComponent.getCurrentAnimation();
+			currentAnimation.update(world.getDelta());
+			
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			spriteComponent.setSprite(currentAnimation.getCurrentFrame());
 		}
 
 	}
 
 	public static class LaserScript extends ScriptJavaImpl {
 		
+		private TimelineAnimation laserTimelineAnimation;
+
 		Timer aliveTimer;
 		
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			aliveTimer = new CountDownTimer(500, true);
+			laserTimelineAnimation = new TimelineAnimationBuilder() {
+				{
+					speed(1f);
+					value("alpha", new TimelineValueBuilder<Float>() //
+							.keyFrame(0, 0f) //
+							.keyFrame(250, 1f) //
+							.keyFrame(500, 0f));
+				}
+			}.build();
+			laserTimelineAnimation.start(1);
 		}
 		
 		@Override
 		public void update(com.artemis.World world, Entity e) {
+			laserTimelineAnimation.update((float) world.getDelta());
+			
 			if (aliveTimer.update(world.getDelta())) {
 				world.deleteEntity(e);
 				return;
 			}
+			
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			spriteComponent.getColor().a = laserTimelineAnimation.getValue("alpha");
 			
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();

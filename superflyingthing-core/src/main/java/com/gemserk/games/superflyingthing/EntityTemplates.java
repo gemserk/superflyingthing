@@ -391,11 +391,12 @@ public class EntityTemplates {
 	}
 
 	public Entity laserTurret(float x, float y, float angle, Script script) {
-		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		Animation idleAnimation =  resourceManager.getResourceValue("LaserTurretAnimation");
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
 				.component(new ScriptComponent(script)) //
-				.component(new SpriteComponent(sprite, 2, Color.WHITE)) //
+				.component(new AnimationComponent(new Animation[]{idleAnimation})) //
+				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), 3, Color.WHITE)) //
 				.build();
 	}
 
