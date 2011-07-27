@@ -291,9 +291,6 @@ public class PlayGameState extends GameStateImpl {
 				loadLevel(entityTemplates, level);
 			}
 
-			// simulate a step to put everything on their places
-			worldWrapper.update(1);
-			worldWrapper.update(1);
 		}
 	}
 
@@ -376,11 +373,6 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
-
-			// simulate a step to put everything on their places
-
-			worldWrapper.update(1);
-			worldWrapper.update(1);
 
 		}
 	}
@@ -465,10 +457,7 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
-
-			// simulate a step to put everything on their places
-			worldWrapper.update(1);
-			worldWrapper.update(1);
+			
 		}
 	}
 
