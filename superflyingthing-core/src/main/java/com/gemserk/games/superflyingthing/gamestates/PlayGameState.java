@@ -470,8 +470,8 @@ public class PlayGameState extends GameStateImpl {
 
 			// entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
 			
-			entityTemplates.portal("portal1", "portal2", 10f, 5f, new Scripts.PortalScript());
 			entityTemplates.portal("portal2", "portal1", 20f, 5f, new Scripts.PortalScript());
+			entityTemplates.portal("portal1", "portal2", 10f, 5f, new Scripts.PortalScript());
 			
 
 		}

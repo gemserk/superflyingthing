@@ -261,6 +261,16 @@ public class Components {
 		
 		private final String targetPortalId;
 		
+		private Entity incomingEntity;
+		
+		public void setIncomingEntity(Entity incomingEntity) {
+			this.incomingEntity = incomingEntity;
+		}
+		
+		public Entity getIncomingEntity() {
+			return incomingEntity;
+		}
+		
 		public String getTargetPortalId() {
 			return targetPortalId;
 		}
