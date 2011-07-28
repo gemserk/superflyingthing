@@ -444,14 +444,14 @@ public class EntityTemplates {
 	}
 
 	public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
-		Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+		Sprite sprite = resourceManager.getResourceValue("PortalSprite");
 
 		Entity e = entityBuilder //
 				.tag(id) //
 				.component(new SpriteComponent(sprite)) //
 				.component(new Components.PortalComponent(targetPortalId)) //
 				.component(new RenderableComponent(4)) //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 1.5f, 1.5f, 0f))) //
 				.component(new ScriptComponent(script)) //
 				.build();
 

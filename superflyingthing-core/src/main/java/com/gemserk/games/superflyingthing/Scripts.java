@@ -621,6 +621,9 @@ public class Scripts {
 
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
+			
+			Spatial portalSpatial = ComponentWrapper.getSpatial(e);
+			portalSpatial.setAngle(portalSpatial.getAngle() + 0.25f * world.getDelta());
 
 			Entity portal = world.getTagManager().getEntity(portalComponent.getTargetPortalId());
 			if (portal == null)
@@ -639,7 +642,6 @@ public class Scripts {
 				Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
 				Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
 
-				// Spatial portalSpatial = ComponentWrapper.getSpatial(e);
 				// direction.set(portalSpatial.getPosition()).sub(entitySpatial.getPosition()).nor();
 
 				MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e2);

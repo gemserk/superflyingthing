@@ -75,6 +75,9 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		texture("ItemTexture", "data/images/item.png");
 		sprite("Item", "ItemTexture");
+
+		texture("PortalTexture", "data/images/portal.png");
+		sprite("PortalSprite", "PortalTexture");
 		
 		texture("LaserTexture", "data/images/laser-bullet.png");
 		sprite("LaserSprite", "LaserTexture");
