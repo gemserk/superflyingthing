@@ -96,7 +96,7 @@ public class ShipControllerImpl implements ShipController {
 			else if (Gdx.input.isKeyPressed(Keys.RIGHT))
 				direction = -1f;
 
-			movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.4f, 0.001f * delta, 2f);
+			movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, 0.001f * delta, 2f);
 		} else {
 
 			for (int i = 0; i < 5; i++) {
@@ -110,7 +110,7 @@ public class ShipControllerImpl implements ShipController {
 				else if (Gdx.input.getX(i) > Gdx.graphics.getWidth() * 0.5f)
 					direction = -1f;
 
-				movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.4f, 0.001f * delta, 2f);
+				movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, 0.001f * delta, 2f);
 
 				return;
 			}

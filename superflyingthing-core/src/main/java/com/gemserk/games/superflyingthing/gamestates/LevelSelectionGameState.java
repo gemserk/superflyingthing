@@ -26,12 +26,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	
+
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private Sprite whiteRectangleSprite;
 
-	
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -50,36 +49,38 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
-		
+
 		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
 
 		Text title = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
 		title.setFont(titleFont);
-		
+
 		container = new Container();
 		container.add(title);
 
 		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
 
 		// TODO: generate the levels list automatically from an array...
-		
+
 		float x = 0f;
-		float y = height * (0.75f + 0.12f) ;
-		
+		float y = height * (0.75f + 0.12f);
+
 		for (int i = 0; i < Levels.levelsCount(); i++) {
 
 			float w = width * 0.1f;
-			float h = height * 0.1f;
-			
+			float h = height * 0.15f;
+			// float h = w;
+
 			final int levelIndex = i;
-			
-			if (i % 6 == 0)  {
-				y -= height * 0.12f;
+
+			if (i % 6 == 0) {
+				// y -= height * 0.12f;
+				y -= h * 1.2f;
 				x = 0f;
 			}
-			
+
 			x += width * 0.15f;
-			
+
 			container.add(GuiControls.imageButton(levelThumbnail) //
 					.color(0.8f, 0.8f, 0.8f, 1f) //
 					.size(w, h) //
@@ -97,9 +98,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.color(Color.WHITE) //
 					.font(levelFont) //
 					.build());
-			
+
 		}
-		
+
 		if (Gdx.app.getType() != ApplicationType.Android)
 			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
 					.setNotOverColor(Color.WHITE) //
@@ -113,7 +114,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 							game.transition(game.getSelectPlayModeScreen(), 500, 500);
 						}
 					}));
-		
+
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
@@ -123,7 +124,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					monitorKey("back", Keys.ESCAPE);
 			}
 		};
-		
+
 		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangleSprite.setPosition(0, 0);
 		whiteRectangleSprite.setSize(width, height);
@@ -157,7 +158,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		super.show();
 		game.getBackgroundGameScreen().show();
 	}
-	
+
 	@Override
 	public void resume() {
 		super.resume();

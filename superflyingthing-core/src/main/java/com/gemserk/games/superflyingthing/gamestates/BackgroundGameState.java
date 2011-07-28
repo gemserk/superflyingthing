@@ -107,7 +107,7 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayerSpriteBatchImpls));
 
-//		worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
+		// worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
 
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
 
@@ -124,7 +124,9 @@ public class BackgroundGameState extends GameStateImpl {
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
-		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
+		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
+		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 5)));
+		// loadLevel(entityTemplates, Levels.level(12));
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
@@ -147,7 +149,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		float cameraZoom = Gdx.graphics.getWidth() * 10f / 800f;
 
-		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, // 
+		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, //
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 		final ShipController controller = new ShipControllerImpl(worldCamera);
@@ -175,12 +177,12 @@ public class BackgroundGameState extends GameStateImpl {
 			Level.Item item = level.items.get(i);
 			entityTemplates.star(item.x, item.y, 0.2f, new StarScript(eventManager));
 		}
-		
+
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
 			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
 		}
-		
+
 		for (int i = 0; i < level.portals.size(); i++) {
 			Portal portal = level.portals.get(i);
 			entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new Scripts.PortalScript());
