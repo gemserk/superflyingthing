@@ -612,40 +612,12 @@ public class Scripts {
 	public static class PortalScript extends ScriptJavaImpl {
 
 		// convert it maybe to system.
-
-		@Override
-		public void init(com.artemis.World world, Entity e) {
-
-		}
+		
+		private static final Vector2 direction = new Vector2();
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			updateWhenIncomingEntity(world, e);
-			updateWhenNoIncomingEntity(world, e);
-		}
-
-		private void updateWhenIncomingEntity(com.artemis.World world, Entity e) {
 			PortalComponent portalComponent = e.getComponent(PortalComponent.class);
-			if (portalComponent.getIncomingEntity() == null)
-				return;
-
-			Entity incomingEntity = portalComponent.getIncomingEntity();
-			Spatial incomingEntitySpatial = ComponentWrapper.getSpatial(incomingEntity);
-			Spatial portalSpatial = ComponentWrapper.getSpatial(e);
-
-			// distance should depend on entity size, better to use the sensor but if the contacts are no updated yet, it doesn't work right.
-			if (incomingEntitySpatial.getPosition().dst(portalSpatial.getPosition()) <= 1f)
-				return;
-
-			Gdx.app.log("SuperFlyingThing", "Incoming entity " + portalComponent.getIncomingEntity().getUniqueId() + " completed");
-			portalComponent.setIncomingEntity(null);
-
-		}
-
-		private void updateWhenNoIncomingEntity(com.artemis.World world, Entity e) {
-			PortalComponent portalComponent = e.getComponent(PortalComponent.class);
-			if (portalComponent.getIncomingEntity() != null)
-				return;
 
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
@@ -656,17 +628,20 @@ public class Scripts {
 				Entity e2 = (Entity) contact.getUserData(i);
 				if (e2 == null)
 					continue;
-
+				
 				Gdx.app.log("SuperFlyingThing", "Teleporting entity " + e2.getUniqueId() + " to " + portalComponent.getTargetPortalId());
 
 				// start transition of e2 to target portal,
 				Entity portal = world.getTagManager().getEntity(portalComponent.getTargetPortalId());
-				PortalComponent targetPortalComponent = portal.getComponent(PortalComponent.class);
 				Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
 				Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
-
-				entitySpatial.setPosition(targetPortalSpatial.getX(), targetPortalSpatial.getY());
-				targetPortalComponent.setIncomingEntity(e2);
+				
+				Spatial portalSpatial = ComponentWrapper.getSpatial(e);
+				
+				direction.set(portalSpatial.getPosition()).sub(entitySpatial.getPosition()).nor();
+				
+				entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, 
+						targetPortalSpatial.getY() + direction.y);
 
 				return;
 			}
