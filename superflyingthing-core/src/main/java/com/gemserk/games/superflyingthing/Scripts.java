@@ -612,7 +612,7 @@ public class Scripts {
 	public static class PortalScript extends ScriptJavaImpl {
 
 		// convert it maybe to system.
-		
+
 		private static final Vector2 direction = new Vector2();
 
 		@Override
@@ -622,26 +622,32 @@ public class Scripts {
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
 
+			Entity portal = world.getTagManager().getEntity(portalComponent.getTargetPortalId());
+			if (portal == null)
+				return;
+
 			for (int i = 0; i < contact.getContactCount(); i++) {
 				if (!contact.isInContact(i))
 					continue;
 				Entity e2 = (Entity) contact.getUserData(i);
 				if (e2 == null)
 					continue;
-				
+
 				Gdx.app.log("SuperFlyingThing", "Teleporting entity " + e2.getUniqueId() + " to " + portalComponent.getTargetPortalId());
 
 				// start transition of e2 to target portal,
-				Entity portal = world.getTagManager().getEntity(portalComponent.getTargetPortalId());
 				Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
 				Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
-				
-				Spatial portalSpatial = ComponentWrapper.getSpatial(e);
-				
-				direction.set(portalSpatial.getPosition()).sub(entitySpatial.getPosition()).nor();
-				
-				entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, 
-						targetPortalSpatial.getY() + direction.y);
+
+				// Spatial portalSpatial = ComponentWrapper.getSpatial(e);
+				// direction.set(portalSpatial.getPosition()).sub(entitySpatial.getPosition()).nor();
+
+				MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e2);
+				if (movementComponent == null)
+					continue;
+				direction.set(movementComponent.getDirection());
+
+				entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, targetPortalSpatial.getY() + direction.y);
 
 				return;
 			}
