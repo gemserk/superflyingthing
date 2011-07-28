@@ -70,6 +70,22 @@ public class Level {
 		}
 		
 	}
+	
+	public static class Portal {
+		
+		float x;
+		float y;
+		String id;
+		String targetPortalId;
+
+		public Portal(float x, float y, String id, String targetPortalId) {
+			this.x = x;
+			this.y = y;
+			this.id = id;
+			this.targetPortalId = targetPortalId;
+		}
+		
+	}
 
 	public float w, h;
 	
@@ -78,6 +94,8 @@ public class Level {
 	public ArrayList<Item> items = new ArrayList<Level.Item>();
 	
 	public ArrayList<LaserTurret> laserTurrets = new ArrayList<Level.LaserTurret>();
+	
+	public ArrayList<Portal> portals = new ArrayList<Level.Portal>();
 	
 	public StartPlanet startPlanet;
 	

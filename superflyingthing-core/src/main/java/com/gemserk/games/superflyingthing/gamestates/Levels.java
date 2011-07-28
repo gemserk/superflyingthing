@@ -31,6 +31,7 @@ public class Levels {
 			"data/levels/level09.svg", //
 			"data/levels/level10.svg", //
 			"data/levels/level11.svg", //
+			"data/levels/level12.svg", //
 	};
 
 	private static Level[] cachedLevels = new Level[levels.length];
@@ -121,6 +122,17 @@ public class Levels {
 		new LayerProcessor("Lasers") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				level.laserTurrets.add(new Level.LaserTurret(x, y, angle));
+			};
+		}.process(document);
+		
+		new LayerProcessor("Portals") {
+			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
+				
+				String id = svgImage.getId();
+				String targetPortalId = element.getAttribute("targetPortalId");
+				
+				level.portals.add(new Level.Portal(x, y, id, targetPortalId));
+				
 			};
 		}.process(document);
 

@@ -66,6 +66,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.gamestates.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
+import com.gemserk.games.superflyingthing.gamestates.Level.Portal;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.resources.ResourceManager;
@@ -259,6 +260,11 @@ public class PlayGameState extends GameStateImpl {
 			for (int i = 0; i < level.laserTurrets.size(); i++) {
 				LaserTurret laserTurret = level.laserTurrets.get(i);
 				entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+			}
+
+			for (int i = 0; i < level.portals.size(); i++) {
+				Portal portal = level.portals.get(i);
+				entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new Scripts.PortalScript());
 			}
 
 			gameData.totalItems = level.items.size();
@@ -469,10 +475,9 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
 
 			// entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
-			
-			entityTemplates.portal("portal2", "portal1", 20f, 5f, new Scripts.PortalScript());
-			entityTemplates.portal("portal1", "portal2", 10f, 5f, new Scripts.PortalScript());
-			
+
+			// entityTemplates.portal("portal2", "portal1", 20f, 5f, new Scripts.PortalScript());
+			// entityTemplates.portal("portal1", "portal2", 10f, 5f, new Scripts.PortalScript());
 
 		}
 	}

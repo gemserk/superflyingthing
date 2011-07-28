@@ -21,8 +21,8 @@ import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
-import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
+import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
@@ -46,6 +46,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.gamestates.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
+import com.gemserk.games.superflyingthing.gamestates.Level.Portal;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.resources.ResourceManager;
@@ -174,6 +175,11 @@ public class BackgroundGameState extends GameStateImpl {
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
 			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+		}
+		
+		for (int i = 0; i < level.portals.size(); i++) {
+			Portal portal = level.portals.get(i);
+			entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new Scripts.PortalScript());
 		}
 
 		gameData.totalItems = level.items.size();
