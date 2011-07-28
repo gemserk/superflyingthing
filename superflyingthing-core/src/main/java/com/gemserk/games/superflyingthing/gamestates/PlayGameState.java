@@ -64,6 +64,7 @@ import com.gemserk.games.superflyingthing.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
+import com.gemserk.games.superflyingthing.gamestates.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.gamestates.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
 import com.gemserk.games.superflyingthing.gamestates.Level.Portal;
@@ -239,7 +240,10 @@ public class PlayGameState extends GameStateImpl {
 
 			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(level.destinationPlanet.x, level.destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			for (int i = 0; i < level.destinationPlanets.size(); i++) {
+				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
+				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			}
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager));
 
@@ -462,7 +466,9 @@ public class PlayGameState extends GameStateImpl {
 			final ShipController controller = new ShipControllerImpl(worldCamera);
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.25f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.75f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 

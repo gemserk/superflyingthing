@@ -36,24 +36,6 @@ public class Levels {
 
 	private static Level[] cachedLevels = new Level[levels.length];
 
-	public static Level backgroundLevel() {
-		Level level = new Level();
-
-		level.w = 30f;
-		level.h = 30f;
-
-		level.startPlanet = new StartPlanet(5f, 15f);
-		level.destinationPlanet = new DestinationPlanet(25f, 15f);
-
-		Obstacle o = new Obstacle(new Vector2[] { new Vector2(1f, 1f), new Vector2(1f, -1f), new Vector2(-1f, 0f) });
-		o.x = 15f;
-		o.y = 15f;
-
-		level.obstacles.add(o);
-
-		return level;
-	}
-
 	public static Level level(int levelNumber) {
 
 		if (cachedLevels[levelNumber] != null) {
@@ -141,7 +123,7 @@ public class Levels {
 				if (element.hasAttribute("startPlanet")) {
 					level.startPlanet = new StartPlanet(x, y);
 				} else if (element.hasAttribute("destinationPlanet")) {
-					level.destinationPlanet = new DestinationPlanet(x, y);
+					level.destinationPlanets.add(new DestinationPlanet(x, y));
 				}
 			};
 		}.process(document);
