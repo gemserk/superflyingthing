@@ -3,7 +3,7 @@ package com.gemserk.games.superflyingthing;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileStatus {
+public class PlayerProfile {
 	
 	// private String privateProfileId (from datastore server)
 	
@@ -11,7 +11,7 @@ public class ProfileStatus {
 	
 	private Map<Integer, Integer> levelsInformation;
 	
-	public ProfileStatus() {
+	public PlayerProfile() {
 		this.latestLevelPlayed = 0;
 		this.levelsInformation = new HashMap<Integer, Integer>();
 	}
