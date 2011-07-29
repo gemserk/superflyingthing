@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing.gamestates;
+package com.gemserk.games.superflyingthing.levels;
 
 import java.io.InputStream;
 import java.util.HashMap;
@@ -12,10 +12,10 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.svg.inkscape.DocumentParser;
 import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
 import com.gemserk.games.superflyingthing.LayerProcessor;
-import com.gemserk.games.superflyingthing.gamestates.Level.DestinationPlanet;
-import com.gemserk.games.superflyingthing.gamestates.Level.Item;
-import com.gemserk.games.superflyingthing.gamestates.Level.Obstacle;
-import com.gemserk.games.superflyingthing.gamestates.Level.StartPlanet;
+import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
+import com.gemserk.games.superflyingthing.levels.Level.Item;
+import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
+import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
 
 public class Levels {
 

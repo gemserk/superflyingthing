@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing.gamestates;
+package com.gemserk.games.superflyingthing.levels;
 
 import java.util.ArrayList;
 
@@ -35,8 +35,7 @@ public class Level {
 	
 	public static class StartPlanet {
 		
-		float x;
-		float y;
+		public float x, y;
 
 		public StartPlanet(float x, float y) {
 			this.x = x;
@@ -47,8 +46,7 @@ public class Level {
 	
 	public static class DestinationPlanet {
 		
-		float x;
-		float y;
+		public float x, y;
 
 		public DestinationPlanet(float x, float y) {
 			this.x = x;
@@ -59,9 +57,8 @@ public class Level {
 	
 	public static class LaserTurret {
 		
-		float x;
-		float y;
-		float angle;
+		public float x, y;
+		public float angle;
 
 		public LaserTurret(float x, float y, float angle) {
 			this.x = x;
@@ -73,10 +70,9 @@ public class Level {
 	
 	public static class Portal {
 		
-		float x;
-		float y;
-		String id;
-		String targetPortalId;
+		public float x, y;
+		public String id;
+		public String targetPortalId;
 
 		public Portal(float x, float y, String id, String targetPortalId) {
 			this.x = x;
