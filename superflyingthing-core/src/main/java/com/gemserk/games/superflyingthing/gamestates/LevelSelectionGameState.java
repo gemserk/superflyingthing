@@ -86,8 +86,10 @@ public class LevelSelectionGameState extends GameStateImpl {
 			x += width * 0.15f;
 
 			Color color = new Color(Color.WHITE);
-			if (!playerProfile.hasPlayedLevel(levelIndex))
+			if (!playerProfile.hasPlayedLevel(levelIndex + 1))
 				color.set(0.5f, 0.5f, 0.5f, 1f);
+			
+			// maybe putting a TICK over the image could be better.
 
 			container.add(GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
@@ -100,7 +102,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 							// if (!playerProfile.hasPlayedLevel(levelIndex))
 							// return;
 							GameInformation.level = levelIndex;
-							game.transition(game.getPlayScreen(), 500, 500);
+							game.transition(game.getPlayScreen(), 500, 500, true);
 						}
 					}) //
 					.build());
@@ -122,7 +124,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.setButtonHandler(new ButtonHandler() {
 						@Override
 						public void onReleased() {
-							game.transition(game.getSelectPlayModeScreen(), 500, 500);
+							game.transition(game.getSelectPlayModeScreen(), 500, 500, true);
 						}
 					}));
 
@@ -160,7 +162,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
-			game.transition(game.getSelectPlayModeScreen(), 500, 500);
+			game.transition(game.getSelectPlayModeScreen(), 500, 500, true);
 		game.getBackgroundGameScreen().update(delta);
 	}
 
