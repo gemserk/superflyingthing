@@ -84,10 +84,10 @@ public class LevelSelectionGameState extends GameStateImpl {
 			}
 
 			x += width * 0.15f;
-			
+
 			Color color = new Color(Color.WHITE);
-			if (!playerProfile.hasPlayedLevel(levelIndex))
-				color.set(0.5f, 0.5f, 0.5f, 1f);
+			// if (!playerProfile.hasPlayedLevel(levelIndex))
+			// color.set(0.5f, 0.5f, 0.5f, 1f);
 
 			container.add(GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
@@ -96,8 +96,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased() {
-							if (!playerProfile.hasPlayedLevel(levelIndex))
-								return;
+							// there is no point in forcing the player to play all the levels, at least for now.
+							// if (!playerProfile.hasPlayedLevel(levelIndex))
+							// return;
 							GameInformation.level = levelIndex;
 							game.transition(game.getPlayScreen(), 500, 500);
 						}

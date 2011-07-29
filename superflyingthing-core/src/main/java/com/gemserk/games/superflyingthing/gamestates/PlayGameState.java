@@ -216,9 +216,12 @@ public class PlayGameState extends GameStateImpl {
 					gameFinished();
 					eventManager.handled(event);
 					incrementTimer = false;
+
+					if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+						playerProfile.setTimeForLevel(GameInformation.level + 1, seconds(gameData.time));
+						game.getGamePreferences().updatePlayerProfile(playerProfile);
+					}
 					
-					playerProfile.setTimeForLevel(GameInformation.level + 1, seconds(gameData.time));
-					game.getGamePreferences().updatePlayerProfile(playerProfile);
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));
