@@ -165,7 +165,7 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		timerLabel = GuiControls.label("") //
-				.position(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.95f) //
+				.position(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.95f) //
 				.center(0f, 0.5f) //
 				.font(font) //
 				.color(1f, 1f, 1f, 1f) //
