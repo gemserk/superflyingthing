@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing;
+package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
@@ -28,7 +28,9 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.componentsengine.utils.timers.Timer;
 import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.superflyingthing.Behaviors;
 import com.gemserk.games.superflyingthing.Behaviors.FixCameraTargetBehavior;
+import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
@@ -41,6 +43,9 @@ import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.EntityTemplates;
+import com.gemserk.games.superflyingthing.Events;
+import com.gemserk.games.superflyingthing.ShipController;
 
 public class Scripts {
 
@@ -604,7 +609,7 @@ public class Scripts {
 
 				AliveComponent aliveComponent = e2.getComponent(AliveComponent.class);
 				if (aliveComponent != null)
-					aliveComponent.dead = true;
+					aliveComponent.setDead(true);
 
 			}
 		}

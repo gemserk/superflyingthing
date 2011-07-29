@@ -137,6 +137,10 @@ public class Components {
 	public static class AliveComponent extends Component {
 
 		boolean dead;
+		
+		public void setDead(boolean dead) {
+			this.dead = dead;
+		}
 
 		public boolean isDead() {
 			return dead;
@@ -150,7 +154,7 @@ public class Components {
 
 	public static class TargetComponent extends Component {
 
-		Entity target;
+		public Entity target;
 
 		public void setTarget(Entity target) {
 			this.target = target;
@@ -164,9 +168,9 @@ public class Components {
 
 	public static class AttachmentComponent extends Component {
 
-		Entity entity;
+		public Entity entity;
 
-		Joint joint;
+		public Joint joint;
 
 		public Entity getEntity() {
 			return entity;
@@ -188,7 +192,7 @@ public class Components {
 
 	public static class AttachableComponent extends Component {
 
-		Entity owner;
+		public Entity owner;
 		
 		public void setOwner(Entity owner) {
 			this.owner = owner;
@@ -202,7 +206,7 @@ public class Components {
 
 	public static class GrabbableComponent extends Component {
 
-		boolean grabbed;
+		public boolean grabbed;
 
 	}
 

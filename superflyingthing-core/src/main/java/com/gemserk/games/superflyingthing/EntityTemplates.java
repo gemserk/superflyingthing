@@ -45,8 +45,9 @@ import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.Scripts.MovingObstacleScript;
-import com.gemserk.games.superflyingthing.Scripts.ShipScript;
+import com.gemserk.games.superflyingthing.scripts.Scripts;
+import com.gemserk.games.superflyingthing.scripts.Scripts.MovingObstacleScript;
+import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
