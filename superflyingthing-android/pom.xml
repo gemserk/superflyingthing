@@ -230,10 +230,14 @@
 			<groupId>com.gemserk.analytics.googleanalytics</groupId>
 			<artifactId>jgoogleanalyticstracker-android</artifactId>
 		</dependency>
-				<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-android</artifactId>
-			<version>1.6.1-RC1</version>
+
+		<dependency>
+			<groupId>com.gemserk.datastore</groupId>
+			<artifactId>datastore-android</artifactId>
+			<version>${datastore.version}</version>
 		</dependency>
+
+		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-android</artifactId> 
+			<version>1.6.1-RC1</version> </dependency> -->
 	</dependencies>
 </project>

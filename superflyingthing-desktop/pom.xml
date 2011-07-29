@@ -81,17 +81,16 @@
 			<artifactId>jgoogleanalyticstracker-desktop</artifactId>
 		</dependency>
 
+		<dependency>
+			<groupId>com.gemserk.datastore</groupId>
+			<artifactId>datastore-desktop</artifactId>
+			<version>${datastore.version}</version>
+		</dependency>
+
 		<!-- TODO: remove this when we add datastore-desktop -->
-		<dependency>
-			<groupId>ch.qos.logback</groupId>
-			<artifactId>logback-classic</artifactId>
-			<version>0.9.28</version>
-		</dependency>
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-api</artifactId>
-			<version>1.6.1</version>
-		</dependency>
+		<!-- <dependency> <groupId>ch.qos.logback</groupId> <artifactId>logback-classic</artifactId> 
+			<version>0.9.28</version> </dependency> <dependency> <groupId>org.slf4j</groupId> 
+			<artifactId>slf4j-api</artifactId> <version>1.6.1</version> </dependency> -->
 
 	</dependencies>
 

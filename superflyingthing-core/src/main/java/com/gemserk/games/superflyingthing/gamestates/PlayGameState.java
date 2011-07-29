@@ -216,7 +216,7 @@ public class PlayGameState extends GameStateImpl {
 					gameFinished();
 					eventManager.handled(event);
 					incrementTimer = false;
-					playerProfile.setTimeForLevel(GameInformation.level + 1, gameData.time);
+					playerProfile.setTimeForLevel(GameInformation.level + 1, seconds(gameData.time));
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));
