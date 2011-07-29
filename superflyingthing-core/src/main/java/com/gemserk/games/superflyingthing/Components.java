@@ -15,17 +15,17 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
 
 public class Components {
-	
+
 	public static class AnimationComponent extends Component {
 
 		private final Animation[] animations;
-		
+
 		private int currentAnimation;
-		
+
 		public Animation getCurrentAnimation() {
 			return animations[currentAnimation];
 		}
-		
+
 		public void setCurrentAnimation(int currentAnimation) {
 			this.currentAnimation = currentAnimation;
 		}
@@ -33,9 +33,9 @@ public class Components {
 		public AnimationComponent(Animation[] spriteSheets) {
 			this.animations = spriteSheets;
 		}
-		
+
 	}
-	
+
 	public static class ControllerComponent extends Component {
 
 		private final ShipController shipControllerImpl;
@@ -111,10 +111,10 @@ public class Components {
 
 	public static class MovementComponent extends Component {
 
-		final Vector2 direction = new Vector2();
-		float angularVelocity = 0f;
-		float maxLinearSpeed = 4.5f;
-		private float maxAngularVelocity = 300f;
+		public final Vector2 direction = new Vector2();
+		public float angularVelocity = 0f;
+		public float maxLinearSpeed = 4.5f;
+		public float maxAngularVelocity = 300f;
 
 		public Vector2 getDirection() {
 			return direction;
@@ -137,7 +137,7 @@ public class Components {
 	public static class AliveComponent extends Component {
 
 		boolean dead;
-		
+
 		public void setDead(boolean dead) {
 			this.dead = dead;
 		}
@@ -193,7 +193,7 @@ public class Components {
 	public static class AttachableComponent extends Component {
 
 		public Entity owner;
-		
+
 		public void setOwner(Entity owner) {
 			this.owner = owner;
 		}
@@ -212,7 +212,7 @@ public class Components {
 
 	public static class ShipControllerComponent extends Component {
 
-		float direction;
+		public float direction;
 
 	}
 
@@ -223,7 +223,7 @@ public class Components {
 		public int totalItems;
 
 		public int currentItems;
-		
+
 		public int time;
 
 		public GameData() {
@@ -263,11 +263,11 @@ public class Components {
 		}
 
 	}
-	
+
 	public static class PortalComponent extends Component {
-		
+
 		private final String targetPortalId;
-		
+
 		public String getTargetPortalId() {
 			return targetPortalId;
 		}
@@ -275,7 +275,7 @@ public class Components {
 		public PortalComponent(String targetPortalId) {
 			this.targetPortalId = targetPortalId;
 		}
-		
+
 	}
 
 }

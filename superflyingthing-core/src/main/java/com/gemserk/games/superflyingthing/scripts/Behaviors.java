@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing;
+package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.artemis.World;
@@ -13,7 +13,7 @@ import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.entities.Behavior;
+import com.gemserk.games.superflyingthing.ComponentWrapper;
 import com.gemserk.games.superflyingthing.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.Components.AttachableComponent;
@@ -25,7 +25,7 @@ import com.gemserk.games.superflyingthing.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.Components.TargetComponent;
 
-public class Behaviors {
+class Behaviors {
 
 	public static class CameraFollowBehavior extends Behavior {
 
@@ -291,7 +291,7 @@ public class Behaviors {
 				return;
 			if (aliveComponent == null)
 				return;
-			aliveComponent.dead = true;
+			aliveComponent.setDead(true);
 		}
 	}
 
