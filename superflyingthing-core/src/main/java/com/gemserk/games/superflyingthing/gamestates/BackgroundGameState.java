@@ -92,11 +92,11 @@ public class BackgroundGameState extends GameStateImpl {
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 
-		ArrayList<RenderLayer> renderLayerSpriteBatchImpls = new ArrayList<RenderLayer>();
+		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
 
-		renderLayerSpriteBatchImpls.add(new RenderLayerSpriteBatchImpl(-1000, -100, backgroundLayerCamera, spriteBatch));
-		renderLayerSpriteBatchImpls.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
-		renderLayerSpriteBatchImpls.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera, spriteBatch));
+		renderLayers.add(new RenderLayerSpriteBatchImpl(-1000, -100, backgroundLayerCamera, spriteBatch));
+		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
+		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera, spriteBatch));
 
 		world = new com.artemis.World();
 		worldWrapper = new WorldWrapper(world);
@@ -107,7 +107,7 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
-		worldWrapper.addRenderSystem(new RenderableSystem(renderLayerSpriteBatchImpls));
+		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 
 		// worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
 

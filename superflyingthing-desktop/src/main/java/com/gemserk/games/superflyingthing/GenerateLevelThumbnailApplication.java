@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,9 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.systems.RenderLayer;
+import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
+import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.gdx.Game;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.ScreenImpl;
@@ -29,10 +33,10 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.games.entities.EntityBuilder;
 import com.gemserk.games.superflyingthing.levels.Level;
-import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
+import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.resources.GameResources;
-import com.gemserk.games.superflyingthing.systems.ShapeRenderSystem;
+import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.util.ScreenshotSaver;
@@ -62,89 +66,92 @@ public class GenerateLevelThumbnailApplication {
 		config.forceExit = true;
 
 		new LwjglApplication(new Game() {
-			
+
 			@Override
 			public void create() {
 				super.create();
-				
+
 				Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
-				
+
 				setScreen(new ScreenImpl(new GameStateImpl() {
 
 					private EntityTemplates templates;
 					private WorldWrapper worldWrapper;
 					private Libgdx2dCamera worldCamera;
-					
+
 					private boolean done = false;
 					private Camera camera;
-		
+
 					@Override
 					public void init() {
-						
+
 						worldCamera = new Libgdx2dCameraTransformImpl();
 						worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 						worldCamera.zoom(18f);
-						
+
+						ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
+
+						renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
+						renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
+
 						ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
-						
+
 						GameResources.load(resourceManager);
-		
+
 						World world = new World();
-						
+
 						worldWrapper = new WorldWrapper(world);
-						worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
-		
+						worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+						// worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
+
 						worldWrapper.init();
-		
+
 						com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
-		
+
 						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world));
-						
-						
+
 						Level level = Levels.level(8);
-						
+
 						for (int i = 0; i < level.obstacles.size(); i++) {
 							Obstacle o = level.obstacles.get(i);
-							if (o.bodyType == BodyType.StaticBody) 
+							if (o.bodyType == BodyType.StaticBody)
 								templates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 						}
-						
+
 						// worldCamera.move(level.w * 0.5f, level.h * 0.5f);
-						
+
 						camera = new CameraRestrictedImpl(0f, 0f, 1f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, level.w, 10000f));
 						camera.setPosition(level.w * 0.5f, level.h * 0.5f);
-						
+
 						worldWrapper.update(1);
 						worldWrapper.update(1);
 					}
-					
+
 					@Override
 					public void render(int delta) {
 						Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 						worldWrapper.render();
-						
+
 						if (!done) {
 							done = true;
 							try {
 								ScreenshotSaver.saveScreenshot("level01");
 							} catch (IOException e) {
-								
+
 							}
 						}
 					}
-					
+
 					@Override
 					public void update(int delta) {
 						worldCamera.move(camera.getX(), camera.getY());
 						worldCamera.zoom(camera.getZoom());
 						worldWrapper.update(delta);
 					}
-					
-					
-				}));
-				
-			}
 
+				}));
+
+			}
 
 		}, config);
 	}
