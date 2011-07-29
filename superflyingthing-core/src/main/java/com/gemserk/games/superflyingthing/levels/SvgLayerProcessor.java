@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing;
+package com.gemserk.games.superflyingthing.levels;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,13 +17,13 @@ import com.gemserk.vecmath.Matrix3f;
 import com.gemserk.vecmath.Vector2f;
 import com.gemserk.vecmath.Vector3f;
 
-public class LayerProcessor {
+public class SvgLayerProcessor {
 
 	private SvgDocument svgDocument;
 
 	private String layer;
 
-	public LayerProcessor(String layer) {
+	public SvgLayerProcessor(String layer) {
 		this.layer = layer;
 	}
 
@@ -32,7 +32,7 @@ public class LayerProcessor {
 		svgParser.addHandler(new SvgDocumentHandler() {
 			@Override
 			protected void handle(SvgParser svgParser, SvgDocument svgDocument, Element element) {
-				LayerProcessor.this.svgDocument = svgDocument;
+				SvgLayerProcessor.this.svgDocument = svgDocument;
 				handleDocument(svgDocument, element);
 			}
 		});

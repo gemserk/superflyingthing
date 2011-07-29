@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.svg.inkscape.DocumentParser;
 import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
-import com.gemserk.games.superflyingthing.LayerProcessor;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.Item;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
@@ -54,7 +53,7 @@ public class Levels {
 
 		final HashMap<String, Vector2[]> registeredPaths = new HashMap<String, Vector2[]>();
 
-		new LayerProcessor("Paths") {
+		new SvgLayerProcessor("Paths") {
 
 			protected void handleDocument(com.gemserk.commons.svg.inkscape.SvgDocument document, Element element) {
 				level.w = document.getWidth();
@@ -68,7 +67,7 @@ public class Levels {
 			}
 		}.process(document);
 
-		new LayerProcessor("Obstacles") {
+		new SvgLayerProcessor("Obstacles") {
 			@Override
 			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
 				Obstacle obstacle = new Obstacle(vertices);
@@ -93,7 +92,7 @@ public class Levels {
 			}
 		}.process(document);
 
-		new LayerProcessor("Items") {
+		new SvgLayerProcessor("Items") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				Item i = new Item();
 				i.x = x;
@@ -102,13 +101,13 @@ public class Levels {
 			};
 		}.process(document);
 
-		new LayerProcessor("Lasers") {
+		new SvgLayerProcessor("Lasers") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				level.laserTurrets.add(new Level.LaserTurret(x, y, angle));
 			};
 		}.process(document);
 		
-		new LayerProcessor("Portals") {
+		new SvgLayerProcessor("Portals") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				
 				String id = svgImage.getId();
@@ -119,7 +118,7 @@ public class Levels {
 			};
 		}.process(document);
 
-		new LayerProcessor("World") {
+		new SvgLayerProcessor("World") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				if (element.hasAttribute("startPlanet")) {
 					level.startPlanet = new StartPlanet(x, y);
