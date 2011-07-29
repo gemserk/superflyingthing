@@ -27,6 +27,8 @@ import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.componentsengine.utils.timers.Timer;
+import com.gemserk.games.superflyingthing.Events;
+import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
@@ -42,8 +44,6 @@ import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
-import com.gemserk.games.superflyingthing.Events;
-import com.gemserk.games.superflyingthing.ShipController;
 
 public class Scripts {
 
@@ -173,7 +173,7 @@ public class Scripts {
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior(world);
+			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior();
 		}
 
 		@Override

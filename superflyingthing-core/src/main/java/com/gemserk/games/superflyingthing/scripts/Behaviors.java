@@ -69,7 +69,7 @@ class Behaviors {
 			Body body = ComponentWrapper.getPhysics(e).getBody();
 
 			Vector2 position = body.getTransform().getPosition();
-			float desiredAngle = direction.angle();
+			// float desiredAngle = direction.angle();
 
 			body.getTransform().getPosition().set(position);
 			// body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
@@ -149,13 +149,6 @@ class Behaviors {
 	}
 
 	public static class RemoveWhenGrabbedBehavior extends Behavior {
-
-		private final com.artemis.World world;
-
-		public RemoveWhenGrabbedBehavior(com.artemis.World world) {
-			this.world = world;
-		}
-
 		@Override
 		public void update(World world, Entity e) {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
