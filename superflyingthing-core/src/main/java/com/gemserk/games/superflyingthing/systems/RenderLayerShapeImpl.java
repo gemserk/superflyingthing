@@ -10,8 +10,8 @@ import com.gemserk.commons.artemis.systems.SpriteComponentComparator;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
-import com.gemserk.games.superflyingthing.ComponentWrapper;
-import com.gemserk.games.superflyingthing.Components.ShapeComponent;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 
 public class RenderLayerShapeImpl implements RenderLayer {
 

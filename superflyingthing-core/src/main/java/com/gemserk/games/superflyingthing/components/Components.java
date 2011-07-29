@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing;
+package com.gemserk.games.superflyingthing.components;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -13,6 +13,8 @@ import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
+import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.Trigger;
 
 public class Components {
 

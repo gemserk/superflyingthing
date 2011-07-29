@@ -8,7 +8,7 @@ import javax.swing.JSlider;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.gemserk.games.superflyingthing.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 
 public class DebugComponents {
 

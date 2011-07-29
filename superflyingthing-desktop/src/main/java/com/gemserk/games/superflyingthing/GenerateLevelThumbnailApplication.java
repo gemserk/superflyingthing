@@ -37,6 +37,7 @@ import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
+import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.util.ScreenshotSaver;

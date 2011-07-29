@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.superflyingthing.Components.ParticleEmitterComponent;
+import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 
 public class ParticleEmitterSystem extends EntityProcessingSystem {
 

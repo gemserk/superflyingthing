@@ -32,12 +32,11 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.games.superflyingthing.Components.GameData;
-import com.gemserk.games.superflyingthing.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
+import com.gemserk.games.superflyingthing.components.Components.GameData;
+import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -52,6 +51,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
+import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {

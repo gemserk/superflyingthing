@@ -49,15 +49,14 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
-import com.gemserk.games.superflyingthing.Components.GameData;
-import com.gemserk.games.superflyingthing.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.EntityTemplates;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
+import com.gemserk.games.superflyingthing.components.Components.GameData;
+import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -72,6 +71,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
+import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {

@@ -13,17 +13,17 @@ import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.superflyingthing.ComponentWrapper;
-import com.gemserk.games.superflyingthing.Components.AliveComponent;
-import com.gemserk.games.superflyingthing.Components.AnimationComponent;
-import com.gemserk.games.superflyingthing.Components.AttachableComponent;
-import com.gemserk.games.superflyingthing.Components.AttachmentComponent;
-import com.gemserk.games.superflyingthing.Components.ControllerComponent;
-import com.gemserk.games.superflyingthing.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.Components.ShipControllerComponent;
-import com.gemserk.games.superflyingthing.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
+import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
+import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
+import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
+import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 class Behaviors {
 
