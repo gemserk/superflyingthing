@@ -43,6 +43,12 @@ public class PlayerProfileTest {
 		playerProfile.setTimeForLevel(1, 500);
 		assertThat(playerProfile.hasPlayedLevel(1), IsEqual.equalTo(true));
 	}
+	
+	@Test
+	public void shouldReturnHasPlayedLevelForLevelZero() {
+		PlayerProfile playerProfile = new PlayerProfile();
+		assertThat(playerProfile.hasPlayedLevel(0), IsEqual.equalTo(true));
+	}
 
 	@Test
 	public void shouldStoreAndReturnTimeForLevel() {

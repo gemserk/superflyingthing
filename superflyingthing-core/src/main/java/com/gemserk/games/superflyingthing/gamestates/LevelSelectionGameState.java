@@ -19,6 +19,7 @@ import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.PlayerProfile;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.resources.ResourceManager;
 
@@ -61,6 +62,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
 
+		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
+
 		// TODO: generate the levels list automatically from an array...
 
 		float x = 0f;
@@ -81,14 +84,20 @@ public class LevelSelectionGameState extends GameStateImpl {
 			}
 
 			x += width * 0.15f;
+			
+			Color color = new Color(Color.WHITE);
+			if (!playerProfile.hasPlayedLevel(levelIndex))
+				color.set(0.5f, 0.5f, 0.5f, 1f);
 
 			container.add(GuiControls.imageButton(levelThumbnail) //
-					.color(0.8f, 0.8f, 0.8f, 1f) //
+					.color(color) //
 					.size(w, h) //
 					.position(x, y) //
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased() {
+							if (!playerProfile.hasPlayedLevel(levelIndex))
+								return;
 							GameInformation.level = levelIndex;
 							game.transition(game.getPlayScreen(), 500, 500);
 						}
@@ -96,7 +105,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.build());
 			container.add(GuiControls.label("" + (i + 1)) //
 					.position(x, y) //
-					.color(Color.WHITE) //
+					.color(color) //
 					.font(levelFont) //
 					.build());
 

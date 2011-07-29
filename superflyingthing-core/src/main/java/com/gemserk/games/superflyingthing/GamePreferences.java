@@ -6,6 +6,8 @@ import com.badlogic.gdx.Preferences;
 public class GamePreferences {
 	
 	private final Preferences preferences;
+	
+	private PlayerProfile playerProfile;
 
 	public boolean isTutorialEnabled() {
 		return preferences.getBoolean("tutorialEnabled", true);
@@ -19,5 +21,12 @@ public class GamePreferences {
 
 	public GamePreferences(Preferences preferences) {
 		this.preferences = preferences;
+		this.playerProfile = new PlayerProfile();
 	}
+	
+	public PlayerProfile getCurrentPlayerProfile() {
+		return playerProfile;
+	}
+	
+	
 }

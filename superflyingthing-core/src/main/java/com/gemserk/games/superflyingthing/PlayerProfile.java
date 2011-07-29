@@ -17,6 +17,8 @@ public class PlayerProfile {
 	}
 	
 	public boolean hasPlayedLevel(int level) {
+		if (level <= 0)
+			return true;
 		return levelsInformation.containsKey(level);
 	}
 	

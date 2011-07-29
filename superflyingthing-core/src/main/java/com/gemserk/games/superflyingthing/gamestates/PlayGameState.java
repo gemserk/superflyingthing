@@ -52,6 +52,7 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.GamePreferences;
+import com.gemserk.games.superflyingthing.PlayerProfile;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
@@ -190,10 +191,19 @@ public class PlayGameState extends GameStateImpl {
 			Analytics.traker.trackPageView("/startRandomMode", "/startRandomMode", null);
 		}
 
+		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
+
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+
+			boolean incrementTimer = true;
+
 			@Override
 			public void update(com.artemis.World world, Entity e) {
+
+				if (incrementTimer)
+					gameData.time += world.getDelta();
+
 				Event event = eventManager.getEvent(Events.itemTaken);
 				if (event != null) {
 					gameData.currentItems++;
@@ -203,18 +213,19 @@ public class PlayGameState extends GameStateImpl {
 
 				event = eventManager.getEvent(Events.destinationPlanetReached);
 				if (event != null) {
-					System.out.println("game finished");
 					gameFinished();
 					eventManager.handled(event);
+					incrementTimer = false;
+					playerProfile.setTimeForLevel(GameInformation.level + 1, gameData.time);
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));
 			}
-			
+
 			private int seconds(int ms) {
 				return ms / 1000;
 			}
-			
+
 		})).build();
 
 		done = false;

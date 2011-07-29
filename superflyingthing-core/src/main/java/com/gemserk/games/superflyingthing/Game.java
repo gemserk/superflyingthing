@@ -75,12 +75,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	GamePreferences gamePreferences;
+	private GamePreferences gamePreferences;
 
 	private Screen backgroundGameScreen;
 
 	private Rectangle adsMaxArea;
-
+	
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
