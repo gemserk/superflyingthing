@@ -64,6 +64,7 @@ import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
+import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -218,7 +219,11 @@ public class PlayGameState extends GameStateImpl {
 					incrementTimer = false;
 
 					if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-						playerProfile.setTimeForLevel(GameInformation.level + 1, seconds(gameData.time));
+						
+						// playerProfile.getLevelInformation(GameInformation.level + 1);
+						// li.update(newTime, stars)
+						
+						playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
 						game.getGamePreferences().updatePlayerProfile(playerProfile);
 					}
 					

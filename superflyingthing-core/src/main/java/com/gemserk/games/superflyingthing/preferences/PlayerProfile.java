@@ -7,11 +7,16 @@ public class PlayerProfile {
 
 	// private String privateProfileId (from datastore server)
 
-	static class LevelInformation {
+	public static class LevelInformation {
 
 		public int time;
 
 		public int stars;
+		
+		public LevelInformation(int time, int stars) {
+			this.time = time;
+			this.stars = stars;
+		}
 
 	}
 
@@ -41,24 +46,20 @@ public class PlayerProfile {
 		return latestLevelPlayed;
 	}
 
-	public int getTimeForLevel(int level) {
-		return levelsInformation.get(level).time;
+	public LevelInformation getLevelInformation(int level) {
+		return levelsInformation.get(level);
 	}
 
-	public void setTimeForLevel(int level, int time) {
+	public void setLevelInformationForLevel(int level, LevelInformation levelInformation) {
 		if (level > latestLevelPlayed)
 			latestLevelPlayed = level;
 
 		if (hasPlayedLevel(level)) {
-			int previousTime = getTimeForLevel(level);
-			if (time < previousTime) {
-				LevelInformation levelInformation = levelsInformation.get(level);
-				levelInformation.time = time;
-				// levelsInformation.put(level, time);
-			}
+			LevelInformation currentLevelInformation = getLevelInformation(level);
+			int previousTime = currentLevelInformation.time;
+			if (levelInformation.time < previousTime) 
+				currentLevelInformation.time = levelInformation.time;
 		} else {
-			LevelInformation levelInformation = new LevelInformation();
-			levelInformation.time = time;
 			levelsInformation.put(level, levelInformation);
 		}
 	}

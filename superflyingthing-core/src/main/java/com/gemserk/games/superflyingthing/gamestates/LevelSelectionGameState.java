@@ -86,8 +86,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 			x += width * 0.15f;
 
 			Color color = new Color(Color.WHITE);
-			// if (!playerProfile.hasPlayedLevel(levelIndex))
-			// color.set(0.5f, 0.5f, 0.5f, 1f);
+			if (!playerProfile.hasPlayedLevel(levelIndex))
+				color.set(0.5f, 0.5f, 0.5f, 1f);
 
 			container.add(GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
