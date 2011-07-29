@@ -420,6 +420,8 @@ public class Scripts {
 			regenerateShipIfNoShip(world, e);
 			generateShipIfAttachedShipReleased(world, e);
 			fixCameraTargetBehavior.update(world, e);
+			
+			gameData.time += world.getDelta();
 
 			Event event = eventManager.getEvent(Events.cameraReachedTarget);
 			if (event != null) {

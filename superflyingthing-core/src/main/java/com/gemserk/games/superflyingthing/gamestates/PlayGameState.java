@@ -96,6 +96,7 @@ public class PlayGameState extends GameStateImpl {
 	private Text itemsTakenLabel;
 	private EventManager eventManager;
 	private JointBuilder jointBuilder;
+	private Text timerLabel;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -163,7 +164,15 @@ public class PlayGameState extends GameStateImpl {
 				.color(1f, 1f, 1f, 1f) //
 				.build();
 
+		timerLabel = GuiControls.label("") //
+				.position(Gdx.graphics.getWidth() * 0.1f, Gdx.graphics.getHeight() * 0.95f) //
+				.center(0f, 0.5f) //
+				.font(font) //
+				.color(1f, 1f, 1f, 1f) //
+				.build();
+
 		container.add(itemsTakenLabel);
+		container.add(timerLabel);
 
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
@@ -197,7 +206,13 @@ public class PlayGameState extends GameStateImpl {
 					eventManager.handled(event);
 				}
 
+				timerLabel.setText("Time: " + seconds(gameData.time));
 			}
+			
+			private int seconds(int ms) {
+				return ms / 1000;
+			}
+			
 		})).build();
 
 		done = false;

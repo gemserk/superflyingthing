@@ -219,11 +219,14 @@ public class Components {
 		public int totalItems;
 
 		public int currentItems;
+		
+		public int time;
 
 		public GameData() {
 			this.deaths = 0;
 			this.currentItems = 0;
 			this.totalItems = 0;
+			this.time = 0;
 		}
 
 	}
