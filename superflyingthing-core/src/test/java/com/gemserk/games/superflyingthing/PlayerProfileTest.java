@@ -5,6 +5,8 @@ import static org.junit.Assert.assertThat;
 import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
+import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
+
 
 public class PlayerProfileTest {
 	

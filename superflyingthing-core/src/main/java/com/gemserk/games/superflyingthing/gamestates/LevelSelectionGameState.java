@@ -19,8 +19,8 @@ import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.PlayerProfile;
 import com.gemserk.games.superflyingthing.levels.Levels;
+import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.resources.ResourceManager;
 
 public class LevelSelectionGameState extends GameStateImpl {

@@ -51,8 +51,6 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
-import com.gemserk.games.superflyingthing.GamePreferences;
-import com.gemserk.games.superflyingthing.PlayerProfile;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.ShipControllerImpl;
@@ -64,6 +62,8 @@ import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
+import com.gemserk.games.superflyingthing.preferences.GamePreferences;
+import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -216,7 +216,9 @@ public class PlayGameState extends GameStateImpl {
 					gameFinished();
 					eventManager.handled(event);
 					incrementTimer = false;
+					
 					playerProfile.setTimeForLevel(GameInformation.level + 1, seconds(gameData.time));
+					game.getGamePreferences().updatePlayerProfile(playerProfile);
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));

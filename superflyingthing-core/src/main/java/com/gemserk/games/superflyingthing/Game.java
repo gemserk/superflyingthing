@@ -32,6 +32,7 @@ import com.gemserk.games.superflyingthing.gamestates.PauseGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
+import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;

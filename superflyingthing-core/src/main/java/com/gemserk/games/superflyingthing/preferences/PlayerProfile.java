@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing;
+package com.gemserk.games.superflyingthing.preferences;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -10,6 +10,13 @@ public class PlayerProfile {
 	private int latestLevelPlayed;
 	
 	private Map<Integer, Integer> levelsInformation;
+	
+	// information to save:
+	// - level time
+	// - small stars
+	// - big stars got (depends on level time)
+	// - total deaths
+	// - best deaths?
 	
 	public PlayerProfile() {
 		this.latestLevelPlayed = 0;
