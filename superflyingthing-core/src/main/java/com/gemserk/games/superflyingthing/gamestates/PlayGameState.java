@@ -296,7 +296,7 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.items.size(); i++) {
 				Level.Item item = level.items.get(i);
-				entityTemplates.star(item.x, item.y, 0.2f, new StarScript(eventManager));
+				entityTemplates.star(item.x, item.y, new StarScript(eventManager));
 			}
 
 			for (int i = 0; i < level.laserTurrets.size(); i++) {
@@ -405,7 +405,7 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.star(x, y, w, new StarScript(eventManager));
+				entityTemplates.star(x, y, new StarScript(eventManager));
 
 				itemsCount++;
 			}
@@ -492,7 +492,7 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.star(x, y, w, new StarScript(eventManager));
+				entityTemplates.star(x, y, new StarScript(eventManager));
 
 				itemsCount++;
 			}

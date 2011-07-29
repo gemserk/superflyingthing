@@ -215,8 +215,10 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity star(float x, float y, float radius, Script script) {
+	public Entity star(float x, float y, Script script) {
 		Entity e = entityBuilder.build();
+		
+		float radius = 0.3f;
 
 		Animation rotateAnimation = resourceManager.getResourceValue("StarAnimation");
 

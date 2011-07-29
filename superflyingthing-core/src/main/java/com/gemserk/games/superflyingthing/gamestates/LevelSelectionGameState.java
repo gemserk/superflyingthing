@@ -61,6 +61,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		container.add(title);
 
 		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
+		Sprite tickSprite = resourceManager.getResourceValue("TickSprite");
 
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
@@ -86,9 +87,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 			x += width * 0.15f;
 
 			Color color = new Color(Color.WHITE);
-			if (!playerProfile.hasPlayedLevel(levelIndex + 1))
-				color.set(0.5f, 0.5f, 0.5f, 1f);
-			
+			// if (!playerProfile.hasPlayedLevel(levelIndex + 1))
+			// color.set(0.5f, 0.5f, 0.5f, 1f);
+
 			// maybe putting a TICK over the image could be better.
 
 			container.add(GuiControls.imageButton(levelThumbnail) //
@@ -111,6 +112,13 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.color(color) //
 					.font(levelFont) //
 					.build());
+
+			if (playerProfile.hasPlayedLevel(levelIndex + 1))
+				container.add(GuiControls.imageButton(tickSprite) //
+						.position(x + w * 0.5f, y - h * 0.5f) //
+						.center(1f, 0f) //
+						.size(w * 0.5f, h * 0.5f) //
+						.build());
 
 		}
 
