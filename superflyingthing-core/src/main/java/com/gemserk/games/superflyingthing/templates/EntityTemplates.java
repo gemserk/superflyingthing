@@ -458,7 +458,7 @@ public class EntityTemplates {
 				.component(new SpriteComponent(sprite)) //
 				.component(new Components.PortalComponent(targetPortalId)) //
 				.component(new RenderableComponent(4)) //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 1.5f, 1.5f, 0f))) //
+				.component(new SpatialComponent(new SpatialImpl(x, y, 2f, 2f, 0f))) //
 				.component(new ScriptComponent(script)) //
 				.build();
 
