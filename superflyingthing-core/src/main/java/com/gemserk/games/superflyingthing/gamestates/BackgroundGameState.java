@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.gamestates;
 import java.util.ArrayList;
 
 import com.artemis.Entity;
+import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -17,8 +18,10 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
+import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
@@ -36,12 +39,14 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.AngleUtils;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
@@ -74,6 +79,8 @@ public class BackgroundGameState extends GameStateImpl {
 
 		Vector2 target = new Vector2();
 		Vector2 direction = new Vector2();
+
+		boolean wayToDestinationPlanet = false;
 
 		public BasicAIShipController(World physicsWorld) {
 			this.physicsWorld = physicsWorld;
@@ -115,8 +122,38 @@ public class BackgroundGameState extends GameStateImpl {
 
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			Vector2 position = spatial.getPosition();
+			direction.set(movementComponent.getDirection());
 
-			direction.set(movementComponent.getDirection());			
+			if (wayToDestinationPlanet) {
+
+				float angle = direction.angle();
+				float desiredAngle = target.tmp().sub(position).nor().angle();
+
+				movementDirection = (float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f;
+
+				return;
+			}
+
+			ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities("DestinationPlanets");
+			for (int i = 0; i < destinationPlanets.size(); i++) {
+				Entity destinationPlanet = destinationPlanets.get(i);
+				Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);
+
+				Vector2 desiredDirection = destinationPlanetSpatial.getPosition().tmp().sub(position);
+				target.set(position).add(desiredDirection.mul(0.7f));
+
+				collides = false;
+				physicsWorld.rayCast(this, position, target);
+
+				if (!collides) {
+					wayToDestinationPlanet = true;
+					target.set(destinationPlanetSpatial.getPosition());
+					Gdx.app.log("SuperFlyingThing", "Direct way to destination planet detected");
+					return;
+				}
+
+			}
+
 			target.set(position).add(direction.tmp().nor().mul(3f));
 
 			movementDirection = 0f;
@@ -137,7 +174,7 @@ public class BackgroundGameState extends GameStateImpl {
 				movementDirection = 1f * randomDirection;
 				return;
 			}
-			
+
 			direction.set(movementComponent.getDirection()).rotate(-20 * randomDirection);
 			target.set(position).add(direction.tmp().nor().mul(2f));
 
@@ -154,6 +191,14 @@ public class BackgroundGameState extends GameStateImpl {
 
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+			
+			Entity e = (Entity) fixture.getBody().getUserData();
+			if (e != null) { 
+				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+				if (grabbableComponent != null)
+					return 0;
+			}
+			
 			collides = true;
 			return 0;
 		}
@@ -173,11 +218,13 @@ public class BackgroundGameState extends GameStateImpl {
 			if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
 				shouldReleaseShip = true;
 
+			wayToDestinationPlanet = false;
 			randomDirection = MathUtils.randomBoolean() ? 1f : -1f;
 		}
 
 	}
 
+	private final Game game;
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
 
@@ -198,6 +245,10 @@ public class BackgroundGameState extends GameStateImpl {
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
+	}
+
+	public BackgroundGameState(Game game) {
+		this.game = game;
 	}
 
 	@Override
@@ -250,8 +301,21 @@ public class BackgroundGameState extends GameStateImpl {
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
 		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
-		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 5)));
-		// loadLevel(entityTemplates, Levels.level(12));
+		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 3)));
+		// loadLevel(entityTemplates, Levels.level(1));
+
+		// entity with some game logic
+		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+
+				Event event = eventManager.getEvent(Events.destinationPlanetReached);
+				if (event != null) {
+					eventManager.handled(event);
+					game.getBackgroundGameScreen().restart();
+				}
+			}
+		})).build();
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
@@ -315,10 +379,6 @@ public class BackgroundGameState extends GameStateImpl {
 		gameData.totalItems = level.items.size();
 
 		createWorldLimits(worldWidth, worldHeight);
-
-		// entityBuilder //
-		// .component(new ScriptComponent(new UpdateControllerScript(controller))) //
-		// .build();
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //

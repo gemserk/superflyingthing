@@ -170,7 +170,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
 		
-		BackgroundGameState backgroundGameState = new BackgroundGameState();
+		BackgroundGameState backgroundGameState = new BackgroundGameState(this);
 		backgroundGameState.setResourceManager(resourceManager);
 
 		playScreen = new ScreenImpl(playGameState);

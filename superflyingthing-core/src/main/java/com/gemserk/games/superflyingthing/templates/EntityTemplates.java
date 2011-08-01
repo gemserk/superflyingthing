@@ -284,6 +284,9 @@ public class EntityTemplates {
 	public Entity destinationPlanet(float x, float y, float radius, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
+		
+		e.setGroup("DestinationPlanets");
+		
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //
