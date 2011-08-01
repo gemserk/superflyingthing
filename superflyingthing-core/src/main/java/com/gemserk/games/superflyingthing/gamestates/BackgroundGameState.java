@@ -69,6 +69,12 @@ public class BackgroundGameState extends GameStateImpl {
 		private boolean shouldReleaseShip;
 		private float movementDirection;
 
+		boolean collides = false;
+		float randomDirection = 1f;
+
+		Vector2 target = new Vector2();
+		Vector2 direction = new Vector2();
+
 		public BasicAIShipController(World physicsWorld) {
 			this.physicsWorld = physicsWorld;
 		}
@@ -106,48 +112,46 @@ public class BackgroundGameState extends GameStateImpl {
 				return;
 
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
-			Vector2 direction = movementComponent.getDirection();
-			
-			Vector2 direction2 = new Vector2(direction).rotate(20 * randomDirection);
-			Vector2 direction3 = new Vector2(direction).rotate(-20 * randomDirection);
 
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			Vector2 position = spatial.getPosition();
-			
-			Vector2 target1 = new Vector2(position).add(direction.tmp().nor().mul(3f));
-			Vector2 target2 = new Vector2(position).add(direction2.tmp().nor().mul(3f));
-			Vector2 target3 = new Vector2(position).add(direction3.tmp().nor().mul(3f));
-			
+
+			direction.set(movementComponent.getDirection());			
+			target.set(position).add(direction.tmp().nor().mul(3f));
+
 			movementDirection = 0f;
-			
+
 			collides = false;
-			physicsWorld.rayCast(this, position, target1);
-			
+			physicsWorld.rayCast(this, position, target);
+
 			if (!collides)
 				return;
 
+			direction.set(movementComponent.getDirection()).rotate(20 * randomDirection);
+			target.set(position).add(direction.tmp().nor().mul(2f));
+
 			collides = false;
-			physicsWorld.rayCast(this, position, target2);
-			
+			physicsWorld.rayCast(this, position, target);
+
 			if (!collides) {
 				movementDirection = 1f * randomDirection;
 				return;
 			}
+			
+			direction.set(movementComponent.getDirection()).rotate(-20 * randomDirection);
+			target.set(position).add(direction.tmp().nor().mul(2f));
 
 			collides = false;
-			physicsWorld.rayCast(this, position, target3);
-			
+			physicsWorld.rayCast(this, position, target);
+
 			if (!collides) {
 				movementDirection = -1f * randomDirection;
 				return;
 			}
-			
+
 			movementDirection = 1f * randomDirection;
 		}
-		
-		boolean collides = false;
-		float randomDirection = 1f;
-		
+
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			collides = true;
@@ -168,10 +172,9 @@ public class BackgroundGameState extends GameStateImpl {
 			Vector2 direction = movementComponent.getDirection();
 			if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
 				shouldReleaseShip = true;
-			
+
 			randomDirection = MathUtils.randomBoolean() ? 1f : -1f;
 		}
-
 
 	}
 
