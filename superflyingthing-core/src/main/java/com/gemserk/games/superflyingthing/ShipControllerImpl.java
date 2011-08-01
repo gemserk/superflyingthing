@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
+import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -83,7 +85,6 @@ public class ShipControllerImpl implements ShipController {
 		return newValue;
 	}
 
-	@Override
 	public void update(int delta) {
 		if (!enabled) 
 			return;
@@ -123,6 +124,11 @@ public class ShipControllerImpl implements ShipController {
 	@Override
 	public void setEnabled(boolean enabled) {
 		this.enabled = enabled;
+	}
+
+	@Override
+	public void update(World world, Entity e) {
+		update(world.getDelta());
 	}
 
 }

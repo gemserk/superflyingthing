@@ -46,8 +46,8 @@ public class Components {
 			return shipControllerImpl;
 		}
 
-		public ControllerComponent(ShipController shipControllerImpl) {
-			this.shipControllerImpl = shipControllerImpl;
+		public ControllerComponent(ShipController controller) {
+			this.shipControllerImpl = controller;
 		}
 
 	}

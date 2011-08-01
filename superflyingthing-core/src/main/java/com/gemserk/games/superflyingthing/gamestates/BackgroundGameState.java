@@ -34,7 +34,6 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.ShipControllerImpl;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -55,6 +54,44 @@ import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
+
+	static class BasicAIShipController implements ShipController {
+		
+		private final com.artemis.World world;
+		private final World physicsWorld;
+
+		public BasicAIShipController(com.artemis.World world, World physicsWorld) {
+			this.world = world;
+			this.physicsWorld = physicsWorld;
+		}
+		
+		@Override
+		public boolean shouldReleaseShip() {
+			
+			return false;
+		}
+
+		@Override
+		public Vector2 getPosition() {
+			return null;
+		}
+
+		@Override
+		public float getMovementDirection() {
+			return 0;
+		}
+
+		@Override
+		public void setEnabled(boolean enabled) {
+
+		}
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			// TODO Auto-generated function stub
+			
+		}
+	}
 
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
@@ -154,8 +191,7 @@ public class BackgroundGameState extends GameStateImpl {
 		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, //
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-		final ShipController controller = new ShipControllerImpl(worldCamera);
-		controller.setEnabled(false);
+		final ShipController controller = new BasicAIShipController(world, physicsWorld);
 
 		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 

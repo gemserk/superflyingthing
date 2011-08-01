@@ -118,7 +118,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity ship(float x, float y, Vector2 direction, ShipController shipControllerImpl) {
+	public Entity ship(float x, float y, Vector2 direction, ShipController controller) {
 		float width = 0.8f;
 		float height = 0.8f;
 
@@ -146,7 +146,7 @@ public class EntityTemplates {
 		e.addComponent(new AliveComponent(false));
 		e.addComponent(new AttachableComponent());
 		e.addComponent(new ShipControllerComponent());
-		e.addComponent(new ControllerComponent(shipControllerImpl));
+		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(new ShipScript()));
 		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 
@@ -161,6 +161,7 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
+		e.setTag("");
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //

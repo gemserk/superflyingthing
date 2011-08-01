@@ -1,9 +1,10 @@
 package com.gemserk.games.superflyingthing;
 
+import com.artemis.Entity;
+import com.artemis.World;
 import com.badlogic.gdx.math.Vector2;
-import com.gemserk.commons.gdx.controllers.Controller;
 
-public interface ShipController extends Controller {
+public interface ShipController {
 
 	boolean shouldReleaseShip();
 
@@ -15,5 +16,7 @@ public interface ShipController extends Controller {
 	float getMovementDirection();
 	
 	void setEnabled(boolean enabled);
+	
+	void update(World world, Entity e);
 
 }

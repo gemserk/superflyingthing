@@ -25,7 +25,6 @@ import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.commons.gdx.controllers.Controller;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
@@ -394,15 +393,15 @@ public class Scripts {
 
 	public static class UpdateControllerScript extends ScriptJavaImpl {
 
-		private final Controller controller;
+		private final ShipController controller;
 
-		public UpdateControllerScript(Controller controller) {
+		public UpdateControllerScript(ShipController controller) {
 			this.controller = controller;
 		}
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			controller.update(world.getDelta());
+			controller.update(world, e);
 		}
 
 	}

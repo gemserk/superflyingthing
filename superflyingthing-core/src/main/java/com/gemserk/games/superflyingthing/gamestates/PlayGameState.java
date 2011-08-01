@@ -70,7 +70,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.UpdateControllerScript;
+import com.gemserk.games.superflyingthing.systems.ControllerSystem;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -138,6 +138,7 @@ public class PlayGameState extends GameStateImpl {
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
+		worldWrapper.addUpdateSystem(new ControllerSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -316,10 +317,6 @@ public class PlayGameState extends GameStateImpl {
 			createWorldLimits(worldWidth, worldHeight);
 
 			entityBuilder //
-					.component(new ScriptComponent(new UpdateControllerScript(controller))) //
-					.build();
-
-			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))) //
 					.build();
@@ -423,10 +420,6 @@ public class PlayGameState extends GameStateImpl {
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
 			entityBuilder //
-					.component(new ScriptComponent(new UpdateControllerScript(controller))) //
-					.build();
-
-			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
@@ -507,10 +500,6 @@ public class PlayGameState extends GameStateImpl {
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
-
-			entityBuilder //
-					.component(new ScriptComponent(new UpdateControllerScript(controller))) //
-					.build();
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
