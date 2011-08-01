@@ -504,9 +504,7 @@ public class PlayGameState extends GameStateImpl {
 			final ShipController controller = new ShipControllerImpl(worldCamera);
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.25f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
-
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.75f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 

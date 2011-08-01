@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -14,6 +15,8 @@ import com.gemserk.animation4j.timeline.TimelineAnimation;
 import com.gemserk.animation4j.timeline.TimelineAnimationBuilder;
 import com.gemserk.animation4j.timeline.TimelineValueBuilder;
 import com.gemserk.animation4j.transitions.TimeTransition;
+import com.gemserk.animation4j.transitions.Transitions;
+import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
@@ -322,9 +325,14 @@ public class Scripts {
 			eventManager.registerEvent(Events.destinationPlanetReached, e);
 			destinationReached = true;
 
-			// TriggerComponent triggerComponent = ComponentWrapper.getTriggers(e);
-			// Trigger trigger = triggerComponent.getTrigger(Triggers.destinationReachedTrigger);
-			// trigger.trigger(e);
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			Color currentColor = spriteComponent.getColor();
+
+			Synchronizers.transition(currentColor, Transitions.transitionBuilder(currentColor) //
+					.end(Color.BLUE) //
+					.time(500) //
+					);
+
 		}
 	}
 
@@ -423,7 +431,7 @@ public class Scripts {
 			regenerateShipIfNoShip(world, e);
 			generateShipIfAttachedShipReleased(world, e);
 			fixCameraTargetBehavior.update(world, e);
-			
+
 			Event event = eventManager.getEvent(Events.cameraReachedTarget);
 			if (event != null) {
 				eventManager.handled(event);
@@ -624,7 +632,7 @@ public class Scripts {
 
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
-			
+
 			Spatial portalSpatial = ComponentWrapper.getSpatial(e);
 			portalSpatial.setAngle(portalSpatial.getAngle() + 0.25f * world.getDelta());
 

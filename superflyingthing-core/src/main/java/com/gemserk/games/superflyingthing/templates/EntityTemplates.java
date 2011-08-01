@@ -271,7 +271,7 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
-		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		e.addComponent(new SpriteComponent(sprite, Color.BLUE));
 		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new ControllerComponent(shipControllerImpl));
 		e.addComponent(new ScriptComponent(script));
