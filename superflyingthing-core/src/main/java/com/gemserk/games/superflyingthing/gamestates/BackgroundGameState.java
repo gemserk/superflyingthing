@@ -140,7 +140,7 @@ public class BackgroundGameState extends GameStateImpl {
 				Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);
 
 				Vector2 desiredDirection = destinationPlanetSpatial.getPosition().tmp().sub(position);
-				target.set(position).add(desiredDirection.mul(0.7f));
+				target.set(position).add(desiredDirection.mul(1f));
 
 				collides = false;
 				physicsWorld.rayCast(this, position, target);
@@ -165,7 +165,7 @@ public class BackgroundGameState extends GameStateImpl {
 				return;
 
 			direction.set(movementComponent.getDirection()).rotate(20 * randomDirection);
-			target.set(position).add(direction.tmp().nor().mul(2f));
+			target.set(position).add(direction.tmp().nor().mul(3f));
 
 			collides = false;
 			physicsWorld.rayCast(this, position, target);
@@ -176,7 +176,7 @@ public class BackgroundGameState extends GameStateImpl {
 			}
 
 			direction.set(movementComponent.getDirection()).rotate(-20 * randomDirection);
-			target.set(position).add(direction.tmp().nor().mul(2f));
+			target.set(position).add(direction.tmp().nor().mul(3f));
 
 			collides = false;
 			physicsWorld.rayCast(this, position, target);
@@ -196,11 +196,15 @@ public class BackgroundGameState extends GameStateImpl {
 			if (e != null) { 
 				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 				if (grabbableComponent != null)
-					return 0;
+					return 1;
+				
+				AttachmentComponent attachmentComponent =  e.getComponent(AttachmentComponent.class);
+				if (attachmentComponent != null)
+					return 1;
 			}
 			
 			collides = true;
-			return 0;
+			return 1;
 		}
 
 		private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
