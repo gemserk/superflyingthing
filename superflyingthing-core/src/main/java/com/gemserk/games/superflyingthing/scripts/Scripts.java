@@ -30,6 +30,7 @@ import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.componentsengine.utils.timers.Timer;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
@@ -329,8 +330,8 @@ public class Scripts {
 			Color currentColor = spriteComponent.getColor();
 
 			Synchronizers.transition(currentColor, Transitions.transitionBuilder(currentColor) //
-					.end(Color.BLUE) //
-					.time(500) //
+					.end(Colors.yellow) //
+					.time(1000) //
 					);
 
 		}
