@@ -12,6 +12,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
@@ -32,10 +34,15 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -47,7 +54,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.UpdateControllerScript;
+import com.gemserk.games.superflyingthing.systems.ControllerSystem;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -55,20 +62,20 @@ import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
 
-	static class BasicAIShipController implements ShipController {
-		
-		private final com.artemis.World world;
+	static class BasicAIShipController implements ShipController, RayCastCallback {
+
 		private final World physicsWorld;
 
-		public BasicAIShipController(com.artemis.World world, World physicsWorld) {
-			this.world = world;
+		private boolean shouldReleaseShip;
+		private float movementDirection;
+
+		public BasicAIShipController(World physicsWorld) {
 			this.physicsWorld = physicsWorld;
 		}
-		
+
 		@Override
 		public boolean shouldReleaseShip() {
-			
-			return false;
+			return shouldReleaseShip;
 		}
 
 		@Override
@@ -78,7 +85,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		@Override
 		public float getMovementDirection() {
-			return 0;
+			return movementDirection;
 		}
 
 		@Override
@@ -88,9 +95,84 @@ public class BackgroundGameState extends GameStateImpl {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			// TODO Auto-generated function stub
-			
+			updateShipInPlanetBehavior(world, e);
+			updateShipBehavior(world, e);
 		}
+
+		private void updateShipBehavior(com.artemis.World world, Entity e) {
+
+			AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+			if (attachmentComponent != null)
+				return;
+
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
+			Vector2 direction = movementComponent.getDirection();
+			
+			Vector2 direction2 = new Vector2(direction).rotate(20 * randomDirection);
+			Vector2 direction3 = new Vector2(direction).rotate(-20 * randomDirection);
+
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Vector2 position = spatial.getPosition();
+			
+			Vector2 target1 = new Vector2(position).add(direction.tmp().nor().mul(3f));
+			Vector2 target2 = new Vector2(position).add(direction2.tmp().nor().mul(3f));
+			Vector2 target3 = new Vector2(position).add(direction3.tmp().nor().mul(3f));
+			
+			movementDirection = 0f;
+			
+			collides = false;
+			physicsWorld.rayCast(this, position, target1);
+			
+			if (!collides)
+				return;
+
+			collides = false;
+			physicsWorld.rayCast(this, position, target2);
+			
+			if (!collides) {
+				movementDirection = 1f * randomDirection;
+				return;
+			}
+
+			collides = false;
+			physicsWorld.rayCast(this, position, target3);
+			
+			if (!collides) {
+				movementDirection = -1f * randomDirection;
+				return;
+			}
+			
+			movementDirection = 1f * randomDirection;
+		}
+		
+		boolean collides = false;
+		float randomDirection = 1f;
+		
+		@Override
+		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+			collides = true;
+			return 0;
+		}
+
+		private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
+			AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+			if (attachmentComponent == null)
+				return;
+
+			if (attachmentComponent.getEntity() == null)
+				return;
+
+			Entity ship = attachmentComponent.getEntity();
+
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
+			Vector2 direction = movementComponent.getDirection();
+			if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
+				shouldReleaseShip = true;
+			
+			randomDirection = MathUtils.randomBoolean() ? 1f : -1f;
+		}
+
+
 	}
 
 	SpriteBatch spriteBatch;
@@ -141,6 +223,7 @@ public class BackgroundGameState extends GameStateImpl {
 		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
+		worldWrapper.addUpdateSystem(new ControllerSystem());
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
@@ -163,8 +246,8 @@ public class BackgroundGameState extends GameStateImpl {
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
-		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
-		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 5)));
+		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
+		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 5)));
 		// loadLevel(entityTemplates, Levels.level(12));
 	}
 
@@ -191,7 +274,7 @@ public class BackgroundGameState extends GameStateImpl {
 		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, //
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-		final ShipController controller = new BasicAIShipController(world, physicsWorld);
+		final ShipController controller = new BasicAIShipController(physicsWorld);
 
 		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
@@ -230,13 +313,13 @@ public class BackgroundGameState extends GameStateImpl {
 
 		createWorldLimits(worldWidth, worldHeight);
 
-		entityBuilder //
-				.component(new ScriptComponent(new UpdateControllerScript(controller))) //
-				.build();
+		// entityBuilder //
+		// .component(new ScriptComponent(new UpdateControllerScript(controller))) //
+		// .build();
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))) //
 				.build();
 
 	}

@@ -255,7 +255,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity startPlanet(float x, float y, float radius, ShipController shipControllerImpl, Script script) {
+	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
@@ -274,7 +274,7 @@ public class EntityTemplates {
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new SpriteComponent(sprite, Colors.yellow));
 		e.addComponent(new RenderableComponent(-2));
-		e.addComponent(new ControllerComponent(shipControllerImpl));
+		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(script));
 
 		e.refresh();
