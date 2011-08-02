@@ -53,7 +53,7 @@ import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.ShipControllerImpl;
+import com.gemserk.games.superflyingthing.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -220,14 +220,14 @@ public class PlayGameState extends GameStateImpl {
 					incrementTimer = false;
 
 					if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-						
+
 						// playerProfile.getLevelInformation(GameInformation.level + 1);
 						// li.update(newTime, stars)
-						
+
 						playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
 						game.getGamePreferences().updatePlayerProfile(playerProfile);
 					}
-					
+
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));
@@ -275,7 +275,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			final ShipController controller = new ShipControllerImpl(worldCamera);
+			final ShipController controller = new ShipController();
 
 			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
@@ -316,6 +316,8 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight);
 
+			entityBuilder //
+					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))) //
@@ -412,13 +414,15 @@ public class PlayGameState extends GameStateImpl {
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager));
 
-			final ShipController controller = new ShipControllerImpl(worldCamera);
+			final ShipController controller = new ShipController();
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
+			entityBuilder //
+					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
@@ -494,13 +498,15 @@ public class PlayGameState extends GameStateImpl {
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager));
-			final ShipController controller = new ShipControllerImpl(worldCamera);
+			final ShipController controller = new ShipController();
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
+			entityBuilder //
+					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();

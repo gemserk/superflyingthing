@@ -68,12 +68,10 @@ import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
 
-	static class BasicAIShipController implements ShipController, RayCastCallback {
+	static class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCastCallback {
 
 		private final World physicsWorld;
-
-		private boolean shouldReleaseShip;
-		private float movementDirection;
+		private final ShipController shipController;
 
 		boolean collides = false;
 		float randomDirection = 1f;
@@ -82,29 +80,10 @@ public class BackgroundGameState extends GameStateImpl {
 		Vector2 direction = new Vector2();
 
 		boolean wayToDestinationPlanet = false;
-
-		public BasicAIShipController(World physicsWorld) {
+		
+		public BasicAIShipControllerScript(World physicsWorld, ShipController shipController) {
 			this.physicsWorld = physicsWorld;
-		}
-
-		@Override
-		public boolean shouldReleaseShip() {
-			return shouldReleaseShip;
-		}
-
-		@Override
-		public Vector2 getPosition() {
-			return null;
-		}
-
-		@Override
-		public float getMovementDirection() {
-			return movementDirection;
-		}
-
-		@Override
-		public void setEnabled(boolean enabled) {
-
+			this.shipController = shipController;
 		}
 
 		@Override
@@ -130,7 +109,7 @@ public class BackgroundGameState extends GameStateImpl {
 				float angle = direction.angle();
 				float desiredAngle = target.tmp().sub(position).nor().angle();
 
-				movementDirection = (float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f;
+				shipController.setMovementDirection((float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f);
 
 				return;
 			}
@@ -157,7 +136,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 			target.set(position).add(direction.tmp().nor().mul(3f));
 
-			movementDirection = 0f;
+			shipController.setMovementDirection(0f);
 
 			collides = false;
 			physicsWorld.rayCast(this, position, target);
@@ -172,7 +151,7 @@ public class BackgroundGameState extends GameStateImpl {
 			physicsWorld.rayCast(this, position, target);
 
 			if (!collides) {
-				movementDirection = 1f * randomDirection;
+				shipController.setMovementDirection(1f * randomDirection);
 				return;
 			}
 
@@ -183,11 +162,11 @@ public class BackgroundGameState extends GameStateImpl {
 			physicsWorld.rayCast(this, position, target);
 
 			if (!collides) {
-				movementDirection = -1f * randomDirection;
+				shipController.setMovementDirection(-1f * randomDirection);
 				return;
 			}
 
-			movementDirection = 1f * randomDirection;
+			shipController.setMovementDirection(1f * randomDirection);
 		}
 
 		@Override
@@ -210,6 +189,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
 			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+			shipController.setShouldReleaseShip(false);
 
 			AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
 			if (attachmentComponent == null)
@@ -223,7 +203,7 @@ public class BackgroundGameState extends GameStateImpl {
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
 			Vector2 direction = movementComponent.getDirection();
 			if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
-				shouldReleaseShip = true;
+				shipController.setShouldReleaseShip(true);
 
 			wayToDestinationPlanet = false;
 			randomDirection = MathUtils.randomBoolean() ? 1f : -1f;
@@ -310,7 +290,7 @@ public class BackgroundGameState extends GameStateImpl {
 		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 3)));
 		// loadLevel(entityTemplates, Levels.level(1));
-
+		
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
 			@Override
@@ -348,7 +328,8 @@ public class BackgroundGameState extends GameStateImpl {
 		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, //
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-		final ShipController controller = new BasicAIShipController(physicsWorld);
+		final ShipController controller = new ShipController();
+		// final BasicAIShipController controller = new BasicAIShipController(physicsWorld);
 
 		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
@@ -386,6 +367,8 @@ public class BackgroundGameState extends GameStateImpl {
 		gameData.totalItems = level.items.size();
 
 		createWorldLimits(worldWidth, worldHeight);
+		
+		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
