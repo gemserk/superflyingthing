@@ -61,6 +61,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
+import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.resources.ResourceManager;
@@ -264,6 +265,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
+		worldWrapper.addUpdateSystem(new TagSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));

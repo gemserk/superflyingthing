@@ -49,6 +49,7 @@ import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterC
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
@@ -125,7 +126,6 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
-		e.setTag(Groups.ship);
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -139,6 +139,7 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
+		e.addComponent(new TagComponent(Groups.ship));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
@@ -162,7 +163,6 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
-		e.setTag("");
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -259,7 +259,6 @@ public class EntityTemplates {
 	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
-		e.setTag(Groups.startPlanet);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //
@@ -271,6 +270,7 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
+		e.addComponent(new TagComponent(Groups.startPlanet));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
