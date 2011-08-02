@@ -646,7 +646,7 @@ public class Scripts {
 			laserTimelineAnimation = new TimelineAnimationBuilder() {
 				{
 					speed(1f);
-					value("alpha", new TimelineValueBuilder<Float>() //
+					value("alpha", new TimelineValueBuilder() //
 							.keyFrame(0, 0f) //
 							.keyFrame(200, 1f) //
 							.keyFrame(600, 1f) //
