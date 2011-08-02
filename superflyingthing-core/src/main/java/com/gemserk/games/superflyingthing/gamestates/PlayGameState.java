@@ -19,10 +19,13 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
+import com.gemserk.animation4j.animations.Animation;
 import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
-import com.gemserk.animation4j.transitions.Transition;
+import com.gemserk.animation4j.timeline.Builders;
+import com.gemserk.animation4j.timeline.sync.MutableObjectSynchronizer;
+import com.gemserk.animation4j.timeline.sync.SynchronizedAnimation;
+import com.gemserk.animation4j.timeline.sync.TimelineSynchronizer;
 import com.gemserk.animation4j.transitions.Transitions;
-import com.gemserk.animation4j.transitions.event.TransitionEventHandler;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
@@ -65,11 +68,11 @@ import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
-import com.gemserk.games.superflyingthing.scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
+import com.gemserk.games.superflyingthing.scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
@@ -101,6 +104,8 @@ public class PlayGameState extends GameStateImpl {
 	private EventManager eventManager;
 	private JointBuilder jointBuilder;
 	private Text timerLabel;
+
+	private Animation finalMessageAnimation;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -524,20 +529,23 @@ public class PlayGameState extends GameStateImpl {
 
 		Text message = GuiControls.label("Great Job!").position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
 				.font(font) //
-				.color(1f, 1f, 1f, 1f) //
+				.color(1f, 1f, 1f, 0f) //
 				.build();
 
-		container.add(message);
+		finalMessageAnimation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
+				.value(Builders.timelineValue("color") //
+						.keyFrame(0, new Color(1f, 1f, 1f, 0f)) //
+						.keyFrame(250, Color.WHITE) //
+						.keyFrame(750, Color.WHITE) //
+						.keyFrame(1000, new Color(1f, 1f, 1f, 0f)) //
+				)) //
+				.delay(0f) //
+				.speed(0.4f) //
+				.started(true) //
+				.build(), //
+				new TimelineSynchronizer(new MutableObjectSynchronizer(), message));
 
-		Synchronizers.transition(message.getColor(), Transitions.transitionBuilder(message.getColor()) //
-				.end(new Color(1f, 1f, 1f, 0f)) //
-				.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
-				.time(1500), new TransitionEventHandler<Color>() {
-			@Override
-			public void onTransitionFinished(Transition<Color> transition) {
-				done = true;
-			}
-		});
+		container.add(message);
 
 		// Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
 	}
@@ -570,6 +578,11 @@ public class PlayGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(delta);
 		container.update();
+
+		if (finalMessageAnimation != null) {
+			finalMessageAnimation.update((float) delta);
+			done = finalMessageAnimation.isFinished();
+		}
 
 		if (inputDevicesMonitor.getButton("restart").isReleased())
 			done = true;
