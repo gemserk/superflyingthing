@@ -34,6 +34,8 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.componentsengine.utils.timers.CountDownTimer;
+import com.gemserk.componentsengine.utils.timers.Timer;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -78,6 +80,8 @@ public class BackgroundGameState extends GameStateImpl {
 	private EventManager eventManager;
 	private JointBuilder jointBuilder;
 
+	private Timer timer;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -90,6 +94,7 @@ public class BackgroundGameState extends GameStateImpl {
 	public void init() {
 		spriteBatch = new SpriteBatch();
 
+		timer = new CountDownTimer(4000, false);
 		eventManager = new EventManagerImpl();
 		physicsWorld = new World(new Vector2(), false);
 
@@ -138,7 +143,7 @@ public class BackgroundGameState extends GameStateImpl {
 		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 3)));
 		// loadLevel(entityTemplates, Levels.level(1));
-		
+
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
 			@Override
@@ -147,10 +152,15 @@ public class BackgroundGameState extends GameStateImpl {
 				Event event = eventManager.getEvent(Events.destinationPlanetReached);
 				if (event != null) {
 					eventManager.handled(event);
-					game.getBackgroundGameScreen().restart();
+					gameFinished();
 				}
 			}
 		})).build();
+	}
+
+	private void gameFinished() {
+		// game.getBackgroundGameScreen().restart();
+		timer.reset();
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
@@ -215,7 +225,7 @@ public class BackgroundGameState extends GameStateImpl {
 		gameData.totalItems = level.items.size();
 
 		createWorldLimits(worldWidth, worldHeight);
-		
+
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
 
 		entityBuilder //
@@ -239,6 +249,9 @@ public class BackgroundGameState extends GameStateImpl {
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 		worldWrapper.update(delta);
+
+		if (timer.update(delta))
+			game.getBackgroundGameScreen().restart();
 	}
 
 	@Override
