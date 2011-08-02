@@ -3,7 +3,6 @@ package com.gemserk.games.superflyingthing.gamestates;
 import java.util.ArrayList;
 
 import com.artemis.Entity;
-import com.artemis.utils.ImmutableBag;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -13,8 +12,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
@@ -37,23 +34,18 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
+import com.gemserk.games.superflyingthing.scripts.BasicAIShipControllerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -63,153 +55,9 @@ import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
-import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
-
-	static class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCastCallback {
-
-		private final World physicsWorld;
-		private final ShipController shipController;
-
-		boolean collides = false;
-		float randomDirection = 1f;
-
-		Vector2 target = new Vector2();
-		Vector2 direction = new Vector2();
-
-		boolean wayToDestinationPlanet = false;
-		
-		public BasicAIShipControllerScript(World physicsWorld, ShipController shipController) {
-			this.physicsWorld = physicsWorld;
-			this.shipController = shipController;
-		}
-
-		@Override
-		public void update(com.artemis.World world, Entity e) {
-			updateShipInPlanetBehavior(world, e);
-			updateShipBehavior(world, e);
-		}
-
-		private void updateShipBehavior(com.artemis.World world, Entity e2) {
-
-			Entity ship = world.getTagManager().getEntity(Groups.ship);
-			if (ship == null)
-				return;
-
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
-
-			Spatial spatial = ComponentWrapper.getSpatial(ship);
-			Vector2 position = spatial.getPosition();
-			direction.set(movementComponent.getDirection());
-
-			if (wayToDestinationPlanet) {
-
-				float angle = direction.angle();
-				float desiredAngle = target.tmp().sub(position).nor().angle();
-
-				shipController.setMovementDirection((float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f);
-
-				return;
-			}
-
-			ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities(Groups.destinationPlanets);
-			for (int i = 0; i < destinationPlanets.size(); i++) {
-				Entity destinationPlanet = destinationPlanets.get(i);
-				Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);
-
-				Vector2 desiredDirection = destinationPlanetSpatial.getPosition().tmp().sub(position);
-				target.set(position).add(desiredDirection.mul(1f));
-
-				collides = false;
-				physicsWorld.rayCast(this, position, target);
-
-				if (!collides) {
-					wayToDestinationPlanet = true;
-					target.set(destinationPlanetSpatial.getPosition());
-					Gdx.app.log("SuperFlyingThing", "Direct way to destination planet detected");
-					return;
-				}
-
-			}
-
-			target.set(position).add(direction.tmp().nor().mul(3f));
-
-			shipController.setMovementDirection(0f);
-
-			collides = false;
-			physicsWorld.rayCast(this, position, target);
-
-			if (!collides)
-				return;
-
-			direction.set(movementComponent.getDirection()).rotate(20 * randomDirection);
-			target.set(position).add(direction.tmp().nor().mul(3f));
-
-			collides = false;
-			physicsWorld.rayCast(this, position, target);
-
-			if (!collides) {
-				shipController.setMovementDirection(1f * randomDirection);
-				return;
-			}
-
-			direction.set(movementComponent.getDirection()).rotate(-20 * randomDirection);
-			target.set(position).add(direction.tmp().nor().mul(3f));
-
-			collides = false;
-			physicsWorld.rayCast(this, position, target);
-
-			if (!collides) {
-				shipController.setMovementDirection(-1f * randomDirection);
-				return;
-			}
-
-			shipController.setMovementDirection(1f * randomDirection);
-		}
-
-		@Override
-		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-
-			Entity e = (Entity) fixture.getBody().getUserData();
-			if (e != null) {
-				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
-				if (grabbableComponent != null)
-					return 1;
-
-				AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-				if (attachmentComponent != null)
-					return 1;
-			}
-
-			collides = true;
-			return 1;
-		}
-
-		private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
-			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
-			shipController.setShouldReleaseShip(false);
-
-			AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
-			if (attachmentComponent == null)
-				return;
-
-			if (attachmentComponent.getEntity() == null)
-				return;
-
-			Entity ship = attachmentComponent.getEntity();
-
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
-			Vector2 direction = movementComponent.getDirection();
-			if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
-				shipController.setShouldReleaseShip(true);
-
-			wayToDestinationPlanet = false;
-			randomDirection = MathUtils.randomBoolean() ? 1f : -1f;
-		}
-
-	}
 
 	private final Game game;
 	SpriteBatch spriteBatch;

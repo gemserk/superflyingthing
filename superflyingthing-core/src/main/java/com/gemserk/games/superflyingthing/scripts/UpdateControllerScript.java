@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing;
+package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
@@ -6,6 +6,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.games.superflyingthing.ShipController;
 
 public class UpdateControllerScript extends ScriptJavaImpl {
 
