@@ -1,0 +1,619 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:svg="http://www.w3.org/2000/svg"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:xlink="http://www.w3.org/1999/xlink"
+ xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+ xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+ width="90"
+ height="90"
+ id="svg2"
+ version="1.1"
+ inkscape:version="0.48.1 r9760"
+ sodipodi:docname="level14.svg"
+ levelName="Not so fast, amigo..."
+ zoom="32">
+<defs
+ id="defs4" />
+<sodipodi:namedview
+ id="base"
+ pagecolor="#000000"
+ bordercolor="#666666"
+ borderopacity="1.0"
+ inkscape:pageopacity="1"
+ inkscape:pageshadow="2"
+ inkscape:zoom="23.0913"
+ inkscape:cx="47.6395"
+ inkscape:cy="38.1806"
+ inkscape:document-units="px"
+ inkscape:current-layer="layer2"
+ showgrid="true"
+ units="px"
+ inkscape:window-width="1440"
+ inkscape:window-height="849"
+ inkscape:window-x="0"
+ inkscape:window-y="24"
+ inkscape:window-maximized="1"
+ showguides="true"
+ inkscape:guide-bbox="true"
+ inkscape:snap-global="false">
+<inkscape:grid
+ type="xygrid"
+ id="grid3765"
+ empspacing="5"
+ visible="true"
+ enabled="true"
+ snapvisiblegridlinesonly="true" />
+<sodipodi:guide
+ orientation="1,0"
+ position="-1840,4810"
+ id="guide3838" />
+<sodipodi:guide
+ orientation="1,0"
+ position="-960,5720"
+ id="guide3840" />
+</sodipodi:namedview>
+<metadata
+ id="metadata7">
+<rdf:RDF>
+<cc:Work
+ rdf:about="">
+<dc:format>image/svg+xml</dc:format>
+<dc:type
+ rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+<dc:title></dc:title>
+</cc:Work>
+</rdf:RDF>
+</metadata>
+<g
+ inkscape:label="templates"
+ inkscape:groupmode="layer"
+ id="layer1"
+ transform="translate(0,5)">
+<text
+ xml:space="preserve"
+ style="font-size:0.420555px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+ x="-3.82528"
+ y="2.5579183"
+ id="text3800"
+ sodipodi:linespacing="125%"
+ transform="scale(1.09098,0.916607)"><tspan
+ sodipodi:role="line"
+ id="tspan3802"
+ x="-3.82528"
+ y="2.5579183">start planet</tspan><tspan
+ sodipodi:role="line"
+ x="-3.82528"
+ y="3.083612"
+ id="tspan3804" /></text>
+<image
+ y="0"
+ x="-4"
+ id="image3824-5"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ startPlanet="" />
+<image
+ y="5"
+ x="-4"
+ id="image3824-5-1"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ destinationPlanet="" />
+<text
+ xml:space="preserve"
+ style="font-size:0.420555px;font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Arial;-inkscape-font-specification:Arial"
+ x="-4.2697434"
+ y="8.116293"
+ id="text3800-7"
+ sodipodi:linespacing="125%"
+ transform="scale(1.09098,0.916607)"><tspan
+ sodipodi:role="line"
+ x="-4.2697434"
+ y="8.116293"
+ id="tspan3906">destination planet</tspan><tspan
+ sodipodi:role="line"
+ x="-4.2697434"
+ y="8.6419868"
+ id="tspan3804-9" /></text>
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer2"
+ inkscape:label="Obstacles"
+ style="display:inline">
+<path
+ style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 4,45 37.5252,37.5 48.0202,3 60.0144,37.5 88.5007,45 63.013,55.5 70.5094,88.5 48.0202,63 27.0303,88.5 34.5267,55.5 4,46 0,46 0.043244,90 90,90 90,0 0.043244,0 0,45 z"
+ id="path3145"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccccccccc" />
+<path
+ style="fill:#ffdd55;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 0,45 4,45 2.00478,45.4541 4,46 0,46"
+ id="path3445"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="ccccc" />
+<path
+ style="fill:#ffff00;fill-opacity:1;stroke:none"
+ d="M 39.5819,54.9651 40.1882,56.0911 41.0543,56.5891 42.0504,56.719 43.198,56.3076 44.1941,55.3332 42.6783,55.8529 41.6606,56.0478 40.8378,55.7013 40.08,54.7269 39.9717,53.3195 z"
+ id="path4314"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccc"
+ bodyType="DynamicBody"
+ movementPath="path3544" />
+<path
+ style="fill:#ffff00;fill-opacity:1;stroke:none;display:inline"
+ d="M 55.1736,37.7799 56.1938,37.0088 56.5537,36.0768 56.53,35.0725 55.9482,34.0012 54.8332,33.1656 55.5782,34.5842 55.9262,35.5602 55.7094,36.4263 54.8621,37.324 53.4878,37.6459 z"
+ id="path4314-0"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="cccccccccccc"
+ bodyType="DynamicBody"
+ movementPath="path3544"
+ startPoint="8" />
+<path
+ style="fill:#ffff00;fill-opacity:1;fill-rule:nonzero;stroke:none"
+ d="M 49.6724,45.0913 48.7629,49.9416 47.4637,51.3274 51.8377,51.2841 50.6684,49.8983 z"
+ id="path4401"
+ inkscape:connector-curvature="0" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer5"
+ inkscape:label="Items">
+<image
+ y="15.3594"
+ x="-3.37651"
+ id="image3019-4-8"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="73.5"
+ x="62.5"
+ id="image3019-4-8-8"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="43.2728"
+ x="73.5762"
+ id="image3019-4-8-3"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="44.2728"
+ x="77.5762"
+ id="image3019-4-8-0"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="44.2728"
+ x="81.5762"
+ id="image3019-4-8-5"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="47.2728"
+ x="78.5762"
+ id="image3019-4-8-4"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="48.2728"
+ x="75.5762"
+ id="image3019-4-8-6"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="50.5799"
+ x="70.9227"
+ id="image3019-4-8-05"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="41.2728"
+ x="69.5762"
+ id="image3019-4-8-80"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="75.3594"
+ x="63.6235"
+ id="image3019-4-8-7"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="78.3594"
+ x="65.6235"
+ id="image3019-4-8-1"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="81.3594"
+ x="66.6235"
+ id="image3019-4-8-67"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="8.19408"
+ x="47.6235"
+ id="image3019-4-8-30"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="13.1941"
+ x="46.6235"
+ id="image3019-4-8-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="20.3201"
+ x="43.4975"
+ id="image3019-4-8-66"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="23.3201"
+ x="43.4975"
+ id="image3019-4-8-04"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="14.1941"
+ x="49.6235"
+ id="image3019-4-8-58"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="19.2414"
+ x="52.3164"
+ id="image3019-4-8-2"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="22.2414"
+ x="52.3164"
+ id="image3019-4-8-86"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="25.2414"
+ x="54.3164"
+ id="image3019-4-8-85"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="21.3201"
+ x="46.4975"
+ id="image3019-4-8-34"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="45.2728"
+ x="7.74175"
+ id="image3019-4-8-01"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="44.2728"
+ x="12.7417"
+ id="image3019-4-8-77"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="43.2728"
+ x="14.7417"
+ id="image3019-4-8-808"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="43.2728"
+ x="20.7417"
+ id="image3019-4-8-97"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="47.2728"
+ x="12.7417"
+ id="image3019-4-8-83"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="47.2728"
+ x="16.7417"
+ id="image3019-4-8-972"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="49.2728"
+ x="20.7417"
+ id="image3019-4-8-65"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="48.2728"
+ x="22.7417"
+ id="image3019-4-8-663"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="79.3357"
+ x="30.1117"
+ id="image3019-4-8-08"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="75.3357"
+ x="31.1117"
+ id="image3019-4-8-82"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="71.3357"
+ x="33.1117"
+ id="image3019-4-8-89"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="69.3357"
+ x="35.1117"
+ id="image3019-4-8-41"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="76.3357"
+ x="34.1117"
+ id="image3019-4-8-22"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="74.3357"
+ x="37.1117"
+ id="image3019-4-8-779"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="72.3357"
+ x="38.1117"
+ id="image3019-4-8-14"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="69.3357"
+ x="39.1117"
+ id="image3019-4-8-047"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="75.5166"
+ x="60.9935"
+ id="image3019-4-8-87"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="46.013"
+ x="61.151"
+ id="image3019-4-8-68"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="58.5247"
+ x="41.0644"
+ id="image3019-4-8-086"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="46.7059"
+ x="35.6314"
+ id="image3019-4-8-145"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="35.3988"
+ x="48.3637"
+ id="image3019-4-8-25"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="57.8766"
+ x="55.6151"
+ id="image3019-4-8-68-6"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="69.6313"
+ x="55.1149"
+ id="image3019-4-8-8-7"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ y="63.7517"
+ x="63.8729"
+ id="image3019-4-8-8-70"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer3"
+ inkscape:label="World">
+<path
+ style="color:#000000;fill:none;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
+ d="M -1,5 z"
+ id="path3806"
+ inkscape:connector-curvature="0" />
+<image
+ y="46.6055"
+ x="44.2484"
+ id="image3824-5-8"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ startPlanet="" />
+<image
+ y="46.483"
+ x="52.8207"
+ id="image3824-5-1-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
+ height="2"
+ width="2"
+ destinationPlanet="" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer6"
+ inkscape:label="Lasers">
+<image
+ y="91.9761"
+ x="2.71576"
+ id="image3019-4-8-145-0"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.808375,-0.588668,0.588668,0.808375,0,0)" />
+<image
+ y="-94.7556"
+ x="-19.3929"
+ id="image3019-4-8-145-0-7"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(-0.847979,0.53003,-0.53003,-0.847979,0,0)" />
+<image
+ y="-86.0975"
+ x="-22.39"
+ id="image3019-4-8-145-0-7-2"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(-0.847979,0.53003,-0.53003,-0.847979,0,0)" />
+<image
+ y="46.8312"
+ x="52.7572"
+ id="image3019-4-8-145-0-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.935134,0.354295,-0.354295,0.935134,0,0)" />
+<image
+ y="-37.8411"
+ x="-76.2666"
+ id="image3019-4-8-145-0-73"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(-0.79087,-0.611984,0.611984,-0.79087,0,0)" />
+<image
+ y="44.0969"
+ x="-78.3317"
+ id="image3019-4-8-145-0-75"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(-0.437009,-0.899457,0.899457,-0.437009,0,0)" />
+<image
+ y="-57.8249"
+ x="64.1575"
+ id="image3019-4-8-145-0-72"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.332156,0.943224,-0.943224,0.332156,0,0)" />
+<image
+ y="26.6979"
+ x="41.2339"
+ id="image3019-4-8-145-0-0"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.998704,0.050905,-0.050905,0.998704,0,0)" />
+<image
+ y="-32.192"
+ x="-54.0043"
+ id="image3019-4-8-145-0-94"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(-0.996169,0.087444,-0.087444,-0.996169,0,0)" />
+<image
+ y="31.2158"
+ x="-44.074"
+ id="image3019-4-8-145-0-2"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.260824,-0.965386,0.965386,0.260824,0,0)" />
+<image
+ y="-1.16584"
+ x="45.4279"
+ id="image3019-4-8-145-0-4"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5"
+ transform="matrix(0.382398,0.923998,-0.923998,0.382398,0,0)"
+ inkscape:transform-center-y="-0.82282" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer4"
+ inkscape:label="Paths"
+ style="display:inline">
+<path
+ style="fill:none;stroke:#ff0000;stroke-width:0.1;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none"
+ d="M 39.7742,55.9512 45.8003,58.7389 53.8951,58.8266 59.897,53.8658 61.8347,50.5734 62.6313,44.9587 58.9858,40.5238 53.8203,36.3086 45.9587,35.7233 40.4992,39.0286 36.6657,43.3702 36.0706,48.8976 z"
+ id="path3544"
+ inkscape:connector-curvature="0"
+ sodipodi:nodetypes="ccccccccccccc" />
+</g>
+</svg>

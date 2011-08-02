@@ -118,7 +118,7 @@ public class PlayGameState extends GameStateImpl {
 	public void init() {
 		finalMessageAnimation = null;
 		levelNameAnimation = null;
-		
+
 		resetPressed = false;
 		spriteBatch = new SpriteBatch();
 
@@ -278,7 +278,8 @@ public class PlayGameState extends GameStateImpl {
 			float worldWidth = level.w;
 			float worldHeight = level.h;
 
-			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
+			// float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
+			float cameraZoom = Gdx.graphics.getWidth() * level.zoom / 800f;
 
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
@@ -298,7 +299,7 @@ public class PlayGameState extends GameStateImpl {
 				if (o.bodyType == BodyType.StaticBody)
 					entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 				else {
-					entityTemplates.movingObstacle(o.vertices, o.path, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+					entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 				}
 			}
 
@@ -592,11 +593,11 @@ public class PlayGameState extends GameStateImpl {
 			finalMessageAnimation.update(delta);
 			done = finalMessageAnimation.isFinished();
 		}
-		
+
 		if (levelNameAnimation != null) {
 			levelNameAnimation.update(delta);
 		}
-		
+
 		if (inputDevicesMonitor.getButton("restart").isReleased())
 			done = true;
 

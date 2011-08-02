@@ -142,7 +142,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 3)));
-		// loadLevel(entityTemplates, Levels.level(1));
+		// loadLevel(entityTemplates, Levels.level(13));
 
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -203,7 +203,7 @@ public class BackgroundGameState extends GameStateImpl {
 			if (o.bodyType == BodyType.StaticBody)
 				entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 			else {
-				entityTemplates.movingObstacle(o.vertices, o.path, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 			}
 		}
 

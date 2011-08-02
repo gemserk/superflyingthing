@@ -17,6 +17,8 @@ public class Level {
 		
 		public Vector2[] path;
 		
+		public int startPoint = 0;
+		
 		public Obstacle() {
 			
 		}
@@ -84,6 +86,7 @@ public class Level {
 	}
 
 	public float w, h;
+	public float zoom = 48f;
 	
 	public ArrayList<Obstacle> obstacles = new ArrayList<Level.Obstacle>();
 	

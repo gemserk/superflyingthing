@@ -340,13 +340,11 @@ public class Scripts {
 		private final Vector2[] points;
 		int currentTarget;
 
-		public MovingObstacleScript(Vector2[] points) {
+		public MovingObstacleScript(Vector2[] points, int currentTarget) {
 			this.points = points;
-		}
-
-		@Override
-		public void init(com.artemis.World world, Entity e) {
-			currentTarget = 0;
+			if (currentTarget >= points.length)
+				currentTarget = points.length - 1;
+			this.currentTarget = currentTarget;
 		}
 
 		private Vector2 getCurrentTargetPosition() {

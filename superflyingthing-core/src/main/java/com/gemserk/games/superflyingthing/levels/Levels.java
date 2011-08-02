@@ -32,6 +32,7 @@ public class Levels {
 			"data/levels/level11.svg", //
 			"data/levels/level12.svg", //
 			"data/levels/level13.svg", //
+			"data/levels/level14.svg", //
 	};
 
 	private static Level[] cachedLevels = new Level[levels.length];
@@ -59,6 +60,12 @@ public class Levels {
 				level.w = document.getWidth();
 				level.h = document.getHeight();
 				level.name = element.getAttribute("levelName");
+				
+				String zoom = element.getAttribute("zoom");
+				if (!"".equals(zoom)) {
+					level.zoom = Float.parseFloat(zoom);
+				}
+				
 			};
 
 			@Override
@@ -85,6 +92,11 @@ public class Levels {
 					String movementPath = element.getAttribute("movementPath");
 					if (registeredPaths.containsKey(movementPath)) {
 						obstacle.path = registeredPaths.get(movementPath);
+					}
+					
+					String startPoint = element.getAttribute("startPoint");
+					if (!"".equals(startPoint)) {
+						obstacle.startPoint = Integer.parseInt(startPoint);
 					}
 				}
 

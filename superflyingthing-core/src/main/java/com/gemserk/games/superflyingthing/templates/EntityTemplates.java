@@ -362,7 +362,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity movingObstacle(Vector2[] vertices, final Vector2[] points, float x, float y, float angle) {
+	public Entity movingObstacle(Vector2[] vertices, final Vector2[] points, int startPoint, float x, float y, float angle) {
 		Entity e = entityBuilder.build();
 
 		Triangulator triangulator = ShapeUtils.triangulate(vertices);
@@ -401,7 +401,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build()));
 		e.addComponent(new RenderableComponent(-59));
-		e.addComponent(new ScriptComponent(new MovingObstacleScript(points)));
+		e.addComponent(new ScriptComponent(new MovingObstacleScript(points, startPoint)));
 
 		e.refresh();
 		return e;
