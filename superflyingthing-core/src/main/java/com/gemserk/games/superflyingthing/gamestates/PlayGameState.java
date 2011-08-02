@@ -116,6 +116,9 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
+		finalMessageAnimation = null;
+		levelNameAnimation = null;
+		
 		resetPressed = false;
 		spriteBatch = new SpriteBatch();
 
