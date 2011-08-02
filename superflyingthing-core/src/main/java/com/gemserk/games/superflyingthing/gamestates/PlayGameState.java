@@ -20,12 +20,10 @@ import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.animations.Animation;
-import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
 import com.gemserk.animation4j.timeline.Builders;
 import com.gemserk.animation4j.timeline.sync.MutableObjectSynchronizer;
 import com.gemserk.animation4j.timeline.sync.SynchronizedAnimation;
 import com.gemserk.animation4j.timeline.sync.TimelineSynchronizer;
-import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
@@ -106,6 +104,7 @@ public class PlayGameState extends GameStateImpl {
 	private Text timerLabel;
 
 	private Animation finalMessageAnimation;
+	private Animation levelNameAnimation;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -330,17 +329,31 @@ public class PlayGameState extends GameStateImpl {
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-			Text levelNameText = GuiControls.label("Level " + (GameInformation.level + 1) + ": " + level.name).position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
+			Text levelNameText = GuiControls.label("Level " + (GameInformation.level + 1) + ": " + level.name) //
+					.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.75f) //
 					.font(font) //
-					.color(1f, 1f, 1f, 1f) //
+					.color(1f, 1f, 1f, 0f) //
 					.build();
+
+			levelNameAnimation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
+					.value(Builders.timelineValue("color") //
+							.keyFrame(0, new Color(1f, 1f, 1f, 0f)) //
+							.keyFrame(250, Color.WHITE) //
+							.keyFrame(750, Color.WHITE) //
+							.keyFrame(1000, new Color(1f, 1f, 1f, 0f)) //
+					)) //
+					.delay(0f) //
+					.speed(0.4f) //
+					.started(true) //
+					.build(), //
+					new TimelineSynchronizer(new MutableObjectSynchronizer(), levelNameText));
 
 			container.add(levelNameText);
 
-			Synchronizers.transition(levelNameText.getColor(), Transitions.transitionBuilder(levelNameText.getColor()) //
-					.end(new Color(1f, 1f, 1f, 0f)) //
-					.functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
-					.time(3000));
+			// Synchronizers.transition(levelNameText.getColor(), Transitions.transitionBuilder(levelNameText.getColor()) //
+			// .end(new Color(1f, 1f, 1f, 0f)) //
+			// .functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
+			// .time(3000));
 
 		}
 
@@ -432,8 +445,6 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
 
-			// entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
-
 		}
 	}
 
@@ -516,11 +527,6 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
 
-			// entityTemplates.laserTurret(10f, 5f, 25f, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
-
-			// entityTemplates.portal("portal2", "portal1", 20f, 5f, new Scripts.PortalScript());
-			// entityTemplates.portal("portal1", "portal2", 10f, 5f, new Scripts.PortalScript());
-
 		}
 	}
 
@@ -580,10 +586,14 @@ public class PlayGameState extends GameStateImpl {
 		container.update();
 
 		if (finalMessageAnimation != null) {
-			finalMessageAnimation.update((float) delta);
+			finalMessageAnimation.update(delta);
 			done = finalMessageAnimation.isFinished();
 		}
-
+		
+		if (levelNameAnimation != null) {
+			levelNameAnimation.update(delta);
+		}
+		
 		if (inputDevicesMonitor.getButton("restart").isReleased())
 			done = true;
 
