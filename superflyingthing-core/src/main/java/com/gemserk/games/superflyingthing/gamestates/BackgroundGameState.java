@@ -63,6 +63,7 @@ import com.gemserk.games.superflyingthing.systems.ControllerSystem;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
@@ -134,7 +135,7 @@ public class BackgroundGameState extends GameStateImpl {
 				return;
 			}
 
-			ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities("DestinationPlanets");
+			ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities(Groups.destinationPlanets);
 			for (int i = 0; i < destinationPlanets.size(); i++) {
 				Entity destinationPlanet = destinationPlanets.get(i);
 				Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);

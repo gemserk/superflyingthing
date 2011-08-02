@@ -285,7 +285,7 @@ public class EntityTemplates {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 		
-		e.setGroup("DestinationPlanets");
+		e.setGroup(Groups.destinationPlanets);
 		
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
