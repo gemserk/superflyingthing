@@ -125,6 +125,7 @@ public class EntityTemplates {
 		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 		Entity e = entityBuilder.build();
+		e.setTag(Groups.ship);
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -258,6 +259,7 @@ public class EntityTemplates {
 	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
+		e.setTag(Groups.startPlanet);
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //

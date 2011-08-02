@@ -113,15 +113,15 @@ public class BackgroundGameState extends GameStateImpl {
 			updateShipBehavior(world, e);
 		}
 
-		private void updateShipBehavior(com.artemis.World world, Entity e) {
+		private void updateShipBehavior(com.artemis.World world, Entity e2) {
 
-			AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
-			if (attachmentComponent != null)
+			Entity ship = world.getTagManager().getEntity(Groups.ship);
+			if (ship == null)
 				return;
 
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
 
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Spatial spatial = ComponentWrapper.getSpatial(ship);
 			Vector2 position = spatial.getPosition();
 			direction.set(movementComponent.getDirection());
 
@@ -192,24 +192,26 @@ public class BackgroundGameState extends GameStateImpl {
 
 		@Override
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-			
+
 			Entity e = (Entity) fixture.getBody().getUserData();
-			if (e != null) { 
+			if (e != null) {
 				GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
 				if (grabbableComponent != null)
 					return 1;
-				
-				AttachmentComponent attachmentComponent =  e.getComponent(AttachmentComponent.class);
+
+				AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
 				if (attachmentComponent != null)
 					return 1;
 			}
-			
+
 			collides = true;
 			return 1;
 		}
 
 		private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
-			AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+
+			AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
 			if (attachmentComponent == null)
 				return;
 
