@@ -11,9 +11,8 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
+import com.gemserk.animation4j.timeline.Builders;
 import com.gemserk.animation4j.timeline.TimelineAnimation;
-import com.gemserk.animation4j.timeline.TimelineAnimationBuilder;
-import com.gemserk.animation4j.timeline.TimelineValueBuilder;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -641,16 +640,23 @@ public class Scripts {
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			aliveTimer = new CountDownTimer(800, true);
-			laserTimelineAnimation = new TimelineAnimationBuilder() {
-				{
-					speed(1f);
-					value("alpha", new TimelineValueBuilder() //
+			
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			
+			laserTimelineAnimation = Builders.animation(Builders.timeline() //
+					.value(Builders.timelineValue("alpha") //
 							.keyFrame(0, 0f) //
 							.keyFrame(200, 1f) //
 							.keyFrame(600, 1f) //
-							.keyFrame(800, 0f));
-				}
-			}.build();
+							.keyFrame(800, 0f)) //
+					.value(Builders.timelineValue("width") //
+							.keyFrame(0, 0f) //
+							.keyFrame(200, spatial.getHeight()) //
+							.keyFrame(600, spatial.getHeight()) //
+							.keyFrame(800, 0f)) //
+					) //
+					.speed(1f) //
+					.build();
 			laserTimelineAnimation.start(1);
 		}
 
@@ -665,7 +671,12 @@ public class Scripts {
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 			spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
-
+			
+			Spatial spatial = ComponentWrapper.getSpatial(e);
+			float width = spatial.getWidth();
+			float height = (Float) laserTimelineAnimation.getValue("width");
+			spatial.setSize(width, height);
+			
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
 
