@@ -435,6 +435,7 @@ public class EntityTemplates {
 				.component(new ScriptComponent(script)) //
 				.component(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue)) //
 				.component(new RenderableComponent(2)) //
+				.component(new Components.TimerComponent(1000)) //
 				.build();
 
 		Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };

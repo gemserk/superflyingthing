@@ -293,6 +293,38 @@ public class Components {
 		}
 		
 	}
+	
+	public static class TimerComponent extends Component {
+		
+		private int totalTime;
+		private int currentTime;
+		
+		public int getTotalTime() {
+			return totalTime;
+		}
+		
+		public int getCurrentTime() {
+			return currentTime;
+		}
+		
+		public void setCurrentTime(int currentTime) {
+			this.currentTime = currentTime;
+		}
+		
+		public boolean isFinished() {
+			return currentTime <= 0;
+		}
+		
+		public void reset() {
+			currentTime = totalTime;
+		}
+		
+		public TimerComponent(int time) {
+			this.totalTime = time;
+			this.currentTime = time;
+		}
+		
+	}
 
 	public static class PortalComponent extends Component {
 

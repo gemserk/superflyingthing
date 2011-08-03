@@ -26,8 +26,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.componentsengine.utils.timers.CountDownTimer;
-import com.gemserk.componentsengine.utils.timers.Timer;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -44,6 +42,7 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -635,36 +634,38 @@ public class Scripts {
 
 		private TimelineAnimation laserTimelineAnimation;
 
-		Timer aliveTimer;
-
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-			aliveTimer = new CountDownTimer(800, true);
+			TimerComponent timerComponent = e.getComponent(TimerComponent.class);
+			int totalTime = timerComponent.getTotalTime();
 
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 
 			laserTimelineAnimation = Builders.animation(Builders.timeline() //
 					.value(Builders.timelineValue("alpha") //
 							.keyFrame(0, 0f) //
-							.keyFrame(200, 1f) //
-							.keyFrame(600, 1f) //
-							.keyFrame(800, 0f)) //
+							.keyFrame(0.2f, 1f) //
+							.keyFrame(0.8f, 1f) //
+							.keyFrame(1f, 0f)) //
 					.value(Builders.timelineValue("width") //
 							.keyFrame(0, 0f) //
-							.keyFrame(200, spatial.getHeight()) //
-							.keyFrame(600, spatial.getHeight()) //
-							.keyFrame(800, 0f)) //
+							.keyFrame(0.2f, spatial.getHeight()) //
+							.keyFrame(0.8f, spatial.getHeight()) //
+							.keyFrame(1f, 0f)) //
 					) //
-					.speed(1f) //
+					.speed(1f / totalTime) //
 					.build();
 			laserTimelineAnimation.start(1);
 		}
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
+			TimerComponent timerComponent = e.getComponent(TimerComponent.class);
+			
 			laserTimelineAnimation.update((float) world.getDelta());
 
-			if (aliveTimer.update(world.getDelta())) {
+			timerComponent.setCurrentTime(timerComponent.getCurrentTime() - world.getDelta());
+			if (timerComponent.isFinished()) {
 				world.deleteEntity(e);
 				return;
 			}
