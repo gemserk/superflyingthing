@@ -43,15 +43,20 @@ public class MainMenuGameState extends GameStateImpl {
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
+		BitmapFont versionFont = resourceManager.getResourceValue("VersionFont");
+		
 		container = new Container();
 
-		// Text text = new Text("Super Flying Thing\nv" + GameInformation.gameVersion, centerX, height * 0.9f).setColor(Color.GREEN);
-		// text.setFont(titleFont);
-
-		container.add(GuiControls.label("Super Flying Thing\nv" + GameInformation.gameVersion) //
+		container.add(GuiControls.label("Super Flying Thing") //
 				.position(centerX, height * 0.9f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
+				.build());
+		
+		container.add(GuiControls.label("v" + GameInformation.gameVersion) //
+				.position(centerX, height * 0.85f) //
+				.color(Color.WHITE) //
+				.font(versionFont) //
 				.build());
 
 		TextButton playButton = GuiControls.textButton() //

@@ -37,6 +37,7 @@ public class GameResources extends LibgdxResourceBuilder {
 			font("GameFont", "data/fonts/purisa-24.png", "data/fonts/purisa-24.fnt", false);
 			font("LevelFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
+			font("VersionFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 		} else if (Gdx.graphics.getHeight() >= 320){
 			font("FpsFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("TitleFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
@@ -44,6 +45,7 @@ public class GameResources extends LibgdxResourceBuilder {
 			font("GameFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("LevelFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
+			font("VersionFont", "data/fonts/purisa-10.png", "data/fonts/purisa-10.fnt", false);
 		} else {
 			font("FpsFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("TitleFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
@@ -51,6 +53,7 @@ public class GameResources extends LibgdxResourceBuilder {
 			font("GameFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("LevelFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-10.png", "data/fonts/purisa-10.fnt", false);
+			font("VersionFont", "data/fonts/purisa-10.png", "data/fonts/purisa-10.fnt", false);
 		}
 
 		texture("PlanetTexture", "data/images/planet.png");
