@@ -270,6 +270,7 @@ public class Components {
 		
 		private int fireRate;
 		private int reloadTime;
+		private int bulletDuration;
 		
 		public void setFireRate(int fireRate) {
 			this.fireRate = fireRate;
@@ -283,12 +284,17 @@ public class Components {
 			return fireRate;
 		}
 		
+		public int getBulletDuration() {
+			return bulletDuration;
+		}
+		
 		public void setReloadTime(int reloadTime) {
 			this.reloadTime = reloadTime;
 		}
 		
-		public WeaponComponent(int fireRate) {
+		public WeaponComponent(int fireRate, int bulletDuration) {
 			this.fireRate = fireRate;
+			this.bulletDuration = bulletDuration;
 			this.reloadTime = 0;
 		}
 		

@@ -614,7 +614,7 @@ public class Scripts {
 					}
 				}, new Vector2(spatial.getX(), spatial.getY()), target);
 
-				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), new Scripts.LaserScript());
+				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), weaponComponent.getBulletDuration(), new Scripts.LaserScript());
 
 				reloadTime += weaponComponent.getFireRate();
 			}

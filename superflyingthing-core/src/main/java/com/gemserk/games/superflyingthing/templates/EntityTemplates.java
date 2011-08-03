@@ -415,7 +415,7 @@ public class EntityTemplates {
 						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
-	public Entity laserTurret(float x, float y, float angle, int fireRate, Script script) {
+	public Entity laserTurret(float x, float y, float angle, int fireRate, int bulletDuration, Script script) {
 		Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
@@ -423,11 +423,11 @@ public class EntityTemplates {
 				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
 				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
 				.component(new RenderableComponent(3))//
-				.component(new Components.WeaponComponent(fireRate))
+				.component(new Components.WeaponComponent(fireRate, bulletDuration))
 				.build();
 	}
 
-	public Entity laser(float x, float y, float length, float angle, Script script) {
+	public Entity laser(float x, float y, float length, float angle, int duration, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("LaserSprite");
 
 		Entity e = entityBuilder //
@@ -435,7 +435,7 @@ public class EntityTemplates {
 				.component(new ScriptComponent(script)) //
 				.component(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue)) //
 				.component(new RenderableComponent(2)) //
-				.component(new Components.TimerComponent(1000)) //
+				.component(new Components.TimerComponent(duration)) //
 				.build();
 
 		Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };

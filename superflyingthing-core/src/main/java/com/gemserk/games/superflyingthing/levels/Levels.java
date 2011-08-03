@@ -119,7 +119,7 @@ public class Levels {
 				String fireRateValue = element.getAttribute("fireRate");
 				if (!"".equals(fireRateValue)) 
 					fireRate = Integer.parseInt(fireRateValue);
-				level.laserTurrets.add(new Level.LaserTurret(x, y, angle, fireRate));
+				level.laserTurrets.add(new Level.LaserTurret(x, y, angle, fireRate, 1000));
 			};
 		}.process(document);
 		
