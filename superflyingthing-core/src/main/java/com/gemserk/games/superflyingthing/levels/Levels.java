@@ -117,6 +117,7 @@ public class Levels {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
 				int fireRate = 2000;
 				int bulletDuration = 1000;
+				int currentReloadTime = 0;
 				
 				String fireRateValue = element.getAttribute("fireRate");
 				if (!"".equals(fireRateValue)) 
@@ -125,8 +126,12 @@ public class Levels {
 				String bulletDurationValue = element.getAttribute("bulletDuration");
 				if (!"".equals(bulletDurationValue)) 
 					bulletDuration = Integer.parseInt(bulletDurationValue);
-				
-				level.laserTurrets.add(new Level.LaserTurret(x, y, angle, fireRate, bulletDuration));
+
+				String currentReloadTimeValue = element.getAttribute("currentReloadTime");
+				if (!"".equals(currentReloadTimeValue)) 
+					currentReloadTime = Integer.parseInt(currentReloadTimeValue);
+
+				level.laserTurrets.add(new Level.LaserTurret(x, y, angle, fireRate, bulletDuration, currentReloadTime));
 			};
 		}.process(document);
 		

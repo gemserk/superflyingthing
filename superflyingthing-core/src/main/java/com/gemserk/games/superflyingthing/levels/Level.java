@@ -63,13 +63,15 @@ public class Level {
 		public float angle;
 		public int fireRate;
 		public int bulletDuration;
+		public int currentReloadTime;
 
-		public LaserTurret(float x, float y, float angle, int fireRate, int bulletDuration) {
+		public LaserTurret(float x, float y, float angle, int fireRate, int bulletDuration, int currentReloadTime) {
 			this.x = x;
 			this.y = y;
 			this.angle = angle;
 			this.fireRate = fireRate;
 			this.bulletDuration = bulletDuration;
+			this.currentReloadTime = currentReloadTime;
 		}
 		
 	}

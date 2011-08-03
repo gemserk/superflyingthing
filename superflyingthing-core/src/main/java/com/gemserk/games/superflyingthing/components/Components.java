@@ -292,10 +292,10 @@ public class Components {
 			this.reloadTime = reloadTime;
 		}
 		
-		public WeaponComponent(int fireRate, int bulletDuration) {
+		public WeaponComponent(int fireRate, int bulletDuration, int currentReloadTime) {
 			this.fireRate = fireRate;
 			this.bulletDuration = bulletDuration;
-			this.reloadTime = 0;
+			this.reloadTime = currentReloadTime;
 		}
 		
 	}
