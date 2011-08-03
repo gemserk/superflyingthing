@@ -11,7 +11,6 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.games.superflyingthing.Game;
@@ -46,8 +45,14 @@ public class MainMenuGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 		container = new Container();
 
-		Text text = new Text("Super Flying Thing", centerX, height * 0.9f).setColor(Color.GREEN);
-		text.setFont(titleFont);
+		// Text text = new Text("Super Flying Thing\nv" + GameInformation.gameVersion, centerX, height * 0.9f).setColor(Color.GREEN);
+		// text.setFont(titleFont);
+
+		container.add(GuiControls.label("Super Flying Thing\nv" + GameInformation.gameVersion) //
+				.position(centerX, height * 0.9f) //
+				.color(Color.GREEN) //
+				.font(titleFont) //
+				.build());
 
 		TextButton playButton = GuiControls.textButton() //
 				.position(centerX, height * 0.7f) //
@@ -79,7 +84,7 @@ public class MainMenuGameState extends GameStateImpl {
 				})//
 				.build();
 
-		container.add(text);
+		// container.add(text);
 		container.add(playButton);
 		if (Gdx.app.getType() != ApplicationType.Applet)
 			container.add(exitButton);
@@ -88,7 +93,7 @@ public class MainMenuGameState extends GameStateImpl {
 		whiteRectangleSprite.setPosition(0, 0);
 		whiteRectangleSprite.setSize(width, height);
 		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
-		
+
 		game.getBackgroundGameScreen().init();
 	}
 

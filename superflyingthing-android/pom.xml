@@ -28,6 +28,16 @@
 		<sourceDirectory>src</sourceDirectory>
 		<finalName>superflyingthing-android</finalName>
 
+		<resources>
+			<resource>
+				<directory>../superflyingthing-desktop/src/main/resources</directory>
+				<filtering>true</filtering>
+				<includes>
+					<include>version.properties</include>
+				</includes>
+			</resource>
+		</resources>
+
 		<plugins>
 			<plugin>
 				<groupId>com.googlecode.mavennatives</groupId>

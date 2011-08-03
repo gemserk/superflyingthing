@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -24,6 +25,7 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
+import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
@@ -68,6 +70,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen pauseScreen;
 	private Screen gameOverScreen;
 	private Screen instructionsScreen;
+	private Screen backgroundGameScreen;
 	
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
@@ -75,8 +78,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private GamePreferences gamePreferences;
-
-	private Screen backgroundGameScreen;
 
 	private Rectangle adsMaxArea;
 	
@@ -137,6 +138,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
+		
+		try {
+			Properties properties = new Properties();
+			properties.load(Gdx.files.classpath("version.properties").read());
+			GameInformation.gameVersion = properties.getProperty("version");
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
 
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
 		gamePreferences = new GamePreferences(preferences);
