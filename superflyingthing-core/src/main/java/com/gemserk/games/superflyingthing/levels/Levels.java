@@ -60,12 +60,12 @@ public class Levels {
 				level.w = document.getWidth();
 				level.h = document.getHeight();
 				level.name = element.getAttribute("levelName");
-				
+
 				String zoom = element.getAttribute("zoom");
 				if (!"".equals(zoom)) {
 					level.zoom = Float.parseFloat(zoom);
 				}
-				
+
 			};
 
 			@Override
@@ -93,7 +93,7 @@ public class Levels {
 					if (registeredPaths.containsKey(movementPath)) {
 						obstacle.path = registeredPaths.get(movementPath);
 					}
-					
+
 					String startPoint = element.getAttribute("startPoint");
 					if (!"".equals(startPoint)) {
 						obstacle.startPoint = Integer.parseInt(startPoint);
@@ -118,31 +118,37 @@ public class Levels {
 				int fireRate = 2000;
 				int bulletDuration = 1000;
 				int currentReloadTime = 0;
-				
+
+				// NamedNodeMap attributes = element.getAttributes();
+				// Map<String, Object> properties = new HashMap<String, Object>(attributes.getLength());
+				// for (int i = 0; i < attributes.getLength(); i++)
+				// properties.put(attributes.item(i).getNodeName(), attributes.item(i).getNodeValue());
+				// System.out.println(properties);
+
 				String fireRateValue = element.getAttribute("fireRate");
-				if (!"".equals(fireRateValue)) 
+				if (!"".equals(fireRateValue))
 					fireRate = Integer.parseInt(fireRateValue);
-				
+
 				String bulletDurationValue = element.getAttribute("bulletDuration");
-				if (!"".equals(bulletDurationValue)) 
+				if (!"".equals(bulletDurationValue))
 					bulletDuration = Integer.parseInt(bulletDurationValue);
 
 				String currentReloadTimeValue = element.getAttribute("currentReloadTime");
-				if (!"".equals(currentReloadTimeValue)) 
+				if (!"".equals(currentReloadTimeValue))
 					currentReloadTime = Integer.parseInt(currentReloadTimeValue);
 
 				level.laserTurrets.add(new Level.LaserTurret(x, y, angle, fireRate, bulletDuration, currentReloadTime));
 			};
 		}.process(document);
-		
+
 		new SvgLayerProcessor("Portals") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
-				
+
 				String id = svgImage.getId();
 				String targetPortalId = element.getAttribute("targetPortalId");
-				
+
 				level.portals.add(new Level.Portal(x, y, id, targetPortalId));
-				
+
 			};
 		}.process(document);
 
