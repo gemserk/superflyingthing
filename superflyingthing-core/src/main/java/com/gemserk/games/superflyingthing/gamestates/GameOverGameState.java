@@ -28,7 +28,7 @@ public class GameOverGameState extends GameStateImpl {
 	private Sprite whiteRectangle;
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -54,11 +54,11 @@ public class GameOverGameState extends GameStateImpl {
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
-		container.add(GuiControls.label("YOUR SCORE HERE") //
-				.position(centerX, height * 0.9f) //
-				.color(Color.GREEN) //
-				.font(titleFont)//
-				.build());
+		// container.add(GuiControls.label("YOUR SCORE HERE") //
+		// .position(centerX, height * 0.9f) //
+		// .color(Color.GREEN) //
+		// .font(titleFont)//
+		// .build());
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			container.add(GuiControls.textButton() //
@@ -118,11 +118,11 @@ public class GameOverGameState extends GameStateImpl {
 				monitorKeys("nextLevel", Keys.SPACE, Keys.ENTER, Keys.N);
 			}
 		};
-		
+
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level finished", GameInformation.gameData.currentItems);
-		} 
+		}
 	}
 
 	private void nextLevel() {
@@ -165,7 +165,7 @@ public class GameOverGameState extends GameStateImpl {
 						game.getPlayScreen().dispose();
 					}
 				}).start();
-		
+
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
@@ -187,11 +187,11 @@ public class GameOverGameState extends GameStateImpl {
 						game.getPlayScreen().restart();
 					}
 				}).start();
-		
+
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/tryagain", "/challenge/" + (GameInformation.level + 1) + "/tryagain", null);
-		} 
+		}
 	}
 
 	@Override
