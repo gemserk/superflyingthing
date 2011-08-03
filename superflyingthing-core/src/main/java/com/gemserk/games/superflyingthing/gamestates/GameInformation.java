@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.games.superflyingthing.components.Components.GameData;
 
 public class GameInformation {
 	
@@ -14,4 +15,5 @@ public class GameInformation {
 	public static WorldWrapper worldWrapper;
 	
 	public static String gameVersion;
+	public static GameData gameData;
 }

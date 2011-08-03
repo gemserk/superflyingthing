@@ -134,6 +134,17 @@ public class PauseGameState extends GameStateImpl {
 						game.getPlayScreen().restart();
 					}
 				}).start();
+		
+		// I hate this code here...
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level not finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/restart", "/challenge/" + (GameInformation.level + 1) + "/restart", null);
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			Analytics.traker.trackPageView("/practice/restart", "/practice/restart", null);
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			Analytics.traker.trackPageView("/random/restart", "/random/restart", null);
+		}
 	}
 
 	private void mainMenu() {
@@ -148,11 +159,13 @@ public class PauseGameState extends GameStateImpl {
 				}).start();
 
 		// I hate this code here...
-		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level not finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level not finished", GameInformation.gameData.currentItems);
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
-		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
 		}
 	}

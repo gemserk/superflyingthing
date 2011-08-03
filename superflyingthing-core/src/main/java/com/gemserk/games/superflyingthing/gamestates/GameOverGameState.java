@@ -118,6 +118,11 @@ public class GameOverGameState extends GameStateImpl {
 				monitorKeys("nextLevel", Keys.SPACE, Keys.ENTER, Keys.N);
 			}
 		};
+		
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level finished", GameInformation.gameData.currentItems);
+		} 
 	}
 
 	private void nextLevel() {
@@ -162,11 +167,11 @@ public class GameOverGameState extends GameStateImpl {
 				}).start();
 		
 		// I hate this code here...
-		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
-		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
 		}
 	}
@@ -181,6 +186,11 @@ public class GameOverGameState extends GameStateImpl {
 						game.getPlayScreen().restart();
 					}
 				}).start();
+		
+		// I hate this code here...
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/tryagain", "/challenge/" + (GameInformation.level + 1) + "/tryagain", null);
+		} 
 	}
 
 	@Override

@@ -167,6 +167,7 @@ public class PlayGameState extends GameStateImpl {
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder);
 
 		gameData = new GameData();
+		GameInformation.gameData = gameData;
 
 		BitmapFont font = resourceManager.getResourceValue("GameFont");
 
@@ -189,13 +190,13 @@ public class PlayGameState extends GameStateImpl {
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
-		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			new RandomMode().create(this);
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			new PracticeMode().create(this);
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
-		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			new ChallengeMode().create(this);
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
@@ -240,9 +241,9 @@ public class PlayGameState extends GameStateImpl {
 				event = eventManager.getEvent(Events.shipDeath);
 				if (event != null) {
 					eventManager.handled(event);
-					if (GameInformation.gameMode == GameInformation.RandomGameMode)
+					if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
 						Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/death", "/challenge/" + (GameInformation.level + 1) + "/death", null);
-					else if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
+					else if (GameInformation.gameMode == GameInformation.RandomGameMode)
 						Analytics.traker.trackPageView("/random/death", "/random/death", null);
 				}
 
@@ -562,11 +563,11 @@ public class PlayGameState extends GameStateImpl {
 
 		container.add(message);
 
-		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/finish", "/challenge/" + (GameInformation.level + 1) + "/finish", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/finish", "/practice/finish", null);
-		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackPageView("/random/finish", "/random/finish", null);
 		}
 		
