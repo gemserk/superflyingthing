@@ -115,7 +115,11 @@ public class Levels {
 
 		new SvgLayerProcessor("Lasers") {
 			protected void handleImageObject(com.gemserk.commons.svg.inkscape.SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
-				level.laserTurrets.add(new Level.LaserTurret(x, y, angle));
+				int fireRate = 2000;
+				String fireRateValue = element.getAttribute("fireRate");
+				if (!"".equals(fireRateValue)) 
+					fireRate = Integer.parseInt(fireRateValue);
+				level.laserTurrets.add(new Level.LaserTurret(x, y, angle, fireRate));
 			};
 		}.process(document);
 		

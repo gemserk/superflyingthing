@@ -27,10 +27,10 @@
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
  inkscape:zoom="32.6559"
- inkscape:cx="32.7229"
+ inkscape:cx="24.8713"
  inkscape:cy="11.5239"
  inkscape:document-units="px"
- inkscape:current-layer="layer5"
+ inkscape:current-layer="layer6"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -295,7 +295,8 @@
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5"
- transform="matrix(0.35268,-0.935744,0.935744,0.35268,0,0)" />
+ transform="matrix(0.35268,-0.935744,0.935744,0.35268,0,0)"
+ fireRate="2500" />
 <image
  y="21.0065"
  x="-16.9857"

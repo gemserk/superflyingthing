@@ -214,7 +214,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
-			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, laserTurret.fireRate, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {

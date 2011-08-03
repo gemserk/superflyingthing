@@ -61,11 +61,13 @@ public class Level {
 		
 		public float x, y;
 		public float angle;
+		public final int fireRate;
 
-		public LaserTurret(float x, float y, float angle) {
+		public LaserTurret(float x, float y, float angle, int fireRate) {
 			this.x = x;
 			this.y = y;
 			this.angle = angle;
+			this.fireRate = fireRate;
 		}
 		
 	}

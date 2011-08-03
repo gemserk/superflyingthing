@@ -415,7 +415,7 @@ public class EntityTemplates {
 						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
-	public Entity laserTurret(float x, float y, float angle, Script script) {
+	public Entity laserTurret(float x, float y, float angle, int fireRate, Script script) {
 		Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
@@ -423,7 +423,7 @@ public class EntityTemplates {
 				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
 				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
 				.component(new RenderableComponent(3))//
-				.component(new Components.WeaponComponent(2000))
+				.component(new Components.WeaponComponent(fireRate))
 				.build();
 	}
 
