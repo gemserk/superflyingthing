@@ -241,10 +241,7 @@ public class PlayGameState extends GameStateImpl {
 				event = eventManager.getEvent(Events.shipDeath);
 				if (event != null) {
 					eventManager.handled(event);
-					if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
-						Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/death", "/challenge/" + (GameInformation.level + 1) + "/death", null);
-					else if (GameInformation.gameMode == GameInformation.RandomGameMode)
-						Analytics.traker.trackPageView("/random/death", "/random/death", null);
+					// gameData.deaths++
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));

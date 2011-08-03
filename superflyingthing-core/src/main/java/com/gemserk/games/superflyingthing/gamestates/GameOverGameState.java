@@ -180,6 +180,7 @@ public class GameOverGameState extends GameStateImpl {
 		game.transition(game.getPlayScreen()) //
 				.leaveTime(250) //
 				.enterTime(250) //
+				.disposeCurrent() //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
 					public void onEnd() {
