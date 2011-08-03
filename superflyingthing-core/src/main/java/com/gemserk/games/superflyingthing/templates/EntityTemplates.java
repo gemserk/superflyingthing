@@ -423,6 +423,7 @@ public class EntityTemplates {
 				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
 				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
 				.component(new RenderableComponent(3))//
+				.component(new Components.WeaponComponent(2000))
 				.build();
 	}
 

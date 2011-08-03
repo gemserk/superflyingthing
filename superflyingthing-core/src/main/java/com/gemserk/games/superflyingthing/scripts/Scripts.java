@@ -44,6 +44,7 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 
@@ -589,21 +590,18 @@ public class Scripts {
 		private static final Vector2 direction = new Vector2();
 		private static final Vector2 target = new Vector2();
 
-		Timer fireTimer;
-
 		public LaserGunScript(EntityTemplates entityTemplates, World physicsWolrd) {
 			this.entityTemplates = entityTemplates;
 			this.physicsWolrd = physicsWolrd;
 		}
 
 		@Override
-		public void init(com.artemis.World world, Entity e) {
-			fireTimer = new CountDownTimer(2000, true);
-		}
-
-		@Override
 		public void update(com.artemis.World world, Entity e) {
-			if (fireTimer.update(world.getDelta())) {
+			WeaponComponent weaponComponent = e.getComponent(WeaponComponent.class);
+			int reloadTime = weaponComponent.getReloadTime();
+			reloadTime -= world.getDelta();
+
+			if (reloadTime <= 0) {
 				Spatial spatial = ComponentWrapper.getSpatial(e);
 
 				direction.set(1f, 0f).rotate(spatial.getAngle());
@@ -618,8 +616,10 @@ public class Scripts {
 				}, new Vector2(spatial.getX(), spatial.getY()), target);
 
 				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), new Scripts.LaserScript());
-				fireTimer.reset();
+
+				reloadTime += weaponComponent.getFireRate();
 			}
+			weaponComponent.setReloadTime(reloadTime);
 
 			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
 			Animation currentAnimation = animationComponent.getCurrentAnimation();
@@ -640,9 +640,9 @@ public class Scripts {
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			aliveTimer = new CountDownTimer(800, true);
-			
+
 			Spatial spatial = ComponentWrapper.getSpatial(e);
-			
+
 			laserTimelineAnimation = Builders.animation(Builders.timeline() //
 					.value(Builders.timelineValue("alpha") //
 							.keyFrame(0, 0f) //
@@ -671,12 +671,12 @@ public class Scripts {
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 			spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
-			
+
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			float width = spatial.getWidth();
 			float height = (Float) laserTimelineAnimation.getValue("width");
 			spatial.setSize(width, height);
-			
+
 			Physics physics = ComponentWrapper.getPhysics(e);
 			Contact contact = physics.getContact();
 

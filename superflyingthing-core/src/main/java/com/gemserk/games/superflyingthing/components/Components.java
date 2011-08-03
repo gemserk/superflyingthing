@@ -265,6 +265,34 @@ public class Components {
 		}
 
 	}
+	
+	public static class WeaponComponent extends Component {
+		
+		private int fireRate;
+		private int reloadTime;
+		
+		public void setFireRate(int fireRate) {
+			this.fireRate = fireRate;
+		}
+		
+		public int getReloadTime() {
+			return reloadTime;
+		}
+		
+		public int getFireRate() {
+			return fireRate;
+		}
+		
+		public void setReloadTime(int reloadTime) {
+			this.reloadTime = reloadTime;
+		}
+		
+		public WeaponComponent(int fireRate) {
+			this.fireRate = fireRate;
+			this.reloadTime = 0;
+		}
+		
+	}
 
 	public static class PortalComponent extends Component {
 
