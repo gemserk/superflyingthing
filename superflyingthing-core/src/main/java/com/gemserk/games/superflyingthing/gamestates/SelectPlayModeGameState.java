@@ -65,7 +65,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					}
 				});
 
-		TextButton practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.5f) //
+		TextButton practiceModeButton = new TextButton(buttonFont, "Practice", centerX, height * 0.3f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE) //
@@ -78,7 +78,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					}
 				});
 
-		TextButton randomModeButton = new TextButton(buttonFont, "Random", centerX, height * 0.3f) //
+		TextButton randomModeButton = new TextButton(buttonFont, "Random", centerX, height * 0.5f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE) //
