@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
@@ -159,6 +160,15 @@ public class GameOverGameState extends GameStateImpl {
 						game.getPlayScreen().dispose();
 					}
 				}).start();
+		
+		// I hate this code here...
+		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
+		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
+		}
 	}
 
 	private void restartLevel() {

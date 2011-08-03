@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
@@ -62,6 +63,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					public void onReleased() {
 						GameInformation.gameMode = GameInformation.ChallengeGameMode;
 						game.transition(game.getLevelSelectionScreen(), 500, 500);	
+						Analytics.traker.trackPageView("/challenge/selected", "/challenge/selected", null);
 					}
 				});
 
@@ -75,6 +77,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					public void onReleased() {
 						GameInformation.gameMode = GameInformation.PracticeGameMode;
 						game.transition(game.getPlayScreen(), 500, 250);		
+						Analytics.traker.trackPageView("/practice/selected", "/practice/selected", null);
 					}
 				});
 
@@ -88,6 +91,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					public void onReleased() {
 						GameInformation.gameMode = GameInformation.RandomGameMode;
 						game.transition(game.getPlayScreen(), 500, 250);
+						Analytics.traker.trackPageView("/random/selected", "/random/selected", null);
 					}
 				});
 

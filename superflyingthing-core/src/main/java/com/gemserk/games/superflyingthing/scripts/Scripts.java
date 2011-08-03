@@ -533,6 +533,7 @@ public class Scripts {
 			gameDataComponent.ship = null;
 			gameData.deaths++;
 
+			eventManager.registerEvent(Events.shipDeath, e);
 			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
 			eventManager.registerEvent(Events.moveCameraToPlanet, e);
 		}
@@ -661,7 +662,7 @@ public class Scripts {
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			TimerComponent timerComponent = e.getComponent(TimerComponent.class);
-			
+
 			laserTimelineAnimation.update((float) world.getDelta());
 
 			timerComponent.setCurrentTime(timerComponent.getCurrentTime() - world.getDelta());

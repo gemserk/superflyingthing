@@ -147,12 +147,13 @@ public class PauseGameState extends GameStateImpl {
 					}
 				}).start();
 
+		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			Analytics.traker.trackPageView("/challengeMode/finish", "/challengeMode/finish", null);
+			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			Analytics.traker.trackPageView("/finishPracticeMode", "/finishPracticeMode", null);
+			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackPageView("/finishRandomMode", "/finishRandomMode", null);
+			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
 		}
 	}
 	

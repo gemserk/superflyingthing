@@ -191,13 +191,13 @@ public class PlayGameState extends GameStateImpl {
 
 		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			new RandomMode().create(this);
-			Analytics.traker.trackPageView("/startChallengeMode", "/startChallengeMode", null);
+			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			new PracticeMode().create(this);
-			Analytics.traker.trackPageView("/startPracticeMode", "/startPracticeMode", null);
+			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			new ChallengeMode().create(this);
-			Analytics.traker.trackPageView("/startRandomMode", "/startRandomMode", null);
+			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
@@ -235,6 +235,15 @@ public class PlayGameState extends GameStateImpl {
 						game.getGamePreferences().updatePlayerProfile(playerProfile);
 					}
 
+				}
+				
+				event = eventManager.getEvent(Events.shipDeath);
+				if (event != null) {
+					eventManager.handled(event);
+					if (GameInformation.gameMode == GameInformation.RandomGameMode)
+						Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/death", "/challenge/" + (GameInformation.level + 1) + "/death", null);
+					else if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
+						Analytics.traker.trackPageView("/random/death", "/random/death", null);
 				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));
@@ -354,11 +363,6 @@ public class PlayGameState extends GameStateImpl {
 					new TimelineSynchronizer(new MutableObjectSynchronizer(), levelNameText));
 
 			container.add(levelNameText);
-
-			// Synchronizers.transition(levelNameText.getColor(), Transitions.transitionBuilder(levelNameText.getColor()) //
-			// .end(new Color(1f, 1f, 1f, 0f)) //
-			// .functions(InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.linear(), InterpolationFunctions.easeOut()) //
-			// .time(3000));
 
 		}
 
@@ -558,7 +562,14 @@ public class PlayGameState extends GameStateImpl {
 
 		container.add(message);
 
-		// Analytics.traker.trackPageView("/randomMode/finishLevel", "/randomMode/finishLevel", null);
+		if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/finish", "/challenge/" + (GameInformation.level + 1) + "/finish", null);
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			Analytics.traker.trackPageView("/practice/finish", "/practice/finish", null);
+		} else if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			Analytics.traker.trackPageView("/random/finish", "/random/finish", null);
+		}
+		
 	}
 
 	@Override
@@ -607,11 +618,9 @@ public class PlayGameState extends GameStateImpl {
 
 		if (done) {
 			if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-				Analytics.traker.trackPageView("/challengeMode/finishLevel", "/challengeMode/finishLevel", null);
 				game.transition(game.getGameOverScreen(), 0, 300, false);
 			} else {
 				game.transition(game.getGameOverScreen(), 0, 300, false);
-				// game.getPlayScreen().restart();
 			}
 		}
 
