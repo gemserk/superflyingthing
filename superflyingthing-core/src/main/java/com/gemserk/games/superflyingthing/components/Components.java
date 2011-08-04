@@ -221,11 +221,8 @@ public class Components {
 	public static class GameData {
 
 		public int deaths;
-
 		public int totalItems;
-
 		public int currentItems;
-
 		public int time;
 
 		public GameData() {
