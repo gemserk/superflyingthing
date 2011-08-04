@@ -540,7 +540,7 @@ public class PlayGameState extends GameStateImpl {
 	private void gameFinished() {
 		BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-		Text message = GuiControls.label("Great Job!").position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f) //
+		Text message = GuiControls.label("Great Job!").position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f) //
 				.font(font) //
 				.color(1f, 1f, 1f, 0f) //
 				.build();
