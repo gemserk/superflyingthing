@@ -208,6 +208,7 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void resume() {
+		game.getAdWhirlViewHandler().show();
 		Gdx.input.setCatchBackKey(true);
 	}
 
