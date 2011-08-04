@@ -188,16 +188,6 @@
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.ads.admob</groupId>
-			<artifactId>admob</artifactId>
-			<version>4.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.adwhirl.adwhirl</groupId>
-			<artifactId>adwhirl</artifactId>
-			<version>3.0.0</version>
-		</dependency>
-		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
 			<scope>test</scope>
@@ -219,34 +209,45 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.google.ads.admob</groupId>
+			<artifactId>admob</artifactId>
+			<version>${admob.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.adwhirl.adwhirl</groupId>
+			<artifactId>adwhirl</artifactId>
+			<version>${adwhirl.version}</version>
+		</dependency>
+		<dependency>
 			<groupId>com.google.android</groupId>
 			<artifactId>android</artifactId>
 			<version>2.2.1</version>
 			<scope>provided</scope>
 		</dependency>
-
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>superflyingthing-core</artifactId>
 			<version>${project.version}</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-android</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.badlogic.gdx</groupId>
 			<artifactId>gdx-backend-android</artifactId>
-			<version>${libgdxversion}</version>
+			<version>${gdx.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.gemserk.analytics.googleanalytics</groupId>
 			<artifactId>jgoogleanalyticstracker-android</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.gemserk.datastore</groupId>
 			<artifactId>datastore-android</artifactId>
 			<version>${datastore.version}</version>
 		</dependency>
-
 		<!-- <dependency> <groupId>org.slf4j</groupId> <artifactId>slf4j-android</artifactId> 
 			<version>1.6.1-RC1</version> </dependency> -->
 	</dependencies>

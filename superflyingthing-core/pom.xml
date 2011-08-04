@@ -14,11 +14,6 @@
 	<name>Super Flying Thing Prototype - Core</name>
 	<description>Super Flying Thing Prototype - Core</description>
 
-	<properties>
-		<commons.gdx.version>0.0.4-SNAPSHOT</commons.gdx.version>
-		<resourcesmanager.version>0.0.12-SNAPSHOT</resourcesmanager.version>
-	</properties>
-
 	<dependencies>
 		<dependency>
 			<groupId>junit</groupId>
@@ -43,21 +38,18 @@
 		<dependency>
 			<groupId>com.badlogic.gdx</groupId>
 			<artifactId>gdx</artifactId>
-			<version>${libgdxversion}</version>
+			<version>${gdx.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.gemserk.commons.gdx</groupId>
 			<artifactId>commons-gdx-core</artifactId>
 			<version>${commons.gdx.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.gemserk.commons.gdx</groupId>
 			<artifactId>commons-gdx-artemis</artifactId>
 			<version>${commons.gdx.version}</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.gemserk.resources</groupId>
 			<artifactId>resourcesmanager-core</artifactId>
@@ -73,18 +65,15 @@
 				</exclusion>
 			</exclusions>
 		</dependency>
-
 		<dependency>
 			<groupId>com.dmurph</groupId>
 			<artifactId>JGoogleAnalyticsTracker</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.gemserk.datastore</groupId>
 			<artifactId>datastore-core</artifactId>
 			<version>${datastore.version}</version>
 		</dependency>
-
 	</dependencies>
 
 </project>
