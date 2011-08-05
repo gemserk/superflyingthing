@@ -78,6 +78,14 @@ public class EntityTemplates {
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 	private final Mesh2dBuilder mesh2dBuilder;
+	
+	public EntityTemplate getAttachedShipTemplate() {
+		return attachedShipTemplate;
+	}
+	
+	public EntityTemplate getLaserBulletTemplate() {
+		return laserBulletTemplate;
+	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
 		this.resourceManager = resourceManager;
@@ -159,38 +167,47 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity attachedShip(float x, float y, Vector2 direction) {
-		float width = 0.8f;
-		float height = 0.8f;
+	private EntityTemplate attachedShipTemplate = new EntityTemplate() {
 
-		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
+		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
 
-		Entity e = entityBuilder.build();
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			defaultParameters.setParameters(parameters);
+			apply(entity);
+		}
 
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.restitution(0f) //
-						.categoryBits(CategoryBits.ShipCategoryBits) //
-						.maskBits((short) 0) //
-						.boxShape(width * 0.125f, height * 0.125f)) //
-				.mass(50f) //
-				.position(x, y) //
-				.type(BodyType.DynamicBody) //
-				.userData(e) //
-				.build();
+		@Override
+		public void apply(Entity e) {
+			float width = 0.8f;
+			float height = 0.8f;
 
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
-		e.addComponent(new RenderableComponent(1));
-		e.addComponent(new MovementComponent(direction.x, direction.y));
-		e.addComponent(new AttachableComponent());
-		e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
-		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
+			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
-		e.refresh();
-		return e;
-	}
+			Vector2 position = defaultParameters.get("position");
+
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.restitution(0f) //
+							.categoryBits(CategoryBits.ShipCategoryBits) //
+							.maskBits((short) 0) //
+							.boxShape(width * 0.125f, height * 0.125f)) //
+					.mass(50f) //
+					.position(position.x, position.y) //
+					.type(BodyType.DynamicBody) //
+					.userData(e) //
+					.build();
+
+			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
+			e.addComponent(new RenderableComponent(1));
+			e.addComponent(new MovementComponent(1f, 0f));
+			e.addComponent(new AttachableComponent());
+			e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
+			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
+		}
+	};
 
 	public Entity thrustParticle(float x, float y) {
 		Sprite sprite = resourceManager.getResourceValue("ThrustSprite");
@@ -420,17 +437,16 @@ public class EntityTemplates {
 
 	public Entity laserTurret(float x, float y, float angle, int fireRate, int bulletDuration, int currentReloadTime, Script script) {
 		Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
-
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
 				.component(new ScriptComponent(script)) //
 				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
 				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
 				.component(new RenderableComponent(3))//
-				.component(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, bulletTemplate)).build();
+				.component(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate)).build();
 	}
 
-	EntityTemplate bulletTemplate = new EntityTemplate() {
+	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
 
 		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
 
@@ -444,7 +460,7 @@ public class EntityTemplates {
 
 		@Override
 		public void apply(Entity entity) {
-			Sprite sprite = resourceManager.getResourceValue("LaserSprite");
+			Sprite sprite = defaultParameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
 			Script script = defaultParameters.get("script", new Scripts.LaserScript());
 			Vector2 position = defaultParameters.get("position");
 			Integer duration = defaultParameters.get("duration", 1000);

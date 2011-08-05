@@ -395,6 +395,7 @@ public class Scripts {
 	public static class GameScript extends ScriptJavaImpl {
 
 		private final EventManager eventManager;
+		private final EntityFactory entityFactory;
 
 		private ShipController controller;
 		private EntityTemplates entityTemplates;
@@ -403,12 +404,16 @@ public class Scripts {
 
 		Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
 
-		public GameScript(EventManager eventManager, ShipController controller, EntityTemplates entityTemplates, GameData gameData, boolean invulnerable) {
+		private Parameters parameters = new ParametersWrapper();
+		
+		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
+				boolean invulnerable) {
 			this.eventManager = eventManager;
 			this.controller = controller;
 			this.entityTemplates = entityTemplates;
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
+			this.entityFactory = entityFactory;
 		}
 
 		@Override
@@ -468,7 +473,12 @@ public class Scripts {
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
-			Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
+
+			parameters.put("position", spatial.getPosition().tmp().add(0f, 2f));
+
+			// Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
+			
+			Entity attachedShip = entityFactory.instantiate(entityTemplates.getAttachedShipTemplate(), parameters);
 
 			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 			attachmentComponent.setEntity(attachedShip);

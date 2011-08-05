@@ -340,7 +340,8 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, 
+							gameData, controller, false))) //
 					.build();
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
@@ -454,7 +455,8 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, // 
+							gameData, controller, false))).build();
 
 		}
 	}
@@ -536,7 +538,8 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, true))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, // 
+							gameData, controller, true))).build();
 
 		}
 	}

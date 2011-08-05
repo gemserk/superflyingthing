@@ -235,7 +235,8 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, controller, entityTemplates, gameData, false))) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, // 
+						entityFactory, gameData, controller, false))) //
 				.build();
 
 	}
