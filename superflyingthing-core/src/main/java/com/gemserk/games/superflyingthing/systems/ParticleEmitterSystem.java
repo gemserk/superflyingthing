@@ -1,5 +1,8 @@
 package com.gemserk.games.superflyingthing.systems;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
@@ -11,6 +14,9 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 
 public class ParticleEmitterSystem extends EntityProcessingSystem {
+	
+	
+	protected static final Logger logger = LoggerFactory.getLogger(ParticleEmitterSystem.class);
 
 	ComponentMapper<ParticleEmitterComponent> particleEmitterComponentMapper;
 
@@ -32,6 +38,18 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 	// dispose() { ... }
 
+	@Override
+	protected void added(Entity e) {
+		if (logger.isInfoEnabled())
+			logger.info("Entity with particle emitter added");
+	}
+	
+	@Override
+	protected void removed(Entity e) {
+		if (logger.isInfoEnabled())
+			logger.info("Entity with particle emitter removed");
+	}
+	
 	@Override
 	protected void begin() {
 		super.begin();

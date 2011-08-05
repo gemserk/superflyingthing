@@ -78,17 +78,21 @@ public class EntityTemplates {
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 	private final Mesh2dBuilder mesh2dBuilder;
-	
+
 	public EntityTemplate getAttachedShipTemplate() {
 		return attachedShipTemplate;
 	}
-	
+
 	public EntityTemplate getLaserBulletTemplate() {
 		return laserBulletTemplate;
 	}
-	
+
 	public EntityTemplate getShipTemplate() {
 		return shipTemplate;
+	}
+
+	public EntityTemplate getParticleEmitterTemplate() {
+		return particleEmitterTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
@@ -106,25 +110,6 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity explosionEffect(float x, float y) {
-		ParticleEmitter explosionEmitter = resourceManager.getResourceValue("ExplosionEmitter");
-		explosionEmitter.start();
-		ParticleEmitterUtils.scaleEmitter(explosionEmitter, 0.02f);
-		return entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, 0f))) //
-				.component(new ParticleEmitterComponent(explosionEmitter)) //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-					@Override
-					public void update(com.artemis.World world, Entity e) {
-						ParticleEmitterComponent particleEmitterComponent = ComponentWrapper.getParticleEmitter(e);
-						ParticleEmitter particleEmitter = particleEmitterComponent.getParticleEmitter();
-						if (particleEmitter.isComplete())
-							world.deleteEntity(e);
-					}
-				})) //
-				.build();
-	}
-
 	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, final float x, final float y, Script script) {
 		return entityBuilder //
 				.component(new Components.CameraComponent(camera, libgdxCamera)) //
@@ -134,32 +119,60 @@ public class EntityTemplates {
 				.build();
 	}
 
-	private EntityTemplate shipTemplate = new EntityTemplate() {
-		
+	private EntityTemplate particleEmitterTemplate = new EntityTemplate() {
+
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
-		
-		{
-			parameters.put("direction", new Vector2(1f, 0f));
-		}
-		
+
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
 			this.parameters.setParameters(parameters);
 			apply(entity);
 		}
-		
+
+		@Override
+		public void apply(Entity entity) {
+			Vector2 position = parameters.get("position");
+			Float scale = parameters.get("scale", 0.02f);
+			String emitter = parameters.get("emitter");
+
+			ParticleEmitter particleEmitter = resourceManager.getResourceValue(emitter);
+
+			particleEmitter.start();
+			ParticleEmitterUtils.scaleEmitter(particleEmitter, scale);
+
+			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, 0f)));
+			entity.addComponent(new ParticleEmitterComponent(particleEmitter));
+			entity.addComponent(new ScriptComponent(new Scripts.ParticleEmitterScript()));
+		}
+
+	};
+
+	private EntityTemplate shipTemplate = new EntityTemplate() {
+
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+
+		{
+			parameters.put("direction", new Vector2(1f, 0f));
+		}
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
 		@Override
 		public void apply(Entity e) {
 			float width = 0.8f;
 			float height = 0.8f;
 
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
-			
+
 			Vector2 position = parameters.get("position");
 			Vector2 direction = parameters.get("direction");
 			ShipController controller = parameters.get("controller");
 			Script script = parameters.get("script", new ShipScript());
-			
+
 			Body body = bodyBuilder //
 					.fixture(bodyBuilder.fixtureDefBuilder() //
 							.restitution(0f) //

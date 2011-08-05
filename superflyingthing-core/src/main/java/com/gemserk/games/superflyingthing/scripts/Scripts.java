@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.scripts;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
@@ -44,6 +45,7 @@ import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
@@ -405,10 +407,11 @@ public class Scripts {
 		Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
 
 		private Parameters parameters = new ParametersWrapper();
-		
+
 		private EntityTemplate shipTemplate;
 		private EntityTemplate attachedShipTemplate;
-		
+		private EntityTemplate particleEmitterTemplate;
+
 		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
 				boolean invulnerable) {
 			this.eventManager = eventManager;
@@ -417,10 +420,11 @@ public class Scripts {
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
 			this.entityFactory = entityFactory;
-			
+
 			shipTemplate = entityTemplates.getShipTemplate();
 			attachedShipTemplate = entityTemplates.getAttachedShipTemplate();
-			
+			particleEmitterTemplate = entityTemplates.getParticleEmitterTemplate();
+
 		}
 
 		@Override
@@ -456,7 +460,12 @@ public class Scripts {
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-			entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
+
+			parameters.put("position", spatial.getPosition());
+			parameters.put("emitter", "ExplosionEmitter");
+
+			entityFactory.instantiate(particleEmitterTemplate, parameters);
+			// entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 			entityTemplates.deadShip(spatial, spriteComponent.getSprite());
@@ -484,7 +493,7 @@ public class Scripts {
 			parameters.put("position", spatial.getPosition().tmp().add(0f, 2f));
 
 			// Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
-			
+
 			Entity attachedShip = entityFactory.instantiate(attachedShipTemplate, parameters);
 
 			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
@@ -512,13 +521,13 @@ public class Scripts {
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
-			
+
 			parameters.put("position", spatial.getPosition());
 			parameters.put("direction", movementComponent.getDirection());
 			parameters.put("controller", controller);
-			
+
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
-			
+
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
 		}
@@ -699,4 +708,15 @@ public class Scripts {
 
 	}
 
+	public static class ParticleEmitterScript extends ScriptJavaImpl {
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			ParticleEmitterComponent particleEmitterComponent = ComponentWrapper.getParticleEmitter(e);
+			ParticleEmitter particleEmitter = particleEmitterComponent.getParticleEmitter();
+			if (particleEmitter.isComplete())
+				world.deleteEntity(e);
+		}
+
+	}
 }
