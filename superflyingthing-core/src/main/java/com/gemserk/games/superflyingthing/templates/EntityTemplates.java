@@ -86,6 +86,10 @@ public class EntityTemplates {
 	public EntityTemplate getLaserBulletTemplate() {
 		return laserBulletTemplate;
 	}
+	
+	public EntityTemplate getShipTemplate() {
+		return shipTemplate;
+	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
 		this.resourceManager = resourceManager;
@@ -130,42 +134,58 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity ship(float x, float y, Vector2 direction, ShipController controller) {
-		float width = 0.8f;
-		float height = 0.8f;
+	private EntityTemplate shipTemplate = new EntityTemplate() {
+		
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		
+		{
+			parameters.put("direction", new Vector2(1f, 0f));
+		}
+		
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+		
+		@Override
+		public void apply(Entity e) {
+			float width = 0.8f;
+			float height = 0.8f;
 
-		Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
+			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
+			
+			Vector2 position = parameters.get("position");
+			Vector2 direction = parameters.get("direction");
+			ShipController controller = parameters.get("controller");
+			Script script = parameters.get("script", new ShipScript());
+			
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.restitution(0f) //
+							.categoryBits(CategoryBits.ShipCategoryBits) //
+							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
+							.circleShape(width * 0.125f)) //
+					.mass(50f) //
+					.position(position.x, position.y) //
+					.type(BodyType.DynamicBody) //
+					.userData(e) //
+					.build();
 
-		Entity e = entityBuilder.build();
-
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.restitution(0f) //
-						.categoryBits(CategoryBits.ShipCategoryBits) //
-						.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-						.circleShape(width * 0.125f)) //
-				.mass(50f) //
-				.position(x, y) //
-				.type(BodyType.DynamicBody) //
-				.userData(e) //
-				.build();
-
-		e.addComponent(new TagComponent(Groups.ship));
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
-		e.addComponent(new RenderableComponent(1));
-		e.addComponent(new MovementComponent(direction.x, direction.y));
-		e.addComponent(new AliveComponent(false));
-		e.addComponent(new AttachableComponent());
-		e.addComponent(new ShipControllerComponent());
-		e.addComponent(new ControllerComponent(controller));
-		e.addComponent(new ScriptComponent(new ShipScript()));
-		e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
-
-		e.refresh();
-		return e;
-	}
+			e.addComponent(new TagComponent(Groups.ship));
+			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
+			e.addComponent(new RenderableComponent(1));
+			e.addComponent(new MovementComponent(direction.x, direction.y));
+			e.addComponent(new AliveComponent(false));
+			e.addComponent(new AttachableComponent());
+			e.addComponent(new ShipControllerComponent());
+			e.addComponent(new ControllerComponent(controller));
+			e.addComponent(new ScriptComponent(script));
+			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
+		}
+	};
 
 	private EntityTemplate attachedShipTemplate = new EntityTemplate() {
 

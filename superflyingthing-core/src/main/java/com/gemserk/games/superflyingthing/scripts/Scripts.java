@@ -406,6 +406,9 @@ public class Scripts {
 
 		private Parameters parameters = new ParametersWrapper();
 		
+		private EntityTemplate shipTemplate;
+		private EntityTemplate attachedShipTemplate;
+		
 		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
 				boolean invulnerable) {
 			this.eventManager = eventManager;
@@ -414,6 +417,10 @@ public class Scripts {
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
 			this.entityFactory = entityFactory;
+			
+			shipTemplate = entityTemplates.getShipTemplate();
+			attachedShipTemplate = entityTemplates.getAttachedShipTemplate();
+			
 		}
 
 		@Override
@@ -478,7 +485,7 @@ public class Scripts {
 
 			// Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
 			
-			Entity attachedShip = entityFactory.instantiate(entityTemplates.getAttachedShipTemplate(), parameters);
+			Entity attachedShip = entityFactory.instantiate(attachedShipTemplate, parameters);
 
 			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
 			attachmentComponent.setEntity(attachedShip);
@@ -505,8 +512,13 @@ public class Scripts {
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
-			gameDataComponent.ship = entityTemplates.ship(spatial.getX(), spatial.getY(), movementComponent.getDirection(), controller);
-
+			
+			parameters.put("position", spatial.getPosition());
+			parameters.put("direction", movementComponent.getDirection());
+			parameters.put("controller", controller);
+			
+			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
+			
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
 		}
