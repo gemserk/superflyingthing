@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
@@ -268,6 +269,7 @@ public class Components {
 		private int fireRate;
 		private int reloadTime;
 		private int bulletDuration;
+		private EntityTemplate bulletTemplate;
 		
 		public void setFireRate(int fireRate) {
 			this.fireRate = fireRate;
@@ -289,10 +291,15 @@ public class Components {
 			this.reloadTime = reloadTime;
 		}
 		
-		public WeaponComponent(int fireRate, int bulletDuration, int currentReloadTime) {
+		public EntityTemplate getBulletTemplate() {
+			return bulletTemplate;
+		}
+		
+		public WeaponComponent(int fireRate, int bulletDuration, int currentReloadTime, EntityTemplate bulletTemplate) {
 			this.fireRate = fireRate;
 			this.bulletDuration = bulletDuration;
 			this.reloadTime = currentReloadTime;
+			this.bulletTemplate = bulletTemplate;
 		}
 		
 	}

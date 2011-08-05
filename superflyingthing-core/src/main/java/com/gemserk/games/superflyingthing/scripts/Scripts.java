@@ -20,12 +20,16 @@ import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -500,15 +504,18 @@ public class Scripts {
 
 	public static class LaserGunScript extends ScriptJavaImpl {
 
-		private final EntityTemplates entityTemplates;
+		private final EntityFactory entityFactory;
 		private final World physicsWolrd;
+
+		private final Parameters bulletParameters;
 
 		private static final Vector2 direction = new Vector2();
 		private static final Vector2 target = new Vector2();
 
-		public LaserGunScript(EntityTemplates entityTemplates, World physicsWolrd) {
-			this.entityTemplates = entityTemplates;
+		public LaserGunScript(EntityFactory entityFactory, World physicsWolrd) {
 			this.physicsWolrd = physicsWolrd;
+			this.entityFactory = entityFactory;
+			this.bulletParameters = new ParametersWrapper();
 		}
 
 		@Override
@@ -531,7 +538,13 @@ public class Scripts {
 					}
 				}, new Vector2(spatial.getX(), spatial.getY()), target);
 
-				entityTemplates.laser(spatial.getX(), spatial.getY(), target.dst(spatial.getPosition()), spatial.getAngle(), weaponComponent.getBulletDuration(), new Scripts.LaserScript());
+				bulletParameters.put("position", spatial.getPosition());
+				bulletParameters.put("length", target.dst(spatial.getPosition()));
+				bulletParameters.put("angle", spatial.getAngle());
+				bulletParameters.put("duration", weaponComponent.getBulletDuration());
+
+				EntityTemplate bulletTemplate = weaponComponent.getBulletTemplate();
+				entityFactory.instantiate(bulletTemplate, bulletParameters);
 
 				reloadTime += weaponComponent.getFireRate();
 			}

@@ -22,6 +22,8 @@ import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.artemis.templates.ParametersWithFallBack;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -34,6 +36,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.ParticleEmitterUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
+import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
@@ -219,7 +222,7 @@ public class EntityTemplates {
 
 	public Entity star(float x, float y, Script script) {
 		Entity e = entityBuilder.build();
-		
+
 		float radius = 0.3f;
 
 		Animation rotateAnimation = resourceManager.getResourceValue("StarAnimation");
@@ -286,9 +289,9 @@ public class EntityTemplates {
 	public Entity destinationPlanet(float x, float y, float radius, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
-		
+
 		e.setGroup(Groups.destinationPlanets);
-		
+
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //
@@ -417,46 +420,61 @@ public class EntityTemplates {
 
 	public Entity laserTurret(float x, float y, float angle, int fireRate, int bulletDuration, int currentReloadTime, Script script) {
 		Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
+
 		return entityBuilder //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
 				.component(new ScriptComponent(script)) //
 				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
 				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
 				.component(new RenderableComponent(3))//
-				.component(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime))
-				.build();
+				.component(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, bulletTemplate)).build();
 	}
 
-	public Entity laser(float x, float y, float length, float angle, int duration, Script script) {
-		Sprite sprite = resourceManager.getResourceValue("LaserSprite");
+	EntityTemplate bulletTemplate = new EntityTemplate() {
 
-		Entity e = entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(x, y, length, 0.1f, angle))) //
-				.component(new ScriptComponent(script)) //
-				.component(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue)) //
-				.component(new RenderableComponent(2)) //
-				.component(new Components.TimerComponent(duration)) //
-				.build();
+		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
 
-		Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			defaultParameters.setParameters(parameters);
+			// if script was stateless, set it here to avoid building a new laser script each time.
+			// defaultParameters.put("script", new Scripts.LaserScript());
+			apply(entity);
+		}
 
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.polygonShape(vertices) //
-						.categoryBits(CategoryBits.AllCategoryBits) //
-						.sensor()) //
-				.position(x, y) //
-				.angle(angle * MathUtils.degreesToRadians) //
-				.mass(1f) //
-				.type(BodyType.StaticBody) //
-				.userData(e) //
-				.build();
+		@Override
+		public void apply(Entity entity) {
+			Sprite sprite = resourceManager.getResourceValue("LaserSprite");
+			Script script = defaultParameters.get("script", new Scripts.LaserScript());
+			Vector2 position = defaultParameters.get("position");
+			Integer duration = defaultParameters.get("duration", 1000);
+			Float length = defaultParameters.get("length");
+			Float angle = defaultParameters.get("angle");
 
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.refresh();
+			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, length, 0.1f, angle)));
+			entity.addComponent(new ScriptComponent(script));
+			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
+			entity.addComponent(new RenderableComponent(2));
+			entity.addComponent(new Components.TimerComponent(duration));
 
-		return e;
-	}
+			Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
+
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.polygonShape(vertices) //
+							.categoryBits(CategoryBits.AllCategoryBits) //
+							.sensor()) //
+					.position(position.x, position.y) //
+					.angle(angle * MathUtils.degreesToRadians) //
+					.mass(1f) //
+					.type(BodyType.StaticBody) //
+					.userData(entity) //
+					.build();
+
+			entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		}
+
+	};
 
 	public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("PortalSprite");

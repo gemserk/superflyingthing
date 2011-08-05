@@ -38,6 +38,8 @@ import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -96,6 +98,7 @@ public class PlayGameState extends GameStateImpl {
 	EntityBuilder entityBuilder;
 	private com.artemis.World world;
 	private WorldWrapper worldWrapper;
+	private EntityFactory entityFactory;
 
 	GameData gameData;
 	private Text itemsTakenLabel;
@@ -139,6 +142,7 @@ public class PlayGameState extends GameStateImpl {
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();
+		entityFactory= new EntityFactoryImpl(world);
 		worldWrapper = new WorldWrapper(world);
 		// add render and all stuff...
 		GameInformation.worldWrapper = worldWrapper;
@@ -318,7 +322,7 @@ public class PlayGameState extends GameStateImpl {
 			for (int i = 0; i < level.laserTurrets.size(); i++) {
 				LaserTurret laserTurret = level.laserTurrets.get(i);
 				entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, laserTurret.fireRate, laserTurret.bulletDuration, //
-						laserTurret.currentReloadTime, new Scripts.LaserGunScript(entityTemplates, physicsWorld));
+						laserTurret.currentReloadTime, new Scripts.LaserGunScript(entityFactory, physicsWorld));
 			}
 
 			for (int i = 0; i < level.portals.size(); i++) {
