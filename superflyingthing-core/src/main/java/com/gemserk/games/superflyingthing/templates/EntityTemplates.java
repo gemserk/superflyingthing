@@ -13,10 +13,8 @@ import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
-import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.Script;
-import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -39,7 +37,6 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
@@ -95,6 +92,10 @@ public class EntityTemplates {
 		return particleEmitterTemplate;
 	}
 
+	public EntityTemplate getDeadShipTemplate() {
+		return deadShipTemplate;
+	}
+
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
@@ -123,6 +124,11 @@ public class EntityTemplates {
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
+		{
+			// used to transform the emitter and particles to the world coordinates space
+			parameters.put("scale", new Float(0.02f));
+		}
+
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
 			this.parameters.setParameters(parameters);
@@ -132,7 +138,7 @@ public class EntityTemplates {
 		@Override
 		public void apply(Entity entity) {
 			Vector2 position = parameters.get("position");
-			Float scale = parameters.get("scale", 0.02f);
+			Float scale = parameters.get("scale");
 			String emitter = parameters.get("emitter");
 
 			ParticleEmitter particleEmitter = resourceManager.getResourceValue(emitter);
@@ -242,33 +248,25 @@ public class EntityTemplates {
 		}
 	};
 
-	public Entity thrustParticle(float x, float y) {
-		Sprite sprite = resourceManager.getResourceValue("ThrustSprite");
-		return entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 0.2f, 0.2f, 0f))) //
-				.component(new SpriteComponent(sprite)) //
-				.component(new RenderableComponent(-1)).component(new ScriptComponent(new ScriptJavaImpl() {
+	private EntityTemplate deadShipTemplate = new EntityTemplate() {
 
-					float aliveTime = 100;
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
-					@Override
-					public void update(com.artemis.World world, Entity e) {
-						aliveTime -= world.getDelta();
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
 
-						if (aliveTime <= 0) {
-							world.deleteEntity(e);
-							return;
-						}
-
-						SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-						spriteComponent.getColor().a = FloatInterpolator.interpolate(0f, 1f, aliveTime / 100);
-
-						Spatial spatial = ComponentWrapper.getSpatial(e);
-						spatial.setSize(FloatInterpolator.interpolate(0.1f, 0.2f, aliveTime / 100), FloatInterpolator.interpolate(0.1f, 0.2f, aliveTime / 100));
-					}
-				})) //
-				.build();
-	}
+		@Override
+		public void apply(Entity entity) {
+			Spatial spatial = parameters.get("spatial");
+			Sprite sprite = parameters.get("sprite");
+			entity.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+			entity.addComponent(new SpriteComponent(sprite, Colors.semiBlack));
+			entity.addComponent(new RenderableComponent(-1));
+		}
+	};
 
 	public Entity star(float x, float y, Script script) {
 		Entity e = entityBuilder.build();
@@ -299,14 +297,6 @@ public class EntityTemplates {
 
 		e.refresh();
 		return e;
-	}
-
-	public Entity deadShip(Spatial spatial, Sprite sprite) {
-		return entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(spatial))) //
-				.component(new SpriteComponent(sprite, Colors.semiBlack)) //
-				.component(new RenderableComponent(-1))//
-				.build();
 	}
 
 	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {

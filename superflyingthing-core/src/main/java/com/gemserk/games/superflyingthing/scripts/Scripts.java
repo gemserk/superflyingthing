@@ -400,7 +400,6 @@ public class Scripts {
 		private final EntityFactory entityFactory;
 
 		private ShipController controller;
-		private EntityTemplates entityTemplates;
 		private GameData gameData;
 		private boolean invulnerable;
 
@@ -410,13 +409,13 @@ public class Scripts {
 
 		private EntityTemplate shipTemplate;
 		private EntityTemplate attachedShipTemplate;
+		private EntityTemplate deadShipTemplate;
 		private EntityTemplate particleEmitterTemplate;
 
 		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
 				boolean invulnerable) {
 			this.eventManager = eventManager;
 			this.controller = controller;
-			this.entityTemplates = entityTemplates;
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
 			this.entityFactory = entityFactory;
@@ -424,7 +423,7 @@ public class Scripts {
 			shipTemplate = entityTemplates.getShipTemplate();
 			attachedShipTemplate = entityTemplates.getAttachedShipTemplate();
 			particleEmitterTemplate = entityTemplates.getParticleEmitterTemplate();
-
+			deadShipTemplate = entityTemplates.getDeadShipTemplate();
 		}
 
 		@Override
@@ -465,10 +464,13 @@ public class Scripts {
 			parameters.put("emitter", "ExplosionEmitter");
 
 			entityFactory.instantiate(particleEmitterTemplate, parameters);
-			// entityTemplates.explosionEffect(spatial.getX(), spatial.getY());
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-			entityTemplates.deadShip(spatial, spriteComponent.getSprite());
+			
+			parameters.put("spatial", spatial);
+			parameters.put("sprite", spriteComponent.getSprite());
+			
+			entityFactory.instantiate(deadShipTemplate, parameters);
 
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
@@ -491,8 +493,6 @@ public class Scripts {
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
 
 			parameters.put("position", spatial.getPosition().tmp().add(0f, 2f));
-
-			// Entity attachedShip = entityTemplates.attachedShip(spatial.getX(), spatial.getY() + 2f, new Vector2(1f, 0f));
 
 			Entity attachedShip = entityFactory.instantiate(attachedShipTemplate, parameters);
 
