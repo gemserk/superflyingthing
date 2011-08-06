@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -268,6 +267,51 @@ public class EntityTemplates {
 		}
 	};
 
+	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
+
+		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			defaultParameters.setParameters(parameters);
+			// if script was stateless, set it here to avoid building a new laser script each time.
+			// defaultParameters.put("script", new Scripts.LaserScript());
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+			Sprite sprite = defaultParameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
+			Script script = defaultParameters.get("script");
+			Vector2 position = defaultParameters.get("position");
+			Integer duration = defaultParameters.get("duration", 1000);
+			// Float length = defaultParameters.get("length");
+			Float angle = defaultParameters.get("angle");
+
+			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
+			entity.addComponent(new ScriptComponent(script));
+			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
+			entity.addComponent(new RenderableComponent(2));
+			entity.addComponent(new Components.TimerComponent(duration));
+
+			// Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
+			// Body body = bodyBuilder //
+			// .fixture(bodyBuilder.fixtureDefBuilder() //
+			// .polygonShape(vertices) //
+			// .categoryBits(CategoryBits.AllCategoryBits) //
+			// .sensor()) //
+			// .position(position.x, position.y) //
+			// .angle(angle * MathUtils.degreesToRadians) //
+			// .mass(1f) //
+			// .type(BodyType.StaticBody) //
+			// .userData(entity) //
+			// .build();
+			//
+			// entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		}
+
+	};
+
 	public Entity star(float x, float y, Script script) {
 		Entity e = entityBuilder.build();
 
@@ -468,52 +512,6 @@ public class EntityTemplates {
 				.component(new RenderableComponent(3))//
 				.component(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate)).build();
 	}
-
-	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			defaultParameters.setParameters(parameters);
-			// if script was stateless, set it here to avoid building a new laser script each time.
-			// defaultParameters.put("script", new Scripts.LaserScript());
-			apply(entity);
-		}
-
-		@Override
-		public void apply(Entity entity) {
-			Sprite sprite = defaultParameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
-			Script script = defaultParameters.get("script", new Scripts.LaserScript());
-			Vector2 position = defaultParameters.get("position");
-			Integer duration = defaultParameters.get("duration", 1000);
-			Float length = defaultParameters.get("length");
-			Float angle = defaultParameters.get("angle");
-
-			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, length, 0.1f, angle)));
-			entity.addComponent(new ScriptComponent(script));
-			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
-			entity.addComponent(new RenderableComponent(2));
-			entity.addComponent(new Components.TimerComponent(duration));
-
-			Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
-
-			Body body = bodyBuilder //
-					.fixture(bodyBuilder.fixtureDefBuilder() //
-							.polygonShape(vertices) //
-							.categoryBits(CategoryBits.AllCategoryBits) //
-							.sensor()) //
-					.position(position.x, position.y) //
-					.angle(angle * MathUtils.degreesToRadians) //
-					.mass(1f) //
-					.type(BodyType.StaticBody) //
-					.userData(entity) //
-					.build();
-
-			entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		}
-
-	};
 
 	public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
 		Sprite sprite = resourceManager.getResourceValue("PortalSprite");

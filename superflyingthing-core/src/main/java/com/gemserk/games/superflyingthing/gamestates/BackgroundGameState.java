@@ -50,6 +50,7 @@ import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.BasicAIShipControllerScript;
+import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -219,7 +220,7 @@ public class BackgroundGameState extends GameStateImpl {
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
 			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, laserTurret.fireRate, laserTurret.bulletDuration, // 
-					laserTurret.currentReloadTime, new Scripts.LaserGunScript(entityFactory, physicsWorld));
+					laserTurret.currentReloadTime, new LaserGunScript(entityFactory, physicsWorld));
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {

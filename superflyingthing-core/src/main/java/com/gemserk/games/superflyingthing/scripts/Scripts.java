@@ -7,13 +7,9 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
-import com.gemserk.animation4j.timeline.Builders;
-import com.gemserk.animation4j.timeline.TimelineAnimation;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -48,8 +44,6 @@ import com.gemserk.games.superflyingthing.components.Components.MovementComponen
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
-import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 
@@ -531,133 +525,6 @@ public class Scripts {
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
 		}
-	}
-
-	public static class LaserGunScript extends ScriptJavaImpl {
-
-		private final EntityFactory entityFactory;
-		private final World physicsWolrd;
-
-		private final Parameters bulletParameters;
-
-		private static final Vector2 direction = new Vector2();
-		private static final Vector2 target = new Vector2();
-
-		public LaserGunScript(EntityFactory entityFactory, World physicsWolrd) {
-			this.physicsWolrd = physicsWolrd;
-			this.entityFactory = entityFactory;
-			this.bulletParameters = new ParametersWrapper();
-		}
-
-		@Override
-		public void update(com.artemis.World world, Entity e) {
-			WeaponComponent weaponComponent = e.getComponent(WeaponComponent.class);
-			int reloadTime = weaponComponent.getReloadTime();
-			reloadTime -= world.getDelta();
-
-			if (reloadTime <= 0) {
-				Spatial spatial = ComponentWrapper.getSpatial(e);
-
-				direction.set(1f, 0f).rotate(spatial.getAngle());
-				target.set(spatial.getPosition()).add(direction.tmp().mul(100f));
-
-				physicsWolrd.rayCast(new RayCastCallback() {
-					@Override
-					public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-						target.set(point);
-						return fraction;
-					}
-				}, new Vector2(spatial.getX(), spatial.getY()), target);
-
-				bulletParameters.put("position", spatial.getPosition());
-				bulletParameters.put("length", target.dst(spatial.getPosition()));
-				bulletParameters.put("angle", spatial.getAngle());
-				bulletParameters.put("duration", weaponComponent.getBulletDuration());
-
-				EntityTemplate bulletTemplate = weaponComponent.getBulletTemplate();
-				entityFactory.instantiate(bulletTemplate, bulletParameters);
-
-				reloadTime += weaponComponent.getFireRate();
-			}
-			weaponComponent.setReloadTime(reloadTime);
-
-			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
-			Animation currentAnimation = animationComponent.getCurrentAnimation();
-			currentAnimation.update(world.getDelta());
-
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			spriteComponent.setSprite(currentAnimation.getCurrentFrame());
-		}
-
-	}
-
-	public static class LaserScript extends ScriptJavaImpl {
-
-		private TimelineAnimation laserTimelineAnimation;
-
-		@Override
-		public void init(com.artemis.World world, Entity e) {
-			TimerComponent timerComponent = e.getComponent(TimerComponent.class);
-			int totalTime = timerComponent.getTotalTime();
-
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-
-			laserTimelineAnimation = Builders.animation(Builders.timeline() //
-					.value(Builders.timelineValue("alpha") //
-							.keyFrame(0, 0f) //
-							.keyFrame(0.2f, 1f) //
-							.keyFrame(0.8f, 1f) //
-							.keyFrame(1f, 0f)) //
-					.value(Builders.timelineValue("width") //
-							.keyFrame(0, 0f) //
-							.keyFrame(0.2f, spatial.getHeight()) //
-							.keyFrame(0.8f, spatial.getHeight()) //
-							.keyFrame(1f, 0f)) //
-					) //
-					.speed(1f / totalTime) //
-					.build();
-			laserTimelineAnimation.start(1);
-		}
-
-		@Override
-		public void update(com.artemis.World world, Entity e) {
-			TimerComponent timerComponent = e.getComponent(TimerComponent.class);
-
-			laserTimelineAnimation.update((float) world.getDelta());
-
-			timerComponent.setCurrentTime(timerComponent.getCurrentTime() - world.getDelta());
-			if (timerComponent.isFinished()) {
-				world.deleteEntity(e);
-				return;
-			}
-
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
-
-			Spatial spatial = ComponentWrapper.getSpatial(e);
-			float width = spatial.getWidth();
-			float height = (Float) laserTimelineAnimation.getValue("width");
-			spatial.setSize(width, height);
-
-			Physics physics = ComponentWrapper.getPhysics(e);
-			Contact contact = physics.getContact();
-
-			for (int i = 0; i < contact.getContactCount(); i++) {
-				if (!contact.isInContact(i))
-					continue;
-				Entity e2 = (Entity) contact.getUserData(i);
-				if (e2 == null)
-					continue;
-
-				// send an event/message something
-
-				AliveComponent aliveComponent = e2.getComponent(AliveComponent.class);
-				if (aliveComponent != null)
-					aliveComponent.setDead(true);
-
-			}
-		}
-
 	}
 
 	public static class PortalScript extends ScriptJavaImpl {

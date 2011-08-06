@@ -1,0 +1,95 @@
+package com.gemserk.games.superflyingthing.scripts;
+
+import com.artemis.Entity;
+import com.artemis.World;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.physics.box2d.Body;
+import com.badlogic.gdx.physics.box2d.Fixture;
+import com.badlogic.gdx.physics.box2d.RayCastCallback;
+import com.gemserk.animation4j.timeline.Builders;
+import com.gemserk.animation4j.timeline.TimelineAnimation;
+import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
+
+public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback {
+
+	private final com.badlogic.gdx.physics.box2d.World physicsWorld;
+	private TimelineAnimation laserTimelineAnimation;
+	private Vector2 target = new Vector2();
+
+	public LaserBulletScript(com.badlogic.gdx.physics.box2d.World physicsWorld) {
+		this.physicsWorld = physicsWorld;
+	}
+
+	@Override
+	public void init(World world, Entity e) {
+		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
+		int totalTime = timerComponent.getTotalTime();
+
+		Spatial spatial = ComponentWrapper.getSpatial(e);
+
+		laserTimelineAnimation = Builders.animation(Builders.timeline() //
+				.value(Builders.timelineValue("alpha") //
+						.keyFrame(0, 0f) //
+						.keyFrame(0.2f, 1f) //
+						.keyFrame(0.8f, 1f) //
+						.keyFrame(1f, 0f)) //
+				.value(Builders.timelineValue("width") //
+						.keyFrame(0, 0f) //
+						.keyFrame(0.2f, spatial.getHeight()) //
+						.keyFrame(0.8f, spatial.getHeight()) //
+						.keyFrame(1f, 0f)) //
+				) //
+				.speed(1f / totalTime) //
+				.build();
+		laserTimelineAnimation.start(1);
+	}
+
+	@Override
+	public void update(World world, Entity e) {
+		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
+
+		laserTimelineAnimation.update((float) world.getDelta());
+
+		timerComponent.setCurrentTime(timerComponent.getCurrentTime() - world.getDelta());
+		if (timerComponent.isFinished()) {
+			world.deleteEntity(e);
+			return;
+		}
+
+		SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+		spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
+
+		Spatial spatial = ComponentWrapper.getSpatial(e);
+		// float width = spatial.getWidth();
+
+		target.set(1f, 0f).mul(20f).rotate(spatial.getAngle()).add(spatial.getPosition());
+
+		physicsWorld.rayCast(this, spatial.getPosition(), target);
+
+		float width = spatial.getPosition().dst(target);
+		float height = (Float) laserTimelineAnimation.getValue("width");
+
+		spatial.setSize(width, height);
+	}
+
+	@Override
+	public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+		target.set(point);
+
+		Body body = fixture.getBody();
+		Entity entity = (Entity) body.getUserData();
+		if (entity != null) {
+			AliveComponent aliveComponent = entity.getComponent(AliveComponent.class);
+			if (aliveComponent != null)
+				aliveComponent.setDead(true);
+		}
+
+		return fraction;
+	}
+
+}
