@@ -59,13 +59,9 @@ public class EntityTemplates {
 	public static class CategoryBits {
 
 		public static short AllCategoryBits = 0xFF;
-
 		public static short ShipCategoryBits = 1;
-
 		public static short MiniPlanetCategoryBits = 2;
-
 		public static short MovingObstacleCategoryBits = 4;
-
 		public static short ObstacleCategoryBits = 8;
 
 	}
@@ -285,7 +281,6 @@ public class EntityTemplates {
 			Script script = defaultParameters.get("script");
 			Vector2 position = defaultParameters.get("position");
 			Integer duration = defaultParameters.get("duration", 1000);
-			// Float length = defaultParameters.get("length");
 			Float angle = defaultParameters.get("angle");
 
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
@@ -293,21 +288,6 @@ public class EntityTemplates {
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
 			entity.addComponent(new RenderableComponent(2));
 			entity.addComponent(new Components.TimerComponent(duration));
-
-			// Vector2[] vertices = new Vector2[] { new Vector2(0f, 0f), new Vector2(length, 0f) };
-			// Body body = bodyBuilder //
-			// .fixture(bodyBuilder.fixtureDefBuilder() //
-			// .polygonShape(vertices) //
-			// .categoryBits(CategoryBits.AllCategoryBits) //
-			// .sensor()) //
-			// .position(position.x, position.y) //
-			// .angle(angle * MathUtils.degreesToRadians) //
-			// .mass(1f) //
-			// .type(BodyType.StaticBody) //
-			// .userData(entity) //
-			// .build();
-			//
-			// entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		}
 
 	};
