@@ -10,19 +10,34 @@ import com.gemserk.animation4j.timeline.Builders;
 import com.gemserk.animation4j.timeline.TimelineAnimation;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
 
 public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback {
 
-	private final com.badlogic.gdx.physics.box2d.World physicsWorld;
-	private TimelineAnimation laserTimelineAnimation;
-	private Vector2 target = new Vector2();
+	// used for internal calculations
+	private static final Vector2 target = new Vector2();
+	private static final Parameters parameters = new ParametersWrapper();
 
-	public LaserBulletScript(com.badlogic.gdx.physics.box2d.World physicsWorld) {
+	private final com.badlogic.gdx.physics.box2d.World physicsWorld;
+	private final EntityFactory entityFactory;
+	private final EntityTemplate particleEmitterTemplate;
+
+	private TimelineAnimation laserTimelineAnimation;
+
+	private Entity laserHitParticleEmitter;
+	private Fixture lastCollisionFixture;
+
+	public LaserBulletScript(com.badlogic.gdx.physics.box2d.World physicsWorld, EntityFactory entityFactory, EntityTemplate particleEmitterTemplate) {
 		this.physicsWorld = physicsWorld;
+		this.entityFactory = entityFactory;
+		this.particleEmitterTemplate = particleEmitterTemplate;
 	}
 
 	@Override
@@ -50,6 +65,11 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 	}
 
 	@Override
+	public void dispose(World world, Entity e) {
+		world.deleteEntity(laserHitParticleEmitter);
+	}
+
+	@Override
 	public void update(World world, Entity e) {
 		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
 
@@ -71,24 +91,37 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 
 		physicsWorld.rayCast(this, spatial.getPosition(), target);
 
+		// only if it is the last one...
+		if (lastCollisionFixture != null) {
+			Body body = lastCollisionFixture.getBody();
+			Entity entity = (Entity) body.getUserData();
+			if (entity != null) {
+				AliveComponent aliveComponent = entity.getComponent(AliveComponent.class);
+				if (aliveComponent != null)
+					aliveComponent.setDead(true);
+			}
+		}
+
 		float width = spatial.getPosition().dst(target);
 		float height = (Float) laserTimelineAnimation.getValue("width");
 
 		spatial.setSize(width, height);
+
+		// parameters.put("position", target);
+		parameters.put("emitter", "LaserHitEmitter");
+		parameters.put("script", new ScriptJavaImpl());
+
+		if (laserHitParticleEmitter == null)
+			laserHitParticleEmitter = entityFactory.instantiate(particleEmitterTemplate, parameters);
+
+		Spatial laserHitEmitterSpatial = ComponentWrapper.getSpatial(laserHitParticleEmitter);
+		laserHitEmitterSpatial.setPosition(target.x, target.y);
 	}
 
 	@Override
 	public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 		target.set(point);
-
-		Body body = fixture.getBody();
-		Entity entity = (Entity) body.getUserData();
-		if (entity != null) {
-			AliveComponent aliveComponent = entity.getComponent(AliveComponent.class);
-			if (aliveComponent != null)
-				aliveComponent.setDead(true);
-		}
-
+		lastCollisionFixture = fixture;
 		return fraction;
 	}
 

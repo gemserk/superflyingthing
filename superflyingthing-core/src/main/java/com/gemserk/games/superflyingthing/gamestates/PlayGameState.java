@@ -169,7 +169,7 @@ public class PlayGameState extends GameStateImpl {
 
 		container = new Container();
 
-		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder);
+		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;

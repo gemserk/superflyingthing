@@ -138,7 +138,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder);
+		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
 
 		gameData = new GameData();
 

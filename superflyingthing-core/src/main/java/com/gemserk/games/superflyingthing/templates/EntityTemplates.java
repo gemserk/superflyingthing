@@ -19,6 +19,7 @@ import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.ParametersWithFallBack;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
@@ -49,6 +50,7 @@ import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
+import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
@@ -70,6 +72,8 @@ public class EntityTemplates {
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 	private final Mesh2dBuilder mesh2dBuilder;
+	private final World physicsWorld;
+	private final EntityFactory entityFactory;
 
 	public EntityTemplate getAttachedShipTemplate() {
 		return attachedShipTemplate;
@@ -91,9 +95,11 @@ public class EntityTemplates {
 		return deadShipTemplate;
 	}
 
-	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder) {
+	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
+		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
+		this.entityFactory = EntityFactory;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.mesh2dBuilder = new Mesh2dBuilder();
 	}
@@ -122,6 +128,7 @@ public class EntityTemplates {
 		{
 			// used to transform the emitter and particles to the world coordinates space
 			parameters.put("scale", new Float(0.02f));
+			parameters.put("position", new Vector2(0f, 0f));
 		}
 
 		@Override
@@ -135,15 +142,15 @@ public class EntityTemplates {
 			Vector2 position = parameters.get("position");
 			Float scale = parameters.get("scale");
 			String emitter = parameters.get("emitter");
+			Script script = parameters.get("script", new Scripts.ParticleEmitterScript());
 
 			ParticleEmitter particleEmitter = resourceManager.getResourceValue(emitter);
-
 			particleEmitter.start();
 			ParticleEmitterUtils.scaleEmitter(particleEmitter, scale);
 
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, 0f)));
 			entity.addComponent(new ParticleEmitterComponent(particleEmitter));
-			entity.addComponent(new ScriptComponent(new Scripts.ParticleEmitterScript()));
+			entity.addComponent(new ScriptComponent(script));
 		}
 
 	};
@@ -265,11 +272,11 @@ public class EntityTemplates {
 
 	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
 
-		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
-
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
-			defaultParameters.setParameters(parameters);
+			this.parameters.setParameters(parameters);
 			// if script was stateless, set it here to avoid building a new laser script each time.
 			// defaultParameters.put("script", new Scripts.LaserScript());
 			apply(entity);
@@ -277,12 +284,12 @@ public class EntityTemplates {
 
 		@Override
 		public void apply(Entity entity) {
-			Sprite sprite = defaultParameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
-			Script script = defaultParameters.get("script");
-			Vector2 position = defaultParameters.get("position");
-			Integer duration = defaultParameters.get("duration", 1000);
-			Float angle = defaultParameters.get("angle");
-
+			Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
+			Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
+			Vector2 position = parameters.get("position");
+			Integer duration = parameters.get("duration", 1000);
+			Float angle = parameters.get("angle");
+			
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));

@@ -25,6 +25,8 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.Game;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.ScreenImpl;
@@ -100,6 +102,7 @@ public class GenerateLevelThumbnailApplication {
 						GameResources.load(resourceManager);
 
 						World world = new World();
+						EntityFactory entityFactory = new EntityFactoryImpl(world);
 
 						worldWrapper = new WorldWrapper(world);
 						worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -109,7 +112,7 @@ public class GenerateLevelThumbnailApplication {
 
 						com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
-						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world));
+						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory);
 
 						Level level = Levels.level(8);
 
