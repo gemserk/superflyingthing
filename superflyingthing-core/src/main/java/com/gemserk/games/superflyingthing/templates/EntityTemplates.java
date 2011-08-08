@@ -56,8 +56,9 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
+import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
+import com.gemserk.games.superflyingthing.scripts.ObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
-import com.gemserk.games.superflyingthing.scripts.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
 
@@ -491,6 +492,7 @@ public class EntityTemplates {
 					.polygonShape(v) //
 					.restitution(0f) //
 					.categoryBits(CategoryBits.ObstacleCategoryBits) //
+					.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
 					.build();
 		}
 
@@ -499,13 +501,15 @@ public class EntityTemplates {
 				.position(x, y) //
 				.type(BodyType.StaticBody) //
 				.angle(angle) //
+				.userData(e) //
 				.build();
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
 		e.addComponent(new RenderableComponent(-60));
+		e.addComponent(new Components.DamageComponent(1000f));
+		e.addComponent(new ScriptComponent(new ObstacleScript()));
 
 		e.refresh();
 		return e;
@@ -533,7 +537,7 @@ public class EntityTemplates {
 					.polygonShape(v) //
 					.restitution(0f) //
 					.categoryBits(CategoryBits.MovingObstacleCategoryBits) //
-					.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
+					.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits & ~CategoryBits.MovingObstacleCategoryBits)) //
 					.build();
 		}
 
@@ -544,6 +548,7 @@ public class EntityTemplates {
 				.position(x, y) //
 				.type(BodyType.DynamicBody) //
 				.angle(angle) //
+				.userData(e) //
 				.build();
 
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));

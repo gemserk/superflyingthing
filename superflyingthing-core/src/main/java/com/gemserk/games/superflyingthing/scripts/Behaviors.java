@@ -21,7 +21,6 @@ import com.gemserk.games.superflyingthing.components.Components.AttachmentCompon
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
-import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
@@ -246,7 +245,6 @@ class Behaviors {
 				Entity e2 = (Entity) contact.getUserData(i);
 				updateGrabGrabbable(e1, e2);
 				updateAttachToAttachable(e1, e2);
-				updateAliveCollision(e1, e2);
 				return;
 			}
 
@@ -275,19 +273,6 @@ class Behaviors {
 			entityAttachment.entity = e1;
 		}
 
-		// TODO: change it for a trigger instead... and decide to kill the entity outside
-
-		private void updateAliveCollision(Entity e, Entity e2) {
-			if (e2 != null)
-				return;
-			HealthComponent healthComponent = e.getComponent(HealthComponent.class);
-			AttachableComponent attachableComponent = e.getComponent(AttachableComponent.class);
-			if (attachableComponent.owner != null)
-				return;
-			if (healthComponent == null)
-				return;
-			healthComponent.getHealth().setCurrent(0f);
-		}
 	}
 
 	// game behaviors
