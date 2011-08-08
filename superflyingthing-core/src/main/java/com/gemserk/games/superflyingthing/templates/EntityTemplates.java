@@ -37,12 +37,12 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.ParticleEmitterUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
+import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components;
-import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
@@ -208,13 +208,13 @@ public class EntityTemplates {
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
 			e.addComponent(new MovementComponent(direction.x, direction.y));
-			e.addComponent(new AliveComponent(false));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ShipControllerComponent());
 			e.addComponent(new ControllerComponent(controller));
 			e.addComponent(new ScriptComponent(script));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new ContainerComponent());
+			e.addComponent(new Components.HealthComponent(new Container(100f, 100f)));
 		}
 	};
 

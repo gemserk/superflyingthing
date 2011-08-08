@@ -16,7 +16,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
+import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
 
 public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback {
@@ -96,9 +96,9 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 			Body body = lastCollisionFixture.getBody();
 			Entity entity = (Entity) body.getUserData();
 			if (entity != null) {
-				AliveComponent aliveComponent = entity.getComponent(AliveComponent.class);
-				if (aliveComponent != null)
-					aliveComponent.setDead(true);
+				HealthComponent healthComponent = entity.getComponent(HealthComponent.class);
+				if (healthComponent != null)
+					healthComponent.getHealth().setCurrent(0f);
 			}
 		}
 

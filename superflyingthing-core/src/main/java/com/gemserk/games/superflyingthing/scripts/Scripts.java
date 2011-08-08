@@ -32,7 +32,6 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
@@ -41,6 +40,7 @@ import com.gemserk.games.superflyingthing.components.Components.ControllerCompon
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
@@ -450,11 +450,11 @@ public class Scripts {
 			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
-			AliveComponent aliveComponent = ship.getComponent(AliveComponent.class);
-
-			if (aliveComponent == null)
+			
+			HealthComponent healthComponent = ship.getComponent(HealthComponent.class);
+			if (healthComponent == null)
 				return;
-			if (!aliveComponent.isDead())
+			if (!healthComponent.getHealth().isEmpty())
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);

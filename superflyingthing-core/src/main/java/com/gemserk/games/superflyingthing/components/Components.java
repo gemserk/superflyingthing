@@ -14,6 +14,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
+import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.Trigger;
 
@@ -137,20 +138,16 @@ public class Components {
 
 	}
 
-	public static class AliveComponent extends Component {
+	public static class HealthComponent extends Component {
 
-		boolean dead;
+		private Container health;
 
-		public void setDead(boolean dead) {
-			this.dead = dead;
+		public Container getHealth() {
+			return health;
 		}
 
-		public boolean isDead() {
-			return dead;
-		}
-
-		public AliveComponent(boolean dead) {
-			this.dead = dead;
+		public HealthComponent(Container health) {
+			this.health = health;
 		}
 
 	}
@@ -263,77 +260,77 @@ public class Components {
 		}
 
 	}
-	
+
 	public static class WeaponComponent extends Component {
-		
+
 		private int fireRate;
 		private int reloadTime;
 		private int bulletDuration;
 		private EntityTemplate bulletTemplate;
-		
+
 		public void setFireRate(int fireRate) {
 			this.fireRate = fireRate;
 		}
-		
+
 		public int getReloadTime() {
 			return reloadTime;
 		}
-		
+
 		public int getFireRate() {
 			return fireRate;
 		}
-		
+
 		public int getBulletDuration() {
 			return bulletDuration;
 		}
-		
+
 		public void setReloadTime(int reloadTime) {
 			this.reloadTime = reloadTime;
 		}
-		
+
 		public EntityTemplate getBulletTemplate() {
 			return bulletTemplate;
 		}
-		
+
 		public WeaponComponent(int fireRate, int bulletDuration, int currentReloadTime, EntityTemplate bulletTemplate) {
 			this.fireRate = fireRate;
 			this.bulletDuration = bulletDuration;
 			this.reloadTime = currentReloadTime;
 			this.bulletTemplate = bulletTemplate;
 		}
-		
+
 	}
-	
+
 	public static class TimerComponent extends Component {
-		
+
 		private int totalTime;
 		private int currentTime;
-		
+
 		public int getTotalTime() {
 			return totalTime;
 		}
-		
+
 		public int getCurrentTime() {
 			return currentTime;
 		}
-		
+
 		public void setCurrentTime(int currentTime) {
 			this.currentTime = currentTime;
 		}
-		
+
 		public boolean isFinished() {
 			return currentTime <= 0;
 		}
-		
+
 		public void reset() {
 			currentTime = totalTime;
 		}
-		
+
 		public TimerComponent(int time) {
 			this.totalTime = time;
 			this.currentTime = time;
 		}
-		
+
 	}
 
 	public static class PortalComponent extends Component {

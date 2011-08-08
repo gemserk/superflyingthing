@@ -15,13 +15,13 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
@@ -280,13 +280,13 @@ class Behaviors {
 		private void updateAliveCollision(Entity e, Entity e2) {
 			if (e2 != null)
 				return;
-			AliveComponent aliveComponent = e.getComponent(AliveComponent.class);
+			HealthComponent healthComponent = e.getComponent(HealthComponent.class);
 			AttachableComponent attachableComponent = e.getComponent(AttachableComponent.class);
 			if (attachableComponent.owner != null)
 				return;
-			if (aliveComponent == null)
+			if (healthComponent == null)
 				return;
-			aliveComponent.setDead(true);
+			healthComponent.getHealth().setCurrent(0f);
 		}
 	}
 
