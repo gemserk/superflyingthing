@@ -4,12 +4,11 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class UpdateControllerScript extends ScriptJavaImpl {
-
+	
 	private final ShipController controller;
 
 	public UpdateControllerScript(ShipController controller) {
@@ -39,7 +38,7 @@ public class UpdateControllerScript extends ScriptJavaImpl {
 				direction = -1f;
 			
 			float movementDirection = controller.getMovementDirection();
-			movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, 0.001f * world.getDelta(), 2f);
+			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, (0.001f * world.getDelta()), 2f);
 			controller.setMovementDirection(movementDirection);
 		} else {
 
@@ -55,7 +54,7 @@ public class UpdateControllerScript extends ScriptJavaImpl {
 					direction = -1f;
 
 				float movementDirection = controller.getMovementDirection();
-				movementDirection = calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, 0.001f * world.getDelta(), 2f);
+				movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, (0.001f * world.getDelta()), 2f);
 				controller.setMovementDirection(movementDirection);
 
 				return;
@@ -64,30 +63,6 @@ public class UpdateControllerScript extends ScriptJavaImpl {
 			controller.setMovementDirection(0f);
 
 		}
-	}
-	
-	public float calculateDirectionWithVariableSensibility(float currentValue, float direction, float minValue, float delta, float speed) {
-		if (direction == 0)
-			return 0f;
-		if (currentValue <= 0 && direction > 0)
-			return minValue;
-		if (currentValue >= 0 && direction < 0)
-			return -minValue;
-		float newValue = currentValue + direction * delta * speed;
-		if (newValue > 1f)
-			return 1f;
-		if (newValue < -1f)
-			return -1f;
-		return newValue;
-	}
-	
-	public float value(float center, int x, float minValue, float distanceToMax) {
-		float distance = Math.abs(x - center);
-		if (x > center)
-			return FloatInterpolator.interpolate(minValue, 1f, distance / distanceToMax);
-		else if (x < center)
-			return FloatInterpolator.interpolate(-minValue, -1f, distance / distanceToMax);
-		return 0;
 	}
 
 }
