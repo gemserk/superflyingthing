@@ -565,14 +565,16 @@ public class PlayGameState extends GameStateImpl {
 
 			Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 
-			if (Gdx.app.getType() == ApplicationType.Android)
-				entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))).build();
-			else {
-				entityBuilder
-						.component(new ScriptComponent(new AndroidController2Script(controller))) //
+			if (Gdx.app.getType() == ApplicationType.Android) {
+				// entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))).build();
+				entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
 						.component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
-						.component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f)))
-						.component(new RenderableComponent(500)) //
+						.component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
+						.build();
+			} else {
+				entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
+						.component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
+						.component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
 						.build();
 
 				// entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
