@@ -32,6 +32,7 @@ public class LaserGunScript extends ScriptJavaImpl {
 		if (reloadTime <= 0) {
 			bulletParameters.put("owner", e);
 			bulletParameters.put("x", 0.5f);
+			bulletParameters.put("damage", 3000f);
 			bulletParameters.put("duration", weaponComponent.getBulletDuration());
 
 			EntityTemplate bulletTemplate = weaponComponent.getBulletTemplate();

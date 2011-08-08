@@ -289,6 +289,7 @@ public class EntityTemplates {
 			parameters.put("x", new Float(0f));
 			parameters.put("y", new Float(0f));
 			parameters.put("angle", new Float(0f));
+			parameters.put("damage", new Float(1f));
 		}
 
 		@Override
@@ -308,6 +309,7 @@ public class EntityTemplates {
 			Float x = parameters.get("x");
 			Float y = parameters.get("y");
 			Float angle = parameters.get("angle");
+			Float damage = parameters.get("damage");
 
 			Entity owner = parameters.get("owner");
 
@@ -322,6 +324,7 @@ public class EntityTemplates {
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
 			entity.addComponent(new RenderableComponent(2));
 			entity.addComponent(new Components.TimerComponent(duration));
+			entity.addComponent(new Components.DamageComponent(damage));
 			entity.addComponent(new OwnerComponent(owner));
 		}
 

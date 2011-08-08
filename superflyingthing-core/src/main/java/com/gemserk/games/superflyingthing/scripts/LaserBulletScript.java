@@ -13,9 +13,11 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
 
@@ -97,8 +99,11 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 			Entity entity = (Entity) body.getUserData();
 			if (entity != null) {
 				HealthComponent healthComponent = entity.getComponent(HealthComponent.class);
-				if (healthComponent != null)
-					healthComponent.getHealth().setCurrent(0f);
+				if (healthComponent != null) {
+					DamageComponent damageComponent = e.getComponent(DamageComponent.class);
+					Container health = healthComponent.getHealth();
+					health.remove(damageComponent.getDamage() * world.getDelta() * 0.001f);
+				}
 			}
 		}
 

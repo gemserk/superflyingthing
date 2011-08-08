@@ -151,6 +151,20 @@ public class Components {
 		}
 
 	}
+	
+	public static class DamageComponent extends Component {
+		
+		private float damage;
+		
+		public float getDamage() {
+			return damage;
+		}
+		
+		public DamageComponent(float damage) {
+			this.damage = damage;
+		}
+		
+	}
 
 	public static class TargetComponent extends Component {
 
