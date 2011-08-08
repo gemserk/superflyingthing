@@ -542,6 +542,7 @@ public class Scripts {
 			// parameters.put("angle", shipSpatial.getAngle());
 			// parameters.put("fireRate", 2000);
 			// parameters.put("bulletDuration", 1500);
+			// parameters.put("owner", gameDataComponent.ship);
 			//
 			// Entity laserGun = entityFactory.instantiate(laserGunTemplate, parameters);
 			//

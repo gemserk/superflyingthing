@@ -21,6 +21,8 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.systems.ContainerSystem;
+import com.gemserk.commons.artemis.systems.OwnerSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
@@ -128,7 +130,8 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
-		// worldWrapper.addUpdateSystem(new HierarchySystem());
+		worldWrapper.addUpdateSystem(new ContainerSystem());
+		worldWrapper.addUpdateSystem(new OwnerSystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));

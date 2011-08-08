@@ -14,6 +14,8 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.Script;
+import com.gemserk.commons.artemis.components.ContainerComponent;
+import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -212,6 +214,7 @@ public class EntityTemplates {
 			e.addComponent(new ControllerComponent(controller));
 			e.addComponent(new ScriptComponent(script));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
+			e.addComponent(new ContainerComponent());
 		}
 	};
 
@@ -319,6 +322,7 @@ public class EntityTemplates {
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
 			entity.addComponent(new RenderableComponent(2));
 			entity.addComponent(new Components.TimerComponent(duration));
+			entity.addComponent(new OwnerComponent(owner));
 		}
 
 	};
@@ -352,6 +356,8 @@ public class EntityTemplates {
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
 			Integer currentReloadTime = parameters.get("currentReloadTime");
+			
+			Entity owner = parameters.get("owner");
 
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
 			entity.addComponent(new ScriptComponent(script));
@@ -359,7 +365,8 @@ public class EntityTemplates {
 			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE));
 			entity.addComponent(new RenderableComponent(3));
 			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
-
+			entity.addComponent(new OwnerComponent(owner));
+			entity.addComponent(new ContainerComponent());
 		}
 
 	};
