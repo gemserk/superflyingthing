@@ -1,11 +1,9 @@
 package com.gemserk.games.superflyingthing;
 
-import com.badlogic.gdx.math.Vector2;
 
 public class ShipController {
 	
 	private boolean shouldReleaseShip;
-	private Vector2 position = new Vector2();
 	private float movementDirection = 0f;
 	
 	public void setShouldReleaseShip(boolean shouldReleaseShip) {
@@ -18,6 +16,10 @@ public class ShipController {
 	
 	public void setMovementDirection(float movementDirection) {
 		this.movementDirection = movementDirection;
+		if (movementDirection > 1f)
+			movementDirection = 1f;
+		else if (movementDirection < -1f)
+			movementDirection = -1f;
 	}
 
 	/**
