@@ -511,7 +511,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
 		e.addComponent(new RenderableComponent(-60));
-		e.addComponent(new Components.DamageComponent(1000f));
+		e.addComponent(new Components.DamageComponent(3000f));
 		e.addComponent(new ScriptComponent(new ObstacleScript()));
 
 		e.refresh();
@@ -558,7 +558,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build()));
 		e.addComponent(new RenderableComponent(-59));
-		e.addComponent(new Components.DamageComponent(1000f));
+		e.addComponent(new Components.DamageComponent(6000f));
 		e.addComponent(new ScriptComponent(new MovingObstacleScript(points, startPoint)));
 
 		e.refresh();

@@ -303,6 +303,8 @@ class Behaviors {
 
 	public static class PerformDamageToCollidingEntityBehavior extends Behavior {
 
+		private final Vector2 aux = new Vector2();
+
 		@Override
 		public void update(World world, Entity e) {
 			Physics physics = ComponentWrapper.getPhysics(e);
@@ -319,8 +321,19 @@ class Behaviors {
 				HealthComponent healthComponent = otherEntity.getComponent(HealthComponent.class);
 				if (healthComponent == null)
 					return;
+
+				Spatial otherEntitySpatial = ComponentWrapper.getSpatial(otherEntity);
+
+				aux.set(1f, 0f).rotate(otherEntitySpatial.getAngle());
+				float dot = aux.dot(contact.getNormal(i));
+				if (dot < 0)
+					dot = -dot;
+
 				DamageComponent damageComponent = e.getComponent(DamageComponent.class);
-				healthComponent.getHealth().remove(damageComponent.getDamage() * world.getDelta() * 0.001f);
+				float damage = damageComponent.getDamage() * world.getDelta() * 0.001f * dot;
+				healthComponent.getHealth().remove(damage);
+				
+				System.out.println(damage);
 			}
 		}
 
