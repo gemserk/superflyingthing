@@ -95,8 +95,8 @@ public class EntityTemplates {
 		return deadShipTemplate;
 	}
 	
-	public EntityTemplate getLaserTurretTemplate() {
-		return laserTurretTemplate;
+	public EntityTemplate getLaserGunTemplate() {
+		return laserGunTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
@@ -304,7 +304,7 @@ public class EntityTemplates {
 
 	};
 	
-	private EntityTemplate laserTurretTemplate = new EntityTemplate() {
+	private EntityTemplate laserGunTemplate = new EntityTemplate() {
 		
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		

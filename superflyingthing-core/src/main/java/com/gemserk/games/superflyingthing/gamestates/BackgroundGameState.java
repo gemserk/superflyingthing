@@ -232,7 +232,7 @@ public class BackgroundGameState extends GameStateImpl {
 			parameters.put("currentReloadTime", laserTurret.currentReloadTime);
 			parameters.put("script", new LaserGunScript(entityFactory, physicsWorld));
 
-			entityFactory.instantiate(entityTemplates.getLaserTurretTemplate(), parameters);
+			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters);
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {
