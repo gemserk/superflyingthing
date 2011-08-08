@@ -25,6 +25,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
@@ -460,10 +461,10 @@ public class Scripts {
 			entityFactory.instantiate(particleEmitterTemplate, parameters);
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-			
-			parameters.put("spatial", spatial);
-			parameters.put("sprite", spriteComponent.getSprite());
-			
+
+			parameters.put("spatial", new SpatialImpl(spatial));
+			parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
+
 			entityFactory.instantiate(deadShipTemplate, parameters);
 
 			world.deleteEntity(gameDataComponent.ship);
@@ -521,6 +522,21 @@ public class Scripts {
 			parameters.put("controller", controller);
 
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
+
+			// //
+
+			// Spatial shipSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+			// SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
+			//
+			// SpatialHierarchicalImpl newDeadShipSpatial = new SpatialHierarchicalImpl(shipSpatial);
+			// newDeadShipSpatial.setPosition(spatial.getX() + 1f, spatial.getY());
+			//
+			// parameters.put("spatial", newDeadShipSpatial);
+			// parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
+			//
+			// entityFactory.instantiate(deadShipTemplate, parameters);
+
+			// //
 
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;

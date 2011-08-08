@@ -264,7 +264,8 @@ public class EntityTemplates {
 		public void apply(Entity entity) {
 			Spatial spatial = parameters.get("spatial");
 			Sprite sprite = parameters.get("sprite");
-			entity.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+			// entity.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new SpriteComponent(sprite, Colors.semiBlack));
 			entity.addComponent(new RenderableComponent(-1));
 		}
@@ -273,7 +274,7 @@ public class EntityTemplates {
 	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
-		
+
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
 			this.parameters.setParameters(parameters);
@@ -289,7 +290,7 @@ public class EntityTemplates {
 			Vector2 position = parameters.get("position");
 			Integer duration = parameters.get("duration", 1000);
 			Float angle = parameters.get("angle");
-			
+
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
