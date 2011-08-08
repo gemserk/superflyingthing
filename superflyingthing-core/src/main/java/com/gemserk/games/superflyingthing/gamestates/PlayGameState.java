@@ -73,6 +73,8 @@ import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.AndroidController1Script;
+import com.gemserk.games.superflyingthing.scripts.AndroidController2Script;
+import com.gemserk.games.superflyingthing.scripts.AndroidController3Script;
 import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
@@ -558,9 +560,10 @@ public class PlayGameState extends GameStateImpl {
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
 			if (Gdx.app.getType() == ApplicationType.Android)
-				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
+				entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))).build();
 			else
-				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+				entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))).build();
+//				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //

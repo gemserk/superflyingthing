@@ -16,10 +16,10 @@ public class ShipController {
 	
 	public void setMovementDirection(float movementDirection) {
 		this.movementDirection = movementDirection;
-		if (movementDirection > 1f)
-			movementDirection = 1f;
-		else if (movementDirection < -1f)
-			movementDirection = -1f;
+		if (this.movementDirection > 1f)
+			this.movementDirection = 1f;
+		else if (this.movementDirection < -1f)
+			this.movementDirection = -1f;
 	}
 
 	/**

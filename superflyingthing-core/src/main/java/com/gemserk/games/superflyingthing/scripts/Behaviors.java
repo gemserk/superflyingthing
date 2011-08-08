@@ -332,8 +332,6 @@ class Behaviors {
 				DamageComponent damageComponent = e.getComponent(DamageComponent.class);
 				float damage = damageComponent.getDamage() * world.getDelta() * 0.001f * dot;
 				healthComponent.getHealth().remove(damage);
-				
-				System.out.println(damage);
 			}
 		}
 
