@@ -353,7 +353,7 @@ public class Scripts {
 		private EntityTemplate deadShipTemplate;
 		private EntityTemplate particleEmitterTemplate;
 
-		private EntityTemplate laserGunTemplate;
+		// private EntityTemplate laserGunTemplate;
 
 		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
 				boolean invulnerable) {
@@ -368,7 +368,7 @@ public class Scripts {
 			particleEmitterTemplate = entityTemplates.getParticleEmitterTemplate();
 			deadShipTemplate = entityTemplates.getDeadShipTemplate();
 
-			laserGunTemplate = entityTemplates.getLaserGunTemplate();
+			// laserGunTemplate = entityTemplates.getLaserGunTemplate();
 		}
 
 		@Override
@@ -396,7 +396,7 @@ public class Scripts {
 			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
-			
+
 			HealthComponent healthComponent = ship.getComponent(HealthComponent.class);
 			if (healthComponent == null)
 				return;
@@ -411,7 +411,7 @@ public class Scripts {
 			entityFactory.instantiate(particleEmitterTemplate, parameters);
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-
+			
 			parameters.put("spatial", new SpatialImpl(spatial));
 			parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
 

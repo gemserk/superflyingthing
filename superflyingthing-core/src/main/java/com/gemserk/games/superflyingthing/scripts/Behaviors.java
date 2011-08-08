@@ -21,6 +21,7 @@ import com.gemserk.games.superflyingthing.components.Components.AttachmentCompon
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
@@ -297,6 +298,30 @@ class Behaviors {
 			else
 				targetComponent.setTarget(ship);
 		}
+	}
+
+	public static class PerformDamageToCollidingEntityBehavior extends Behavior {
+
+		@Override
+		public void update(World world, Entity e) {
+			Physics physics = ComponentWrapper.getPhysics(e);
+			if (physics == null)
+				return;
+			Contact contact = physics.getContact();
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+				Entity otherEntity = (Entity) contact.getUserData(i);
+				if (otherEntity == null)
+					continue;
+
+				HealthComponent healthComponent = otherEntity.getComponent(HealthComponent.class);
+				if (healthComponent == null)
+					return;
+				healthComponent.getHealth().setCurrent(0f);
+			}
+		}
+
 	}
 
 }

@@ -275,9 +275,12 @@ public class EntityTemplates {
 		public void apply(Entity entity) {
 			Spatial spatial = parameters.get("spatial");
 			Sprite sprite = parameters.get("sprite");
-			// entity.addComponent(new SpatialComponent(new SpatialImpl(spatial)));
+
+			SpriteComponent spriteComponent = new SpriteComponent(sprite, Colors.semiBlack);
+			spriteComponent.setUpdateRotation(false);
+			
 			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(new SpriteComponent(sprite, Colors.semiBlack));
+			entity.addComponent(spriteComponent);
 			entity.addComponent(new RenderableComponent(-1));
 		}
 	};
