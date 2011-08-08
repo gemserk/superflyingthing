@@ -333,7 +333,7 @@ public class PlayGameState extends GameStateImpl {
 				parameters.put("fireRate", laserTurret.fireRate);
 				parameters.put("bulletDuration", laserTurret.bulletDuration);
 				parameters.put("currentReloadTime", laserTurret.currentReloadTime);
-				parameters.put("script", new LaserGunScript(entityFactory, physicsWorld));
+				parameters.put("script", new LaserGunScript(entityFactory));
 
 				entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters);
 			}

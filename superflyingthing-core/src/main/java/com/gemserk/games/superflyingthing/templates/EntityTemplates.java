@@ -38,6 +38,7 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.AliveComponent;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
@@ -280,6 +281,12 @@ public class EntityTemplates {
 	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		
+		{
+			parameters.put("x", new Float(0f));
+			parameters.put("y", new Float(0f));
+			parameters.put("angle", new Float(0f));
+		}
 
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
@@ -293,14 +300,21 @@ public class EntityTemplates {
 		public void apply(Entity entity) {
 			Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
 			Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
-			// Vector2 position = parameters.get("position");
 			Integer duration = parameters.get("duration", 1000);
-			// Float angle = parameters.get("angle");
+			
+			Float x = parameters.get("x");
+			Float y = parameters.get("y");
+			Float angle = parameters.get("angle");
 
-			Spatial spatial = parameters.get("spatial");
+			Entity owner = parameters.get("owner");
 
-			// entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
-			entity.addComponent(new SpatialComponent(new SpatialHierarchicalImpl(spatial, 1f, 0.1f)));
+			Spatial ownerSpatial = ComponentWrapper.getSpatial(owner);
+			SpatialHierarchicalImpl bulletSpatial = new SpatialHierarchicalImpl(ownerSpatial, 1f, 0.1f);
+			
+			bulletSpatial.setPosition(x + ownerSpatial.getX(), y + ownerSpatial.getY());
+			bulletSpatial.setAngle(angle + ownerSpatial.getAngle());
+
+			entity.addComponent(new SpatialComponent(bulletSpatial));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
 			entity.addComponent(new RenderableComponent(2));
@@ -333,7 +347,7 @@ public class EntityTemplates {
 
 			Vector2 position = parameters.get("position");
 			Float angle = parameters.get("angle");
-			Script script = parameters.get("script", new LaserGunScript(entityFactory, physicsWorld));
+			Script script = parameters.get("script", new LaserGunScript(entityFactory));
 
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
