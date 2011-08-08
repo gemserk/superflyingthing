@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.animation4j.gdx.Animation;
@@ -69,10 +70,10 @@ class Behaviors {
 			Body body = ComponentWrapper.getPhysics(e).getBody();
 
 			Vector2 position = body.getTransform().getPosition();
-			// float desiredAngle = direction.angle();
+			float desiredAngle = direction.angle();
 
-			body.getTransform().getPosition().set(position);
-			// body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
+			// body.getTransform().getPosition().set(position);
+			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
 			body.applyForce(direction.tmp().mul(5000f), position);
 
 			Vector2 linearVelocity = body.getLinearVelocity();
@@ -207,17 +208,18 @@ class Behaviors {
 		@Override
 		public void update(World world, Entity e) {
 			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			Spatial spatial = ComponentWrapper.getSpatial(e);
 
-			// float angle = spatial.getAngle();
-			float angle = movementComponent.getDirection().angle();
+			float angle = spatial.getAngle();
+
 			Animation animation = animationComponent.getCurrentAnimation();
 
 			int frameIndex = getAnimationForAngle(angle - 5f);
 			Sprite frame = animation.getFrame(frameIndex);
 
 			spriteComponent.setSprite(frame);
+			spriteComponent.setUpdateRotation(false);
 		}
 
 		private int getAnimationForAngle(float angle) {

@@ -524,7 +524,7 @@ public class Scripts {
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
 
 			// //
-
+			//
 			// Spatial shipSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 			// SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 			//
@@ -535,7 +535,7 @@ public class Scripts {
 			// parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
 			//
 			// entityFactory.instantiate(deadShipTemplate, parameters);
-
+			//
 			// //
 
 			world.deleteEntity(gameDataComponent.attachedShip);
