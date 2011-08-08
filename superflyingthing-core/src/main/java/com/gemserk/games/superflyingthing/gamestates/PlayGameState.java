@@ -4,6 +4,7 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -71,13 +72,14 @@ import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
+import com.gemserk.games.superflyingthing.scripts.AndroidController1Script;
+import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.UpdateControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
@@ -352,8 +354,11 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight);
 
-			entityBuilder //
-					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
+			if (Gdx.app.getType() == ApplicationType.Android)
+				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
+			else
+				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, false))) //
@@ -466,8 +471,11 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
-			entityBuilder //
-					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
+			if (Gdx.app.getType() == ApplicationType.Android)
+				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
+			else
+				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, //
@@ -549,8 +557,11 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
-			entityBuilder //
-					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
+			if (Gdx.app.getType() == ApplicationType.Android)
+				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
+			else
+				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, //
