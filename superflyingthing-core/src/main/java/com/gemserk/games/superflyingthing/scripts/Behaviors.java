@@ -19,6 +19,7 @@ import com.gemserk.games.superflyingthing.components.Components.AnimationCompone
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
+import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
@@ -318,7 +319,8 @@ class Behaviors {
 				HealthComponent healthComponent = otherEntity.getComponent(HealthComponent.class);
 				if (healthComponent == null)
 					return;
-				healthComponent.getHealth().setCurrent(0f);
+				DamageComponent damageComponent = e.getComponent(DamageComponent.class);
+				healthComponent.getHealth().remove(damageComponent.getDamage() * world.getDelta() * 0.001f);
 			}
 		}
 
