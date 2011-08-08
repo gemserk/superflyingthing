@@ -94,6 +94,10 @@ public class EntityTemplates {
 	public EntityTemplate getDeadShipTemplate() {
 		return deadShipTemplate;
 	}
+	
+	public EntityTemplate getLaserTurretTemplate() {
+		return laserTurretTemplate;
+	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
 		this.physicsWorld = physicsWorld;
@@ -299,6 +303,47 @@ public class EntityTemplates {
 		}
 
 	};
+	
+	private EntityTemplate laserTurretTemplate = new EntityTemplate() {
+		
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		
+		{
+			parameters.put("position", new Vector2());
+			parameters.put("angle", new Float(0f));
+			parameters.put("fireRate", new Integer(1000));
+			parameters.put("bulletDuration", new Integer(50));
+			parameters.put("currentReloadTime", new Integer(0));
+		}
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+		
+		@Override
+		public void apply(Entity entity) {
+			Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
+			
+			Vector2 position = parameters.get("position");
+			Float angle = parameters.get("angle");
+			Script script = parameters.get("script");
+			
+			Integer fireRate = parameters.get("fireRate");
+			Integer bulletDuration = parameters.get("bulletDuration");
+			Integer currentReloadTime = parameters.get("currentReloadTime");
+			
+			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
+			entity.addComponent(new ScriptComponent(script));
+			entity.addComponent(new AnimationComponent(new Animation[] { idleAnimation }));
+			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE));
+			entity.addComponent(new RenderableComponent(3));
+			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
+			
+		}
+		
+	};
 
 	public Entity star(float x, float y, Script script) {
 		Entity e = entityBuilder.build();
@@ -488,17 +533,6 @@ public class EntityTemplates {
 						new Vector2(w * 0.5f, -h * 0.5f), //
 						new Vector2(-w * 0.5f, -h * 0.5f),//
 						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
-	}
-
-	public Entity laserTurret(float x, float y, float angle, int fireRate, int bulletDuration, int currentReloadTime, Script script) {
-		Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
-		return entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 1f, 1f, angle))) //
-				.component(new ScriptComponent(script)) //
-				.component(new AnimationComponent(new Animation[] { idleAnimation })) //
-				.component(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE)) //
-				.component(new RenderableComponent(3))//
-				.component(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate)).build();
 	}
 
 	public Entity portal(String id, String targetPortalId, float x, float y, Script script) {

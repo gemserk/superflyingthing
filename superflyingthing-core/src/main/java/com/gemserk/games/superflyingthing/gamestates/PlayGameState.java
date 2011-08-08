@@ -52,6 +52,8 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
@@ -100,6 +102,7 @@ public class PlayGameState extends GameStateImpl {
 	private com.artemis.World world;
 	private WorldWrapper worldWrapper;
 	private EntityFactory entityFactory;
+	private Parameters parameters;
 
 	GameData gameData;
 	private Text itemsTakenLabel;
@@ -143,14 +146,16 @@ public class PlayGameState extends GameStateImpl {
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();
-		entityFactory= new EntityFactoryImpl(world);
+		entityFactory = new EntityFactoryImpl(world);
 		worldWrapper = new WorldWrapper(world);
+		parameters = new ParametersWrapper();
 		// add render and all stuff...
 		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
+		// worldWrapper.addUpdateSystem(new HierarchySystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -242,7 +247,7 @@ public class PlayGameState extends GameStateImpl {
 					}
 
 				}
-				
+
 				event = eventManager.getEvent(Events.shipDeath);
 				if (event != null) {
 					eventManager.handled(event);
@@ -322,8 +327,15 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.laserTurrets.size(); i++) {
 				LaserTurret laserTurret = level.laserTurrets.get(i);
-				entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, laserTurret.fireRate, laserTurret.bulletDuration, //
-						laserTurret.currentReloadTime, new LaserGunScript(entityFactory, physicsWorld));
+
+				parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
+				parameters.put("angle", laserTurret.angle);
+				parameters.put("fireRate", laserTurret.fireRate);
+				parameters.put("bulletDuration", laserTurret.bulletDuration);
+				parameters.put("currentReloadTime", laserTurret.currentReloadTime);
+				parameters.put("script", new LaserGunScript(entityFactory, physicsWorld));
+
+				entityFactory.instantiate(entityTemplates.getLaserTurretTemplate(), parameters);
 			}
 
 			for (int i = 0; i < level.portals.size(); i++) {
@@ -341,8 +353,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, 
-							gameData, controller, false))) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, false))) //
 					.build();
 
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
@@ -456,7 +467,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, // 
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, //
 							gameData, controller, false))).build();
 
 		}
@@ -539,7 +550,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new UpdateControllerScript(controller))).build();
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, // 
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, //
 							gameData, controller, true))).build();
 
 		}
@@ -575,7 +586,7 @@ public class PlayGameState extends GameStateImpl {
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackPageView("/random/finish", "/random/finish", null);
 		}
-		
+
 	}
 
 	@Override

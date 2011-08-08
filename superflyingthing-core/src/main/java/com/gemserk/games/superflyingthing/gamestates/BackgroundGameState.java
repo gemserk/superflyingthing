@@ -36,6 +36,8 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.componentsengine.utils.timers.Timer;
 import com.gemserk.games.superflyingthing.Events;
@@ -78,6 +80,7 @@ public class BackgroundGameState extends GameStateImpl {
 	private com.artemis.World world;
 	private EntityFactory entityFactory;
 	private WorldWrapper worldWrapper;
+	private Parameters parameters;
 
 	GameData gameData;
 
@@ -118,12 +121,14 @@ public class BackgroundGameState extends GameStateImpl {
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
 		worldWrapper = new WorldWrapper(world);
+		parameters = new ParametersWrapper();
 		// add render and all stuff...
 		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
+		// worldWrapper.addUpdateSystem(new HierarchySystem());
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -219,8 +224,15 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
-			entityTemplates.laserTurret(laserTurret.x, laserTurret.y, laserTurret.angle, laserTurret.fireRate, laserTurret.bulletDuration, // 
-					laserTurret.currentReloadTime, new LaserGunScript(entityFactory, physicsWorld));
+
+			parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
+			parameters.put("angle", laserTurret.angle);
+			parameters.put("fireRate", laserTurret.fireRate);
+			parameters.put("bulletDuration", laserTurret.bulletDuration);
+			parameters.put("currentReloadTime", laserTurret.currentReloadTime);
+			parameters.put("script", new LaserGunScript(entityFactory, physicsWorld));
+
+			entityFactory.instantiate(entityTemplates.getLaserTurretTemplate(), parameters);
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {
@@ -236,7 +248,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, // 
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, //
 						entityFactory, gameData, controller, false))) //
 				.build();
 

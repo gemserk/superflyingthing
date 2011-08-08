@@ -524,18 +524,18 @@ public class Scripts {
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
 
 			// //
-			//
+
 			// Spatial shipSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
 			// SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 			//
-			// SpatialHierarchicalImpl newDeadShipSpatial = new SpatialHierarchicalImpl(shipSpatial);
+			// Spatial newDeadShipSpatial = new SpatialHierarchicalImpl(shipSpatial);
 			// newDeadShipSpatial.setPosition(spatial.getX() + 1f, spatial.getY());
 			//
 			// parameters.put("spatial", newDeadShipSpatial);
 			// parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
 			//
 			// entityFactory.instantiate(deadShipTemplate, parameters);
-			//
+
 			// //
 
 			world.deleteEntity(gameDataComponent.attachedShip);
