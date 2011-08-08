@@ -36,9 +36,11 @@ public class LaserGunScript extends ScriptJavaImpl {
 		if (reloadTime <= 0) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 
-			bulletParameters.put("position", spatial.getPosition());
+			bulletParameters.put("spatial", spatial);
+
+			// bulletParameters.put("position", spatial.getPosition());
 			// bulletParameters.put("script", new LaserBulletScript(physicsWorld));
-			bulletParameters.put("angle", spatial.getAngle());
+			// bulletParameters.put("angle", spatial.getAngle());
 			bulletParameters.put("duration", weaponComponent.getBulletDuration());
 
 			EntityTemplate bulletTemplate = weaponComponent.getBulletTemplate();

@@ -407,6 +407,8 @@ public class Scripts {
 		private EntityTemplate deadShipTemplate;
 		private EntityTemplate particleEmitterTemplate;
 
+		private EntityTemplate laserGunTemplate;
+
 		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
 				boolean invulnerable) {
 			this.eventManager = eventManager;
@@ -419,6 +421,8 @@ public class Scripts {
 			attachedShipTemplate = entityTemplates.getAttachedShipTemplate();
 			particleEmitterTemplate = entityTemplates.getParticleEmitterTemplate();
 			deadShipTemplate = entityTemplates.getDeadShipTemplate();
+
+			laserGunTemplate = entityTemplates.getLaserGunTemplate();
 		}
 
 		@Override
@@ -526,15 +530,23 @@ public class Scripts {
 			// //
 
 			// Spatial shipSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-			// SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
+			// // SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 			//
-			// Spatial newDeadShipSpatial = new SpatialHierarchicalImpl(shipSpatial);
-			// newDeadShipSpatial.setPosition(spatial.getX() + 1f, spatial.getY());
+			// Spatial childSpatial = new SpatialHierarchicalImpl(shipSpatial);
+			// childSpatial.setPosition(spatial.getX() + 1f, spatial.getY());
 			//
-			// parameters.put("spatial", newDeadShipSpatial);
-			// parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
+			// // parameters.put("spatial", childSpatial);
+			// // parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
 			//
-			// entityFactory.instantiate(deadShipTemplate, parameters);
+			// parameters.put("position", shipSpatial.getPosition());
+			// parameters.put("angle", shipSpatial.getAngle());
+			// parameters.put("fireRate", 2000);
+			// parameters.put("bulletDuration", 1500);
+			//
+			// Entity laserGun = entityFactory.instantiate(laserGunTemplate, parameters);
+			//
+			// laserGun.addComponent(new SpatialComponent(childSpatial));
+			// laserGun.refresh();
 
 			// //
 

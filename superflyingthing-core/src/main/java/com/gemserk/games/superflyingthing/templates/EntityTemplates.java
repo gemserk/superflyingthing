@@ -28,6 +28,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.commons.gdx.games.SpatialHierarchicalImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
@@ -51,6 +52,7 @@ import com.gemserk.games.superflyingthing.components.Components.ShipControllerCo
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
+import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
@@ -94,7 +96,7 @@ public class EntityTemplates {
 	public EntityTemplate getDeadShipTemplate() {
 		return deadShipTemplate;
 	}
-	
+
 	public EntityTemplate getLaserGunTemplate() {
 		return laserGunTemplate;
 	}
@@ -291,11 +293,14 @@ public class EntityTemplates {
 		public void apply(Entity entity) {
 			Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
 			Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
-			Vector2 position = parameters.get("position");
+			// Vector2 position = parameters.get("position");
 			Integer duration = parameters.get("duration", 1000);
-			Float angle = parameters.get("angle");
+			// Float angle = parameters.get("angle");
 
-			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
+			Spatial spatial = parameters.get("spatial");
+
+			// entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 0.1f, angle)));
+			entity.addComponent(new SpatialComponent(new SpatialHierarchicalImpl(spatial, 1f, 0.1f)));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
 			entity.addComponent(new RenderableComponent(2));
@@ -303,16 +308,16 @@ public class EntityTemplates {
 		}
 
 	};
-	
+
 	private EntityTemplate laserGunTemplate = new EntityTemplate() {
-		
+
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
-		
+
 		{
 			parameters.put("position", new Vector2());
 			parameters.put("angle", new Float(0f));
 			parameters.put("fireRate", new Integer(1000));
-			parameters.put("bulletDuration", new Integer(50));
+			parameters.put("bulletDuration", new Integer(250));
 			parameters.put("currentReloadTime", new Integer(0));
 		}
 
@@ -321,28 +326,28 @@ public class EntityTemplates {
 			this.parameters.setParameters(parameters);
 			apply(entity);
 		}
-		
+
 		@Override
 		public void apply(Entity entity) {
 			Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
-			
+
 			Vector2 position = parameters.get("position");
 			Float angle = parameters.get("angle");
-			Script script = parameters.get("script");
-			
+			Script script = parameters.get("script", new LaserGunScript(entityFactory, physicsWorld));
+
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
 			Integer currentReloadTime = parameters.get("currentReloadTime");
-			
+
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new AnimationComponent(new Animation[] { idleAnimation }));
 			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE));
 			entity.addComponent(new RenderableComponent(3));
 			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
-			
+
 		}
-		
+
 	};
 
 	public Entity star(float x, float y, Script script) {
