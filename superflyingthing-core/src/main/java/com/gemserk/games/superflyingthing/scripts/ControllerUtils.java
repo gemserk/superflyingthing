@@ -19,8 +19,10 @@ public class ControllerUtils {
 		return newValue;
 	}
 	
-	public static float value(float center, int x, float minValue, float distanceToMax) {
+	public static float value(float center, int x, float minValue, float distanceToMin, float distanceToMax) {
 		float distance = Math.abs(x - center);
+		if (distance < distanceToMin)
+			return 0f;
 		if (x > center)
 			return FloatInterpolator.interpolate(minValue, 1f, distance / distanceToMax);
 		else if (x < center)
