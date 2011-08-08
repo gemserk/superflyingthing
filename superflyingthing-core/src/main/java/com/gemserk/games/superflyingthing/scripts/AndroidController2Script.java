@@ -3,7 +3,9 @@ package com.gemserk.games.superflyingthing.scripts;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 
 public class AndroidController2Script extends ScriptJavaImpl {
 
@@ -29,6 +31,9 @@ public class AndroidController2Script extends ScriptJavaImpl {
 
 	public void updateMovementDirection(com.artemis.World world, Entity e) {
 
+		Spatial spatial = ComponentWrapper.getSpatial(e);
+		spatial.setPosition(-100, 0);
+
 		if (!isTouched && Gdx.input.isTouched()) {
 			isTouched = true;
 			center = Gdx.input.getX();
@@ -37,6 +42,9 @@ public class AndroidController2Script extends ScriptJavaImpl {
 		}
 
 		if (isTouched) {
+			
+			spatial.setPosition(center, Gdx.graphics.getHeight() * 0.5f);
+			
 			int value = Gdx.input.getX();
 			float movementDirection = ControllerUtils.value(center, value, 0f, Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getWidth() * 0.2f);
 			controller.setMovementDirection(-movementDirection);
