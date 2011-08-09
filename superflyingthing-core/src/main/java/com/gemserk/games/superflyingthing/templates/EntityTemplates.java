@@ -58,6 +58,7 @@ import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ObstacleScript;
+import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
@@ -103,6 +104,10 @@ public class EntityTemplates {
 
 	public EntityTemplate getLaserGunTemplate() {
 		return laserGunTemplate;
+	}
+
+	public EntityTemplate getPortalTemplate() {
+		return portalTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
@@ -378,6 +383,55 @@ public class EntityTemplates {
 
 	};
 
+	private EntityTemplate portalTemplate = new EntityTemplate() {
+
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		{
+			parameters.put("sprite", "PortalSprite");
+		}
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+
+			String id = parameters.get("id");
+			String targetPortalId = parameters.get("targetPortalId");
+			String spriteId = parameters.get("sprite");
+			Spatial spatial = parameters.get("spatial");
+			Script script = parameters.get("script", new PortalScript());
+
+			Sprite sprite = resourceManager.getResourceValue(spriteId);
+
+			entity.addComponent(new TagComponent(id));
+			entity.addComponent(new SpriteComponent(sprite));
+			entity.addComponent(new Components.PortalComponent(targetPortalId));
+			entity.addComponent(new RenderableComponent(4));
+			entity.addComponent(new SpatialComponent(spatial));
+			entity.addComponent(new ScriptComponent(script));
+
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.circleShape(spatial.getWidth() * 0.35f) //
+							.categoryBits(CategoryBits.ObstacleCategoryBits) //
+							.maskBits((short)(CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
+							.sensor()) //
+					.position(spatial.getX(), spatial.getY()) //
+					.mass(1f) //
+					.type(BodyType.StaticBody) //
+					.userData(entity) //
+					.build();
+
+			entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+
+		}
+
+	};
+
 	public Entity star(float x, float y, Script script) {
 		Entity e = entityBuilder.build();
 
@@ -573,33 +627,33 @@ public class EntityTemplates {
 						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
-	public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
-		Sprite sprite = resourceManager.getResourceValue("PortalSprite");
-
-		Entity e = entityBuilder //
-				.tag(id) //
-				.component(new SpriteComponent(sprite)) //
-				.component(new Components.PortalComponent(targetPortalId)) //
-				.component(new RenderableComponent(4)) //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 2f, 2f, 0f))) //
-				.component(new ScriptComponent(script)) //
-				.build();
-
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.circleShape(0.5f) //
-						.categoryBits(CategoryBits.AllCategoryBits) //
-						.sensor()) //
-				.position(x, y) //
-				.mass(1f) //
-				.type(BodyType.StaticBody) //
-				.userData(e) //
-				.build();
-
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.refresh();
-
-		return e;
-	}
+	// public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
+	// Sprite sprite = resourceManager.getResourceValue("PortalSprite");
+	//
+	// Entity e = entityBuilder //
+	// .tag(id) //
+	// .component(new SpriteComponent(sprite)) //
+	// .component(new Components.PortalComponent(targetPortalId)) //
+	// .component(new RenderableComponent(4)) //
+	// .component(new SpatialComponent(new SpatialImpl(x, y, 2f, 2f, 0f))) //
+	// .component(new ScriptComponent(script)) //
+	// .build();
+	//
+	// Body body = bodyBuilder //
+	// .fixture(bodyBuilder.fixtureDefBuilder() //
+	// .circleShape(0.5f) //
+	// .categoryBits(CategoryBits.AllCategoryBits) //
+	// .sensor()) //
+	// .position(x, y) //
+	// .mass(1f) //
+	// .type(BodyType.StaticBody) //
+	// .userData(e) //
+	// .build();
+	//
+	// e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+	// e.refresh();
+	//
+	// return e;
+	// }
 
 }

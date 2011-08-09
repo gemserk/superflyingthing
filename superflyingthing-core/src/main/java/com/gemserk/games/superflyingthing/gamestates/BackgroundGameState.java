@@ -38,6 +38,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
@@ -54,7 +55,6 @@ import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
-import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -229,6 +229,8 @@ public class BackgroundGameState extends GameStateImpl {
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
 
+			parameters.clear();
+			
 			parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
 			parameters.put("angle", laserTurret.angle);
 			parameters.put("fireRate", laserTurret.fireRate);
@@ -241,7 +243,16 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.portals.size(); i++) {
 			Portal portal = level.portals.get(i);
-			entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
+
+			parameters.clear();
+			
+			parameters.put("id", portal.id);
+			parameters.put("targetPortalId", portal.targetPortalId);
+			parameters.put("spatial", new SpatialImpl(portal.x, portal.y, 2f, 2f, 0f));
+
+			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters);
+
+			// entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
 		}
 
 		gameData.totalItems = level.items.size();

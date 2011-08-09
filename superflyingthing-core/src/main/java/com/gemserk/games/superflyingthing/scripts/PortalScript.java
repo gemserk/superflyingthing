@@ -36,6 +36,10 @@ public class PortalScript extends ScriptJavaImpl {
 			Entity e2 = (Entity) contact.getUserData(i);
 			if (e2 == null)
 				continue;
+			
+			// this should not happen
+			if (e2 == e)
+				continue;
 
 			Gdx.app.log("SuperFlyingThing", "Teleporting entity " + e2.getUniqueId() + " to " + portalComponent.getTargetPortalId());
 
@@ -43,11 +47,10 @@ public class PortalScript extends ScriptJavaImpl {
 			Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
 			Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
 
-			// direction.set(portalSpatial.getPosition()).sub(entitySpatial.getPosition()).nor();
+			direction.set(targetPortalSpatial.getWidth() * 0.7f, 0f).rotate(entitySpatial.getAngle());
 
-			direction.set(1f, 0f).rotate(entitySpatial.getAngle());
-
-			entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, targetPortalSpatial.getY() + direction.y);
+			entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, // 
+					targetPortalSpatial.getY() + direction.y);
 
 			return;
 		}
