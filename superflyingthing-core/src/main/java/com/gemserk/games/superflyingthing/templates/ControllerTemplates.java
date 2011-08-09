@@ -18,6 +18,7 @@ import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerSc
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AxisControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.TiltAndroidControllerScript;
 import com.gemserk.resources.ResourceManager;
 
 public class ControllerTemplates {
@@ -134,10 +135,29 @@ public class ControllerTemplates {
 		}
 	}
 	
+	public static class TiltAndroidControllerTemplate implements EntityTemplate {
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+			ShipController controller = parameters.get("controller");
+			String tag = parameters.get("tag", "PlayerController");
+			entity.addComponent(new ScriptComponent(new TiltAndroidControllerScript(controller)));
+			entity.addComponent(new TagComponent(tag));
+		}
+	}
+	
 	public EntityTemplate keyboardControllerTemplate;
 	public EntityTemplate androidClassicControllerTemplate;
 	public EntityTemplate axisControllerTemplate;
 	public EntityTemplate analogControllerTemplate;
+	public EntityTemplate tiltAndroidControllerTemplate;
 
 	
 }

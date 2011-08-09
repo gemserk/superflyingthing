@@ -40,8 +40,8 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		AndroidApplicationConfiguration config = new AndroidApplicationConfiguration();
 		
 		config.useGL20 = false;
-		config.useAccelerometer = false;
-		config.useCompass = false;
+		config.useAccelerometer = true;
+		config.useCompass = true;
 		config.useWakelock = true;
 		
 		AdWhirlManager.setConfigExpireTimeout(1000 * 15);
