@@ -15,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.Script;
-import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.ContainerComponent;
 import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
@@ -62,6 +61,7 @@ import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
+import com.gemserk.games.superflyingthing.scripts.ScriptCompositeImpl;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
@@ -514,17 +514,7 @@ public class EntityTemplates {
 			entity.addComponent(new RenderableComponent(-1));
 			entity.addComponent(new AnimationComponent(new Animation[] { planetFillAnimation }));
 			entity.addComponent(new OwnerComponent(owner));
-
-			entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-				public void update(com.artemis.World world, Entity e) {
-					SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-					AnimationComponent animationComponent = e.getComponent(AnimationComponent.class);
-					Animation animation = animationComponent.getCurrentAnimation();
-					animation.update(world.getDelta());
-					Sprite sprite = animation.getCurrentFrame();
-					spriteComponent.setSprite(sprite);
-				};
-			}));
+			entity.addComponent(new ScriptComponent(new ScriptCompositeImpl(new Scripts.UpdateAnimationScript())));
 		}
 
 	};

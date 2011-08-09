@@ -506,4 +506,18 @@ public class Scripts {
 		}
 
 	}
+	
+	public static class UpdateAnimationScript extends ScriptJavaImpl {
+		
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			AnimationComponent animationComponent = e.getComponent(AnimationComponent.class);
+			Animation animation = animationComponent.getCurrentAnimation();
+			animation.update(world.getDelta());
+			Sprite sprite = animation.getCurrentFrame();
+			spriteComponent.setSprite(sprite);
+		}
+		
+	}
 }
