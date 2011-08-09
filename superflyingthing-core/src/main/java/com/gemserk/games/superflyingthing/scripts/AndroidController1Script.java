@@ -41,8 +41,6 @@ public class AndroidController1Script extends ScriptJavaImpl {
 			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.1f, (0.001f * world.getDelta()), 5f);
 			controller.setMovementDirection(movementDirection);
 			
-			Gdx.app.log("SuperFlyingThing", "movementDirection = " + movementDirection);
-
 			return;
 		}
 

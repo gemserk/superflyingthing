@@ -47,7 +47,7 @@ public class AndroidController2Script extends ScriptJavaImpl {
 
 			int value = Gdx.input.getX();
 			// float movementDirection = ControllerUtils.value(center, value, 0f, Gdx.graphics.getWidth() * 0.025f, Gdx.graphics.getWidth() * 0.1f);
-			float movementDirection = ControllerUtils.value(center, value, 0f, 20f, 100f);
+			float movementDirection = ControllerUtils.value(center, value, 0f, 10f,  40f);
 			controller.setMovementDirection(-movementDirection);
 			return;
 		}

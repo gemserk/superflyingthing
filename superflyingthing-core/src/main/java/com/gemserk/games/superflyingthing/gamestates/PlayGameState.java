@@ -72,8 +72,6 @@ import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
-import com.gemserk.games.superflyingthing.scripts.AndroidController1Script;
-import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
@@ -83,6 +81,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
+import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
@@ -92,7 +91,6 @@ public class PlayGameState extends GameStateImpl {
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
 
-	EntityTemplates entityTemplates;
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
@@ -101,6 +99,9 @@ public class PlayGameState extends GameStateImpl {
 	Container container;
 	private Libgdx2dCamera guiCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+
+	EntityTemplates entityTemplates;
+	ControllerTemplates controllerTemplates;
 
 	EntityBuilder entityBuilder;
 	private com.artemis.World world;
@@ -181,6 +182,12 @@ public class PlayGameState extends GameStateImpl {
 		container = new Container();
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
+
+		// creates and registers all the controller templates
+		controllerTemplates = new ControllerTemplates();
+		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
+		controllerTemplates.androidClassicControllerTemplate = new ControllerTemplates.AndroidClassicControllerTemplate();
+		controllerTemplates.axisControllerTemplate = new ControllerTemplates.AxisControllerTemplate(resourceManager);
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
@@ -355,10 +362,7 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight);
 
-			if (Gdx.app.getType() == ApplicationType.Android)
-				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
-			else
-				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+			createGameController(controller);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -472,10 +476,7 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
-			if (Gdx.app.getType() == ApplicationType.Android)
-				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
-			else
-				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+			createGameController(controller);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -558,34 +559,7 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
-			// Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
-
-			if (Gdx.app.getType() == ApplicationType.Android) {
-				// entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
-				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
-				// .component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
-				// .build();
-
-				// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
-				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
-				// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
-				// .build();
-
-				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
-
-			} else {
-				// entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
-				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
-				// .component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
-				// .build();
-
-				// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
-				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
-				// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
-				// .build();
-
-				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
-			}
+			createGameController(controller);
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
@@ -593,6 +567,46 @@ public class PlayGameState extends GameStateImpl {
 							gameData, controller, true))).build();
 
 		}
+	}
+
+	private void createGameController(ShipController controller) {
+
+		Parameters parameters = new ParametersWrapper();
+
+		// Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+
+		if (Gdx.app.getType() == ApplicationType.Android) {
+
+			// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
+			// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
+			// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
+			// .build();
+
+			// entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
+
+			parameters.put("controller", controller);
+			entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
+			// entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+
+			// parameters.put("script", new AndroidController1Script(controller));
+			// entityFactory.instantiate(ControllerTemplates.keyboardControllerTemplate, parameters);
+
+		} else {
+
+			// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
+			// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
+			// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
+			// .build();
+
+			// parameters.put("controller", controller);
+			// entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+
+			parameters.put("controller", controller);
+			entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
+
+			// entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+		}
+
 	}
 
 	private void gameFinished() {

@@ -278,7 +278,7 @@ public class EntityTemplates {
 
 			SpriteComponent spriteComponent = new SpriteComponent(sprite, Colors.semiBlack);
 			spriteComponent.setUpdateRotation(false);
-			
+
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(spriteComponent);
 			entity.addComponent(new RenderableComponent(-1));
@@ -288,7 +288,7 @@ public class EntityTemplates {
 	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
-		
+
 		{
 			parameters.put("x", new Float(0f));
 			parameters.put("y", new Float(0f));
@@ -309,7 +309,7 @@ public class EntityTemplates {
 			Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
 			Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
 			Integer duration = parameters.get("duration", 1000);
-			
+
 			Float x = parameters.get("x");
 			Float y = parameters.get("y");
 			Float angle = parameters.get("angle");
@@ -319,7 +319,7 @@ public class EntityTemplates {
 
 			Spatial ownerSpatial = ComponentWrapper.getSpatial(owner);
 			SpatialHierarchicalImpl bulletSpatial = new SpatialHierarchicalImpl(ownerSpatial, 1f, 0.1f);
-			
+
 			bulletSpatial.setPosition(x + ownerSpatial.getX(), y + ownerSpatial.getY());
 			bulletSpatial.setAngle(angle + ownerSpatial.getAngle());
 
@@ -363,7 +363,7 @@ public class EntityTemplates {
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
 			Integer currentReloadTime = parameters.get("currentReloadTime");
-			
+
 			Entity owner = parameters.get("owner");
 
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
