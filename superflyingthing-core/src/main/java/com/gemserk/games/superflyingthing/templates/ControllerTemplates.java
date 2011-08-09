@@ -17,7 +17,7 @@ import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AxisControllerScript;
-import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardController1Script;
+import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
 import com.gemserk.resources.ResourceManager;
 
 public class ControllerTemplates {
@@ -35,7 +35,7 @@ public class ControllerTemplates {
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", "PlayerController");
-			entity.addComponent(new ScriptComponent(new KeyboardController1Script(controller)));
+			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 		}
 	}
