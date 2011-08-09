@@ -26,9 +26,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="17.0849"
- inkscape:cx="24.2047"
- inkscape:cy="35.552"
+ inkscape:zoom="32.656"
+ inkscape:cx="16.4236"
+ inkscape:cy="36.4389"
  inkscape:document-units="px"
  inkscape:current-layer="layer5"
  showgrid="true"
@@ -65,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title></dc:title>
+<dc:title />
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -205,21 +205,22 @@
  inkscape:label="Portals">
 <image
  style="display:inline"
- y="28.9541"
- x="55.3339"
+ y="-32.487"
+ x="-55.6197"
  id="portalB"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="1"
- width="1"
- targetPortalId="portalA" />
+ height="3.11823"
+ width="3.11823"
+ targetPortalId="portalA"
+ transform="matrix(-0.999642,0.026774,-0.026774,-0.999642,0,0)" />
 <image
  style="display:inline"
- y="24.2642"
- x="4.59222"
+ y="22.9168"
+ x="3.8879"
  id="portalA"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="1"
- width="1"
+ height="3.35791"
+ width="3.35791"
  targetPortalId="portalB" />
 </g>
 <g
@@ -384,6 +385,14 @@
  y="29.4127"
  x="43.9108"
  id="image3019-4-90-6-45"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ style="display:inline"
+ y="24.7795"
+ x="9.08977"
+ id="image3019-4-90-3-3"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
