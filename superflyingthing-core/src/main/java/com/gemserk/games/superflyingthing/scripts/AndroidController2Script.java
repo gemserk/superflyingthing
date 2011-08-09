@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -47,7 +48,7 @@ public class AndroidController2Script extends ScriptJavaImpl {
 
 			int value = Gdx.input.getX();
 			// float movementDirection = ControllerUtils.value(center, value, 0f, Gdx.graphics.getWidth() * 0.025f, Gdx.graphics.getWidth() * 0.1f);
-			float movementDirection = ControllerUtils.value(center, value, 0f, 10f,  40f);
+			float movementDirection = ControllerUtils.value(center, value, 0f, 2.5f,  100f, InterpolationFunctions.easeIn());
 			controller.setMovementDirection(-movementDirection);
 			return;
 		}

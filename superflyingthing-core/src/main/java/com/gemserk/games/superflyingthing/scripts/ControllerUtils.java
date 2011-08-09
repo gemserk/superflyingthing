@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.scripts;
 
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
+import com.gemserk.animation4j.interpolator.function.InterpolationFunction;
 
 public class ControllerUtils {
 
@@ -19,7 +20,7 @@ public class ControllerUtils {
 		return newValue;
 	}
 
-	public static float value(float center, int x, float minValue, float distanceToMin, float distanceToMax) {
+	public static float value(float center, int x, float minValue, float distanceToMin, float distanceToMax, InterpolationFunction interpolationFunction) {
 		float distance = Math.abs(x - center);
 
 		if (distance < distanceToMin) {
@@ -30,9 +31,9 @@ public class ControllerUtils {
 		}
 
 		if (x > center)
-			return FloatInterpolator.interpolate(minValue, 1f, (distance - distanceToMin) / (distanceToMax - distanceToMin));
+			return FloatInterpolator.interpolate(minValue, 1f, (distance - distanceToMin) / (distanceToMax - distanceToMin), interpolationFunction);
 		else if (x < center)
-			return FloatInterpolator.interpolate(-minValue, -1f, (distance - distanceToMin) / (distanceToMax - distanceToMin));
+			return FloatInterpolator.interpolate(-minValue, -1f, (distance - distanceToMin) / (distanceToMax - distanceToMin), interpolationFunction);
 		return 0;
 	}
 
