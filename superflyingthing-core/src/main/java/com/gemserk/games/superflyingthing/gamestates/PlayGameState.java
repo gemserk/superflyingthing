@@ -29,10 +29,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
@@ -53,7 +50,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
@@ -77,7 +73,6 @@ import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.AndroidController1Script;
-import com.gemserk.games.superflyingthing.scripts.AndroidController2Script;
 import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
@@ -563,31 +558,33 @@ public class PlayGameState extends GameStateImpl {
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
-			Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
+			// Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
 
 			if (Gdx.app.getType() == ApplicationType.Android) {
-				entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
-						.component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
-						.component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
-						.build();
+				// entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
+				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
+				// .component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
+				// .build();
 
 				// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
 				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
 				// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
 				// .build();
+
+				entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
 
 			} else {
-				entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
-						.component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
-						.component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
-						.build();
+				// entityBuilder.component(new ScriptComponent(new AndroidController2Script(controller))) //
+				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f))) //
+				// .component(new SpatialComponent(new SpatialImpl(0, 0, 4f, Gdx.graphics.getHeight(), 0f))).component(new RenderableComponent(500)) //
+				// .build();
 
 				// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
 				// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
 				// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
 				// .build();
 
-				// entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+				entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
 			}
 
 			entityBuilder //
