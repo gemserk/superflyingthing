@@ -35,7 +35,7 @@ public class KeyboardController1Script extends ScriptJavaImpl {
 			direction = -1f;
 
 		float movementDirection = controller.getMovementDirection();
-		movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.5f, (0.001f * world.getDelta()), 2f);
+		movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.1f, (0.001f * world.getDelta()), 5f);
 		controller.setMovementDirection(movementDirection);
 	}
 
