@@ -42,9 +42,12 @@ public class AndroidController3Script extends ScriptJavaImpl {
 		if (ship == null)
 			return;
 
-		Spatial spatial = ComponentWrapper.getSpatial(ship);
-		float angle = spatial.getAngle();
-
+		Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
+		float angle = shipSpatial.getAngle();
+		
+		Spatial spatial = ComponentWrapper.getSpatial(e);
+		spatial.setPosition(-100, 0);
+		
 		if (!isTouched && Gdx.input.isTouched()) {
 			isTouched = true;
 			position.x = Gdx.input.getX();
@@ -54,6 +57,8 @@ public class AndroidController3Script extends ScriptJavaImpl {
 		}
 
 		if (isTouched) {
+			
+			spatial.setPosition(position.x, position.y);
 
 			float newY = Gdx.graphics.getHeight() - Gdx.input.getY();
 			float newX = Gdx.input.getX();
