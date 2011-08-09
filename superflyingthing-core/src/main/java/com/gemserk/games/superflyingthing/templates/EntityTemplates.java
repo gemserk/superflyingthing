@@ -499,9 +499,9 @@ public class EntityTemplates {
 			Color color = parameters.get("color");
 
 			if (color == null)
-				color = new Color(MathUtils.random(0.1f, 1f), //
-						MathUtils.random(0.1f, 1f), //
-						MathUtils.random(0.1f, 1f), //
+				color = new Color(MathUtils.random(0.3f, 1f), //
+						MathUtils.random(0.3f, 1f), //
+						MathUtils.random(0.3f, 1f), //
 						1f);
 
 			Animation planetFillAnimation = resourceManager.getResourceValue(animationId);
