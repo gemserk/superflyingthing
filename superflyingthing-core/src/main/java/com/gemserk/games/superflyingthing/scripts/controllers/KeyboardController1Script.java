@@ -1,10 +1,11 @@
-package com.gemserk.games.superflyingthing.scripts;
+package com.gemserk.games.superflyingthing.scripts.controllers;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.scripts.ControllerUtils;
 
 public class KeyboardController1Script extends ScriptJavaImpl {
 	

@@ -14,10 +14,10 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.TagComponent;
-import com.gemserk.games.superflyingthing.scripts.AndroidClassicControllerScript;
-import com.gemserk.games.superflyingthing.scripts.AxisControllerScript;
-import com.gemserk.games.superflyingthing.scripts.AnalogControllerScript;
-import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
+import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.AxisControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardController1Script;
 import com.gemserk.resources.ResourceManager;
 
 public class ControllerTemplates {

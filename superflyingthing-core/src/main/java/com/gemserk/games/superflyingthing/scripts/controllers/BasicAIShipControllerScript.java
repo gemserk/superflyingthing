@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing.scripts;
+package com.gemserk.games.superflyingthing.scripts.controllers;
 
 import com.artemis.Entity;
 import com.artemis.utils.ImmutableBag;
