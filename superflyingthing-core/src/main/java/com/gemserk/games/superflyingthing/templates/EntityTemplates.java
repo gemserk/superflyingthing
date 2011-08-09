@@ -362,7 +362,7 @@ public class EntityTemplates {
 
 		@Override
 		public void apply(Entity entity) {
-			Animation idleAnimation = resourceManager.getResourceValue("LaserTurretAnimation");
+			Animation idleAnimation = resourceManager.getResourceValue("LaserGunAnimation");
 
 			Vector2 position = parameters.get("position");
 			Float angle = parameters.get("angle");
