@@ -50,7 +50,9 @@ public class DesktopApplication {
 			public void create() {
 				// Gdx.graphics.setVSync(true);
 				Display.setVSyncEnabled(true);
-				Gdx.input = new RemoteInput(8190);
+				String remoteInput = System.getProperty("remoteInput");
+				if(remoteInput != null)
+					Gdx.input = new RemoteInput(8190);
 				super.create();
 			}
 		}, config);
