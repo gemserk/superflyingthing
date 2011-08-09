@@ -54,6 +54,7 @@ import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
+import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -240,7 +241,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.portals.size(); i++) {
 			Portal portal = level.portals.get(i);
-			entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new Scripts.PortalScript());
+			entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
 		}
 
 		gameData.totalItems = level.items.size();

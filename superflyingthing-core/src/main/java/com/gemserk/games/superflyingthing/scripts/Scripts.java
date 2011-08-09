@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
@@ -18,11 +17,9 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -42,7 +39,6 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
-import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -500,54 +496,6 @@ public class Scripts {
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
 		}
-	}
-
-	public static class PortalScript extends ScriptJavaImpl {
-
-		// convert it maybe to system.
-
-		private static final Vector2 direction = new Vector2();
-
-		@Override
-		public void update(com.artemis.World world, Entity e) {
-			PortalComponent portalComponent = e.getComponent(PortalComponent.class);
-
-			Physics physics = ComponentWrapper.getPhysics(e);
-			Contact contact = physics.getContact();
-
-			Spatial portalSpatial = ComponentWrapper.getSpatial(e);
-			portalSpatial.setAngle(portalSpatial.getAngle() + 0.25f * world.getDelta());
-
-			Entity portal = world.getTagManager().getEntity(portalComponent.getTargetPortalId());
-			if (portal == null)
-				return;
-
-			for (int i = 0; i < contact.getContactCount(); i++) {
-				if (!contact.isInContact(i))
-					continue;
-				Entity e2 = (Entity) contact.getUserData(i);
-				if (e2 == null)
-					continue;
-
-				Gdx.app.log("SuperFlyingThing", "Teleporting entity " + e2.getUniqueId() + " to " + portalComponent.getTargetPortalId());
-
-				// start transition of e2 to target portal,
-				Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
-				Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
-
-				// direction.set(portalSpatial.getPosition()).sub(entitySpatial.getPosition()).nor();
-
-				MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e2);
-				if (movementComponent == null)
-					continue;
-				direction.set(movementComponent.getDirection());
-
-				entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, targetPortalSpatial.getY() + direction.y);
-
-				return;
-			}
-		}
-
 	}
 
 	public static class ParticleEmitterScript extends ScriptJavaImpl {

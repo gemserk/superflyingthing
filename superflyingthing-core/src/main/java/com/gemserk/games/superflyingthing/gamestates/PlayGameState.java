@@ -73,6 +73,7 @@ import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
+import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -354,7 +355,7 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.portals.size(); i++) {
 				Portal portal = level.portals.get(i);
-				entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new Scripts.PortalScript());
+				entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
 			}
 
 			gameData.totalItems = level.items.size();
