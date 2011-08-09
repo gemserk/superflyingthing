@@ -299,6 +299,7 @@ public class EntityTemplates {
 			parameters.put("y", new Float(0f));
 			parameters.put("angle", new Float(0f));
 			parameters.put("damage", new Float(1f));
+			parameters.put("color", Colors.lightBlue);
 		}
 
 		@Override
@@ -314,6 +315,7 @@ public class EntityTemplates {
 			Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
 			Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
 			Integer duration = parameters.get("duration", 1000);
+			Color color = parameters.get("color");
 
 			Float x = parameters.get("x");
 			Float y = parameters.get("y");
@@ -330,7 +332,7 @@ public class EntityTemplates {
 
 			entity.addComponent(new SpatialComponent(bulletSpatial));
 			entity.addComponent(new ScriptComponent(script));
-			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), Colors.lightBlue));
+			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), color));
 			entity.addComponent(new RenderableComponent(2));
 			entity.addComponent(new Components.TimerComponent(duration));
 			entity.addComponent(new Components.DamageComponent(damage));
@@ -349,6 +351,7 @@ public class EntityTemplates {
 			parameters.put("fireRate", new Integer(1000));
 			parameters.put("bulletDuration", new Integer(250));
 			parameters.put("currentReloadTime", new Integer(0));
+			parameters.put("color", Colors.lightGreen);
 		}
 
 		@Override
@@ -368,13 +371,15 @@ public class EntityTemplates {
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
 			Integer currentReloadTime = parameters.get("currentReloadTime");
+			
+			Color color = parameters.get("color");
 
 			Entity owner = parameters.get("owner");
 
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new AnimationComponent(new Animation[] { idleAnimation }));
-			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), Color.WHITE));
+			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), color));
 			entity.addComponent(new RenderableComponent(3));
 			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
 			entity.addComponent(new OwnerComponent(owner));
