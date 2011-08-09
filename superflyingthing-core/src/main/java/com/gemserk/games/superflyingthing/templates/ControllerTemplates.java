@@ -14,9 +14,9 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.TagComponent;
-import com.gemserk.games.superflyingthing.scripts.AndroidController1Script;
-import com.gemserk.games.superflyingthing.scripts.AndroidController2Script;
-import com.gemserk.games.superflyingthing.scripts.AndroidController3Script;
+import com.gemserk.games.superflyingthing.scripts.AndroidClassicControllerScript;
+import com.gemserk.games.superflyingthing.scripts.AxisControllerScript;
+import com.gemserk.games.superflyingthing.scripts.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
 import com.gemserk.resources.ResourceManager;
 
@@ -53,7 +53,7 @@ public class ControllerTemplates {
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", "PlayerController");
-			entity.addComponent(new ScriptComponent(new AndroidController1Script(controller)));
+			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 		}
 	}
@@ -88,7 +88,7 @@ public class ControllerTemplates {
 			
 			Sprite sprite = resourceManager.getResourceValue(spriteId);
 			
-			entity.addComponent(new ScriptComponent(new AndroidController2Script(controller)));
+			entity.addComponent(new ScriptComponent(new AxisControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f)));
 			entity.addComponent(new SpatialComponent(spatial));
@@ -126,7 +126,7 @@ public class ControllerTemplates {
 			
 			Sprite sprite = resourceManager.getResourceValue(spriteId);
 			
-			entity.addComponent(new ScriptComponent(new AndroidController3Script(controller)));
+			entity.addComponent(new ScriptComponent(new AnalogControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f)));
 			entity.addComponent(new SpatialComponent(spatial));

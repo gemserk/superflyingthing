@@ -10,7 +10,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.templates.Groups;
 
-public class AndroidController3Script extends ScriptJavaImpl {
+public class AnalogControllerScript extends ScriptJavaImpl {
 
 	// TODO: this control is like an analogic controller defining the desired direction like JSnakes, with the exception is relative to the first pressed position.
 
@@ -22,7 +22,7 @@ public class AndroidController3Script extends ScriptJavaImpl {
 	private Vector2 desiredDirection = new Vector2();
 	private Vector2 direction = new Vector2();
 
-	public AndroidController3Script(ShipController controller) {
+	public AnalogControllerScript(ShipController controller) {
 		this.controller = controller;
 	}
 

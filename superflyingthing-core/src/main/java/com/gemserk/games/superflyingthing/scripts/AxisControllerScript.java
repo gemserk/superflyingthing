@@ -8,7 +8,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 
-public class AndroidController2Script extends ScriptJavaImpl {
+public class AxisControllerScript extends ScriptJavaImpl {
 
 	// TODO: this control defines the rotation direction based on the pressed position x coordinate and the next position x coordinate, is relative and it is normalized
 
@@ -16,7 +16,7 @@ public class AndroidController2Script extends ScriptJavaImpl {
 	private boolean isTouched = false;
 	private float center = 0f;
 
-	public AndroidController2Script(ShipController controller) {
+	public AxisControllerScript(ShipController controller) {
 		this.controller = controller;
 	}
 

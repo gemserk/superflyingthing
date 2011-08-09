@@ -5,13 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 
-public class AndroidController1Script extends ScriptJavaImpl {
+public class AndroidClassicControllerScript extends ScriptJavaImpl {
 	
 	// TODO: add some controller explanation 
 
 	private final ShipController controller;
 
-	public AndroidController1Script(ShipController controller) {
+	public AndroidClassicControllerScript(ShipController controller) {
 		this.controller = controller;
 	}
 
