@@ -33,6 +33,7 @@ public class Levels {
 			"data/levels/level12.svg", //
 			"data/levels/level13.svg", //
 			"data/levels/level14.svg", //
+			"data/levels/level15.svg", //
 	};
 
 	private static Level[] cachedLevels = new Level[levels.length];

@@ -16,7 +16,7 @@
  version="1.1"
  inkscape:version="0.48.1 r9760"
  sodipodi:docname="level03.svg"
- levelName="The level with no name">
+ levelName="Obstacles are not my friends">
 <defs
  id="defs4" />
 <sodipodi:namedview
@@ -26,9 +26,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="31.2094"
- inkscape:cx="19.334"
- inkscape:cy="5.79146"
+ inkscape:zoom="29.8268"
+ inkscape:cx="18.5774"
+ inkscape:cy="7.76028"
  inkscape:document-units="px"
  inkscape:current-layer="layer6"
  showgrid="true"
@@ -126,8 +126,7 @@
 <g
  inkscape:groupmode="layer"
  id="layer2"
- inkscape:label="Obstacles"
- transform="translate(0,0)">
+ inkscape:label="Obstacles">
 <path
  style="color:#000000;fill:#0000ff;fill-opacity:1;stroke:none;stroke-width:0.1;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
  d="M 21,1.00689 22,0.006886 17,0.006886 z"
@@ -218,8 +217,7 @@
 <g
  inkscape:groupmode="layer"
  id="layer3"
- inkscape:label="World"
- transform="translate(0,0)">
+ inkscape:label="World">
 <path
  style="color:#000000;fill:none;stroke:#ff0000;stroke-width:0.1;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;stroke-dashoffset:0;marker:none;visibility:visible;display:inline;overflow:visible;enable-background:accumulate"
  d="M -1,5 z"
