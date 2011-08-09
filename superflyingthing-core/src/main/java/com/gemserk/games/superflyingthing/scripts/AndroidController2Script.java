@@ -47,8 +47,7 @@ public class AndroidController2Script extends ScriptJavaImpl {
 			spatial.setPosition(center, Gdx.graphics.getHeight() * 0.5f);
 
 			int value = Gdx.input.getX();
-			// float movementDirection = ControllerUtils.value(center, value, 0f, Gdx.graphics.getWidth() * 0.025f, Gdx.graphics.getWidth() * 0.1f);
-			float movementDirection = ControllerUtils.value(center, value, 0f, 2.5f,  100f, InterpolationFunctions.easeIn());
+			float movementDirection = ControllerUtils.value(center, value, 0f, 2.5f,  60f, InterpolationFunctions.easeOut());
 			controller.setMovementDirection(-movementDirection);
 			return;
 		}

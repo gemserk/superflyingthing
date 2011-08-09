@@ -188,6 +188,7 @@ public class PlayGameState extends GameStateImpl {
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
 		controllerTemplates.androidClassicControllerTemplate = new ControllerTemplates.AndroidClassicControllerTemplate();
 		controllerTemplates.axisControllerTemplate = new ControllerTemplates.AxisControllerTemplate(resourceManager);
+		controllerTemplates.analogControllerTemplate = new ControllerTemplates.AnalogControllerTemplate(resourceManager);
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
@@ -573,38 +574,16 @@ public class PlayGameState extends GameStateImpl {
 
 		Parameters parameters = new ParametersWrapper();
 
-		// Sprite sprite = resourceManager.getResourceValue("WhiteRectangle");
-
 		if (Gdx.app.getType() == ApplicationType.Android) {
-
-			// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
-			// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
-			// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
-			// .build();
-
-			// entityBuilder.component(new ScriptComponent(new AndroidController1Script(controller))).build();
-
 			parameters.put("controller", controller);
-			entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
-			// entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
-
-			// parameters.put("script", new AndroidController1Script(controller));
-			// entityFactory.instantiate(ControllerTemplates.keyboardControllerTemplate, parameters);
-
+			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
+			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		} else {
-
-			// entityBuilder.component(new ScriptComponent(new AndroidController3Script(controller))) //
-			// .component(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f))) //
-			// .component(new SpatialComponent(new SpatialImpl(0, 0, 8f, 8f, 0f))).component(new RenderableComponent(500)) //
-			// .build();
-
-			// parameters.put("controller", controller);
-			// entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-
 			parameters.put("controller", controller);
-			entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
-
-			// entityBuilder.component(new ScriptComponent(new KeyboardController1Script(controller))).build();
+			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
+			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		}
 
 	}

@@ -16,6 +16,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.AndroidController1Script;
 import com.gemserk.games.superflyingthing.scripts.AndroidController2Script;
+import com.gemserk.games.superflyingthing.scripts.AndroidController3Script;
 import com.gemserk.games.superflyingthing.scripts.KeyboardController1Script;
 import com.gemserk.resources.ResourceManager;
 
@@ -95,9 +96,48 @@ public class ControllerTemplates {
 		}
 	}
 	
+	public static class AnalogControllerTemplate implements EntityTemplate {
+		
+		private final ResourceManager<String> resourceManager;
+
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		{
+			parameters.put("layer", new Integer(500));
+		}
+		
+		public AnalogControllerTemplate(ResourceManager<String> resourceManager) {
+			this.resourceManager = resourceManager;
+		}
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+			ShipController controller = parameters.get("controller");
+			String tag = parameters.get("tag", "PlayerController");
+			Integer layer = parameters.get("layer"); 
+
+			String spriteId = parameters.get("spriteId", "WhiteRectangle"); 
+			Spatial spatial = parameters.get("spatial", new SpatialImpl(0, 0, 8f, 8f, 0f));
+			
+			Sprite sprite = resourceManager.getResourceValue(spriteId);
+			
+			entity.addComponent(new ScriptComponent(new AndroidController3Script(controller)));
+			entity.addComponent(new TagComponent(tag));
+			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f)));
+			entity.addComponent(new SpatialComponent(spatial));
+			entity.addComponent(new RenderableComponent(layer));
+		}
+	}
+	
 	public EntityTemplate keyboardControllerTemplate;
 	public EntityTemplate androidClassicControllerTemplate;
 	public EntityTemplate axisControllerTemplate;
+	public EntityTemplate analogControllerTemplate;
 
 	
 }
