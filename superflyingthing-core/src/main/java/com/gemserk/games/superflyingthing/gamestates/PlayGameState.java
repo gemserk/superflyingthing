@@ -20,11 +20,6 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
-import com.gemserk.animation4j.animations.Animation;
-import com.gemserk.animation4j.timeline.Builders;
-import com.gemserk.animation4j.timeline.sync.MutableObjectSynchronizer;
-import com.gemserk.animation4j.timeline.sync.SynchronizedAnimation;
-import com.gemserk.animation4j.timeline.sync.TimelineSynchronizer;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
@@ -43,6 +38,7 @@ import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -58,6 +54,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
@@ -84,6 +81,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
@@ -116,8 +114,9 @@ public class PlayGameState extends GameStateImpl {
 	private JointBuilder jointBuilder;
 	private Text timerLabel;
 
-	private Animation finalMessageAnimation;
-	private Animation levelNameAnimation;
+	private CountDownTimer gameOverTimer;
+
+	EntityTemplate userMessageTemplate;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -129,8 +128,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		finalMessageAnimation = null;
-		levelNameAnimation = null;
+		gameOverTimer = null;
 
 		resetPressed = false;
 		spriteBatch = new SpriteBatch();
@@ -193,6 +191,8 @@ public class PlayGameState extends GameStateImpl {
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
+
+		userMessageTemplate = new UserMessageTemplate(container, resourceManager);
 
 		BitmapFont font = resourceManager.getResourceValue("GameFont");
 
@@ -383,28 +383,12 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, false))) //
 					.build();
 
-			BitmapFont font = resourceManager.getResourceValue("GameFont");
+			parameters.clear();
 
-			Text levelNameText = GuiControls.label("Level " + (GameInformation.level + 1) + ": " + level.name) //
-					.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.75f) //
-					.font(font) //
-					.color(1f, 1f, 1f, 0f) //
-					.build();
+			parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+			parameters.put("text", "Level " + (GameInformation.level + 1) + ": " + level.name);
 
-			levelNameAnimation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
-					.value(Builders.timelineValue("color") //
-							.keyFrame(0, new Color(1f, 1f, 1f, 0f)) //
-							.keyFrame(250, Color.WHITE) //
-							.keyFrame(750, Color.WHITE) //
-							.keyFrame(1000, new Color(1f, 1f, 1f, 0f)) //
-					)) //
-					.delay(0f) //
-					.speed(0.4f) //
-					.started(true) //
-					.build(), //
-					new TimelineSynchronizer(new MutableObjectSynchronizer(), levelNameText));
-
-			container.add(levelNameText);
+			entityFactory.instantiate(userMessageTemplate, parameters);
 
 		}
 
@@ -603,27 +587,17 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void gameFinished() {
-		BitmapFont font = resourceManager.getResourceValue("GameFont");
 
-		Text message = GuiControls.label("Great Job!").position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f) //
-				.font(font) //
-				.color(1f, 1f, 1f, 0f) //
-				.build();
+		parameters.clear();
 
-		finalMessageAnimation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
-				.value(Builders.timelineValue("color") //
-						.keyFrame(0, new Color(1f, 1f, 1f, 0f)) //
-						.keyFrame(250, Color.WHITE) //
-						.keyFrame(750, Color.WHITE) //
-						.keyFrame(1000, new Color(1f, 1f, 1f, 0f)) //
-				)) //
-				.delay(0f) //
-				.speed(0.4f) //
-				.started(true) //
-				.build(), //
-				new TimelineSynchronizer(new MutableObjectSynchronizer(), message));
+		parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+		parameters.put("text", "Great Job!");
 
-		container.add(message);
+		entityFactory.instantiate(userMessageTemplate, parameters);
+
+		gameOverTimer = new CountDownTimer(2500, true);
+
+		// container.add(message);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/finish", "/challenge/" + (GameInformation.level + 1) + "/finish", null);
@@ -664,13 +638,9 @@ public class PlayGameState extends GameStateImpl {
 		Synchronizers.synchronize(delta);
 		container.update();
 
-		if (finalMessageAnimation != null) {
-			finalMessageAnimation.update(delta);
-			done = finalMessageAnimation.isFinished();
-		}
-
-		if (levelNameAnimation != null) {
-			levelNameAnimation.update(delta);
+		if (gameOverTimer != null) {
+			if (gameOverTimer.update(delta))
+				done = true;
 		}
 
 		if (inputDevicesMonitor.getButton("restart").isReleased())

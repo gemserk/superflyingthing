@@ -15,7 +15,6 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.Script;
-import com.gemserk.commons.artemis.ScriptCompositeImpl;
 import com.gemserk.commons.artemis.components.ContainerComponent;
 import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
@@ -514,11 +513,11 @@ public class EntityTemplates {
 			entity.addComponent(new RenderableComponent(-1));
 			entity.addComponent(new AnimationComponent(new Animation[] { planetFillAnimation }));
 			entity.addComponent(new OwnerComponent(owner));
-			entity.addComponent(new ScriptComponent(new ScriptCompositeImpl(new Scripts.UpdateAnimationScript())));
+			entity.addComponent(new ScriptComponent(new Scripts.UpdateAnimationScript()));
 		}
 
 	};
-
+	
 	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
 
 		Sprite sprite = resourceManager.getResourceValue("Planet");
