@@ -362,7 +362,7 @@ public class PlayGameState extends GameStateImpl {
 				
 				parameters.put("id", portal.id);
 				parameters.put("targetPortalId", portal.targetPortalId);
-				parameters.put("spatial", new SpatialImpl(portal.x, portal.y, 2f, 2f, 0f));
+				parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
 				// parameters.put("script", new PortalScript());
 
 				entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters);

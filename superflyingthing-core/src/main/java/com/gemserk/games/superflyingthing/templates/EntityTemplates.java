@@ -409,7 +409,7 @@ public class EntityTemplates {
 
 			entity.addComponent(new TagComponent(id));
 			entity.addComponent(new SpriteComponent(sprite));
-			entity.addComponent(new Components.PortalComponent(targetPortalId));
+			entity.addComponent(new Components.PortalComponent(targetPortalId, spatial.getAngle()));
 			entity.addComponent(new RenderableComponent(4));
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new ScriptComponent(script));

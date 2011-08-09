@@ -26,11 +26,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="32.6559"
- inkscape:cx="24.8713"
- inkscape:cy="11.5239"
+ inkscape:zoom="46.1824"
+ inkscape:cx="72.6587"
+ inkscape:cy="8.19252"
  inkscape:document-units="px"
- inkscape:current-layer="layer6"
+ inkscape:current-layer="layer5"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -173,21 +173,23 @@
  id="layer7"
  inkscape:label="Portals">
 <image
- y="17.3675"
- x="31.6678"
+ y="-20.489"
+ x="-32.3216"
  id="portalA"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="1"
- width="1"
- targetPortalId="portalB" />
+ height="3.36417"
+ width="3.36417"
+ targetPortalId="portalB"
+ transform="matrix(-0.99901,0.044481,-0.044481,-0.99901,0,0)" />
 <image
- y="6.049"
- x="67.0656"
+ y="-54.5586"
+ x="40.7163"
  id="portalB"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="1"
- width="1"
- targetPortalId="portalA" />
+ height="2.16365"
+ width="2.16365"
+ targetPortalId="portalA"
+ transform="matrix(0.550988,0.834513,-0.834513,0.550988,0,0)" />
 </g>
 <g
  inkscape:groupmode="layer"
@@ -195,65 +197,65 @@
  inkscape:label="Items">
 <image
  style="display:inline"
- y="6.40247"
- x="71.2474"
+ y="7.09846"
+ x="68.6634"
  id="image3019-4-3"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
  style="display:inline"
- y="7.23018"
- x="74.8689"
+ y="9.65535"
+ x="70.3"
  id="image3019-4-2"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
  style="display:inline"
- y="10.2515"
- x="71.2268"
+ y="8.30271"
+ x="69.4296"
  id="image3019-4-6"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
  style="display:inline"
- y="13.9143"
- x="69.7989"
+ y="10.9262"
+ x="71.2063"
  id="image3019-4-28"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
  style="display:inline"
- y="9.44851"
- x="40.5462"
- id="image3019-4-4"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- style="display:inline"
- y="13.5164"
- x="45.5507"
- id="image3019-4-36"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- style="display:inline"
- y="12.4336"
- x="56.3205"
+ y="11.0911"
+ x="4.09282"
  id="image3019-4-0"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
  style="display:inline"
- y="8.124"
- x="23.9036"
- id="image3019-4-39"
+ y="17.4548"
+ x="28.6355"
+ id="image3019-4-0-9"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ style="display:inline"
+ y="12.1497"
+ x="72.0719"
+ id="image3019-4-28-0"
+ xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
+ height="0.5"
+ width="0.5" />
+<image
+ style="display:inline"
+ y="13.384"
+ x="73.0247"
+ id="image3019-4-28-3"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
@@ -276,8 +278,8 @@
  width="2"
  startPlanet="" />
 <image
- y="14.3978"
- x="73.1978"
+ y="14.5927"
+ x="73.5659"
  id="image3824-5-1-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"

@@ -349,14 +349,20 @@ public class Components {
 
 	public static class PortalComponent extends Component {
 
-		private final String targetPortalId;
+		private String targetPortalId;
+		private float outAngle;
 
 		public String getTargetPortalId() {
 			return targetPortalId;
 		}
+		
+		public float getOutAngle() {
+			return outAngle;
+		}
 
-		public PortalComponent(String targetPortalId) {
+		public PortalComponent(String targetPortalId, float outAngle) {
 			this.targetPortalId = targetPortalId;
+			this.outAngle = outAngle;
 		}
 
 	}

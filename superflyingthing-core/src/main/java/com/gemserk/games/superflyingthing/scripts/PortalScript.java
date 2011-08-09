@@ -8,6 +8,7 @@ import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
 
 public class PortalScript extends ScriptJavaImpl {
@@ -36,7 +37,7 @@ public class PortalScript extends ScriptJavaImpl {
 			Entity e2 = (Entity) contact.getUserData(i);
 			if (e2 == null)
 				continue;
-			
+
 			// this should not happen
 			if (e2 == e)
 				continue;
@@ -47,10 +48,17 @@ public class PortalScript extends ScriptJavaImpl {
 			Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
 			Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
 
-			direction.set(targetPortalSpatial.getWidth() * 0.7f, 0f).rotate(entitySpatial.getAngle());
+			PortalComponent targetPortalComponent = portal.getComponent(PortalComponent.class);
+			direction.set(targetPortalSpatial.getWidth() * 0.5f, 0f).rotate(targetPortalComponent.getOutAngle());
 
-			entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, // 
+			entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, //
 					targetPortalSpatial.getY() + direction.y);
+			entitySpatial.setAngle(targetPortalComponent.getOutAngle());
+			
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e2);
+			if (movementComponent != null) {
+				movementComponent.getDirection().set(1f, 0f).rotate(targetPortalComponent.getOutAngle());
+			}
 
 			return;
 		}

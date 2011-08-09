@@ -147,7 +147,7 @@ public class Levels {
 				String id = svgImage.getId();
 				String targetPortalId = element.getAttribute("targetPortalId");
 
-				level.portals.add(new Level.Portal(x, y, id, targetPortalId));
+				level.portals.add(new Level.Portal(x, y, width, height, angle, id, targetPortalId));
 
 			};
 		}.process(document);
