@@ -2,15 +2,12 @@ package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
-import com.gemserk.animation4j.transitions.Transitions;
-import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
@@ -24,7 +21,6 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
@@ -286,14 +282,20 @@ public class Scripts {
 
 	public static class DestinationPlanetScript extends ScriptJavaImpl {
 		private final EventManager eventManager;
+		private final EntityTemplate planetFillAnimationTemplate;
+		private final EntityFactory entityFactory;
+
+		Parameters parameters = new ParametersWrapper();
 
 		Behavior attachEntityBehavior;
 		Behavior calculateInputDirectionBehavior;
 
 		boolean destinationReached;
 
-		public DestinationPlanetScript(EventManager eventManager, JointBuilder jointBuilder) {
+		public DestinationPlanetScript(EventManager eventManager, JointBuilder jointBuilder, EntityFactory entityFactory, EntityTemplate planetFillAnimationTemplate) {
 			this.eventManager = eventManager;
+			this.entityFactory = entityFactory;
+			this.planetFillAnimationTemplate = planetFillAnimationTemplate;
 			this.attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 		}
@@ -320,14 +322,9 @@ public class Scripts {
 			eventManager.registerEvent(Events.destinationPlanetReached, e);
 			destinationReached = true;
 
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			Color currentColor = spriteComponent.getColor();
+			parameters.put("owner", e);
 
-			Synchronizers.transition(currentColor, Transitions.transitionBuilder(currentColor) //
-					.end(Colors.yellow) //
-					.time(1000) //
-					);
-
+			entityFactory.instantiate(planetFillAnimationTemplate, parameters);
 		}
 	}
 
@@ -407,7 +404,7 @@ public class Scripts {
 			entityFactory.instantiate(particleEmitterTemplate, parameters);
 
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-			
+
 			parameters.put("spatial", new SpatialImpl(spatial));
 			parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
 

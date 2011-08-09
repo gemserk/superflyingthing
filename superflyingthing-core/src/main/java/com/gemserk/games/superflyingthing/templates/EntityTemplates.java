@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -14,6 +15,7 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.Script;
+import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.ContainerComponent;
 import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
@@ -39,6 +41,7 @@ import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
@@ -82,6 +85,8 @@ public class EntityTemplates {
 	private final World physicsWorld;
 	private final EntityFactory entityFactory;
 
+	private final Parameters parameters = new ParametersWrapper();
+
 	public EntityTemplate getAttachedShipTemplate() {
 		return attachedShipTemplate;
 	}
@@ -108,6 +113,10 @@ public class EntityTemplates {
 
 	public EntityTemplate getPortalTemplate() {
 		return portalTemplate;
+	}
+
+	public EntityTemplate getPlanetFillAnimationTemplate() {
+		return planetFillAnimationTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
@@ -371,7 +380,7 @@ public class EntityTemplates {
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
 			Integer currentReloadTime = parameters.get("currentReloadTime");
-			
+
 			Color color = parameters.get("color");
 
 			Entity owner = parameters.get("owner");
@@ -423,7 +432,7 @@ public class EntityTemplates {
 					.fixture(bodyBuilder.fixtureDefBuilder() //
 							.circleShape(spatial.getWidth() * 0.35f) //
 							.categoryBits(CategoryBits.ObstacleCategoryBits) //
-							.maskBits((short)(CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
+							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
 							.sensor()) //
 					.position(spatial.getX(), spatial.getY()) //
 					.mass(1f) //
@@ -468,8 +477,62 @@ public class EntityTemplates {
 		return e;
 	}
 
+	private EntityTemplate planetFillAnimationTemplate = new EntityTemplate() {
+
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		{
+			parameters.put("animation", "PlanetFillAnimation");
+			// parameters.put("color", Colors.yellow);
+		}
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+			Entity owner = parameters.get("owner");
+
+			String animationId = parameters.get("animation");
+			Color color = parameters.get("color");
+
+			if (color == null)
+				color = new Color(MathUtils.random(0.1f, 1f), //
+						MathUtils.random(0.1f, 1f), //
+						MathUtils.random(0.1f, 1f), //
+						1f);
+
+			Animation planetFillAnimation = resourceManager.getResourceValue(animationId);
+			Sprite sprite = planetFillAnimation.getCurrentFrame();
+
+			Spatial ownerSpatial = ComponentWrapper.getSpatial(owner);
+
+			entity.addComponent(new SpatialComponent(new SpatialHierarchicalImpl(ownerSpatial)));
+			entity.addComponent(new SpriteComponent(sprite, color));
+			entity.addComponent(new RenderableComponent(-1));
+			entity.addComponent(new AnimationComponent(new Animation[] { planetFillAnimation }));
+			entity.addComponent(new OwnerComponent(owner));
+
+			entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+				public void update(com.artemis.World world, Entity e) {
+					SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+					AnimationComponent animationComponent = e.getComponent(AnimationComponent.class);
+					Animation animation = animationComponent.getCurrentAnimation();
+					animation.update(world.getDelta());
+					Sprite sprite = animation.getCurrentFrame();
+					spriteComponent.setSprite(sprite);
+				};
+			}));
+		}
+
+	};
+
 	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
+
 		Sprite sprite = resourceManager.getResourceValue("Planet");
+
 		Entity e = entityBuilder.build();
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -486,12 +549,18 @@ public class EntityTemplates {
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		e.addComponent(new AttachmentComponent());
-		e.addComponent(new SpriteComponent(sprite, Colors.yellow));
+		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new ControllerComponent(controller));
 		e.addComponent(new ScriptComponent(script));
+		e.addComponent(new ContainerComponent());
 
 		e.refresh();
+
+		parameters.clear();
+		parameters.put("owner", e);
+		entityFactory.instantiate(getPlanetFillAnimationTemplate(), parameters);
+
 		return e;
 	}
 
@@ -522,6 +591,7 @@ public class EntityTemplates {
 		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new AttachmentComponent());
 		e.addComponent(new ScriptComponent(script));
+		e.addComponent(new ContainerComponent());
 
 		e.refresh();
 		return e;

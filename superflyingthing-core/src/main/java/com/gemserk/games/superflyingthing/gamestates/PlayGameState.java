@@ -321,7 +321,7 @@ public class PlayGameState extends GameStateImpl {
 
 			for (int i = 0; i < level.destinationPlanets.size(); i++) {
 				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 			}
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager));
@@ -344,7 +344,7 @@ public class PlayGameState extends GameStateImpl {
 				LaserTurret laserTurret = level.laserTurrets.get(i);
 
 				parameters.clear();
-				
+
 				parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
 				parameters.put("angle", laserTurret.angle);
 				parameters.put("fireRate", laserTurret.fireRate);
@@ -359,7 +359,7 @@ public class PlayGameState extends GameStateImpl {
 				Portal portal = level.portals.get(i);
 
 				parameters.clear();
-				
+
 				parameters.put("id", portal.id);
 				parameters.put("targetPortalId", portal.targetPortalId);
 				parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
@@ -486,7 +486,7 @@ public class PlayGameState extends GameStateImpl {
 			final ShipController controller = new ShipController();
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
@@ -567,9 +567,10 @@ public class PlayGameState extends GameStateImpl {
 
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager));
 			final ShipController controller = new ShipController();
+
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder));
+			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 
 			createWorldLimits(worldWidth, worldHeight, 0f);
 
