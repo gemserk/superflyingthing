@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -188,6 +189,7 @@ public class PlayGameState extends GameStateImpl {
 		controllerTemplates.androidClassicControllerTemplate = new ControllerTemplates.AndroidClassicControllerTemplate();
 		controllerTemplates.axisControllerTemplate = new ControllerTemplates.AxisControllerTemplate(resourceManager);
 		controllerTemplates.analogControllerTemplate = new ControllerTemplates.AnalogControllerTemplate(resourceManager);
+		controllerTemplates.tiltAndroidControllerTemplate = new ControllerTemplates.TiltAndroidControllerTemplate();
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
@@ -575,11 +577,13 @@ public class PlayGameState extends GameStateImpl {
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			parameters.put("controller", controller);
 			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+//			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		} else {
 			parameters.put("controller", controller);
-			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+//			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		}
@@ -623,10 +627,16 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-
+	static int tt = 0;
 	@Override
 	public void update(int delta) {
 
+		Input input = Gdx.input;
+		tt+=delta;
+		if(tt>500){	
+			System.out.println(String.format("A: %f\tP: %f\tR: %f",input.getAzimuth(),input.getPitch(),input.getRoll()));
+			tt-=500;
+		}
 		GamePreferences gamePreferences = game.getGamePreferences();
 		if (gamePreferences.isTutorialEnabled()) {
 			// gamePreferences.setTutorialEnabled(false);

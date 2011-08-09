@@ -4,8 +4,10 @@ import org.lwjgl.opengl.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
+import com.badlogic.gdx.input.RemoteInput;
 import com.dmurph.tracking.AnalyticsConfigData;
 import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
@@ -17,6 +19,9 @@ public class DesktopApplication {
 	protected static final Logger logger = LoggerFactory.getLogger(DesktopApplication.class);
 
 	public static void main(String[] argv) {
+		
+		System.out.println(System.getProperty("java.version"));
+		
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-4");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
@@ -45,6 +50,7 @@ public class DesktopApplication {
 			public void create() {
 				// Gdx.graphics.setVSync(true);
 				Display.setVSyncEnabled(true);
+				Gdx.input = new RemoteInput(8190);
 				super.create();
 			}
 		}, config);
