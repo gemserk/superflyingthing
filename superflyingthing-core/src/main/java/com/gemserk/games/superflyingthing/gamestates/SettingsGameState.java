@@ -78,7 +78,10 @@ public class SettingsGameState extends GameStateImpl {
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
-
+					@Override
+					public void onReleased() {
+						game.transition(game.getControllersTestScreen(), 250, 250);						
+					}
 				}) //
 				.build());
 		

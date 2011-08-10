@@ -25,6 +25,7 @@ import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
+import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
 import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
@@ -73,6 +74,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen instructionsScreen;
 	private Screen backgroundGameScreen;
 	private Screen settingsScreen;
+	private Screen controllersTestScreen;
 	
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
@@ -125,6 +127,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Screen getSettingsScreen() {
 		return settingsScreen;
+	}
+	
+	public Screen getControllersTestScreen() {
+		return controllersTestScreen;
 	}
 	
 	public GamePreferences getGamePreferences() {
@@ -188,6 +194,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		
 		SettingsGameState settingsGameState = new SettingsGameState(this);
 		settingsGameState.setResourceManager(resourceManager);
+		
+		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
+		controllerTestGameState.setResourceManager(resourceManager);
 
 		playScreen = new ScreenImpl(playGameState);
 		pauseScreen = new ScreenImpl(pauseGameState);
@@ -199,6 +208,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		backgroundGameScreen = new ScreenImpl(backgroundGameState);
 		settingsScreen = new ScreenImpl(settingsGameState);
+		controllersTestScreen = new ScreenImpl(controllerTestGameState); 
 
 		setScreen(splashScreen);
 

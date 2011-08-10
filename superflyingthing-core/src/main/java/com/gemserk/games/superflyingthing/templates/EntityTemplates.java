@@ -137,6 +137,7 @@ public class EntityTemplates {
 
 	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, final float x, final float y, Script script) {
 		return entityBuilder //
+				.component(new TagComponent("MainCamera")) //
 				.component(new Components.CameraComponent(camera, libgdxCamera)) //
 				.component(new TargetComponent(null)) //
 				.component(new SpatialComponent(new SpatialImpl(x, y, 0f, 0f, 0f))) //
