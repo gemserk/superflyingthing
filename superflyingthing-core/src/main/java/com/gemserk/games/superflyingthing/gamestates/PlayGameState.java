@@ -630,13 +630,6 @@ public class PlayGameState extends GameStateImpl {
 	static int tt = 0;
 	@Override
 	public void update(int delta) {
-
-		Input input = Gdx.input;
-		tt+=delta;
-		if(tt>500){	
-			System.out.println(String.format("A: %f\tP: %f\tR: %f",input.getAzimuth(),input.getPitch(),input.getRoll()));
-			tt-=500;
-		}
 		GamePreferences gamePreferences = game.getGamePreferences();
 		if (gamePreferences.isTutorialEnabled()) {
 			// gamePreferences.setTutorialEnabled(false);
