@@ -117,7 +117,7 @@ public class SettingsGameState extends GameStateImpl {
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
 				.setColor(Color.WHITE) //
-				.setBoundsOffset(20f, 20f) //
+				.setBoundsOffset(40f, 40f) //
 				.setAlignment(HAlignment.RIGHT) //
 				.setButtonHandler(new ButtonHandler() {
 					@Override

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -41,6 +42,8 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
@@ -60,6 +63,54 @@ import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class ControllerTestGameState extends GameStateImpl {
+
+	private class ControllerTestModeScript extends ScriptJavaImpl {
+		private int starsCollected = 0;
+
+		@Override
+		public void init(com.artemis.World world, Entity e) {
+			eventListenerManager.register(Events.itemTaken, new EventListener() {
+				@Override
+				public void onEvent(Event event) {
+					starsCollected++;
+				}
+			});
+		}
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
+			checkStarsCollected(world, e);
+			checkShipOutsideBounds(world, e);
+		}
+
+		private void checkStarsCollected(com.artemis.World world, Entity e) {
+			if (starsCollected < 4)
+				return;
+			game.transition(game.getSettingsScreen()).enterTime(250) //
+					.leaveTime(250) //
+					.disposeCurrent() //
+					.start();
+		}
+
+		private void checkShipOutsideBounds(com.artemis.World world, Entity e) {
+			Entity ship = world.getTagManager().getEntity(Groups.ship);
+			Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
+
+			if (isShipInsideBounds(shipSpatial.getX(), shipSpatial.getY()))
+				return;
+
+			game.transition(game.getSettingsScreen()).enterTime(250) //
+					.leaveTime(250) //
+					.disposeCurrent() //
+					.start();
+		}
+
+		private boolean isShipInsideBounds(float x, float y) {
+			if ((x < -10f) || (x > 10f) || (y > 8f) || (y < -8f))
+				return false;
+			return true;
+		}
+	}
 
 	private final Game game;
 	SpriteBatch spriteBatch;
@@ -84,6 +135,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	private Container container;
 	private Libgdx2dCamera guiCamera;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -157,55 +209,7 @@ public class ControllerTestGameState extends GameStateImpl {
 				.build();
 
 		// entity with some game logic
-		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
-
-			private int starsCollected = 0;
-
-			@Override
-			public void init(com.artemis.World world, Entity e) {
-				eventListenerManager.register(Events.itemTaken, new EventListener() {
-					@Override
-					public void onEvent(Event event) {
-						starsCollected++;
-					}
-				});
-			}
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				checkStarsCollected(world, e);
-				checkShipOutsideBounds(world, e);
-			}
-
-			private void checkStarsCollected(com.artemis.World world, Entity e) {
-				if (starsCollected < 4)
-					return;
-				game.transition(game.getSettingsScreen()).enterTime(250) //
-						.leaveTime(250) //
-						.disposeCurrent() //
-						.start();
-			}
-
-			private void checkShipOutsideBounds(com.artemis.World world, Entity e) {
-				Entity ship = world.getTagManager().getEntity(Groups.ship);
-				Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
-
-				if (isShipInsideBounds(shipSpatial.getX(), shipSpatial.getY()))
-					return;
-
-				game.transition(game.getSettingsScreen()).enterTime(250) //
-						.leaveTime(250) //
-						.disposeCurrent() //
-						.start();
-			}
-
-			private boolean isShipInsideBounds(float x, float y) {
-				if ((x < -10f) || (x > 10f) || (y > 8f) || (y < -8f))
-					return false;
-				return true;
-			}
-
-		})).build();
+		entityBuilder.component(new ScriptComponent(new ControllerTestModeScript())).build();
 
 		// create world
 
@@ -214,7 +218,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		parameters.put("spatial", new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f));
+		parameters.put("spatial", new SpatialImpl(-5f, 0f, 0.8f, 0.8f, 0f));
 		parameters.put("controller", controller);
 
 		entityFactory.instantiate(entityTemplates.getShipTemplate(), parameters);
@@ -234,8 +238,19 @@ public class ControllerTestGameState extends GameStateImpl {
 		parameters.put("text", "Collect all the stars");
 		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), parameters);
 
-		// create controller using current controller
-		// entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
+			}
+		};
+	}
+
+	@Override
+	public void resume() {
+		super.resume();
+		Gdx.input.setCatchBackKey(true);
+		game.getAdWhirlViewHandler().hide();
 	}
 
 	@Override
@@ -254,6 +269,14 @@ public class ControllerTestGameState extends GameStateImpl {
 		Synchronizers.synchronize(delta);
 		worldWrapper.update(delta);
 		container.update();
+		inputDevicesMonitor.update();
+
+		if (inputDevicesMonitor.getButton("back").isReleased()) {
+			game.transition(game.getSettingsScreen()).enterTime(250) //
+					.leaveTime(250) //
+					.disposeCurrent() //
+					.start();
+		}
 	}
 
 	@Override
