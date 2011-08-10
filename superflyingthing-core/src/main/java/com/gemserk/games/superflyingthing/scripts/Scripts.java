@@ -121,8 +121,9 @@ public class Scripts {
 				if (movingToTarget) {
 					eventManager.registerEvent(Events.cameraReachedTarget, e);
 					movingToTarget = false;
+				} else {
+					spatial.set(targetSpatial);
 				}
-				spatial.set(targetSpatial);
 			}
 
 		}
@@ -500,7 +501,7 @@ public class Scripts {
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
-			 MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
 
 			parameters.put("spatial", spatial);
 			parameters.put("controller", controller);
