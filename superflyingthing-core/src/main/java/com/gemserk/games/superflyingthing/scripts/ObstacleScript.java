@@ -1,7 +1,7 @@
 package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
-import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.PerformDamageToCollidingEntityBehavior;
 
 public class ObstacleScript extends ScriptJavaImpl {

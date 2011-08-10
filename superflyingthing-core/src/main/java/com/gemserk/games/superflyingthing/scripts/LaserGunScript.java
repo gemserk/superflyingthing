@@ -2,8 +2,8 @@ package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.gemserk.animation4j.gdx.Animation;
-import com.gemserk.commons.artemis.ScriptJavaImpl;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.componentsengine.utils.Parameters;

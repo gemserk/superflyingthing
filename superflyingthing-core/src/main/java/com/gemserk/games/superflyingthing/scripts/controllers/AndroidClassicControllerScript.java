@@ -2,7 +2,7 @@ package com.gemserk.games.superflyingthing.scripts.controllers;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
-import com.gemserk.commons.artemis.ScriptJavaImpl;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.scripts.ControllerUtils;
 
