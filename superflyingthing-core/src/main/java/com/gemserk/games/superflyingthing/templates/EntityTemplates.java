@@ -180,11 +180,9 @@ public class EntityTemplates {
 
 	private EntityTemplate shipTemplate = new EntityTemplate() {
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		private final Vector2 direction = new Vector2();
 
-		{
-			parameters.put("direction", new Vector2(1f, 0f));
-		}
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
@@ -194,13 +192,16 @@ public class EntityTemplates {
 
 		@Override
 		public void apply(Entity e) {
-			float width = 0.8f;
-			float height = 0.8f;
-
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
-			Vector2 position = parameters.get("position");
-			Vector2 direction = parameters.get("direction");
+			Spatial spatial = parameters.get("spatial");
+
+			float angle = spatial.getAngle();
+			float width = spatial.getWidth();
+			float height = spatial.getHeight();
+
+			direction.set(1f, 0f).rotate(angle);
+
 			ShipController controller = parameters.get("controller");
 			Script script = parameters.get("script", new ShipScript());
 
@@ -211,7 +212,7 @@ public class EntityTemplates {
 							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
 							.boxShape(width * 0.25f, height * 0.1f))//
 					.mass(50f) //
-					.position(position.x, position.y) //
+					.position(spatial.getX(), spatial.getY()) //
 					.type(BodyType.DynamicBody) //
 					.userData(e) //
 					.build();
