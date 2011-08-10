@@ -239,9 +239,11 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventManager));
 
 		parameters.clear();
-		parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f));
-		parameters.put("text", "Collect all the stars");
-		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), parameters);
+		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), //
+				parameters //
+						.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f)) //
+						.put("text", "Collect all the stars") //
+				);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
