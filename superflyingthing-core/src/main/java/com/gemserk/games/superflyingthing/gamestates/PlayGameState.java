@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import com.artemis.Entity;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -60,6 +59,7 @@ import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -286,9 +286,65 @@ public class PlayGameState extends GameStateImpl {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
 				monitorKeys("pause", Keys.BACK, Keys.ESCAPE);
-				monitorKeys("restart", Keys.MENU, Keys.R);
+				monitorKeys("switchControls", Keys.MENU, Keys.R);
 			}
 		};
+
+		// if (Gdx.app.getType() == ApplicationType.Android) {
+		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+
+			private int current = 0;
+			private ShipController controller;
+
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+
+				Entity currentController = world.getTagManager().getEntity("PlayerController");
+
+				if (currentController == null) {
+
+					current++;
+					if (current == 4)
+						current = 0;
+
+					if (current == 0) {
+						Gdx.app.log("SuperFlyingThing", "Changing controller to AndroidClassicController");
+						parameters.clear();
+						parameters.put("controller", controller);
+						entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+					}
+
+					if (current == 1) {
+						Gdx.app.log("SuperFlyingThing", "Changing controller to AxisController");
+						parameters.clear();
+						parameters.put("controller", controller);
+						entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
+					}
+
+					if (current == 2) {
+						Gdx.app.log("SuperFlyingThing", "Changing controller to AnalogController");
+						parameters.clear();
+						parameters.put("controller", controller);
+						entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
+					}
+
+					if (current == 3) {
+						Gdx.app.log("SuperFlyingThing", "Changing controller to TiltController");
+						parameters.clear();
+						parameters.put("controller", controller);
+						entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
+					}
+
+				}
+
+				if (inputDevicesMonitor.getButton("switchControls").isReleased()) {
+					controller = currentController.getComponent(ControllerComponent.class).getController();
+					currentController.delete();
+				}
+
+			}
+		})).build();
+		// }
 
 	}
 
@@ -576,16 +632,10 @@ public class PlayGameState extends GameStateImpl {
 
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			parameters.put("controller", controller);
-//			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
-			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
-			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
-			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
+			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
 		} else {
 			parameters.put("controller", controller);
 			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-//			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
-			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
-			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		}
 
 	}
@@ -627,12 +677,11 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-	static int tt = 0;
+
 	@Override
 	public void update(int delta) {
 		GamePreferences gamePreferences = game.getGamePreferences();
 		if (gamePreferences.isTutorialEnabled()) {
-			// gamePreferences.setTutorialEnabled(false);
 			game.transition(game.getInstructionsScreen(), 0, 300, false);
 			return;
 		}
@@ -645,9 +694,6 @@ public class PlayGameState extends GameStateImpl {
 			if (gameOverTimer.update(delta))
 				done = true;
 		}
-
-		if (inputDevicesMonitor.getButton("restart").isReleased())
-			done = true;
 
 		if (inputDevicesMonitor.getButton("pause").isReleased())
 			game.transition(game.getPauseScreen(), 200, 300, false);

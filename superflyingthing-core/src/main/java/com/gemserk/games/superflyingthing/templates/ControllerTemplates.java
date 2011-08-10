@@ -13,6 +13,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
@@ -38,6 +39,7 @@ public class ControllerTemplates {
 			String tag = parameters.get("tag", "PlayerController");
 			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
+			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
 	
@@ -56,6 +58,7 @@ public class ControllerTemplates {
 			String tag = parameters.get("tag", "PlayerController");
 			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
+			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
 	
@@ -94,6 +97,7 @@ public class ControllerTemplates {
 			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f)));
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new RenderableComponent(layer));
+			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
 	
@@ -132,6 +136,7 @@ public class ControllerTemplates {
 			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f)));
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new RenderableComponent(layer));
+			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
 	
@@ -150,6 +155,7 @@ public class ControllerTemplates {
 			String tag = parameters.get("tag", "PlayerController");
 			entity.addComponent(new ScriptComponent(new TiltAndroidControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
+			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
 	
