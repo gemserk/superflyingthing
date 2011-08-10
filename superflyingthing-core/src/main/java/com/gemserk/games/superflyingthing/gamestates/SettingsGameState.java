@@ -57,6 +57,56 @@ public class SettingsGameState extends GameStateImpl {
 				.font(titleFont) //
 				.build());
 
+		container.add(GuiControls.textButton() //
+				.text("Classic Controller") //
+				.font(buttonFont) //
+				.center(0f, 0.5f) //
+				.position(width * 0.05f, height * 0.75f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+
+				}) //
+				.build());
+		container.add(GuiControls.textButton() //
+				.text("TEST") //
+				.font(buttonFont) //
+				.center(1f, 0.5f) //
+				.position(width * 0.95f, height * 0.75f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+
+				}) //
+				.build());
+		
+		container.add(GuiControls.textButton() //
+				.text("Axis Controller") //
+				.font(buttonFont) //
+				.center(0f, 0.5f) //
+				.position(width * 0.05f, height * 0.60f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+
+				}) //
+				.build());
+		container.add(GuiControls.textButton() //
+				.text("TEST") //
+				.font(buttonFont) //
+				.center(1f, 0.5f) //
+				.position(width * 0.95f, height * 0.60f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+
+				}) //
+				.build());
+
 		container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
 				.setNotOverColor(Color.WHITE) //
 				.setOverColor(Color.GREEN) //
@@ -87,7 +137,7 @@ public class SettingsGameState extends GameStateImpl {
 			}
 		};
 	}
-	
+
 	private void back() {
 		game.transition(game.getMainMenuScreen(), 250, 250);
 	}
