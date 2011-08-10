@@ -396,11 +396,22 @@ public class Scripts {
 					cameraReachedTarget(event);
 				}
 			});
+			eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
+				@Override
+				public void onEvent(Event event) {
+					destinationPlanetReached(event);
+				}
+			});
+			eventManager.registerEvent(Events.gameStarted, owner);
 		}
 
 		private void cameraReachedTarget(Event event) {
 			Gdx.app.log("SuperFlyingShip", "Camera reached target.");
 			eventManager.registerEvent(Events.enablePlanetReleaseShip, owner);
+		}
+		
+		private void destinationPlanetReached(Event event) {
+			eventManager.registerEvent(Events.gameFinished, owner);
 		}
 
 		@Override

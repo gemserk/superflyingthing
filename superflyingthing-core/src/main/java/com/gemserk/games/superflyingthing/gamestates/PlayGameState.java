@@ -258,10 +258,16 @@ public class PlayGameState extends GameStateImpl {
 						itemTaken(event);
 					}
 				});
-				eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
+				eventListenerManager.register(Events.gameStarted, new EventListener() {
 					@Override
 					public void onEvent(Event event) {
-						destinationPlanetReached(event);
+						gameStarted(event);
+					}
+				});
+				eventListenerManager.register(Events.gameFinished, new EventListener() {
+					@Override
+					public void onEvent(Event event) {
+						gameFinished(event);
 					}
 				});
 			}
@@ -271,10 +277,21 @@ public class PlayGameState extends GameStateImpl {
 				gameData.currentItems++;
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
+			
+			// @EventListener(Events.destinationPlanetReached)
+			public void gameStarted(Event e) {
+				if (GameInformation.gameMode != GameInformation.ChallengeGameMode) 
+					return;
+				Level level = Levels.level(GameInformation.level);
+				parameters.clear();
+				parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+				parameters.put("text", "Level " + (GameInformation.level + 1) + ": " + level.name);
+				entityFactory.instantiate(userMessageTemplate, parameters);
+			}
 
 			// @EventListener(Events.destinationPlanetReached)
-			public void destinationPlanetReached(Event e) {
-				gameFinished();
+			public void gameFinished(Event e) {
+				PlayGameState.this.gameFinished();
 				incrementTimer = false;
 				if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 					playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
@@ -467,12 +484,12 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
 					.build();
 
-			parameters.clear();
-
-			parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-			parameters.put("text", "Level " + (GameInformation.level + 1) + ": " + level.name);
-
-			entityFactory.instantiate(userMessageTemplate, parameters);
+//			parameters.clear();
+//
+//			parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+//			parameters.put("text", "Level " + (GameInformation.level + 1) + ": " + level.name);
+//
+//			entityFactory.instantiate(userMessageTemplate, parameters);
 
 		}
 
