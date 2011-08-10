@@ -117,19 +117,29 @@ public class Components {
 
 		public final Vector2 direction = new Vector2();
 		public float angularVelocity = 0f;
-		public float maxLinearSpeed = 4.5f;
-		public float maxAngularVelocity = 300f;
+		private float maxLinearSpeed;
+		private float maxAngularVelocity;
 
 		public Vector2 getDirection() {
 			return direction;
 		}
 
-		public MovementComponent(float dx, float dy) {
+		public MovementComponent(float dx, float dy, float maxLinearSpeed, float maxAngularVelocity) {
+			this.maxLinearSpeed = maxLinearSpeed;
+			this.maxAngularVelocity = maxAngularVelocity;
 			direction.set(dx, dy);
 		}
 
 		public void setMaxAngularVelocity(float maxAngularVelocity) {
 			this.maxAngularVelocity = maxAngularVelocity;
+		}
+		
+		public float getMaxLinearSpeed() {
+			return maxLinearSpeed;
+		}
+		
+		public void setMaxLinearSpeed(float maxLinearSpeed) {
+			this.maxLinearSpeed = maxLinearSpeed;
 		}
 
 		public float getMaxAngularVelocity() {

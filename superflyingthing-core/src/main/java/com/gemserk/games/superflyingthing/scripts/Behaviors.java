@@ -83,7 +83,7 @@ class Behaviors {
 
 			linearVelocity.set(direction.tmp().mul(speed));
 
-			float maxSpeed = movementComponent.maxLinearSpeed;
+			float maxSpeed = movementComponent.getMaxLinearSpeed();
 			if (speed > maxSpeed) {
 				linearVelocity.mul(maxSpeed / speed);
 				body.setLinearVelocity(linearVelocity);

@@ -25,7 +25,7 @@ public class DebugComponents {
 			movementComponent.setMaxAngularVelocity(maxAngularVelocitySlider.getValue());
 			// movementComponent.setMinAngularVelocity(minAngularVelocitySlider.getValue());
 			// movementComponent.setAngularAcceleration(0.01f * (float) angularAcceleration.getValue());
-			movementComponent.maxLinearSpeed = 0.01f * (float) maxLinearSpeedSlider.getValue();
+			movementComponent.setMaxLinearSpeed(0.01f * (float) maxLinearSpeedSlider.getValue());
 		}
 
 		public MovementComponentDebugWindow() {
@@ -42,7 +42,7 @@ public class DebugComponents {
 						@Override
 						public void stateChanged(ChangeEvent e) {
 							if (movementComponent != null)
-								movementComponent.maxLinearSpeed = 0.01f * (float) getValue();
+								movementComponent.setMaxLinearSpeed(0.01f * (float) getValue());
 						}
 					});
 					setMajorTickSpacing(100);

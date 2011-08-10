@@ -221,7 +221,7 @@ public class EntityTemplates {
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(direction.x, direction.y));
+			e.addComponent(new MovementComponent(direction.x, direction.y, 4.5f, 300f));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ShipControllerComponent());
 			e.addComponent(new ControllerComponent(controller));
@@ -267,7 +267,7 @@ public class EntityTemplates {
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(1f, 0f));
+			e.addComponent(new MovementComponent(1f, 0f, 4.5f, 300f));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
