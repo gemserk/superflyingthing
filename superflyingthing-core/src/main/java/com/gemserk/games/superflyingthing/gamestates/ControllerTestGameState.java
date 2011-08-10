@@ -38,6 +38,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -45,6 +46,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
@@ -53,6 +55,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
@@ -78,8 +81,9 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	private EventManager eventManager;
 	private EventListenerManager eventListenerManager;
-	
+
 	private Container container;
+	private Libgdx2dCamera guiCamera;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -103,12 +107,14 @@ public class ControllerTestGameState extends GameStateImpl {
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
 
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-1000, -100, backgroundLayerCamera, spriteBatch));
 		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera, spriteBatch));
+		renderLayers.add(new RenderLayerSpriteBatchImpl(100, 100000, guiCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
@@ -131,7 +137,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
-		
+
 		ControllerTemplates controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
 		controllerTemplates.androidClassicControllerTemplate = new ControllerTemplates.AndroidClassicControllerTemplate();
@@ -152,21 +158,57 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
-			
+
+			private int starsCollected = 0;
+
 			@Override
 			public void init(com.artemis.World world, Entity e) {
 				eventListenerManager.register(Events.itemTaken, new EventListener() {
 					@Override
 					public void onEvent(Event event) {
-						
+						starsCollected++;
 					}
 				});
 			}
-			
+
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+				checkStarsCollected(world, e);
+				checkShipOutsideBounds(world, e);
+			}
+
+			private void checkStarsCollected(com.artemis.World world, Entity e) {
+				if (starsCollected < 4)
+					return;
+				game.transition(game.getSettingsScreen()).enterTime(250) //
+						.leaveTime(250) //
+						.disposeCurrent() //
+						.start();
+			}
+
+			private void checkShipOutsideBounds(com.artemis.World world, Entity e) {
+				Entity ship = world.getTagManager().getEntity(Groups.ship);
+				Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
+
+				if (isShipInsideBounds(shipSpatial.getX(), shipSpatial.getY()))
+					return;
+
+				game.transition(game.getSettingsScreen()).enterTime(250) //
+						.leaveTime(250) //
+						.disposeCurrent() //
+						.start();
+			}
+
+			private boolean isShipInsideBounds(float x, float y) {
+				if ((x < -10f) || (x > 10f) || (y > 8f) || (y < -8f))
+					return false;
+				return true;
+			}
+
 		})).build();
-		
+
 		// create world
-		
+
 		float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);
 
@@ -174,33 +216,34 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		parameters.put("spatial", new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f));
 		parameters.put("controller", controller);
-		
+
 		entityFactory.instantiate(entityTemplates.getShipTemplate(), parameters);
-		
+
 		entityTemplates.camera(camera, worldCamera, 0f, 0f, new CameraScript(eventManager, eventListenerManager));
-		
+
 		parameters.put("controller", controller);
 		entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-		
-		entityTemplates.star(5f, 3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(5f, -3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(10f, 3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(10f, -3f, new Scripts.StarScript(eventManager));
-		
+
+		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(3f, 3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventManager));
+
 		parameters.clear();
-		parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-		parameters.put("text", "Collect 4 stars");
+		parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f));
+		parameters.put("text", "Collect all the stars");
 		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), parameters);
-		
+
 		// create controller using current controller
-		// 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build(); 
+		// entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		worldWrapper.render();
-		
+
+		guiCamera.apply(spriteBatch);
 		spriteBatch.begin();
 		container.draw(spriteBatch);
 		spriteBatch.end();

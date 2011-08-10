@@ -66,7 +66,7 @@ public class SettingsGameState extends GameStateImpl {
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
-
+					// select this controller
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
@@ -80,11 +80,11 @@ public class SettingsGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getControllersTestScreen(), 250, 250);						
+						controllerTestBed();
 					}
 				}) //
 				.build());
-		
+
 		container.add(GuiControls.textButton() //
 				.text("Axis Controller") //
 				.font(buttonFont) //
@@ -94,7 +94,7 @@ public class SettingsGameState extends GameStateImpl {
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
-
+					// select this controller
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
@@ -106,7 +106,10 @@ public class SettingsGameState extends GameStateImpl {
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
-
+					@Override
+					public void onReleased() {
+						controllerTestBed();
+					}
 				}) //
 				.build());
 
@@ -141,8 +144,18 @@ public class SettingsGameState extends GameStateImpl {
 		};
 	}
 
+	private void controllerTestBed() {
+		game.transition(game.getControllersTestScreen()).enterTime(250) //
+				.leaveTime(250) //
+				.disposeCurrent() //
+				.start();
+	}
+
 	private void back() {
-		game.transition(game.getMainMenuScreen(), 250, 250);
+		game.transition(game.getMainMenuScreen()).enterTime(250) //
+				.leaveTime(250) //
+				.disposeCurrent() //
+				.start();
 	}
 
 	@Override

@@ -150,6 +150,8 @@ public class PlayGameState extends GameStateImpl {
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		
+		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 
@@ -158,7 +160,7 @@ public class PlayGameState extends GameStateImpl {
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera));
 		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
-		renderLayers.add(new RenderLayerSpriteBatchImpl(100, 10000, new Libgdx2dCameraTransformImpl()));
+		renderLayers.add(new RenderLayerSpriteBatchImpl(100, 10000, guiCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
@@ -183,8 +185,6 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.init();
 
 		entityBuilder = new EntityBuilder(world);
-
-		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
