@@ -439,7 +439,12 @@ public class PlayGameState extends GameStateImpl {
 				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 			}
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager, eventListenerManager));
+			parameters.clear();
+			parameters.put("camera", camera);
+			parameters.put("libgdxCamera", worldCamera);
+			parameters.put("script", new CameraScript(eventManager, eventListenerManager));
+			parameters.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f));
+			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
 
 			for (int i = 0; i < level.obstacles.size(); i++) {
 				Obstacle o = level.obstacles.get(i);
@@ -573,7 +578,12 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = itemsCount;
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager, eventListenerManager));
+			parameters.clear();
+			parameters.put("camera", camera);
+			parameters.put("libgdxCamera", worldCamera);
+			parameters.put("script", new CameraScript(eventManager, eventListenerManager));
+			parameters.put("spatial", new SpatialImpl(5f, worldHeight * 0.5f, 1f, 1f, 0f));
+			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
 
 			final ShipController controller = new ShipController();
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
@@ -657,7 +667,13 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = itemsCount;
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager, eventListenerManager));
+			parameters.clear();
+			parameters.put("camera", camera);
+			parameters.put("libgdxCamera", worldCamera);
+			parameters.put("script", new CameraScript(eventManager, eventListenerManager));
+			parameters.put("spatial", new SpatialImpl(5f, worldHeight * 0.5f, 1f, 1f, 0f));
+			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
+
 			final ShipController controller = new ShipController();
 
 			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));

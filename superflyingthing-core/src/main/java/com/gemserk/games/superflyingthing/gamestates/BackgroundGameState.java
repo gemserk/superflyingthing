@@ -175,7 +175,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
-			
+
 			@Override
 			public void init(com.artemis.World world, Entity e) {
 				eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
@@ -185,12 +185,12 @@ public class BackgroundGameState extends GameStateImpl {
 					}
 				});
 			}
-			
+
 			// @EventListener(Events.destinationPlanetReached)
 			public void destinationPlanetReached(Event e) {
 				gameFinished();
 			}
-			
+
 		})).build();
 	}
 
@@ -232,7 +232,12 @@ public class BackgroundGameState extends GameStateImpl {
 			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 		}
 
-		Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager, eventListenerManager));
+		parameters.clear();
+		parameters.put("camera", camera);
+		parameters.put("libgdxCamera", worldCamera);
+		parameters.put("script", new CameraScript(eventManager, eventListenerManager));
+		parameters.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f));
+		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
 
 		for (int i = 0; i < level.obstacles.size(); i++) {
 			Obstacle o = level.obstacles.get(i);

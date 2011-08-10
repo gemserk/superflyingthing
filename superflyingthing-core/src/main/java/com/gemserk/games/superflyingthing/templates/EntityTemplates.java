@@ -24,6 +24,7 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
 import com.gemserk.commons.artemis.templates.ParametersWithFallBack;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
@@ -118,6 +119,10 @@ public class EntityTemplates {
 		return planetFillAnimationTemplate;
 	}
 
+	public EntityTemplate getCameraTemplate() {
+		return cameraTemplate;
+	}
+
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
 		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
@@ -135,15 +140,24 @@ public class EntityTemplates {
 				.build();
 	}
 
-	public Entity camera(Camera camera, final Libgdx2dCamera libgdxCamera, final float x, final float y, Script script) {
-		return entityBuilder //
-				.component(new TagComponent("MainCamera")) //
-				.component(new Components.CameraComponent(camera, libgdxCamera)) //
-				.component(new TargetComponent(null)) //
-				.component(new SpatialComponent(new SpatialImpl(x, y, 0f, 0f, 0f))) //
-				.component(new ScriptComponent(script)) //
-				.build();
-	}
+	private EntityTemplate cameraTemplate = new EntityTemplateWithDefaultParameters() {
+		@Override
+		public void apply(Entity entity) {
+
+			Camera camera = parameters.get("camera");
+			Libgdx2dCamera libgdxCamera = parameters.get("libgdxCamera");
+			Script script = parameters.get("script");
+			Spatial spatial = parameters.get("spatial");
+			Entity target = parameters.get("target");
+
+			entity.addComponent(new TagComponent("MainCamera"));
+			entity.addComponent(new TargetComponent(target));
+			entity.addComponent(new Components.CameraComponent(camera, libgdxCamera));
+			entity.addComponent(new SpatialComponent(spatial));
+			entity.addComponent(new ScriptComponent(script));
+
+		}
+	};
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplate() {
 
