@@ -81,7 +81,6 @@ public class Scripts {
 			startY = spatial.getY();
 			timeTransition.start(800);
 			movingToTarget = true;
-			eventManager.handled(event);
 		}
 
 		@Override
@@ -119,14 +118,11 @@ public class Scripts {
 				float y = FloatInterpolator.interpolate(startY, targetSpatial.getY(), timeTransition.get());
 				spatial.setPosition(x, y);
 			} else {
-
 				if (movingToTarget) {
 					eventManager.registerEvent(Events.cameraReachedTarget, e);
 					movingToTarget = false;
 				}
-
 				spatial.set(targetSpatial);
-
 			}
 
 		}
@@ -222,7 +218,7 @@ public class Scripts {
 
 	public static class StartPlanetScript extends ScriptJavaImpl {
 
-		private final EventManager eventManager;
+		private final EventListenerManager eventListenerManager;
 		private final World physicsWorld;
 
 		Behavior attachEntityBehavior;
@@ -230,30 +226,42 @@ public class Scripts {
 
 		boolean enabled = true;
 
-		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventManager eventManager) {
+		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager) {
 			this.physicsWorld = physicsWorld;
-			this.eventManager = eventManager;
+			this.eventListenerManager = eventListenerManager;
 			attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
 		}
 
 		@Override
+		public void init(com.artemis.World world, Entity e) {
+
+			eventListenerManager.register(Events.disablePlanetReleaseShip, new EventListener() {
+				@Override
+				public void onEvent(Event event) {
+					disablePlanetReleaseShip(event);
+				}
+			});
+			eventListenerManager.register(Events.enablePlanetReleaseShip, new EventListener() {
+				@Override
+				public void onEvent(Event event) {
+					enablePlanetReleaseShip(event);
+				}
+			});
+		}
+
+		private void disablePlanetReleaseShip(Event event) {
+			enabled = false;
+			Gdx.app.log("SuperFlyingShip", "Release ship from planet disabled");
+		}
+
+		private void enablePlanetReleaseShip(Event event) {
+			enabled = true;
+			Gdx.app.log("SuperFlyingShip", "Release ship from planet enabled");
+		}
+
+		@Override
 		public void update(com.artemis.World world, Entity e) {
-
-			Event event = eventManager.getEvent(Events.disablePlanetReleaseShip);
-			if (event != null) {
-				enabled = false;
-				eventManager.handled(event);
-				Gdx.app.log("SuperFlyingShip", "Release ship from planet disabled");
-			}
-
-			event = eventManager.getEvent(Events.enablePlanetReleaseShip);
-			if (event != null) {
-				enabled = true;
-				eventManager.handled(event);
-				Gdx.app.log("SuperFlyingShip", "Release ship from planet enabled");
-			}
-
 			updateReleaseAttachment(world, e);
 			attachEntityBehavior.update(world, e);
 			calculateInputDirectionBehavior.update(world, e);
@@ -344,6 +352,7 @@ public class Scripts {
 
 		private final EventManager eventManager;
 		private final EntityFactory entityFactory;
+		private final EventListenerManager eventListenerManager;
 
 		private ShipController controller;
 		private GameData gameData;
@@ -357,12 +366,14 @@ public class Scripts {
 		private EntityTemplate attachedShipTemplate;
 		private EntityTemplate deadShipTemplate;
 		private EntityTemplate particleEmitterTemplate;
+		private Entity owner;
 
 		// private EntityTemplate laserGunTemplate;
 
-		public GameScript(EventManager eventManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, ShipController controller, //
-				boolean invulnerable) {
+		public GameScript(EventManager eventManager, EventListenerManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
+				ShipController controller, boolean invulnerable) {
 			this.eventManager = eventManager;
+			this.eventListenerManager = eventListenerManager;
 			this.controller = controller;
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
@@ -377,19 +388,27 @@ public class Scripts {
 		}
 
 		@Override
+		public void init(com.artemis.World world, Entity e) {
+			this.owner = e;
+			eventListenerManager.register(Events.cameraReachedTarget, new EventListener() {
+				@Override
+				public void onEvent(Event event) {
+					cameraReachedTarget(event);
+				}
+			});
+		}
+
+		private void cameraReachedTarget(Event event) {
+			Gdx.app.log("SuperFlyingShip", "Camera reached target.");
+			eventManager.registerEvent(Events.enablePlanetReleaseShip, owner);
+		}
+
+		@Override
 		public void update(com.artemis.World world, Entity e) {
 			removeShipIfDead(world, e);
 			regenerateShipIfNoShip(world, e);
 			generateShipIfAttachedShipReleased(world, e);
 			fixCameraTargetBehavior.update(world, e);
-
-			Event event = eventManager.getEvent(Events.cameraReachedTarget);
-			if (event != null) {
-				eventManager.handled(event);
-				Gdx.app.log("SuperFlyingShip", "Camera reached target.");
-				eventManager.registerEvent(Events.enablePlanetReleaseShip, e);
-			}
-
 		}
 
 		private void removeShipIfDead(com.artemis.World world, Entity e) {

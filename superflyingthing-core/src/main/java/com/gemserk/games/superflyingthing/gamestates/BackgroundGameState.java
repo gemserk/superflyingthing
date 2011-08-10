@@ -225,7 +225,7 @@ public class BackgroundGameState extends GameStateImpl {
 		final ShipController controller = new ShipController();
 		// final BasicAIShipController controller = new BasicAIShipController(physicsWorld);
 
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
@@ -285,8 +285,8 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, //
-						entityFactory, gameData, controller, false))) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, //
+						entityTemplates, entityFactory, gameData, controller, false))) //
 				.build();
 
 	}

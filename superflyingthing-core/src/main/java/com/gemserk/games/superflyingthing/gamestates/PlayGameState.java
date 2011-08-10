@@ -401,7 +401,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final ShipController controller = new ShipController();
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
 
 			for (int i = 0; i < level.destinationPlanets.size(); i++) {
 				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
@@ -464,7 +464,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, false))) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
 					.build();
 
 			parameters.clear();
@@ -552,7 +552,7 @@ public class PlayGameState extends GameStateImpl {
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager, eventListenerManager));
 
 			final ShipController controller = new ShipController();
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 
@@ -562,8 +562,8 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, //
-							gameData, controller, false))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
+							entityFactory, gameData, controller, false))).build();
 
 		}
 	}
@@ -636,7 +636,7 @@ public class PlayGameState extends GameStateImpl {
 			Entity cameraEntity = entityTemplates.camera(camera, worldCamera, 5f, worldHeight * 0.5f, new CameraScript(eventManager, eventListenerManager));
 			final ShipController controller = new ShipController();
 
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 
@@ -646,8 +646,8 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, //
-							gameData, controller, true))).build();
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
+							entityFactory, gameData, controller, true))).build();
 
 		}
 	}
