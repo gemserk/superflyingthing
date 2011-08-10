@@ -18,6 +18,7 @@ import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.resources.ResourceManager;
 
 public class SettingsGameState extends GameStateImpl {
@@ -26,6 +27,8 @@ public class SettingsGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+
+	// ControllerType selectedControllerType = ControllerType.ClassicController;
 
 	Container container;
 	private Sprite whiteRectangleSprite;
@@ -66,25 +69,12 @@ public class SettingsGameState extends GameStateImpl {
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
-					// select this controller
-				}) //
-				.build());
-		container.add(GuiControls.textButton() //
-				.text("TEST") //
-				.font(buttonFont) //
-				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.75f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						controllerTestBed();
+						GameInformation.controllerType = ControllerType.ClassicController;
 					}
 				}) //
 				.build());
-
 		container.add(GuiControls.textButton() //
 				.text("Axis Controller") //
 				.font(buttonFont) //
@@ -94,14 +84,63 @@ public class SettingsGameState extends GameStateImpl {
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
-					// select this controller
+					@Override
+					public void onReleased() {
+						GameInformation.controllerType = ControllerType.AxisController;
+					}
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
-				.text("TEST") //
+				.text("Analog Controller") //
+				.font(buttonFont) //
+				.center(0f, 0.5f) //
+				.position(width * 0.05f, height * 0.45f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						GameInformation.controllerType = ControllerType.AnalogController;
+					}
+				}) //
+				.build());
+		container.add(GuiControls.textButton() //
+				.text("Tilt Controller") //
+				.font(buttonFont) //
+				.center(0f, 0.5f) //
+				.position(width * 0.05f, height * 0.3f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						GameInformation.controllerType = ControllerType.TiltController;
+					}
+				}) //
+				.build());
+		
+		container.add(GuiControls.textButton() //
+				.text("Apply") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.60f) //
+				.position(width * 0.4f, height * 0.2f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						// save current selected controller type
+					}
+				}) //
+				.build());
+		container.add(GuiControls.textButton() //
+				.text("Test") //
+				.font(buttonFont) //
+				.center(0f, 0.5f) //
+				.position(width * 0.6f, height * 0.2f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //

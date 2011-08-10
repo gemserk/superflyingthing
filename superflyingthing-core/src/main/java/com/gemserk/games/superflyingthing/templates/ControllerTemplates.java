@@ -15,10 +15,12 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
+import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogKeyboardControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AxisControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.TiltAndroidControllerScript;
 import com.gemserk.resources.ResourceManager;
@@ -181,11 +183,28 @@ public class ControllerTemplates {
 	
 	public EntityTemplate keyboardControllerTemplate;
 	public EntityTemplate analogKeyboardControllerTemplate;
-	
 	public EntityTemplate androidClassicControllerTemplate;
 	public EntityTemplate axisControllerTemplate;
 	public EntityTemplate analogControllerTemplate;
 	public EntityTemplate tiltAndroidControllerTemplate;
+	
+	public EntityTemplate getControllerTemplate(ControllerType controllerType) {
+		switch (controllerType) {
+		case KeyboardController:
+			return keyboardControllerTemplate;
+		case AnalogKeyboardController:
+			return analogControllerTemplate;
+		case ClassicController:
+			return androidClassicControllerTemplate;
+		case AxisController:
+			return axisControllerTemplate;
+		case AnalogController:
+			return analogControllerTemplate;
+		case TiltController:
+			return tiltAndroidControllerTemplate;
+		}
+		return keyboardControllerTemplate;
+	}
 
 	
 }

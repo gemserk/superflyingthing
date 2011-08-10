@@ -136,6 +136,7 @@ public class ControllerTestGameState extends GameStateImpl {
 	private Container container;
 	private Libgdx2dCamera guiCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private ControllerTemplates controllerTemplates;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -190,7 +191,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
 
-		ControllerTemplates controllerTemplates = new ControllerTemplates();
+		controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
 		controllerTemplates.androidClassicControllerTemplate = new ControllerTemplates.AndroidClassicControllerTemplate();
 		controllerTemplates.axisControllerTemplate = new ControllerTemplates.AxisControllerTemplate(resourceManager);
@@ -224,14 +225,16 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(entityTemplates.getShipTemplate(), parameters);
 
 		parameters.clear();
-		parameters.put("camera", camera);
-		parameters.put("libgdxCamera", worldCamera);
-		parameters.put("script", new CameraScript(eventManager, eventListenerManager));
-		parameters.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f));
-		entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
+		entityFactory.instantiate(entityTemplates.getCameraTemplate(), //
+				parameters.put("camera", camera) //
+						.put("libgdxCamera", worldCamera) //
+						.put("script", new CameraScript(eventManager, eventListenerManager)) //
+						.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f))//
+				);
 
-		parameters.put("controller", controller);
-		entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+		parameters.clear();
+		entityFactory.instantiate(controllerTemplates.getControllerTemplate(GameInformation.controllerType), // 
+				parameters.put("controller", controller));
 
 		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));
 		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventManager));
