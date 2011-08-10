@@ -54,93 +54,42 @@ public class SettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
+		ControllerType[] availableControllers = new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
+				ControllerType.AnalogController, ControllerType.TiltController };
+
 		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
 
-		container.add(GuiControls.textButton() //
-				.text("Classic Controller") //
-				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.05f, height * 0.75f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						GameInformation.controllerType = ControllerType.ClassicController;
-					}
-				}) //
-				.build());
-		container.add(GuiControls.textButton() //
-				.text("Axis Controller") //
-				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.05f, height * 0.60f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						GameInformation.controllerType = ControllerType.AxisController;
-					}
-				}) //
-				.build());
-		container.add(GuiControls.textButton() //
-				.text("Analog Controller") //
-				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.05f, height * 0.45f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						GameInformation.controllerType = ControllerType.AnalogController;
-					}
-				}) //
-				.build());
-		container.add(GuiControls.textButton() //
-				.text("Tilt Controller") //
-				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.05f, height * 0.3f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						GameInformation.controllerType = ControllerType.TiltController;
-					}
-				}) //
-				.build());
+		float y = height * 0.75f;
 		
-		container.add(GuiControls.textButton() //
-				.text("Apply") //
-				.font(buttonFont) //
-				.center(1f, 0.5f) //
-				.position(width * 0.4f, height * 0.2f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						// save current selected controller type
-					}
-				}) //
-				.build());
+		for (int i = 0; i < availableControllers.length; i++) {
+			final ControllerType controllerType = availableControllers[i];
+			container.add(GuiControls.textButton() //
+					.text(controllerType.name()) //
+					.font(buttonFont) //
+					.center(0f, 0.5f) //
+					.position(width * 0.05f, y) //
+					.boundsOffset(20f, 20f) //
+					.notOverColor(Color.WHITE) //
+					.overColor(Color.GREEN) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased() {
+							GameInformation.controllerType = controllerType;
+						}
+					}) //
+					.build());
+			y -= height * 0.15f;
+		}
+
 		container.add(GuiControls.textButton() //
 				.text("Test") //
 				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.6f, height * 0.2f) //
+				.center(0.5f, 0.5f) //
+				.position(width * 0.85f, height * 0.6f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -151,19 +100,35 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-
-		container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
-				.setNotOverColor(Color.WHITE) //
-				.setOverColor(Color.GREEN) //
-				.setColor(Color.WHITE) //
-				.setBoundsOffset(40f, 40f) //
-				.setAlignment(HAlignment.RIGHT) //
-				.setButtonHandler(new ButtonHandler() {
+		container.add(GuiControls.textButton() //
+				.text("Apply") //
+				.font(buttonFont) //
+				.center(0.5f, 0.5f) //
+				.position(width * 0.85f, height * 0.45f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						back();
+						// save current selected controller type
 					}
-				}));
+				}) //
+				.build());
+
+		if (Gdx.app.getType() != ApplicationType.Android)
+			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
+					.setNotOverColor(Color.WHITE) //
+					.setOverColor(Color.GREEN) //
+					.setColor(Color.WHITE) //
+					.setBoundsOffset(40f, 40f) //
+					.setAlignment(HAlignment.RIGHT) //
+					.setButtonHandler(new ButtonHandler() {
+						@Override
+						public void onReleased() {
+							back();
+						}
+					}));
 
 		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangleSprite.setPosition(0, 0);
