@@ -325,7 +325,6 @@ public class PlayGameState extends GameStateImpl {
 			}
 		};
 
-		// if (Gdx.app.getType() == ApplicationType.Android) {
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
 
 			private int current = 0;
@@ -339,7 +338,7 @@ public class PlayGameState extends GameStateImpl {
 				if (currentController == null) {
 
 					current++;
-					if (current == 4)
+					if (current > 5)
 						current = 0;
 
 					String controllerName = "";
@@ -371,6 +370,21 @@ public class PlayGameState extends GameStateImpl {
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 					}
+					
+					if (current == 4) {
+						controllerName = "ClassicKeyboardController";
+						parameters.clear();
+						parameters.put("controller", controller);
+						entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+					}
+					
+					if (current == 5) {
+						controllerName = "AnalogKeyboardController";
+						parameters.clear();
+						parameters.put("controller", controller);
+						entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
+					}
+
 
 					Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
 					parameters.clear();
@@ -388,7 +402,6 @@ public class PlayGameState extends GameStateImpl {
 
 			}
 		})).build();
-		// }
 
 	}
 
