@@ -25,8 +25,12 @@ import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventListener;
+import com.gemserk.commons.artemis.events.EventListenerManager;
+import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
@@ -62,6 +66,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -111,9 +116,11 @@ public class PlayGameState extends GameStateImpl {
 
 	GameData gameData;
 	private Text itemsTakenLabel;
-	private EventManager eventManager;
 	private JointBuilder jointBuilder;
 	private Text timerLabel;
+
+	private EventManager eventManager;
+	private EventListenerManager eventListenerManager;
 
 	private CountDownTimer gameOverTimer;
 
@@ -135,6 +142,8 @@ public class PlayGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		eventManager = new EventManagerImpl();
+		eventListenerManager = new EventListenerManagerImpl();
+
 		physicsWorld = new World(new Vector2(), false);
 
 		jointBuilder = new JointBuilder(physicsWorld);
@@ -230,46 +239,54 @@ public class PlayGameState extends GameStateImpl {
 
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
+		entityBuilder //
+				.component(new TagComponent("EventManager")) //
+				.component(new ScriptComponent(new EventSystemScript(eventManager, eventListenerManager))) //
+				.build();
+
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
 
 			boolean incrementTimer = true;
 
 			@Override
+			public void init(com.artemis.World world, Entity e) {
+				// TODO: generate EventListeners and register them automatically using annotations.
+				eventListenerManager.register(Events.itemTaken, new EventListener() {
+					@Override
+					public void onEvent(Event event) {
+						itemTaken(event);
+					}
+				});
+				eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
+					@Override
+					public void onEvent(Event event) {
+						destinationPlanetReached(event);
+					}
+				});
+			}
+
+			// @EventListener(Events.itemTaken)
+			public void itemTaken(Event e) {
+				gameData.currentItems++;
+				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+			}
+
+			// @EventListener(Events.destinationPlanetReached)
+			public void destinationPlanetReached(Event e) {
+				gameFinished();
+				incrementTimer = false;
+				if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+					playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
+					game.getGamePreferences().updatePlayerProfile(playerProfile);
+				}
+			}
+
+			@Override
 			public void update(com.artemis.World world, Entity e) {
 
 				if (incrementTimer)
 					gameData.time += world.getDelta();
-
-				Event event = eventManager.getEvent(Events.itemTaken);
-				if (event != null) {
-					gameData.currentItems++;
-					itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-					eventManager.handled(event);
-				}
-
-				event = eventManager.getEvent(Events.destinationPlanetReached);
-				if (event != null) {
-					gameFinished();
-					eventManager.handled(event);
-					incrementTimer = false;
-
-					if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-
-						// playerProfile.getLevelInformation(GameInformation.level + 1);
-						// li.update(newTime, stars)
-
-						playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
-						game.getGamePreferences().updatePlayerProfile(playerProfile);
-					}
-
-				}
-
-				event = eventManager.getEvent(Events.shipDeath);
-				if (event != null) {
-					eventManager.handled(event);
-					// gameData.deaths++
-				}
 
 				timerLabel.setText("Time: " + seconds(gameData.time));
 			}
@@ -306,7 +323,7 @@ public class PlayGameState extends GameStateImpl {
 					current++;
 					if (current == 4)
 						current = 0;
-					
+
 					String controllerName = "";
 
 					if (current == 0) {
@@ -336,7 +353,7 @@ public class PlayGameState extends GameStateImpl {
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 					}
-					
+
 					Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
 					parameters.clear();
 					parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
