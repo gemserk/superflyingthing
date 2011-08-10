@@ -306,34 +306,43 @@ public class PlayGameState extends GameStateImpl {
 					current++;
 					if (current == 4)
 						current = 0;
+					
+					String controllerName = "";
 
 					if (current == 0) {
-						Gdx.app.log("SuperFlyingThing", "Changing controller to AndroidClassicController");
+						controllerName = "AndroidClassicController";
 						parameters.clear();
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
 					}
 
 					if (current == 1) {
-						Gdx.app.log("SuperFlyingThing", "Changing controller to AxisController");
+						controllerName = "AxisController";
 						parameters.clear();
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
 					}
 
 					if (current == 2) {
-						Gdx.app.log("SuperFlyingThing", "Changing controller to AnalogController");
+						controllerName = "AnalogController";
 						parameters.clear();
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 					}
 
 					if (current == 3) {
-						Gdx.app.log("SuperFlyingThing", "Changing controller to TiltController");
+						controllerName = "TiltController";
 						parameters.clear();
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 					}
+					
+					Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
+					parameters.clear();
+					parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+					parameters.put("text", controllerName);
+					parameters.put("time", 1000);
+					entityFactory.instantiate(userMessageTemplate, parameters);
 
 				}
 
