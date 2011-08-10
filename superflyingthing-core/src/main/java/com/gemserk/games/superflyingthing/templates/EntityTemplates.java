@@ -478,6 +478,8 @@ public class EntityTemplates {
 
 	private EntityTemplate planetFillAnimationTemplate = new EntityTemplate() {
 
+		private Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
+
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("animation", "PlanetFillAnimation");
@@ -498,10 +500,11 @@ public class EntityTemplates {
 			Color color = parameters.get("color");
 
 			if (color == null)
-				color = new Color(MathUtils.random(0.3f, 1f), //
-						MathUtils.random(0.3f, 1f), //
-						MathUtils.random(0.3f, 1f), //
-						1f);
+				color = planetColors[MathUtils.random(planetColors.length - 1)];
+			// color = new Color(MathUtils.random(0.3f, 1f), //
+			// MathUtils.random(0.3f, 1f), //
+			// MathUtils.random(0.3f, 1f), //
+			// 1f);
 
 			Animation planetFillAnimation = resourceManager.getResourceValue(animationId);
 			Sprite sprite = planetFillAnimation.getCurrentFrame();
@@ -517,7 +520,7 @@ public class EntityTemplates {
 		}
 
 	};
-	
+
 	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
 
 		Sprite sprite = resourceManager.getResourceValue("Planet");
