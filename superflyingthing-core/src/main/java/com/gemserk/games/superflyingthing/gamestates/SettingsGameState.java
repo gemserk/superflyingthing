@@ -186,7 +186,6 @@ public class SettingsGameState extends GameStateImpl {
 	private void controllerTestBed() {
 		game.transition(game.getControllersTestScreen()).enterTime(250) //
 				.leaveTime(250) //
-				.disposeCurrent() //
 				.start();
 	}
 
