@@ -54,8 +54,15 @@ public class SettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
-		ControllerType[] availableControllers = new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
-				ControllerType.AnalogController, ControllerType.TiltController };
+		ControllerType[] availableControllers = new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
+				ControllerType.AxisController, ControllerType.AnalogController };
+		GameInformation.controllerType = ControllerType.KeyboardController;
+		
+		if (Gdx.app.getType() == ApplicationType.Android)  {
+			availableControllers = new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
+					ControllerType.AnalogController, ControllerType.TiltController };
+			GameInformation.controllerType = ControllerType.ClassicController;
+		}
 
 		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
@@ -64,7 +71,7 @@ public class SettingsGameState extends GameStateImpl {
 				.build());
 
 		float y = height * 0.75f;
-		
+
 		for (int i = 0; i < availableControllers.length; i++) {
 			final ControllerType controllerType = availableControllers[i];
 			container.add(GuiControls.textButton() //

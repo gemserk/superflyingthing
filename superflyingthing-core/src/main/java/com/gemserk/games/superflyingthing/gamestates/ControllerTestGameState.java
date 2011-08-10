@@ -219,10 +219,11 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		parameters.put("spatial", new SpatialImpl(-5f, 0f, 0.8f, 0.8f, 0f));
-		parameters.put("controller", controller);
-
-		entityFactory.instantiate(entityTemplates.getShipTemplate(), parameters);
+		entityFactory.instantiate(entityTemplates.getShipTemplate(), //
+				parameters //
+						.put("spatial", new SpatialImpl(-5f, 0f, 0.8f, 0.8f, 0f)) //
+						.put("controller", controller) //
+				);
 
 		parameters.clear();
 		entityFactory.instantiate(entityTemplates.getCameraTemplate(), //
@@ -233,7 +234,7 @@ public class ControllerTestGameState extends GameStateImpl {
 				);
 
 		parameters.clear();
-		entityFactory.instantiate(controllerTemplates.getControllerTemplate(GameInformation.controllerType), // 
+		entityFactory.instantiate(controllerTemplates.getControllerTemplate(GameInformation.controllerType), //
 				parameters.put("controller", controller));
 
 		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));

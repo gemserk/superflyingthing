@@ -15,7 +15,6 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
-import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogKeyboardControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
@@ -193,7 +192,7 @@ public class ControllerTemplates {
 		case KeyboardController:
 			return keyboardControllerTemplate;
 		case AnalogKeyboardController:
-			return analogControllerTemplate;
+			return analogKeyboardControllerTemplate;
 		case ClassicController:
 			return androidClassicControllerTemplate;
 		case AxisController:
