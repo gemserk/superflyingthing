@@ -35,6 +35,7 @@ import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
+import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
@@ -499,10 +500,12 @@ public class Scripts {
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
-			// MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
+			 MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
 
 			parameters.put("spatial", spatial);
 			parameters.put("controller", controller);
+			parameters.put("maxLinearSpeed", movementComponent.getMaxLinearSpeed());
+			parameters.put("maxAngularVelocity", movementComponent.getMaxAngularVelocity());
 
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
 

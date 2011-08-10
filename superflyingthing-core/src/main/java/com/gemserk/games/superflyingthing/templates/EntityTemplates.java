@@ -183,6 +183,10 @@ public class EntityTemplates {
 		private final Vector2 direction = new Vector2();
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		{
+			parameters.put("maxLinearSpeed", new Float(4.5f));
+			parameters.put("maxAngularVelocity", new Float(300f));
+		}
 
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
@@ -195,6 +199,9 @@ public class EntityTemplates {
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 			Spatial spatial = parameters.get("spatial");
+
+			Float maxLinearSpeed = parameters.get("maxLinearSpeed");
+			Float maxAngularVelocity = parameters.get("maxAngularVelocity");
 
 			float angle = spatial.getAngle();
 			float width = spatial.getWidth();
@@ -222,7 +229,7 @@ public class EntityTemplates {
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(direction.x, direction.y, 4.5f, 300f));
+			e.addComponent(new MovementComponent(direction.x, direction.y, maxLinearSpeed, maxAngularVelocity));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ShipControllerComponent());
 			e.addComponent(new ControllerComponent(controller));
