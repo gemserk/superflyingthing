@@ -10,6 +10,8 @@ import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventListener;
+import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -44,6 +46,8 @@ public class Scripts {
 	public static class CameraScript extends ScriptJavaImpl {
 
 		private final EventManager eventManager;
+		private final EventListenerManager eventListenerManager;
+		private Entity owner;
 
 		float startX;
 		float startY;
@@ -52,15 +56,32 @@ public class Scripts {
 
 		boolean movingToTarget = false;
 
-		public CameraScript(EventManager eventManager) {
+		public CameraScript(EventManager eventManager, EventListenerManager eventListenerManager) {
 			this.eventManager = eventManager;
+			this.eventListenerManager = eventListenerManager;
 		}
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
+			this.owner = e;
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 			startX = spatial.getX();
 			startY = spatial.getY();
+			eventListenerManager.register(Events.moveCameraToPlanet, new EventListener() {
+				@Override
+				public void onEvent(Event event) {
+					moveCameraToPlanet(event);
+				}
+			});
+		}
+
+		private void moveCameraToPlanet(Event event) {
+			Spatial spatial = ComponentWrapper.getSpatial(owner);
+			startX = spatial.getX();
+			startY = spatial.getY();
+			timeTransition.start(800);
+			movingToTarget = true;
+			eventManager.handled(event);
 		}
 
 		@Override
@@ -104,16 +125,7 @@ public class Scripts {
 					movingToTarget = false;
 				}
 
-				Event event = eventManager.getEvent(Events.moveCameraToPlanet);
-				if (event != null) {
-					startX = spatial.getX();
-					startY = spatial.getY();
-					timeTransition.start(800);
-					movingToTarget = true;
-					eventManager.handled(event);
-				} else {
-					spatial.set(targetSpatial);
-				}
+				spatial.set(targetSpatial);
 
 			}
 
@@ -506,9 +518,9 @@ public class Scripts {
 		}
 
 	}
-	
+
 	public static class UpdateAnimationScript extends ScriptJavaImpl {
-		
+
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
@@ -518,6 +530,6 @@ public class Scripts {
 			Sprite sprite = animation.getCurrentFrame();
 			spriteComponent.setSprite(sprite);
 		}
-		
+
 	}
 }

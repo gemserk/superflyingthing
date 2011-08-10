@@ -18,8 +18,12 @@ import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventListener;
+import com.gemserk.commons.artemis.events.EventListenerManager;
+import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
@@ -48,6 +52,7 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -87,8 +92,10 @@ public class BackgroundGameState extends GameStateImpl {
 
 	GameData gameData;
 
-	private EventManager eventManager;
 	private JointBuilder jointBuilder;
+
+	private EventManager eventManager;
+	private EventListenerManager eventListenerManager;
 
 	private Timer timer;
 
@@ -105,7 +112,10 @@ public class BackgroundGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		timer = new CountDownTimer(4000, false);
+
 		eventManager = new EventManagerImpl();
+		eventListenerManager = new EventListenerManagerImpl();
+
 		physicsWorld = new World(new Vector2(), false);
 
 		jointBuilder = new JointBuilder(physicsWorld);
@@ -158,17 +168,29 @@ public class BackgroundGameState extends GameStateImpl {
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 3)));
 		// loadLevel(entityTemplates, Levels.level(13));
 
+		entityBuilder //
+				.component(new TagComponent("EventManager")) //
+				.component(new ScriptComponent(new EventSystemScript(eventManager, eventListenerManager))) //
+				.build();
+
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+			
 			@Override
-			public void update(com.artemis.World world, Entity e) {
-
-				Event event = eventManager.getEvent(Events.destinationPlanetReached);
-				if (event != null) {
-					eventManager.handled(event);
-					gameFinished();
-				}
+			public void init(com.artemis.World world, Entity e) {
+				eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
+					@Override
+					public void onEvent(Event event) {
+						destinationPlanetReached(event);
+					}
+				});
 			}
+			
+			// @EventListener(Events.destinationPlanetReached)
+			public void destinationPlanetReached(Event e) {
+				gameFinished();
+			}
+			
 		})).build();
 	}
 
@@ -210,7 +232,7 @@ public class BackgroundGameState extends GameStateImpl {
 			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 		}
 
-		Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager));
+		Entity cameraEntity = entityTemplates.camera(camera, worldCamera, level.startPlanet.x, level.startPlanet.y, new CameraScript(eventManager, eventListenerManager));
 
 		for (int i = 0; i < level.obstacles.size(); i++) {
 			Obstacle o = level.obstacles.get(i);
@@ -230,7 +252,7 @@ public class BackgroundGameState extends GameStateImpl {
 			LaserTurret laserTurret = level.laserTurrets.get(i);
 
 			parameters.clear();
-			
+
 			parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
 			parameters.put("angle", laserTurret.angle);
 			parameters.put("fireRate", laserTurret.fireRate);
@@ -245,7 +267,7 @@ public class BackgroundGameState extends GameStateImpl {
 			Portal portal = level.portals.get(i);
 
 			parameters.clear();
-			
+
 			parameters.put("id", portal.id);
 			parameters.put("targetPortalId", portal.targetPortalId);
 			parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
