@@ -209,7 +209,7 @@ public class EntityTemplates {
 							.restitution(0f) //
 							.categoryBits(CategoryBits.ShipCategoryBits) //
 							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-							.circleShape(width * 0.125f)) //
+							.boxShape(width * 0.25f, height * 0.1f))//
 					.mass(50f) //
 					.position(position.x, position.y) //
 					.type(BodyType.DynamicBody) //
