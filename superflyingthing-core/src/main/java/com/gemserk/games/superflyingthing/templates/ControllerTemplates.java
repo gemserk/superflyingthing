@@ -16,6 +16,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.AnalogKeyboardControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AxisControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
@@ -38,6 +39,25 @@ public class ControllerTemplates {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", "PlayerController");
 			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
+			entity.addComponent(new TagComponent(tag));
+			entity.addComponent(new ControllerComponent(controller));
+		}
+	}
+	
+	public static class AnalogKeyboardControllerTemplate implements EntityTemplate {
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+			ShipController controller = parameters.get("controller");
+			String tag = parameters.get("tag", "PlayerController");
+			entity.addComponent(new ScriptComponent(new AnalogKeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
 		}
@@ -160,6 +180,8 @@ public class ControllerTemplates {
 	}
 	
 	public EntityTemplate keyboardControllerTemplate;
+	public EntityTemplate analogKeyboardControllerTemplate;
+	
 	public EntityTemplate androidClassicControllerTemplate;
 	public EntityTemplate axisControllerTemplate;
 	public EntityTemplate analogControllerTemplate;

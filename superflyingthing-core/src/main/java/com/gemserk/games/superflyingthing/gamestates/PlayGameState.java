@@ -199,6 +199,7 @@ public class PlayGameState extends GameStateImpl {
 		controllerTemplates.axisControllerTemplate = new ControllerTemplates.AxisControllerTemplate(resourceManager);
 		controllerTemplates.analogControllerTemplate = new ControllerTemplates.AnalogControllerTemplate(resourceManager);
 		controllerTemplates.tiltAndroidControllerTemplate = new ControllerTemplates.TiltAndroidControllerTemplate();
+		controllerTemplates.analogKeyboardControllerTemplate = new ControllerTemplates.AnalogKeyboardControllerTemplate();
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
@@ -277,10 +278,10 @@ public class PlayGameState extends GameStateImpl {
 				gameData.currentItems++;
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
-			
+
 			// @EventListener(Events.destinationPlanetReached)
 			public void gameStarted(Event e) {
-				if (GameInformation.gameMode != GameInformation.ChallengeGameMode) 
+				if (GameInformation.gameMode != GameInformation.ChallengeGameMode)
 					return;
 				Level level = Levels.level(GameInformation.level);
 				parameters.clear();
@@ -484,13 +485,6 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
 					.build();
 
-//			parameters.clear();
-//
-//			parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-//			parameters.put("text", "Level " + (GameInformation.level + 1) + ": " + level.name);
-//
-//			entityFactory.instantiate(userMessageTemplate, parameters);
-
 		}
 
 		void create(PlayGameState p) {
@@ -679,6 +673,7 @@ public class PlayGameState extends GameStateImpl {
 		} else {
 			parameters.put("controller", controller);
 			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+			// entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
 		}
 
 	}
