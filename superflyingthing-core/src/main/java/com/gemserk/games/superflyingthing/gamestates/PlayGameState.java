@@ -576,14 +576,14 @@ public class PlayGameState extends GameStateImpl {
 
 		if (Gdx.app.getType() == ApplicationType.Android) {
 			parameters.put("controller", controller);
-			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
-//			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
+//			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		} else {
 			parameters.put("controller", controller);
-//			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
+			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+//			entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
 			// entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
 		}
