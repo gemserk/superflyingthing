@@ -2,9 +2,11 @@ package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -13,14 +15,17 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
+import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
+import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.resources.ResourceManager;
 
-public class MainMenuGameState extends GameStateImpl {
+public class SettingsGameState extends GameStateImpl {
 
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
+	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	Container container;
 	private Sprite whiteRectangleSprite;
@@ -29,7 +34,7 @@ public class MainMenuGameState extends GameStateImpl {
 		this.resourceManager = resourceManager;
 	}
 
-	public MainMenuGameState(Game game) {
+	public SettingsGameState(Game game) {
 		this.game = game;
 	}
 
@@ -43,72 +48,27 @@ public class MainMenuGameState extends GameStateImpl {
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
-		BitmapFont versionFont = resourceManager.getResourceValue("VersionFont");
 
 		container = new Container();
 
-		container.add(GuiControls.label("Super Flying Thing") //
+		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
 
-		container.add(GuiControls.label("v" + GameInformation.gameVersion) //
-				.position(centerX, height * 0.85f) //
-				.color(Color.WHITE) //
-				.font(versionFont) //
-				.build());
-
-		TextButton playButton = GuiControls.textButton() //
-				.position(centerX, height * 0.7f) //
-				.text("Play") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
+		container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
+				.setNotOverColor(Color.WHITE) //
+				.setOverColor(Color.GREEN) //
+				.setColor(Color.WHITE) //
+				.setBoundsOffset(20f, 20f) //
+				.setAlignment(HAlignment.RIGHT) //
+				.setButtonHandler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.transition(game.getSelectPlayModeScreen(), 500, 500);
+						back();
 					}
-				})//
-				.build();
-
-		TextButton settingsButton = GuiControls.textButton() //
-				.position(centerX, height * 0.5f) //
-				.text("Settings") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						settings();
-					}
-				})//
-				.build();
-
-		TextButton exitButton = GuiControls.textButton() //
-				.position(centerX, height * 0.3f) //
-				.text("Exit") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased() {
-						Gdx.app.exit();
-					}
-				})//
-				.build();
-
-		// container.add(text);
-		container.add(playButton);
-		container.add(settingsButton);
-		if (Gdx.app.getType() != ApplicationType.Applet)
-			container.add(exitButton);
+				}));
 
 		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangleSprite.setPosition(0, 0);
@@ -116,10 +76,20 @@ public class MainMenuGameState extends GameStateImpl {
 		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
 
 		game.getBackgroundGameScreen().init();
+
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				if (Gdx.app.getType() == ApplicationType.Android)
+					monitorKey("back", Keys.BACK);
+				else
+					monitorKey("back", Keys.ESCAPE);
+			}
+		};
 	}
 	
-	private void settings() {
-		game.transition(game.getSettingsScreen(), 250, 250);
+	private void back() {
+		game.transition(game.getMainMenuScreen(), 250, 250);
 	}
 
 	@Override
@@ -137,20 +107,23 @@ public class MainMenuGameState extends GameStateImpl {
 		Synchronizers.synchronize(delta);
 		container.update();
 		game.getBackgroundGameScreen().update(delta);
+
+		if (inputDevicesMonitor.getButton("back").isReleased())
+			back();
 	}
 
 	@Override
 	public void show() {
 		super.show();
-		game.getAdWhirlViewHandler().show();
 		game.getBackgroundGameScreen().show();
 	}
 
 	@Override
 	public void resume() {
 		super.resume();
+		Gdx.input.setCatchBackKey(true);
+		game.getAdWhirlViewHandler().show();
 		game.getBackgroundGameScreen().resume();
-		Gdx.input.setCatchBackKey(false);
 	}
 
 	@Override
