@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.events.Event;
@@ -20,14 +21,14 @@ public class CameraScript extends ScriptJavaImpl {
 
 	private final EventManager eventManager;
 	private final EventListenerManager eventListenerManager;
-	private Entity owner;
 
-	float startX;
-	float startY;
+	private final Vector2 transitionOrigin = new Vector2();
+	private final Vector2 transitionTarget = new Vector2();
 
 	TimeTransition timeTransition = new TimeTransition();
 
 	boolean movingToTarget = false;
+	private Entity owner;
 
 	public CameraScript(EventManager eventManager, EventListenerManager eventListenerManager) {
 		this.eventManager = eventManager;
@@ -37,10 +38,7 @@ public class CameraScript extends ScriptJavaImpl {
 	@Override
 	public void init(com.artemis.World world, Entity e) {
 		this.owner = e;
-		Spatial spatial = ComponentWrapper.getSpatial(e);
-		startX = spatial.getX();
-		startY = spatial.getY();
-		eventListenerManager.register(Events.moveCameraToPlanet, new EventListener() {
+		eventListenerManager.register(Events.moveCameraToEntity, new EventListener() {
 			@Override
 			public void onEvent(Event event) {
 				moveCameraToPlanet(event);
@@ -50,8 +48,15 @@ public class CameraScript extends ScriptJavaImpl {
 
 	private void moveCameraToPlanet(Event event) {
 		Spatial spatial = ComponentWrapper.getSpatial(owner);
-		startX = spatial.getX();
-		startY = spatial.getY();
+		transitionOrigin.set(spatial.getPosition());
+
+		Entity entity = (Entity) event.getSource();
+		if (entity == null)
+			return;
+
+		Spatial targetSpatial = ComponentWrapper.getSpatial(entity);
+		transitionTarget.set(targetSpatial.getPosition());
+
 		timeTransition.start(800);
 		movingToTarget = true;
 	}
@@ -76,27 +81,27 @@ public class CameraScript extends ScriptJavaImpl {
 		TargetComponent targetComponent = e.getComponent(TargetComponent.class);
 		Entity target = targetComponent.target;
 
-		if (target == null)
-			return;
-
-		Spatial targetSpatial = ComponentWrapper.getSpatial(target);
-		if (targetSpatial == null)
-			return;
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 
-		timeTransition.update(world.getDelta());
+		if (target == null) {
+			timeTransition.update(world.getDelta());
 
-		if (!timeTransition.isFinished()) {
-			float x = FloatInterpolator.interpolate(startX, targetSpatial.getX(), timeTransition.get());
-			float y = FloatInterpolator.interpolate(startY, targetSpatial.getY(), timeTransition.get());
-			spatial.setPosition(x, y);
-		} else {
-			if (movingToTarget) {
-				eventManager.registerEvent(Events.cameraReachedTarget, e);
-				movingToTarget = false;
+			if (!timeTransition.isFinished()) {
+				float x = FloatInterpolator.interpolate(transitionOrigin.x, transitionTarget.x, timeTransition.get());
+				float y = FloatInterpolator.interpolate(transitionOrigin.y, transitionTarget.y, timeTransition.get());
+				spatial.setPosition(x, y);
 			} else {
-				spatial.set(targetSpatial);
+				if (movingToTarget) {
+					eventManager.registerEvent(Events.cameraReachedTarget, e);
+					// to avoid sending same event several times.
+					movingToTarget = false;
+				}
 			}
+
+			return;
+		} else {
+			Spatial targetSpatial = ComponentWrapper.getSpatial(target);
+			spatial.set(targetSpatial);
 		}
 
 	}

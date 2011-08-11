@@ -367,7 +367,7 @@ public class Scripts {
 
 			eventManager.registerEvent(Events.shipDeath, e);
 			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
-			eventManager.registerEvent(Events.moveCameraToPlanet, e);
+			eventManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
