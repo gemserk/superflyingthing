@@ -1,6 +1,8 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import com.badlogic.gdx.Gdx;
@@ -80,6 +82,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	
+	/**
+	 * Used to store global information about the game and to send data between GameStates and Screens.
+	 */
+	private Map<String, Object> gameData;
 
 	private GamePreferences gamePreferences;
 
@@ -136,6 +143,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public GamePreferences getGamePreferences() {
 		return gamePreferences;
 	}
+	
+	public Map<String, Object> getGameData() {
+		return gameData;
+	}
 
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
@@ -159,6 +170,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			throw new RuntimeException(e);
 		}
 
+		gameData = new HashMap<String, Object>();
+		
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
 		gamePreferences = new GamePreferences(preferences);
 

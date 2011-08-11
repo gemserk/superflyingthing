@@ -54,6 +54,7 @@ import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
@@ -235,7 +236,8 @@ public class ControllerTestGameState extends GameStateImpl {
 				);
 
 		parameters.clear();
-		entityFactory.instantiate(controllerTemplates.getControllerTemplate(GameInformation.controllerType), //
+		ControllerType testControllerType = (ControllerType) game.getGameData().get("testControllerType");
+		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 
 		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));

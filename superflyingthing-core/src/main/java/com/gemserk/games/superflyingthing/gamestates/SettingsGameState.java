@@ -90,8 +90,6 @@ public class SettingsGameState extends GameStateImpl {
 
 	private GamePreferences gamePreferences;
 
-	// ControllerType selectedControllerType = ControllerType.ClassicController;
-
 	private Container container;
 	private Sprite whiteRectangleSprite;
 
@@ -126,7 +124,7 @@ public class SettingsGameState extends GameStateImpl {
 		ControllerType currentControllerType = getCurrentControllerType();
 		ControllerType[] availableControllers = getAvailableControllers();
 
-		GameInformation.controllerType = currentControllerType;
+		game.getGameData().put("testControllerType", currentControllerType);
 
 		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
@@ -149,7 +147,7 @@ public class SettingsGameState extends GameStateImpl {
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased() {
-							GameInformation.controllerType = controllerType;
+							game.getGameData().put("testControllerType", controllerType);
 						}
 					}) //
 					.build(), currentControllerType == controllerType);
@@ -246,7 +244,7 @@ public class SettingsGameState extends GameStateImpl {
 	private void save() {
 		// save control type to the player profile preferences.
 		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
-		playerProfile.setControllerType(GameInformation.controllerType);
+		playerProfile.setControllerType((ControllerType) game.getGameData().get("testControllerType"));
 		gamePreferences.updatePlayerProfile(playerProfile);
 
 		back();
