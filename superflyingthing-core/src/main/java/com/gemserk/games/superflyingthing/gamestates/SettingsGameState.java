@@ -12,11 +12,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
@@ -24,6 +26,62 @@ import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.resources.ResourceManager;
 
 public class SettingsGameState extends GameStateImpl {
+
+	class MultipleButtonControl extends Container {
+
+		private final Color selectedColor = Colors.yellow;
+		private final Color notOverColor = Color.WHITE;
+		private final Color overColor = Color.GREEN;
+
+		@Override
+		public void add(Control control) {
+			add(control, false);
+		}
+
+		public void add(Control control, boolean selected) {
+			if (control instanceof TextButton) {
+
+				final TextButton textButton = (TextButton) control;
+				final ButtonHandler buttonHandler = textButton.getButtonHandler();
+
+				textButton.setNotOverColor(notOverColor);
+				textButton.setOverColor(overColor);
+
+				if (selected)
+					textButton.setNotOverColor(selectedColor);
+
+				textButton.setButtonHandler(new ButtonHandler() {
+					@Override
+					public void onPressed() {
+						buttonHandler.onPressed();
+					}
+
+					@Override
+					public void onReleased() {
+
+						for (int i = 0; i < getControls().size(); i++) {
+							Control otherControl = getControls().get(i);
+							if (otherControl == textButton)
+								continue;
+
+							if (!(otherControl instanceof TextButton))
+								continue;
+
+							TextButton otherTextButton = (TextButton) otherControl;
+							otherTextButton.setNotOverColor(notOverColor);
+						}
+
+						textButton.setNotOverColor(selectedColor);
+
+						buttonHandler.onReleased();
+					}
+				});
+
+				super.add(textButton);
+			}
+		}
+
+	}
 
 	private final Game game;
 	private SpriteBatch spriteBatch;
@@ -34,7 +92,7 @@ public class SettingsGameState extends GameStateImpl {
 
 	// ControllerType selectedControllerType = ControllerType.ClassicController;
 
-	Container container;
+	private Container container;
 	private Sprite whiteRectangleSprite;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
@@ -62,15 +120,13 @@ public class SettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
-		ControllerType[] availableControllers = new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
-				ControllerType.AxisController, ControllerType.AnalogController };
-		GameInformation.controllerType = ControllerType.KeyboardController;
+		MultipleButtonControl multipleButtonControl = new MultipleButtonControl();
+		container.add(multipleButtonControl);
 
-		if (Gdx.app.getType() == ApplicationType.Android) {
-			availableControllers = new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
-					ControllerType.AnalogController, ControllerType.TiltController };
-			GameInformation.controllerType = ControllerType.ClassicController;
-		}
+		ControllerType currentControllerType = getCurrentControllerType();
+		ControllerType[] availableControllers = getAvailableControllers();
+
+		GameInformation.controllerType = currentControllerType;
 
 		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
@@ -82,7 +138,7 @@ public class SettingsGameState extends GameStateImpl {
 
 		for (int i = 0; i < availableControllers.length; i++) {
 			final ControllerType controllerType = availableControllers[i];
-			container.add(GuiControls.textButton() //
+			multipleButtonControl.add(GuiControls.textButton() //
 					.text(controllerType.name()) //
 					.font(buttonFont) //
 					.center(0f, 0.5f) //
@@ -96,7 +152,7 @@ public class SettingsGameState extends GameStateImpl {
 							GameInformation.controllerType = controllerType;
 						}
 					}) //
-					.build());
+					.build(), currentControllerType == controllerType);
 			y -= height * 0.15f;
 		}
 
@@ -160,6 +216,27 @@ public class SettingsGameState extends GameStateImpl {
 		};
 	}
 
+	private ControllerType[] getAvailableControllers() {
+		if (Gdx.app.getType() == ApplicationType.Android)
+			return new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
+					ControllerType.AnalogController, ControllerType.TiltController };
+		else
+			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
+					ControllerType.AxisController, ControllerType.AnalogController };
+	}
+
+	private ControllerType getCurrentControllerType() {
+		ControllerType controllerType = gamePreferences.getCurrentPlayerProfile().getControllerType();
+
+		if (controllerType != null)
+			return controllerType;
+
+		if (Gdx.app.getType() == ApplicationType.Android)
+			return ControllerType.ClassicController;
+		else
+			return ControllerType.KeyboardController;
+	}
+
 	private void controllerTestBed() {
 		game.transition(game.getControllersTestScreen()).enterTime(250) //
 				.leaveTime(250) //
@@ -197,7 +274,7 @@ public class SettingsGameState extends GameStateImpl {
 		Synchronizers.synchronize(delta);
 		container.update();
 		inputDevicesMonitor.update();
-		
+
 		game.getBackgroundGameScreen().update(delta);
 
 		if (inputDevicesMonitor.getButton("back").isReleased())
