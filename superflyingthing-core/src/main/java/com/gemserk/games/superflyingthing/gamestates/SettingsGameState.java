@@ -11,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
@@ -251,7 +252,8 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	private void back() {
-		game.transition(game.getMainMenuScreen()).enterTime(250) //
+		Screen previousScreen = game.getGameData().get("previousScreen");
+		game.transition(previousScreen).enterTime(250) //
 				.leaveTime(250) //
 				.disposeCurrent() //
 				.start();

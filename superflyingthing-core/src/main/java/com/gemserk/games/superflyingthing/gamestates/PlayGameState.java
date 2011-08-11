@@ -810,6 +810,19 @@ public class PlayGameState extends GameStateImpl {
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
 		game.getBackgroundGameScreen().dispose();
+		
+		// recreate controller ...
+		
+		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+		if (playerController != null) {
+			
+			ControllerComponent controllerComponent = playerController.getComponent(ControllerComponent.class);
+			// mark current controller to be deleted
+			playerController.delete();
+			
+			// creates a new controller using new preferences 
+			createGameController(controllerComponent.getController());
+		}
 	}
 
 	@Override

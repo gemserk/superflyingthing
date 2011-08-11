@@ -120,7 +120,8 @@ public class MainMenuGameState extends GameStateImpl {
 	}
 
 	private void settings() {
-		game.transition(game.getSettingsScreen(), 250, 250);
+		game.getGameData().put("previousScreen", game.getMainMenuScreen());
+		game.transition(game.getSettingsScreen(), 250, 250, true);
 	}
 
 	@Override

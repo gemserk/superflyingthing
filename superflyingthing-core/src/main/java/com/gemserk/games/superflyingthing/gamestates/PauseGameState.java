@@ -58,8 +58,9 @@ public class PauseGameState extends GameStateImpl {
 				.color(Color.GREEN) //
 				.font(titleFont)//
 				.build());
+		
 		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.7f) //
+				.position(centerX, height * 0.73f) //
 				.text("Resume") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -73,7 +74,7 @@ public class PauseGameState extends GameStateImpl {
 				})//
 				.build());
 		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.55f) //
+				.position(centerX, height * 0.61f) //
 				.text("Instructions") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -82,13 +83,26 @@ public class PauseGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						game.getGamePreferences().setTutorialEnabled(true);
-						game.transition(game.getInstructionsScreen(), 500, 0);
+						instructions();
 					}
 				})//
 				.build());
 		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.40f) //
+				.position(centerX, height * 0.49f) //
+				.text("Settings") //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.boundsOffset(20, 20f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						settings();
+					}
+				})//
+				.build());
+		container.add(GuiControls.textButton() //
+				.position(centerX, height * 0.37f) //
 				.text("Restart") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -123,11 +137,23 @@ public class PauseGameState extends GameStateImpl {
 			}
 		};
 	}
+	
+	private void instructions() {
+		game.getGamePreferences().setTutorialEnabled(true);
+		game.transition(game.getInstructionsScreen(), 500, 0);
+	}
+	
+	private void settings() {
+		// sets previous screen....
+		game.getGameData().put("previousScreen", game.getPauseScreen());
+		game.transition(game.getSettingsScreen(), 250, 250, false);
+	}
 
 	private void restartLevel() {
 		game.transition(game.getPlayScreen()) //
 				.leaveTime(250) //
 				.enterTime(250) //
+				.disposeCurrent() //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
 					public void onEnd() {
