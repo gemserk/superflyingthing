@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -14,7 +13,6 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
-import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -65,8 +63,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
-		// TODO: generate the levels list automatically from an array...
-
 		float x = 0f;
 		float y = height * (0.75f + 0.12f);
 
@@ -89,8 +85,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 			Color color = new Color(Color.WHITE);
 			// if (!playerProfile.hasPlayedLevel(levelIndex + 1))
 			// color.set(0.5f, 0.5f, 0.5f, 1f);
-
-			// maybe putting a TICK over the image could be better.
 
 			container.add(GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
@@ -123,18 +117,21 @@ public class LevelSelectionGameState extends GameStateImpl {
 		}
 
 		if (Gdx.app.getType() != ApplicationType.Android)
-			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
-					.setNotOverColor(Color.WHITE) //
-					.setOverColor(Color.GREEN) //
-					.setColor(Color.WHITE) //
-					.setBoundsOffset(20f, 20f) //
-					.setAlignment(HAlignment.RIGHT) //
-					.setButtonHandler(new ButtonHandler() {
+			container.add(GuiControls.textButton() //
+					.text("Back") //
+					.font(buttonFont) //
+					.position(width * 0.98f, height * 0.05f) //
+					.center(1f, 0.5f) //
+					.notOverColor(Color.WHITE) //
+					.overColor(Color.GREEN) //
+					.boundsOffset(30f, 30f) //
+					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased() {
-							game.transition(game.getSelectPlayModeScreen(), 500, 500, true);
+							back();
 						}
-					}));
+					}) //
+					.build());
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -152,6 +149,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
 
 		game.getBackgroundGameScreen().init();
+	}
+	
+
+	private void back() {
+		game.transition(game.getSelectPlayModeScreen(), 500, 500, true);
 	}
 
 	@Override
