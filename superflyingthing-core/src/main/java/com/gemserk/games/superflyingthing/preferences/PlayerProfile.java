@@ -3,6 +3,8 @@ package com.gemserk.games.superflyingthing.preferences;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
+
 public class PlayerProfile {
 
 	// private String privateProfileId (from datastore server)
@@ -23,6 +25,16 @@ public class PlayerProfile {
 	private int latestLevelPlayed;
 
 	private Map<Integer, LevelInformation> levelsInformation;
+	
+	private ControllerType controllerType;
+	
+	public void setControllerType(ControllerType controllerType) {
+		this.controllerType = controllerType;
+	}
+	
+	public ControllerType getControllerType() {
+		return controllerType;
+	}
 
 	// information to save:
 	// - level time

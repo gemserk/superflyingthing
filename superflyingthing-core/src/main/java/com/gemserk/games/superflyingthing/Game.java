@@ -194,6 +194,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		
 		SettingsGameState settingsGameState = new SettingsGameState(this);
 		settingsGameState.setResourceManager(resourceManager);
+		settingsGameState.setGamePreferences(gamePreferences);
 		
 		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
 		controllerTestGameState.setResourceManager(resourceManager);

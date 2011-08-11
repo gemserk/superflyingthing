@@ -18,6 +18,8 @@ import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.preferences.GamePreferences;
+import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.resources.ResourceManager;
 
@@ -27,6 +29,8 @@ public class SettingsGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	
+	private GamePreferences gamePreferences;
 
 	// ControllerType selectedControllerType = ControllerType.ClassicController;
 
@@ -35,6 +39,10 @@ public class SettingsGameState extends GameStateImpl {
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
+	}
+	
+	public void setGamePreferences(GamePreferences gamePreferences) {
+		this.gamePreferences = gamePreferences;
 	}
 
 	public SettingsGameState(Game game) {
@@ -108,7 +116,7 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
-				.text("Apply") //
+				.text("Save") //
 				.font(buttonFont) //
 				.center(0.5f, 0.5f) //
 				.position(width * 0.85f, height * 0.45f) //
@@ -118,7 +126,7 @@ public class SettingsGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased() {
-						// save current selected controller type
+						save();
 					}
 				}) //
 				.build());
@@ -159,6 +167,15 @@ public class SettingsGameState extends GameStateImpl {
 		game.transition(game.getControllersTestScreen()).enterTime(250) //
 				.leaveTime(250) //
 				.start();
+	}
+	
+	private void save() {
+		// save control type to the player profile preferences.
+		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
+		playerProfile.setControllerType(GameInformation.controllerType);
+		gamePreferences.updatePlayerProfile(playerProfile);
+		
+		back();
 	}
 
 	private void back() {
