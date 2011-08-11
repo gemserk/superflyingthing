@@ -96,20 +96,21 @@ public class ControllerTestGameState extends GameStateImpl {
 			Entity ship = world.getTagManager().getEntity(Groups.ship);
 			Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
 
-			if (isShipInsideBounds(shipSpatial.getX(), shipSpatial.getY()))
-				return;
+			float limitX = 8.5f;
+			int limitY = 6;
+			
+			if (shipSpatial.getX() > limitX)
+				shipSpatial.setPosition(-limitX, shipSpatial.getY());
+			else if (shipSpatial.getX() < -limitX)
+				shipSpatial.setPosition(limitX, shipSpatial.getY());
 
-			game.transition(game.getSettingsScreen()).enterTime(250) //
-					.leaveTime(250) //
-					.disposeCurrent() //
-					.start();
+			if (shipSpatial.getY() > limitY)
+				shipSpatial.setPosition(shipSpatial.getX(), -limitY);
+			else if (shipSpatial.getY() < -limitY)
+				shipSpatial.setPosition(shipSpatial.getX(), limitY);
+
 		}
 
-		private boolean isShipInsideBounds(float x, float y) {
-			if ((x < -10f) || (x > 10f) || (y > 8f) || (y < -8f))
-				return false;
-			return true;
-		}
 	}
 
 	private final Game game;
