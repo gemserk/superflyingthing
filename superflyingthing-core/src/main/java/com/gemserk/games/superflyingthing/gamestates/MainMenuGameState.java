@@ -53,7 +53,8 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(titleFont) //
 				.build());
 
-		container.add(GuiControls.label("v" + GameInformation.gameVersion) //
+		String version = (String) game.getGameData().get("version");
+		container.add(GuiControls.label("v" + version) //
 				.position(centerX, height * 0.85f) //
 				.color(Color.WHITE) //
 				.font(versionFont) //
@@ -117,7 +118,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 		game.getBackgroundGameScreen().init();
 	}
-	
+
 	private void settings() {
 		game.transition(game.getSettingsScreen(), 250, 250);
 	}

@@ -28,7 +28,6 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
-import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
@@ -65,7 +64,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
-	
+
 	private Screen splashScreen;
 	private Screen mainMenuScreen;
 	private Screen selectPlayModeScreen;
@@ -77,12 +76,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Screen backgroundGameScreen;
 	private Screen settingsScreen;
 	private Screen controllersTestScreen;
-	
+
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	
+
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
 	 */
@@ -91,7 +90,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private GamePreferences gamePreferences;
 
 	private Rectangle adsMaxArea;
-	
+
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
@@ -127,7 +126,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getInstructionsScreen() {
 		return instructionsScreen;
 	}
-	
+
 	public Screen getBackgroundGameScreen() {
 		return backgroundGameScreen;
 	}
@@ -135,15 +134,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getSettingsScreen() {
 		return settingsScreen;
 	}
-	
+
 	public Screen getControllersTestScreen() {
 		return controllersTestScreen;
 	}
-	
+
 	public GamePreferences getGamePreferences() {
 		return gamePreferences;
 	}
-	
+
 	public Map<String, Object> getGameData() {
 		return gameData;
 	}
@@ -161,17 +160,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
-		
+
+		gameData = new HashMap<String, Object>();
+
 		try {
 			Properties properties = new Properties();
 			properties.load(Gdx.files.classpath("version.properties").read());
-			GameInformation.gameVersion = properties.getProperty("version");
+			getGameData().put("version", properties.getProperty("version"));
+			// GameInformation.gameVersion = properties.getProperty("version");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
 
-		gameData = new HashMap<String, Object>();
-		
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
 		gamePreferences = new GamePreferences(preferences);
 
@@ -202,14 +202,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
 		instructionsGameState.setResourceManager(resourceManager);
-		
+
 		BackgroundGameState backgroundGameState = new BackgroundGameState(this);
 		backgroundGameState.setResourceManager(resourceManager);
-		
+
 		SettingsGameState settingsGameState = new SettingsGameState(this);
 		settingsGameState.setResourceManager(resourceManager);
 		settingsGameState.setGamePreferences(gamePreferences);
-		
+
 		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
 		controllerTestGameState.setResourceManager(resourceManager);
 
@@ -223,7 +223,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		splashScreen = new ScreenImpl(new SplashGameState(this));
 		backgroundGameScreen = new ScreenImpl(backgroundGameState);
 		settingsScreen = new ScreenImpl(settingsGameState);
-		controllersTestScreen = new ScreenImpl(controllerTestGameState); 
+		controllersTestScreen = new ScreenImpl(controllerTestGameState);
 
 		setScreen(splashScreen);
 
@@ -238,7 +238,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("toggleBox2dDebug", Keys.NUM_7);
 			}
 		};
-		
+
 		adsMaxArea = new Rectangle(1f, 1f, Gdx.graphics.getWidth() - 2f, Gdx.graphics.getHeight() * 0.105f - 2f);
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
@@ -357,7 +357,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				Gdx.app.log("SuperFlyingThing", "Can't save screenshot");
 			}
 		}
-		
+
 		if (Game.isDebugMode()) {
 			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}

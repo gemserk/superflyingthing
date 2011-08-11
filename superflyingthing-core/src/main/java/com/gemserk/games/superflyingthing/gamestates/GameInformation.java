@@ -14,7 +14,6 @@ public class GameInformation {
 
 	public static WorldWrapper worldWrapper;
 	
-	public static String gameVersion;
 	public static GameData gameData;
 	
 }
