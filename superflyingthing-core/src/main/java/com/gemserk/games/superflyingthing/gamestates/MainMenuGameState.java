@@ -53,7 +53,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(titleFont) //
 				.build());
 
-		String version = (String) game.getGameData().get("version");
+		String version = game.getGameData().get("version");
 		container.add(GuiControls.label("v" + version) //
 				.position(centerX, height * 0.85f) //
 				.color(Color.WHITE) //

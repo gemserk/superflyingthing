@@ -236,7 +236,7 @@ public class ControllerTestGameState extends GameStateImpl {
 				);
 
 		parameters.clear();
-		ControllerType testControllerType = (ControllerType) game.getGameData().get("testControllerType");
+		ControllerType testControllerType = game.getGameData().get("testControllerType");
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 

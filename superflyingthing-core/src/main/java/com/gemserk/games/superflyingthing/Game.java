@@ -1,8 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import com.badlogic.gdx.Gdx;
@@ -26,6 +24,8 @@ import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
@@ -85,7 +85,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
 	 */
-	private Map<String, Object> gameData;
+	private Parameters gameData;
 
 	private GamePreferences gamePreferences;
 
@@ -143,7 +143,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return gamePreferences;
 	}
 
-	public Map<String, Object> getGameData() {
+	public Parameters getGameData() {
 		return gameData;
 	}
 
@@ -161,13 +161,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 
-		gameData = new HashMap<String, Object>();
+		gameData = new ParametersWrapper();
 
 		try {
 			Properties properties = new Properties();
 			properties.load(Gdx.files.classpath("version.properties").read());
 			getGameData().put("version", properties.getProperty("version"));
-			// GameInformation.gameVersion = properties.getProperty("version");
 		} catch (IOException e) {
 			throw new RuntimeException(e);
 		}
