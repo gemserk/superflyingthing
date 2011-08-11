@@ -739,7 +739,7 @@ public class PlayGameState extends GameStateImpl {
 		parameters.clear();
 
 		parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-		parameters.put("text", "Great Job!");
+		parameters.put("text", getRandomEndMessage());
 
 		entityFactory.instantiate(userMessageTemplate, parameters);
 
@@ -755,6 +755,18 @@ public class PlayGameState extends GameStateImpl {
 			Analytics.traker.trackPageView("/random/finish", "/random/finish", null);
 		}
 
+	}
+	
+	private static String[] endMessages = new String[] {
+		"Great Job!",
+		"Nicely Done!",
+		"You made it!",
+		"Good Work!",
+		"You Rock!",
+	};
+	
+	private String getRandomEndMessage() {
+		return endMessages[MathUtils.random(endMessages.length -1)];
 	}
 
 	@Override
