@@ -82,6 +82,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
@@ -126,8 +127,14 @@ public class PlayGameState extends GameStateImpl {
 
 	EntityTemplate userMessageTemplate;
 
+	private GamePreferences gamePreferences;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
+	}
+
+	public void setGamePreferences(GamePreferences gamePreferences) {
+		this.gamePreferences = gamePreferences;
 	}
 
 	public PlayGameState(Game game) {
@@ -150,7 +157,7 @@ public class PlayGameState extends GameStateImpl {
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
-		
+
 		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
@@ -370,21 +377,20 @@ public class PlayGameState extends GameStateImpl {
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
 					}
-					
+
 					if (current == 4) {
 						controllerName = "ClassicKeyboardController";
 						parameters.clear();
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
 					}
-					
+
 					if (current == 5) {
 						controllerName = "AnalogKeyboardController";
 						parameters.clear();
 						parameters.put("controller", controller);
 						entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
 					}
-
 
 					Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
 					parameters.clear();
@@ -696,14 +702,19 @@ public class PlayGameState extends GameStateImpl {
 
 		Parameters parameters = new ParametersWrapper();
 
-		if (Gdx.app.getType() == ApplicationType.Android) {
-			parameters.put("controller", controller);
-			entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
-		} else {
-			parameters.put("controller", controller);
-			entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-			// entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
+		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
+
+		ControllerType controllerType = playerProfile.getControllerType();
+
+		if (controllerType == null) {
+			if (Gdx.app.getType() == ApplicationType.Android)
+				controllerType = ControllerType.ClassicController;
+			else
+				controllerType = ControllerType.KeyboardController;
 		}
+
+		parameters.put("controller", controller);
+		entityFactory.instantiate(controllerTemplates.getControllerTemplate(controllerType), parameters);
 
 	}
 
