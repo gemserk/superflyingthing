@@ -180,16 +180,13 @@ public class BackgroundGameState extends GameStateImpl {
 		int previewLevelNumber = MathUtils.random(0, 7);
 		loadLevel(entityTemplates, Levels.level(previewLevelNumber));
 		// loadLevel(entityTemplates, Levels.level(13));
-		
-		entityFactory.instantiate(entityTemplates.userMessageTemplate,
-				parameters
-					.put("text", "Preview level " + previewLevelNumber + "...")//
-					.put("fontId", "VersionFont")//
-					.put("position", new Vector2(Gdx.graphics.getWidth() * 0.10f, Gdx.graphics.getHeight() * 0.2f))//
-					.put("time", 2500)//
-					.put("iterations", 50)//
+
+		entityFactory.instantiate(entityTemplates.userMessageTemplate, parameters.put("text", "Preview level " + (previewLevelNumber + 1) + "...")//
+				.put("fontId", "VersionFont")//
+				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.10f, Gdx.graphics.getHeight() * 0.2f))//
+				.put("time", 2500)//
+				.put("iterations", 50)//
 				);
-		
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
@@ -317,7 +314,6 @@ public class BackgroundGameState extends GameStateImpl {
 						entityTemplates, entityFactory, gameData, controller, false))) //
 				.build();
 
-
 	}
 
 	@Override
@@ -325,10 +321,10 @@ public class BackgroundGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
-		
+
 		if (Game.isShowBox2dDebug())
 			box2dCustomDebugRenderer.render();
-		
+
 		guiCamera.apply(spriteBatch);
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
