@@ -29,7 +29,7 @@ public class SettingsGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	
+
 	private GamePreferences gamePreferences;
 
 	// ControllerType selectedControllerType = ControllerType.ClassicController;
@@ -40,7 +40,7 @@ public class SettingsGameState extends GameStateImpl {
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
-	
+
 	public void setGamePreferences(GamePreferences gamePreferences) {
 		this.gamePreferences = gamePreferences;
 	}
@@ -65,8 +65,8 @@ public class SettingsGameState extends GameStateImpl {
 		ControllerType[] availableControllers = new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
 				ControllerType.AxisController, ControllerType.AnalogController };
 		GameInformation.controllerType = ControllerType.KeyboardController;
-		
-		if (Gdx.app.getType() == ApplicationType.Android)  {
+
+		if (Gdx.app.getType() == ApplicationType.Android) {
 			availableControllers = new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
 					ControllerType.AnalogController, ControllerType.TiltController };
 			GameInformation.controllerType = ControllerType.ClassicController;
@@ -155,10 +155,7 @@ public class SettingsGameState extends GameStateImpl {
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				if (Gdx.app.getType() == ApplicationType.Android)
-					monitorKey("back", Keys.BACK);
-				else
-					monitorKey("back", Keys.ESCAPE);
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
 	}
@@ -168,13 +165,13 @@ public class SettingsGameState extends GameStateImpl {
 				.leaveTime(250) //
 				.start();
 	}
-	
+
 	private void save() {
 		// save control type to the player profile preferences.
 		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
 		playerProfile.setControllerType(GameInformation.controllerType);
 		gamePreferences.updatePlayerProfile(playerProfile);
-		
+
 		back();
 	}
 

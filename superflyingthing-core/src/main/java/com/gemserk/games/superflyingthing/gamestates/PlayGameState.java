@@ -88,6 +88,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
@@ -256,9 +257,11 @@ public class PlayGameState extends GameStateImpl {
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
 
 			boolean incrementTimer = true;
+			private com.artemis.World world;
 
 			@Override
 			public void init(com.artemis.World world, Entity e) {
+				this.world = world;
 				// TODO: generate EventListeners and register them automatically using annotations.
 				eventListenerManager.register(Events.itemTaken, new EventListener() {
 					@Override
@@ -305,6 +308,12 @@ public class PlayGameState extends GameStateImpl {
 					playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
 					game.getGamePreferences().updatePlayerProfile(playerProfile);
 				}
+
+				Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+				playerController.delete();
+				
+				Entity controllerSwitcher = world.getTagManager().getEntity("ControllerSwitcher");
+				controllerSwitcher.delete();
 			}
 
 			@Override
@@ -332,82 +341,89 @@ public class PlayGameState extends GameStateImpl {
 			}
 		};
 
-		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+		entityBuilder //
+				.component(new TagComponent("ControllerSwitcher")) //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
 
-			private int current = 0;
-			private ShipController controller;
+					private int current = 0;
+					private ShipController controller;
 
-			@Override
-			public void update(com.artemis.World world, Entity e) {
+					@Override
+					public void update(com.artemis.World world, Entity e) {
 
-				Entity currentController = world.getTagManager().getEntity("PlayerController");
+						Entity currentController = world.getTagManager().getEntity(Groups.PlayerController);
 
-				if (currentController == null) {
+						if (currentController != null) {
+							if (controller == null)
+								controller = currentController.getComponent(ControllerComponent.class).getController();
+						}
 
-					current++;
-					if (current > 5)
-						current = 0;
+						if (currentController == null) {
 
-					String controllerName = "";
+							current++;
+							if (current > 5)
+								current = 0;
 
-					if (current == 0) {
-						controllerName = "AndroidClassicController";
-						parameters.clear();
-						parameters.put("controller", controller);
-						entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+							String controllerName = "";
+
+							if (current == 0) {
+								controllerName = "AndroidClassicController";
+								parameters.clear();
+								parameters.put("controller", controller);
+								entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
+							}
+
+							if (current == 1) {
+								controllerName = "AxisController";
+								parameters.clear();
+								parameters.put("controller", controller);
+								entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
+							}
+
+							if (current == 2) {
+								controllerName = "AnalogController";
+								parameters.clear();
+								parameters.put("controller", controller);
+								entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
+							}
+
+							if (current == 3) {
+								controllerName = "TiltController";
+								parameters.clear();
+								parameters.put("controller", controller);
+								entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
+							}
+
+							if (current == 4) {
+								controllerName = "ClassicKeyboardController";
+								parameters.clear();
+								parameters.put("controller", controller);
+								entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
+							}
+
+							if (current == 5) {
+								controllerName = "AnalogKeyboardController";
+								parameters.clear();
+								parameters.put("controller", controller);
+								entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
+							}
+
+							Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
+							parameters.clear();
+							parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+							parameters.put("text", controllerName);
+							parameters.put("time", 1000);
+							entityFactory.instantiate(userMessageTemplate, parameters);
+
+						}
+
+						if (inputDevicesMonitor.getButton("switchControls").isReleased()) {
+							// controller = currentController.getComponent(ControllerComponent.class).getController();
+							currentController.delete();
+						}
+
 					}
-
-					if (current == 1) {
-						controllerName = "AxisController";
-						parameters.clear();
-						parameters.put("controller", controller);
-						entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
-					}
-
-					if (current == 2) {
-						controllerName = "AnalogController";
-						parameters.clear();
-						parameters.put("controller", controller);
-						entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
-					}
-
-					if (current == 3) {
-						controllerName = "TiltController";
-						parameters.clear();
-						parameters.put("controller", controller);
-						entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
-					}
-
-					if (current == 4) {
-						controllerName = "ClassicKeyboardController";
-						parameters.clear();
-						parameters.put("controller", controller);
-						entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-					}
-
-					if (current == 5) {
-						controllerName = "AnalogKeyboardController";
-						parameters.clear();
-						parameters.put("controller", controller);
-						entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
-					}
-
-					Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
-					parameters.clear();
-					parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-					parameters.put("text", controllerName);
-					parameters.put("time", 1000);
-					entityFactory.instantiate(userMessageTemplate, parameters);
-
-				}
-
-				if (inputDevicesMonitor.getButton("switchControls").isReleased()) {
-					controller = currentController.getComponent(ControllerComponent.class).getController();
-					currentController.delete();
-				}
-
-			}
-		})).build();
+				})).build();
 
 	}
 

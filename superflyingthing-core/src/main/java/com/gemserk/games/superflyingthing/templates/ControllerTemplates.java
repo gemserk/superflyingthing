@@ -38,7 +38,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", "PlayerController");
+			String tag = parameters.get("tag", Groups.PlayerController);
 			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
@@ -57,7 +57,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", "PlayerController");
+			String tag = parameters.get("tag", Groups.PlayerController);
 			entity.addComponent(new ScriptComponent(new AnalogKeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
@@ -76,7 +76,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", "PlayerController");
+			String tag = parameters.get("tag", Groups.PlayerController);
 			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
@@ -105,7 +105,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", "PlayerController");
+			String tag = parameters.get("tag", Groups.PlayerController);
 			Integer layer = parameters.get("layer"); 
 
 			String spriteId = parameters.get("spriteId", "WhiteRectangle"); 
@@ -144,7 +144,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", "PlayerController");
+			String tag = parameters.get("tag", Groups.PlayerController);
 			Integer layer = parameters.get("layer"); 
 
 			String spriteId = parameters.get("spriteId", "WhiteRectangle"); 
@@ -173,7 +173,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", "PlayerController");
+			String tag = parameters.get("tag", Groups.PlayerController);
 			entity.addComponent(new ScriptComponent(new TiltAndroidControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
