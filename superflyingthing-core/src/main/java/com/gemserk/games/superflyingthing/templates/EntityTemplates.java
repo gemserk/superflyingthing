@@ -717,33 +717,6 @@ public class EntityTemplates {
 						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
-	// public Entity portal(String id, String targetPortalId, float x, float y, Script script) {
-	// Sprite sprite = resourceManager.getResourceValue("PortalSprite");
-	//
-	// Entity e = entityBuilder //
-	// .tag(id) //
-	// .component(new SpriteComponent(sprite)) //
-	// .component(new Components.PortalComponent(targetPortalId)) //
-	// .component(new RenderableComponent(4)) //
-	// .component(new SpatialComponent(new SpatialImpl(x, y, 2f, 2f, 0f))) //
-	// .component(new ScriptComponent(script)) //
-	// .build();
-	//
-	// Body body = bodyBuilder //
-	// .fixture(bodyBuilder.fixtureDefBuilder() //
-	// .circleShape(0.5f) //
-	// .categoryBits(CategoryBits.AllCategoryBits) //
-	// .sensor()) //
-	// .position(x, y) //
-	// .mass(1f) //
-	// .type(BodyType.StaticBody) //
-	// .userData(e) //
-	// .build();
-	//
-	// e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-	// e.refresh();
-	//
-	// return e;
-	// }
+	public EntityTemplate userMessageTemplate;
 
 }

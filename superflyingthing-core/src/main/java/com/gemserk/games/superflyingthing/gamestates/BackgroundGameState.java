@@ -43,6 +43,7 @@ import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
@@ -70,13 +71,16 @@ import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
 
 	private final Game game;
 	SpriteBatch spriteBatch;
+
 	Libgdx2dCamera worldCamera;
+	Libgdx2dCamera guiCamera;
 
 	EntityTemplates entityTemplates;
 	World physicsWorld;
@@ -99,6 +103,8 @@ public class BackgroundGameState extends GameStateImpl {
 
 	private Timer timer;
 
+	private Container guiContainer;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -120,8 +126,12 @@ public class BackgroundGameState extends GameStateImpl {
 
 		jointBuilder = new JointBuilder(physicsWorld);
 
+		guiContainer = new Container();
+
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+
+		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 
@@ -158,15 +168,28 @@ public class BackgroundGameState extends GameStateImpl {
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
+		entityTemplates.userMessageTemplate = new UserMessageTemplate(guiContainer, resourceManager);
 
 		gameData = new GameData();
 
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
-		loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
-		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, 3)));
+		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
+		// Changed to randomize between levels 0 to 7.
+		int previewLevelNumber = MathUtils.random(0, 7);
+		loadLevel(entityTemplates, Levels.level(previewLevelNumber));
 		// loadLevel(entityTemplates, Levels.level(13));
+		
+		entityFactory.instantiate(entityTemplates.userMessageTemplate,
+				parameters
+					.put("text", "Preview level " + previewLevelNumber + "...")//
+					.put("fontId", "VersionFont")//
+					.put("position", new Vector2(Gdx.graphics.getWidth() * 0.10f, Gdx.graphics.getHeight() * 0.2f))//
+					.put("time", 2500)//
+					.put("iterations", 50)//
+				);
+		
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
@@ -294,6 +317,7 @@ public class BackgroundGameState extends GameStateImpl {
 						entityTemplates, entityFactory, gameData, controller, false))) //
 				.build();
 
+
 	}
 
 	@Override
@@ -301,15 +325,21 @@ public class BackgroundGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
-
+		
 		if (Game.isShowBox2dDebug())
 			box2dCustomDebugRenderer.render();
+		
+		guiCamera.apply(spriteBatch);
+		spriteBatch.begin();
+		guiContainer.draw(spriteBatch);
+		spriteBatch.end();
 	}
 
 	@Override
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 		worldWrapper.update(delta);
+		guiContainer.update();
 
 		if (timer.update(delta))
 			game.getBackgroundGameScreen().restart();

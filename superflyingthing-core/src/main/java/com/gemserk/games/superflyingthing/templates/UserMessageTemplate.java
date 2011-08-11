@@ -27,8 +27,9 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 		this.guiContainer = guiContainer;
 		this.resourceManager = resourceManager;
 
-		parameters.put("time", 2500);
+		parameters.put("time", new Integer(2500));
 		parameters.put("fontId", "GameFont");
+		parameters.put("iterations", new Integer(1));
 	}
 
 	@Override
@@ -38,6 +39,7 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 		String text = parameters.get("text");
 		Vector2 position = parameters.get("position");
 
+		final Integer iterations = parameters.get("iterations");
 		final Integer time = parameters.get("time");
 		BitmapFont font = resourceManager.getResourceValue(fontId);
 
@@ -47,7 +49,7 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 				.color(1f, 1f, 1f, 0f) //
 				.build();
 
-		final Animation colorAnimation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
+		final Animation animation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
 				.value(Builders.timelineValue("color") //
 						.keyFrame(0, new Color(1f, 1f, 1f, 0f)) //
 						.keyFrame(time * 0.25f, Color.WHITE) //
@@ -60,19 +62,22 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 				.build(), //
 				new TimelineSynchronizer(new MutableObjectSynchronizer(), textControl));
 
+		animation.start(iterations);
+
 		guiContainer.add(textControl);
 
 		entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
 			int aliveTime = time;
 			Text text = textControl;
-			Animation animation = colorAnimation;
+			Animation internalAnimation = animation;
 
 			@Override
 			public void update(World world, Entity e) {
-				animation.update(world.getDelta());
+				internalAnimation.update(world.getDelta());
 				aliveTime -= world.getDelta();
-				if (aliveTime <= 0) {
+				if (internalAnimation.isFinished()) {
+					// if (aliveTime <= 0) {
 					e.delete();
 					guiContainer.remove(text);
 				}
