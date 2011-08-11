@@ -27,10 +27,10 @@
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
  inkscape:zoom="13.2269"
- inkscape:cx="33.2926"
+ inkscape:cx="37.0682"
  inkscape:cy="18.2778"
  inkscape:document-units="px"
- inkscape:current-layer="layer2"
+ inkscape:current-layer="layer4"
  showgrid="true"
  units="px"
  inkscape:window-width="1440"
@@ -187,8 +187,160 @@
  width="1"
  height="1"
  id="image3209-2-9-7-5"
- x="-7.60675"
- y="31.0324"
+ x="10.8406"
+ y="24.1525"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-3"
+ x="20.1398"
+ y="24.5858"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-5"
+ x="22.4079"
+ y="23.5273"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-33"
+ x="31.2536"
+ y="10.9771"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-4"
+ x="50.9106"
+ y="20.8056"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-56"
+ x="54.3127"
+ y="20.2007"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-54"
+ x="55.9004"
+ y="17.101"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-44"
+ x="116.535"
+ y="25.4174"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-0"
+ x="119.861"
+ y="25.9466"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-39"
+ x="124.246"
+ y="24.6614"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-1"
+ x="128.026"
+ y="20.8056"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-12"
+ x="130.371"
+ y="17.7058"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-8"
+ x="101.187"
+ y="6.81887"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-53"
+ x="102.019"
+ y="10.5235"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-52"
+ x="115.627"
+ y="12.2623"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-9"
+ x="115.93"
+ y="21.108"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-128"
+ x="32.2364"
+ y="20.0495"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-2"
+ x="48.4912"
+ y="7.95293"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-6"
+ x="10.8406"
+ y="9.2382"
+ xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
+ sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
+<image
+ width="1"
+ height="1"
+ id="image3209-2-9-7-5-50"
+ x="12.277"
+ y="6.36525"
  xlink:href="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png"
  sodipodi:absref="/home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/levels/../images/white-rectangle-direction.png" />
 </g>
