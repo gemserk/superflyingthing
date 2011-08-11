@@ -200,7 +200,7 @@ public class EntityTemplates {
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("maxLinearSpeed", new Float(4.5f));
-			parameters.put("maxAngularVelocity", new Float(400f));
+			parameters.put("maxAngularVelocity", new Float(360f));
 		}
 
 		@Override
@@ -290,7 +290,7 @@ public class EntityTemplates {
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(1f, 0f, 4.5f, 400f));
+			e.addComponent(new MovementComponent(1f, 0f, 4.5f, 360f));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));

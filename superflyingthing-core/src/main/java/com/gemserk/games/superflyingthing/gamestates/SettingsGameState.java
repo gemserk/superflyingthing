@@ -196,6 +196,8 @@ public class SettingsGameState extends GameStateImpl {
 	public void update(int delta) {
 		Synchronizers.synchronize(delta);
 		container.update();
+		inputDevicesMonitor.update();
+		
 		game.getBackgroundGameScreen().update(delta);
 
 		if (inputDevicesMonitor.getButton("back").isReleased())
