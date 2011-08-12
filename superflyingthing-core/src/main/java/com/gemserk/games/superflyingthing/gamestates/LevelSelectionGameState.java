@@ -10,10 +10,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
-import com.gemserk.commons.gdx.gui.TextButton.ButtonHandler;
+import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
@@ -26,7 +27,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	private int selectedLevel;
+	private Integer selectedLevel = null;
 
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
@@ -53,7 +54,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
 
-		Text title = new Text("Select Level", centerX, height * 0.9f).setColor(Color.GREEN);
+		Text title = new Text("Select Level", centerX, height * 0.90f).setColor(Color.GREEN);
 		title.setFont(titleFont);
 
 		container = new Container();
@@ -65,7 +66,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
 		float x = 0f;
-		float y = height * (0.75f + 0.12f);
+		float y = height * (0.80f + 0.12f);
 
 		for (int i = 0; i < Levels.levelsCount(); i++) {
 
@@ -97,10 +98,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 							// there is no point in forcing the player to play all the levels, at least for now.
 							// if (!playerProfile.hasPlayedLevel(levelIndex))
 							// return;
-							if (selectedLevel == levelIndex)
-								play(levelIndex);
-							else
-								select(levelIndex);
+							select(levelIndex);
 						}
 					}) //
 					.build());
@@ -118,6 +116,24 @@ public class LevelSelectionGameState extends GameStateImpl {
 						.build());
 
 		}
+
+		container.add(GuiControls.textButton() //
+				.id("PlayButton") //
+				.text("Play") //
+				.font(titleFont) //
+				.position(width * 0.5f, height * 0.25f) //
+				.center(0.5f, 0.5f) //
+				.notOverColor(0.7f, 0.7f, 0.7f, 0f) //
+				.overColor(0.7f, 0.7f, 0.7f, 0f) //
+				.boundsOffset(30f, 30f) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased() {
+						if (selectedLevel != null)
+							play(selectedLevel);
+					}
+				}) //
+				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
 			container.add(GuiControls.textButton() //
@@ -157,6 +173,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.enterTime(250) //
 				.disposeCurrent() //
 				.start();
+		game.getGameData().put("previewLevel", null);
 	}
 
 	private void play(int level) {
@@ -166,15 +183,20 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.enterTime(250) //
 				.disposeCurrent() //
 				.start();
+		game.getGameData().put("previewLevel", null);
 	}
 
 	private void select(int level) {
 		selectedLevel = level;
 		Gdx.app.log("SuperFlyingThing", "Level " + (level + 1) + " selected");
-		
+
 		// load level in the background
 		game.getGameData().put("previewLevel", level);
 		game.getBackgroundGameScreen().restart();
+		
+		TextButton playButton = container.findControl("PlayButton");
+		playButton.setOverColor(Color.GREEN);
+		playButton.setNotOverColor(Color.WHITE);		
 	}
 
 	@Override
