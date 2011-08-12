@@ -31,13 +31,13 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
-	private Integer selectedLevel = null;
+	private Integer selectedLevel;
 
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private Sprite whiteRectangleSprite;
 	
-	private Rectangle selectionRectangle = new Rectangle();
+	private Rectangle selectionRectangle;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -49,6 +49,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
+		selectedLevel = null;
+		selectionRectangle = new Rectangle();
+		
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
@@ -199,6 +202,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 	}
 
 	private void select(int level) {
+		if (selectedLevel != null && level == selectedLevel)
+			return;
+		
 		selectedLevel = level;
 		Gdx.app.log("SuperFlyingThing", "Level " + (level + 1) + " selected");
 
