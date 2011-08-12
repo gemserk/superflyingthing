@@ -128,6 +128,10 @@ public class PlayGameState extends GameStateImpl {
 	EntityTemplate userMessageTemplate;
 
 	private GamePreferences gamePreferences;
+	
+	private Text tiltvalue;
+	private final boolean tiltValueEnabled = false;
+	int tilttime = 0;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -230,6 +234,15 @@ public class PlayGameState extends GameStateImpl {
 
 		container.add(itemsTakenLabel);
 		container.add(timerLabel);
+		
+		if(tiltValueEnabled){
+			tiltvalue = GuiControls.label("") //
+					.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.90f) //
+					.font(font) //
+					.color(1f, 1f, 1f, 1f) //
+					.build();
+			container.add(tiltvalue);
+		}
 
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
@@ -754,6 +767,7 @@ public class PlayGameState extends GameStateImpl {
 		"You Rock!",
 	};
 	
+	
 	private String getRandomEndMessage() {
 		return endMessages[MathUtils.random(endMessages.length -1)];
 	}
@@ -772,7 +786,8 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-
+	
+	
 	@Override
 	public void update(int delta) {
 		GamePreferences gamePreferences = game.getGamePreferences();
@@ -801,7 +816,18 @@ public class PlayGameState extends GameStateImpl {
 			}
 		}
 
+		
+		
+		
 		worldWrapper.update(delta);
+		if(tiltValueEnabled){
+			float pitch = Gdx.input.getPitch();
+			tilttime+=delta;
+			if(tilttime>200){
+				tiltvalue.setText(String.format("%8.4f",pitch));
+				tilttime-=200;
+			}
+		}
 	}
 
 	@Override
