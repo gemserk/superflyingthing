@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.Screen;
@@ -213,6 +214,8 @@ public class SettingsGameState extends GameStateImpl {
 				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
+		
+		Analytics.traker.trackPageView("/settings/start", "/settings/start", null);
 	}
 
 	private ControllerType[] getAvailableControllers() {
@@ -237,6 +240,9 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	private void controllerTestBed() {
+		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
+		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
+		Analytics.traker.trackPageView(pageView, pageView, null);
 		game.transition(game.getControllersTestScreen()).enterTime(250) //
 				.leaveTime(250) //
 				.start();
@@ -245,9 +251,11 @@ public class SettingsGameState extends GameStateImpl {
 	private void save() {
 		// save control type to the player profile preferences.
 		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
-		playerProfile.setControllerType((ControllerType) game.getGameData().get("testControllerType"));
+		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
+		playerProfile.setControllerType(controllerType);
 		gamePreferences.updatePlayerProfile(playerProfile);
-
+		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/save";
+		Analytics.traker.trackPageView(pageView, pageView, null);
 		back();
 	}
 
