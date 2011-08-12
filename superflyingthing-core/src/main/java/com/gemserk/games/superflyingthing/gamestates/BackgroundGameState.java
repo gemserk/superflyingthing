@@ -177,7 +177,12 @@ public class BackgroundGameState extends GameStateImpl {
 
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// Changed to randomize between levels 0 to 7.
-		int previewLevelNumber = MathUtils.random(0, 7);
+
+		Integer previewLevelNumber = game.getGameData().get("previewLevel");
+
+		if (previewLevelNumber == null)
+			previewLevelNumber = MathUtils.random(0, 7);
+		
 		loadLevel(entityTemplates, Levels.level(previewLevelNumber));
 		// loadLevel(entityTemplates, Levels.level(13));
 
@@ -277,13 +282,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 			parameters.clear();
 
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters
-					.put("position", new Vector2(laserTurret.x, laserTurret.y))
-					.put("angle", laserTurret.angle)
-					.put("fireRate", laserTurret.fireRate)
-					.put("bulletDuration", laserTurret.bulletDuration)
-					.put("currentReloadTime", laserTurret.currentReloadTime)
-					.put("script", new LaserGunScript(entityFactory)));
+			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters.put("position", new Vector2(laserTurret.x, laserTurret.y)).put("angle", laserTurret.angle).put("fireRate", laserTurret.fireRate).put("bulletDuration", laserTurret.bulletDuration).put("currentReloadTime", laserTurret.currentReloadTime).put("script", new LaserGunScript(entityFactory)));
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {

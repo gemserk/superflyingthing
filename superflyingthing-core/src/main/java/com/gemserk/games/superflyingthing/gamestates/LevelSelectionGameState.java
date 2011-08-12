@@ -26,6 +26,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private final Game game;
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
+	private int selectedLevel;
 
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
@@ -96,8 +97,10 @@ public class LevelSelectionGameState extends GameStateImpl {
 							// there is no point in forcing the player to play all the levels, at least for now.
 							// if (!playerProfile.hasPlayedLevel(levelIndex))
 							// return;
-							GameInformation.level = levelIndex;
-							game.transition(game.getPlayScreen(), 500, 500, true);
+							if (selectedLevel == levelIndex)
+								play(levelIndex);
+							else
+								select(levelIndex);
 						}
 					}) //
 					.build());
@@ -136,10 +139,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
-				if (Gdx.app.getType() == ApplicationType.Android)
-					monitorKey("back", Keys.BACK);
-				else
-					monitorKey("back", Keys.ESCAPE);
+				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
 
@@ -150,10 +150,31 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		game.getBackgroundGameScreen().init();
 	}
-	
 
 	private void back() {
-		game.transition(game.getSelectPlayModeScreen(), 500, 500, true);
+		game.transition(game.getSelectPlayModeScreen()) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent() //
+				.start();
+	}
+
+	private void play(int level) {
+		GameInformation.level = level;
+		game.transition(game.getPlayScreen()) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent() //
+				.start();
+	}
+
+	private void select(int level) {
+		selectedLevel = level;
+		Gdx.app.log("SuperFlyingThing", "Level " + (level + 1) + " selected");
+		
+		// load level in the background
+		game.getGameData().put("previewLevel", level);
+		game.getBackgroundGameScreen().restart();
 	}
 
 	@Override
@@ -172,7 +193,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
-			game.transition(game.getSelectPlayModeScreen(), 500, 500, true);
+			back();
 		game.getBackgroundGameScreen().update(delta);
 	}
 
