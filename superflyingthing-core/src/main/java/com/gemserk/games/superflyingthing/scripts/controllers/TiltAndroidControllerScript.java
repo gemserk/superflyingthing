@@ -36,7 +36,7 @@ public class TiltAndroidControllerScript extends ScriptJavaImpl {
 		
 		
 			int value = Gdx.input.getX();
-			float movementDirection = ControllerUtils.value(0, (int)roll, 0f, 1f,  20f, InterpolationFunctions.linear());
+			float movementDirection = ControllerUtils.value(0, (int)roll, 0f, 4f,  30f, InterpolationFunctions.easeOut());
 			controller.setMovementDirection(movementDirection);
 			return;
 	}
