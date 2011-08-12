@@ -243,7 +243,6 @@ public class BackgroundGameState extends GameStateImpl {
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 		final ShipController controller = new ShipController();
-		// final BasicAIShipController controller = new BasicAIShipController(physicsWorld);
 
 		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
 
@@ -253,11 +252,11 @@ public class BackgroundGameState extends GameStateImpl {
 		}
 
 		parameters.clear();
-		parameters.put("camera", camera);
-		parameters.put("libgdxCamera", worldCamera);
-		parameters.put("script", new CameraScript(eventManager, eventListenerManager));
-		parameters.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f));
-		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
+		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
+				.put("camera", camera) //
+				.put("libgdxCamera", worldCamera) //
+				.put("script", new CameraScript(eventManager, eventListenerManager)) //
+				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)));
 
 		for (int i = 0; i < level.obstacles.size(); i++) {
 			Obstacle o = level.obstacles.get(i);
@@ -278,28 +277,22 @@ public class BackgroundGameState extends GameStateImpl {
 
 			parameters.clear();
 
-			parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
-			parameters.put("angle", laserTurret.angle);
-			parameters.put("fireRate", laserTurret.fireRate);
-			parameters.put("bulletDuration", laserTurret.bulletDuration);
-			parameters.put("currentReloadTime", laserTurret.currentReloadTime);
-			parameters.put("script", new LaserGunScript(entityFactory));
-
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters);
+			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters
+					.put("position", new Vector2(laserTurret.x, laserTurret.y))
+					.put("angle", laserTurret.angle)
+					.put("fireRate", laserTurret.fireRate)
+					.put("bulletDuration", laserTurret.bulletDuration)
+					.put("currentReloadTime", laserTurret.currentReloadTime)
+					.put("script", new LaserGunScript(entityFactory)));
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {
 			Portal portal = level.portals.get(i);
-
 			parameters.clear();
-
-			parameters.put("id", portal.id);
-			parameters.put("targetPortalId", portal.targetPortalId);
-			parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
-
-			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters);
-
-			// entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
+			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
+					.put("id", portal.id) //
+					.put("targetPortalId", portal.targetPortalId) //
+					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)));
 		}
 
 		gameData.totalItems = level.items.size();
