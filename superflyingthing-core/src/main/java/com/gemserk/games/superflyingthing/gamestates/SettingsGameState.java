@@ -128,7 +128,7 @@ public class SettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
-		ControllerType currentControllerType = getCurrentControllerType();
+		ControllerType currentControllerType = gamePreferences.getCurrentPlayerProfile().getControllerType();
 		ControllerType[] availableControllers = getAvailableControllers();
 
 		game.getGameData().put("testControllerType", currentControllerType);
@@ -243,18 +243,6 @@ public class SettingsGameState extends GameStateImpl {
 		else
 			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
 					ControllerType.AxisController, ControllerType.AnalogController };
-	}
-
-	private ControllerType getCurrentControllerType() {
-		ControllerType controllerType = gamePreferences.getCurrentPlayerProfile().getControllerType();
-
-		if (controllerType != null)
-			return controllerType;
-
-		if (Gdx.app.getType() == ApplicationType.Android)
-			return ControllerType.ClassicController;
-		else
-			return ControllerType.KeyboardController;
 	}
 
 	private void controllerTestBed() {

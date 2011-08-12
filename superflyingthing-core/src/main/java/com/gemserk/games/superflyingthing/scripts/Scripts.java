@@ -144,7 +144,6 @@ public class Scripts {
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-
 			eventListenerManager.register(Events.disablePlanetReleaseShip, new EventListener() {
 				@Override
 				public void onEvent(Event event) {
@@ -325,8 +324,8 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			removeShipIfDead(world, e);
 			regenerateShipIfNoShip(world, e);
+			removeShipIfDead(world, e);
 			generateShipIfAttachedShipReleased(world, e);
 			fixCameraTargetBehavior.update(world, e);
 		}

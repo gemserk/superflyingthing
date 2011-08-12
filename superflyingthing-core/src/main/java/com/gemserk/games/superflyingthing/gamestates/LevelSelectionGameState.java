@@ -116,9 +116,13 @@ public class LevelSelectionGameState extends GameStateImpl {
 							// there is no point in forcing the player to play all the levels, at least for now.
 							// if (!playerProfile.hasPlayedLevel(levelIndex))
 							// return;
-							select(levelIndex);
-							selectionRectangle.setX(control.getX());
-							selectionRectangle.setY(control.getY());
+							if (selectedLevel != null && levelIndex == selectedLevel)
+								play();
+							else {
+								select(levelIndex);
+								selectionRectangle.setX(control.getX());
+								selectionRectangle.setY(control.getY());
+							}
 						}
 					}) //
 					.build());
@@ -150,7 +154,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						if (selectedLevel != null)
-							play(selectedLevel);
+							play();
 					}
 				}) //
 				.build());
@@ -196,8 +200,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 		game.getGameData().put("previewLevel", null);
 	}
 
-	private void play(int level) {
-		GameInformation.level = level;
+	private void play() {
+		GameInformation.level = selectedLevel;
 		game.transition(game.getPlayScreen()) //
 				.leaveTime(250) //
 				.enterTime(250) //
@@ -226,14 +230,14 @@ public class LevelSelectionGameState extends GameStateImpl {
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		if (selectedLevel != null) 
+		if (selectedLevel != null)
 			game.getBackgroundGameScreen().render(delta);
 
 		spriteBatch.begin();
 
 		if (selectedLevel == null)
 			backgroundSprite.draw(spriteBatch);
-		
+
 		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
