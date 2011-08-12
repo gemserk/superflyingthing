@@ -146,14 +146,12 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper = new WorldWrapper(world);
 		parameters = new ParametersWrapper();
 		// add render and all stuff...
-		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new ContainerSystem());
 		worldWrapper.addUpdateSystem(new OwnerSystem());
-
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 
