@@ -8,15 +8,19 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
@@ -32,6 +36,8 @@ public class LevelSelectionGameState extends GameStateImpl {
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private Sprite whiteRectangleSprite;
+	
+	private Rectangle selectionRectangle = new Rectangle();
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -67,11 +73,15 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		float x = 0f;
 		float y = height * (0.80f + 0.12f);
+		
+		float w = width * 0.1f;
+		float h = height * 0.15f;
+		
+		selectionRectangle.setWidth(w + 2f);
+		selectionRectangle.setHeight(h + 2f);
 
 		for (int i = 0; i < Levels.levelsCount(); i++) {
-
-			float w = width * 0.1f;
-			float h = height * 0.15f;
+			
 			// float h = w;
 
 			final int levelIndex = i;
@@ -94,11 +104,13 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.position(x, y) //
 					.handler(new ButtonHandler() {
 						@Override
-						public void onReleased() {
+						public void onReleased(Control control) {
 							// there is no point in forcing the player to play all the levels, at least for now.
 							// if (!playerProfile.hasPlayedLevel(levelIndex))
 							// return;
 							select(levelIndex);
+							selectionRectangle.setX(control.getX());
+							selectionRectangle.setY(control.getY());
 						}
 					}) //
 					.build());
@@ -128,7 +140,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.boundsOffset(30f, 30f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						if (selectedLevel != null)
 							play(selectedLevel);
 					}
@@ -146,7 +158,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 					.boundsOffset(30f, 30f) //
 					.handler(new ButtonHandler() {
 						@Override
-						public void onReleased() {
+						public void onReleased(Control control) {
 							back();
 						}
 					}) //
@@ -207,6 +219,12 @@ public class LevelSelectionGameState extends GameStateImpl {
 		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
+		
+		if (selectedLevel == null)
+			return;
+		
+		ImmediateModeRendererUtils.drawRectangle(selectionRectangle, 0.5f, 0.5f, Colors.yellow);
+		
 	}
 
 	@Override

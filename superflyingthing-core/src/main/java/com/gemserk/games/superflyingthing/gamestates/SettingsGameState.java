@@ -52,14 +52,14 @@ public class SettingsGameState extends GameStateImpl {
 
 				textButton.setButtonHandler(new ButtonHandler() {
 					@Override
-					public void onPressed() {
-						buttonHandler.onPressed();
+					public void onPressed(Control control) {
+						buttonHandler.onPressed(control);
 					}
 
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						select(textButton);
-						buttonHandler.onReleased();
+						buttonHandler.onReleased(control);
 					}
 
 
@@ -162,7 +162,7 @@ public class SettingsGameState extends GameStateImpl {
 					.overColor(Color.GREEN) //
 					.handler(new ButtonHandler() {
 						@Override
-						public void onReleased() {
+						public void onReleased(Control control) {
 							game.getGameData().put("testControllerType", controllerType);
 						}
 					}) //
@@ -185,7 +185,7 @@ public class SettingsGameState extends GameStateImpl {
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						controllerTestBed();
 					}
 				}) //
@@ -200,7 +200,7 @@ public class SettingsGameState extends GameStateImpl {
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						save();
 					}
 				}) //
@@ -215,7 +215,7 @@ public class SettingsGameState extends GameStateImpl {
 					.setAlignment(HAlignment.RIGHT) //
 					.setButtonHandler(new ButtonHandler() {
 						@Override
-						public void onReleased() {
+						public void onReleased(Control control) {
 							back();
 						}
 					}));

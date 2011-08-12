@@ -11,6 +11,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Game;
@@ -69,7 +70,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						game.transition(game.getSelectPlayModeScreen(), 500, 500);
 					}
 				})//
@@ -84,7 +85,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						settings();
 					}
 				})//
@@ -99,7 +100,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						Gdx.app.exit();
 					}
 				})//

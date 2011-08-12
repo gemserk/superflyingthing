@@ -13,6 +13,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -66,7 +67,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.boundsOffset(30f, 30f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						challenge();
 					}
 				}) //
@@ -82,7 +83,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.boundsOffset(30f, 30f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						random();
 					}
 				}) //
@@ -98,7 +99,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.boundsOffset(30f, 30f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						practice();
 					}
 				}) //
@@ -115,7 +116,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					.boundsOffset(30f, 30f) //
 					.handler(new ButtonHandler() {
 						@Override
-						public void onReleased() {
+						public void onReleased(Control control) {
 							back();
 						}
 					}) //

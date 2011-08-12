@@ -13,6 +13,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -70,7 +71,7 @@ public class GameOverGameState extends GameStateImpl {
 					.boundsOffset(20, 20f) //
 					.handler(new ButtonHandler() {
 						@Override
-						public void onReleased() {
+						public void onReleased(Control control) {
 							restartLevel();
 						}
 					})//
@@ -89,7 +90,7 @@ public class GameOverGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						nextLevel();
 					}
 				})//
@@ -104,7 +105,7 @@ public class GameOverGameState extends GameStateImpl {
 				.boundsOffset(20, 20f) //
 				.handler(new ButtonHandler() {
 					@Override
-					public void onReleased() {
+					public void onReleased(Control control) {
 						mainMenu();
 					}
 				})//
