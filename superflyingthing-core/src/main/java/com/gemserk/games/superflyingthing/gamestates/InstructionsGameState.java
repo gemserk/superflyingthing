@@ -56,8 +56,8 @@ public class InstructionsGameState extends GameStateImpl {
 				.font(font)//
 				.build());
 
-		PlayerProfile currentPlayerProfile = game.getGamePreferences().getCurrentPlayerProfile();
-		ControllerType controllerType = currentPlayerProfile.getControllerType();
+		PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
+		ControllerType controllerType = playerProfile.getControllerType();
 		String instructionsForControllerType = getInstructions(controllerType);
 
 		container.add(GuiControls.label(instructionsForControllerType + "\n" //
@@ -93,6 +93,7 @@ public class InstructionsGameState extends GameStateImpl {
 		Analytics.traker.trackPageView("/instructions", "/instructions", null);
 
 	}
+	
 
 	private String getInstructions(ControllerType controllerType) {
 

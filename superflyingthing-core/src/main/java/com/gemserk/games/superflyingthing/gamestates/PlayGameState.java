@@ -4,7 +4,6 @@ import java.text.MessageFormat;
 import java.util.ArrayList;
 
 import com.artemis.Entity;
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -715,23 +714,13 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void createGameController(ShipController controller) {
-
 		Parameters parameters = new ParametersWrapper();
 
 		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
-
 		ControllerType controllerType = playerProfile.getControllerType();
-
-		if (controllerType == null) {
-			if (Gdx.app.getType() == ApplicationType.Android)
-				controllerType = ControllerType.ClassicController;
-			else
-				controllerType = ControllerType.KeyboardController;
-		}
 
 		parameters.put("controller", controller);
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(controllerType), parameters);
-
 	}
 
 	private void gameFinished() {

@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing;
 import java.io.IOException;
 import java.util.Properties;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.Preferences;
@@ -38,7 +39,9 @@ import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SettingsGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
+import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.resources.GameResources;
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 import com.gemserk.resources.ResourceManager;
@@ -173,6 +176,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
 		gamePreferences = new GamePreferences(preferences);
+		
+		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
+		if (playerProfile.getControllerType() == null)
+		{
+			if (Gdx.app.getType() == ApplicationType.Android)
+				playerProfile.setControllerType(ControllerType.ClassicController);
+			else
+				playerProfile.setControllerType(ControllerType.KeyboardController);
+			gamePreferences.updatePlayerProfile(playerProfile);
+		}
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
