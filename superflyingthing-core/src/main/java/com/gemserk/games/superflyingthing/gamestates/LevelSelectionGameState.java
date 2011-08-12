@@ -36,8 +36,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private Sprite whiteRectangleSprite;
-	
+
 	private Rectangle selectionRectangle;
+	private Sprite backgroundSprite;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -51,7 +52,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	public void init() {
 		selectedLevel = null;
 		selectionRectangle = new Rectangle();
-		
+
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
@@ -72,19 +73,23 @@ public class LevelSelectionGameState extends GameStateImpl {
 		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
 		Sprite tickSprite = resourceManager.getResourceValue("TickSprite");
 
+		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
+		backgroundSprite.setPosition(0f, 0f);
+		backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
 		float x = 0f;
 		float y = height * (0.80f + 0.12f);
-		
+
 		float w = width * 0.1f;
 		float h = height * 0.15f;
-		
+
 		selectionRectangle.setWidth(w + 2f);
 		selectionRectangle.setHeight(h + 2f);
 
 		for (int i = 0; i < Levels.levelsCount(); i++) {
-			
+
 			// float h = w;
 
 			final int levelIndex = i;
@@ -204,33 +209,40 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private void select(int level) {
 		if (selectedLevel != null && level == selectedLevel)
 			return;
-		
+
 		selectedLevel = level;
 		Gdx.app.log("SuperFlyingThing", "Level " + (level + 1) + " selected");
 
 		// load level in the background
 		game.getGameData().put("previewLevel", level);
 		game.getBackgroundGameScreen().restart();
-		
+
 		TextButton playButton = container.findControl("PlayButton");
 		playButton.setOverColor(Color.GREEN);
-		playButton.setNotOverColor(Color.WHITE);		
+		playButton.setNotOverColor(Color.WHITE);
 	}
 
 	@Override
 	public void render(int delta) {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		game.getBackgroundGameScreen().render(delta);
+
+		if (selectedLevel != null) 
+			game.getBackgroundGameScreen().render(delta);
+
 		spriteBatch.begin();
+
+		if (selectedLevel == null)
+			backgroundSprite.draw(spriteBatch);
+		
 		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
-		
+
 		if (selectedLevel == null)
 			return;
-		
+
 		ImmediateModeRendererUtils.drawRectangle(selectionRectangle, 0.5f, 0.5f, Colors.yellow);
-		
+
 	}
 
 	@Override

@@ -71,7 +71,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						game.transition(game.getSelectPlayModeScreen(), 500, 500);
+						game.transition(game.getSelectPlayModeScreen(), 250, 250);
 					}
 				})//
 				.build();

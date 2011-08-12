@@ -62,13 +62,12 @@ public class SettingsGameState extends GameStateImpl {
 						buttonHandler.onReleased(control);
 					}
 
-
 				});
 
 				super.add(textButton);
 			}
 		}
-		
+
 		private void select(final TextButton textButton) {
 			for (int i = 0; i < getControls().size(); i++) {
 				Control otherControl = getControls().get(i);
@@ -85,7 +84,7 @@ public class SettingsGameState extends GameStateImpl {
 			textButton.setNotOverColor(selectedColor);
 			SpriteUtils.centerOn(underlineSprite, textButton.getX(), textButton.getY() - 15f, 0f, 0.5f);
 		}
-		
+
 		@Override
 		public void draw(SpriteBatch spriteBatch) {
 			super.draw(spriteBatch);
@@ -146,7 +145,7 @@ public class SettingsGameState extends GameStateImpl {
 		Sprite underlineSprite = resourceManager.getResourceValue("WhiteRectangle");
 		underlineSprite.setSize(Gdx.graphics.getWidth() * 0.35f, 3f);
 		underlineSprite.setColor(Colors.yellow);
-		
+
 		MultipleButtonControlWithUnderline multipleButtonControlWithUnderline = new MultipleButtonControlWithUnderline(underlineSprite);
 		container.add(multipleButtonControlWithUnderline);
 
@@ -168,8 +167,8 @@ public class SettingsGameState extends GameStateImpl {
 					}) //
 					.build();
 			multipleButtonControlWithUnderline.add(controllerTextButton);
-			
-			if (currentControllerType == controllerType) 
+
+			if (currentControllerType == controllerType)
 				multipleButtonControlWithUnderline.select(controllerTextButton);
 
 			y -= height * 0.15f;
@@ -262,7 +261,8 @@ public class SettingsGameState extends GameStateImpl {
 		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
 		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
 		Analytics.traker.trackPageView(pageView, pageView, null);
-		game.transition(game.getControllersTestScreen()).enterTime(250) //
+		game.transition(game.getControllersTestScreen()) //
+				.enterTime(250) //
 				.leaveTime(250) //
 				.start();
 	}
@@ -280,7 +280,8 @@ public class SettingsGameState extends GameStateImpl {
 
 	private void back() {
 		Screen previousScreen = game.getGameData().get("previousScreen");
-		game.transition(previousScreen).enterTime(250) //
+		game.transition(previousScreen) //
+				.enterTime(250) //
 				.leaveTime(250) //
 				.disposeCurrent() //
 				.start();

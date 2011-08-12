@@ -87,7 +87,8 @@ public class ControllerTestGameState extends GameStateImpl {
 		private void checkStarsCollected(com.artemis.World world, Entity e) {
 			if (starsCollected < 4)
 				return;
-			game.transition(game.getSettingsScreen()).enterTime(250) //
+			game.transition(game.getSettingsScreen()) //
+					.enterTime(250) //
 					.leaveTime(250) //
 					.disposeCurrent() //
 					.start();
@@ -99,7 +100,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 			float limitX = 8.5f;
 			int limitY = 6;
-			
+
 			if (shipSpatial.getX() > limitX)
 				shipSpatial.setPosition(-limitX, shipSpatial.getY());
 			else if (shipSpatial.getX() < -limitX)

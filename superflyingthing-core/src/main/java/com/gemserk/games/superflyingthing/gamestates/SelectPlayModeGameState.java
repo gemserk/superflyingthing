@@ -142,24 +142,24 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 	private void challenge() {
 		GameInformation.gameMode = GameInformation.ChallengeGameMode;
-		game.transition(game.getLevelSelectionScreen(), 500, 500, true);
+		game.transition(game.getLevelSelectionScreen(), 250, 250, true);
 		Analytics.traker.trackPageView("/challenge/selected", "/challenge/selected", null);
 	}
 
 	private void random() {
 		GameInformation.gameMode = GameInformation.RandomGameMode;
-		game.transition(game.getPlayScreen(), 500, 250, true);
+		game.transition(game.getPlayScreen(), 250, 250, true);
 		Analytics.traker.trackPageView("/random/selected", "/random/selected", null);
 	}
 
 	private void practice() {
 		GameInformation.gameMode = GameInformation.PracticeGameMode;
-		game.transition(game.getPlayScreen(), 500, 250, true);
+		game.transition(game.getPlayScreen(), 250, 250, true);
 		Analytics.traker.trackPageView("/practice/selected", "/practice/selected", null);
 	}
 
 	private void back() {
-		game.transition(game.getMainMenuScreen(), 500, 500, true);
+		game.transition(game.getMainMenuScreen(), 250, 250, true);
 	}
 
 	@Override
