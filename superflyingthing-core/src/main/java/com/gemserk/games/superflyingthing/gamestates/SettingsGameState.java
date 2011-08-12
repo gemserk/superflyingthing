@@ -13,6 +13,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.Screen;
+import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
@@ -29,18 +30,18 @@ import com.gemserk.resources.ResourceManager;
 
 public class SettingsGameState extends GameStateImpl {
 
-	class MultipleButtonControl extends Container {
+	class MultipleButtonControlWithUnderline extends Container {
 
 		private final Color selectedColor = Colors.yellow;
 		private final Color notOverColor = Color.WHITE;
 		private final Color overColor = Color.GREEN;
+		private final Sprite underlineSprite;
 
-		@Override
-		public void add(Control control) {
-			add(control, false);
+		public MultipleButtonControlWithUnderline(Sprite underlineSprite) {
+			this.underlineSprite = underlineSprite;
 		}
 
-		public void add(Control control, boolean selected) {
+		public void add(Control control) {
 			if (control instanceof TextButton) {
 
 				final TextButton textButton = (TextButton) control;
@@ -48,9 +49,6 @@ public class SettingsGameState extends GameStateImpl {
 
 				textButton.setNotOverColor(notOverColor);
 				textButton.setOverColor(overColor);
-
-				if (selected)
-					textButton.setNotOverColor(selectedColor);
 
 				textButton.setButtonHandler(new ButtonHandler() {
 					@Override
@@ -60,27 +58,38 @@ public class SettingsGameState extends GameStateImpl {
 
 					@Override
 					public void onReleased() {
-
-						for (int i = 0; i < getControls().size(); i++) {
-							Control otherControl = getControls().get(i);
-							if (otherControl == textButton)
-								continue;
-
-							if (!(otherControl instanceof TextButton))
-								continue;
-
-							TextButton otherTextButton = (TextButton) otherControl;
-							otherTextButton.setNotOverColor(notOverColor);
-						}
-
-						textButton.setNotOverColor(selectedColor);
-
+						select(textButton);
 						buttonHandler.onReleased();
 					}
+
+
 				});
 
 				super.add(textButton);
 			}
+		}
+		
+		private void select(final TextButton textButton) {
+			for (int i = 0; i < getControls().size(); i++) {
+				Control otherControl = getControls().get(i);
+				if (otherControl == textButton)
+					continue;
+
+				if (!(otherControl instanceof TextButton))
+					continue;
+
+				TextButton otherTextButton = (TextButton) otherControl;
+				otherTextButton.setNotOverColor(notOverColor);
+			}
+
+			textButton.setNotOverColor(selectedColor);
+			SpriteUtils.centerOn(underlineSprite, textButton.getX(), textButton.getY() - 15f, 0f, 0.5f);
+		}
+		
+		@Override
+		public void draw(SpriteBatch spriteBatch) {
+			super.draw(spriteBatch);
+			underlineSprite.draw(spriteBatch);
 		}
 
 	}
@@ -120,9 +129,6 @@ public class SettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
-		MultipleButtonControl multipleButtonControl = new MultipleButtonControl();
-		container.add(multipleButtonControl);
-
 		ControllerType currentControllerType = getCurrentControllerType();
 		ControllerType[] availableControllers = getAvailableControllers();
 
@@ -134,15 +140,23 @@ public class SettingsGameState extends GameStateImpl {
 				.font(titleFont) //
 				.build());
 
+		float x = width * 0.05f;
 		float y = height * 0.75f;
+
+		Sprite underlineSprite = resourceManager.getResourceValue("WhiteRectangle");
+		underlineSprite.setSize(Gdx.graphics.getWidth() * 0.35f, 3f);
+		underlineSprite.setColor(Colors.yellow);
+		
+		MultipleButtonControlWithUnderline multipleButtonControlWithUnderline = new MultipleButtonControlWithUnderline(underlineSprite);
+		container.add(multipleButtonControlWithUnderline);
 
 		for (int i = 0; i < availableControllers.length; i++) {
 			final ControllerType controllerType = availableControllers[i];
-			multipleButtonControl.add(GuiControls.textButton() //
+			TextButton controllerTextButton = GuiControls.textButton() //
 					.text(controllerType.name()) //
 					.font(buttonFont) //
 					.center(0f, 0.5f) //
-					.position(width * 0.05f, y) //
+					.position(x, y) //
 					.boundsOffset(20f, 20f) //
 					.notOverColor(Color.WHITE) //
 					.overColor(Color.GREEN) //
@@ -152,7 +166,12 @@ public class SettingsGameState extends GameStateImpl {
 							game.getGameData().put("testControllerType", controllerType);
 						}
 					}) //
-					.build(), currentControllerType == controllerType);
+					.build();
+			multipleButtonControlWithUnderline.add(controllerTextButton);
+			
+			if (currentControllerType == controllerType) 
+				multipleButtonControlWithUnderline.select(controllerTextButton);
+
 			y -= height * 0.15f;
 		}
 
@@ -214,7 +233,7 @@ public class SettingsGameState extends GameStateImpl {
 				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
-		
+
 		Analytics.traker.trackPageView("/settings/start", "/settings/start", null);
 	}
 
