@@ -234,12 +234,6 @@ public class Components {
 
 	}
 
-	public static class ShipControllerComponent extends Component {
-
-		public float direction;
-
-	}
-
 	public static class GameData {
 
 		public int deaths;

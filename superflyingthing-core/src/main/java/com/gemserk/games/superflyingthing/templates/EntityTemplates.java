@@ -54,7 +54,6 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
-import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
@@ -246,7 +245,6 @@ public class EntityTemplates {
 			e.addComponent(new RenderableComponent(1));
 			e.addComponent(new MovementComponent(direction.x, direction.y, maxLinearSpeed, maxAngularVelocity));
 			e.addComponent(new AttachableComponent());
-			e.addComponent(new ShipControllerComponent());
 			e.addComponent(new ControllerComponent(controller));
 			e.addComponent(new ScriptComponent(script));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));

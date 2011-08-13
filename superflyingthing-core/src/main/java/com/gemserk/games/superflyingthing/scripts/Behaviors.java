@@ -25,7 +25,6 @@ import com.gemserk.games.superflyingthing.components.Components.GameDataComponen
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class Behaviors {
@@ -165,14 +164,14 @@ public class Behaviors {
 		@Override
 		public void update(World world, Entity e) {
 			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
+			ControllerComponent controllerComponent = e.getComponent(ControllerComponent.class);
 
 			if (movementComponent == null)
 				return;
-			if (shipControllerComponent == null)
+			if (controllerComponent == null)
 				return;
 
-			float movementDirection = shipControllerComponent.direction;
+			float movementDirection = controllerComponent.getController().getMovementDirection();
 			Vector2 direction = movementComponent.direction;
 
 			float rotationAngle = 0f;
@@ -186,21 +185,6 @@ public class Behaviors {
 
 			movementComponent.angularVelocity = angularVelocity;
 			direction.rotate(rotationAngle);
-		}
-
-	}
-
-	public static class CalculateInputDirectionScript extends ScriptJavaImpl {
-
-		@Override
-		public void update(World world, Entity e) {
-			ShipControllerComponent shipControllerComponent = e.getComponent(ShipControllerComponent.class);
-			if (shipControllerComponent == null)
-				return;
-			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
-			if (controllerComponent == null)
-				return;
-			shipControllerComponent.direction = controllerComponent.getController().getMovementDirection();
 		}
 
 	}

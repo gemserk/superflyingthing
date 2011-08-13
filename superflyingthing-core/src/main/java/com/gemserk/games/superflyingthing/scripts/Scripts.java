@@ -42,7 +42,6 @@ public class Scripts {
 
 		Script fixMovementBehavior = new Behaviors.FixMovementScript();
 		Script fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerScript();
-		Script calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionScript();
 		Script collisionHandlerBehavior = new Behaviors.CollisionHandlerScript();
 		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
 
@@ -50,7 +49,6 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			fixMovementBehavior.update(world, e);
 			fixDirectionFromControllerBehavior.update(world, e);
-			calculateInputDirectionBehavior.update(world, e);
 			collisionHandlerBehavior.update(world, e);
 			updateSpriteFromAnimation.update(world, e);
 		}
