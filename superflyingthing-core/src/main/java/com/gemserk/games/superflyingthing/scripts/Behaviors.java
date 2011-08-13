@@ -293,7 +293,6 @@ public class Behaviors {
 
 			Entity ship = gameDataComponent.ship;
 			if (ship == null) {
-				// targetComponent.setTarget(gameDataComponent.startPlanet);
 				targetComponent.setTarget(null);
 				return;
 			}
