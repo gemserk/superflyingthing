@@ -30,7 +30,7 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 class Behaviors {
 
-	public static class CameraFollowBehavior extends Behavior {
+	public static class CameraFollowScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -41,7 +41,7 @@ class Behaviors {
 
 	}
 
-	public static class EntityFollowBehavior extends Behavior {
+	public static class EntityFollowScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -60,7 +60,7 @@ class Behaviors {
 
 	}
 
-	public static class FixMovementBehavior extends Behavior {
+	public static class FixMovementScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -93,7 +93,7 @@ class Behaviors {
 
 	}
 
-	public static class AttachedEntityDirectionBehavior extends Behavior {
+	public static class AttachedEntityDirectionScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -119,11 +119,11 @@ class Behaviors {
 
 	}
 
-	public static class AttachEntityBehavior extends Behavior {
+	public static class AttachEntityScript extends ScriptJavaImpl {
 
 		private final JointBuilder jointBuilder;
 
-		public AttachEntityBehavior(JointBuilder jointBuilder) {
+		public AttachEntityScript(JointBuilder jointBuilder) {
 			this.jointBuilder = jointBuilder;
 		}
 
@@ -151,7 +151,7 @@ class Behaviors {
 
 	}
 
-	public static class RemoveWhenGrabbedBehavior extends Behavior {
+	public static class RemoveWhenGrabbedScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e) {
 			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
@@ -160,7 +160,7 @@ class Behaviors {
 		}
 	}
 
-	public static class FixDirectionFromControllerBehavior extends Behavior {
+	public static class FixDirectionFromControllerScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -190,7 +190,7 @@ class Behaviors {
 
 	}
 
-	public static class CalculateInputDirectionBehavior extends Behavior {
+	public static class CalculateInputDirectionScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -205,7 +205,7 @@ class Behaviors {
 
 	}
 
-	public static class UpdateSpriteFromAnimation extends Behavior {
+	public static class UpdateSpriteFromAnimationScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {
@@ -238,7 +238,7 @@ class Behaviors {
 
 	}
 
-	public static class CollisionHandlerBehavior extends Behavior {
+	public static class CollisionHandlerScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e1) {
 			Physics physics = ComponentWrapper.getPhysics(e1);
@@ -283,7 +283,7 @@ class Behaviors {
 
 	// game behaviors
 
-	public static class FixCameraTargetBehavior extends Behavior {
+	public static class FixCameraTargetScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e) {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);

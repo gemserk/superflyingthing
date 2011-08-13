@@ -11,6 +11,7 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -32,18 +33,18 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
-import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetBehavior;
+import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetScript;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 
 public class Scripts {
 
 	public static class ShipScript extends ScriptJavaImpl {
 
-		Behavior fixMovementBehavior = new Behaviors.FixMovementBehavior();
-		Behavior fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerBehavior();
-		Behavior calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionBehavior();
-		Behavior collisionHandlerBehavior = new Behaviors.CollisionHandlerBehavior();
-		Behavior updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimation();
+		Script fixMovementBehavior = new Behaviors.FixMovementScript();
+		Script fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerScript();
+		Script calculateInputDirectionBehavior = new Behaviors.CalculateInputDirectionScript();
+		Script collisionHandlerBehavior = new Behaviors.CollisionHandlerScript();
+		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
@@ -58,8 +59,8 @@ public class Scripts {
 
 	public static class AttachedShipScript extends ScriptJavaImpl {
 
-		Behavior fixMovementBehavior = new Behaviors.FixMovementBehavior();
-		Behavior updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimation();
+		Script fixMovementBehavior = new Behaviors.FixMovementScript();
+		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
@@ -73,7 +74,7 @@ public class Scripts {
 
 		private final EventManager eventManager;
 
-		Behavior removeWhenGrabbedBehavior;
+		Script removeWhenGrabbedBehavior;
 
 		float rotationSpeed = 0.3f;
 		float angle = 0f;
@@ -84,7 +85,7 @@ public class Scripts {
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedBehavior();
+			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedScript();
 		}
 
 		@Override
@@ -130,16 +131,16 @@ public class Scripts {
 		private final EventListenerManager eventListenerManager;
 		private final World physicsWorld;
 
-		Behavior attachEntityBehavior;
-		Behavior calculateInputDirectionBehavior;
+		Script attachEntityBehavior;
+		Script calculateInputDirectionBehavior;
 
 		boolean enabled = true;
 
 		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager) {
 			this.physicsWorld = physicsWorld;
 			this.eventListenerManager = eventListenerManager;
-			attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
-			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
+			attachEntityBehavior = new Behaviors.AttachEntityScript(jointBuilder);
+			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionScript();
 		}
 
 		@Override
@@ -215,8 +216,8 @@ public class Scripts {
 
 		Parameters parameters = new ParametersWrapper();
 
-		Behavior attachEntityBehavior;
-		Behavior calculateInputDirectionBehavior;
+		Script attachEntityBehavior;
+		Script calculateInputDirectionBehavior;
 
 		boolean destinationReached;
 
@@ -224,8 +225,8 @@ public class Scripts {
 			this.eventManager = eventManager;
 			this.entityFactory = entityFactory;
 			this.planetFillAnimationTemplate = planetFillAnimationTemplate;
-			this.attachEntityBehavior = new Behaviors.AttachEntityBehavior(jointBuilder);
-			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionBehavior();
+			this.attachEntityBehavior = new Behaviors.AttachEntityScript(jointBuilder);
+			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionScript();
 		}
 
 		@Override
@@ -266,7 +267,7 @@ public class Scripts {
 		private GameData gameData;
 		private boolean invulnerable;
 
-		Behavior fixCameraTargetBehavior = new FixCameraTargetBehavior();
+		Script fixCameraTargetBehavior = new FixCameraTargetScript();
 
 		private Parameters parameters = new ParametersWrapper();
 
