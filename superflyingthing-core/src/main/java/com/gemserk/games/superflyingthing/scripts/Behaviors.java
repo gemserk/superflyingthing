@@ -28,7 +28,7 @@ import com.gemserk.games.superflyingthing.components.Components.MovementComponen
 import com.gemserk.games.superflyingthing.components.Components.ShipControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
-class Behaviors {
+public class Behaviors {
 
 	public static class CameraFollowScript extends ScriptJavaImpl {
 
