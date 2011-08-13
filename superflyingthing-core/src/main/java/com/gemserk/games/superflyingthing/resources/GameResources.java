@@ -89,7 +89,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		sprite("LaserSprite", "LaserTexture");
 
 		texture("ShipSpriteSheet", "data/images/ship_animation.png");
-		animation("ShipAnimation", "ShipSpriteSheet", 0, 0, 64, 64, 36, false, 0);
+		animation("ShipAnimation", "ShipSpriteSheet", 0, 0, 57, 57, 72, false, 0);
 
 		texture("StarSpriteSheet", "data/images/star-animation.png");
 		animation("StarAnimation", "StarSpriteSheet", 0, 0, 64, 64, 36, false, 0);

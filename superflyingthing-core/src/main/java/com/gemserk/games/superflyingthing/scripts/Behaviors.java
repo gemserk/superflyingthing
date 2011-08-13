@@ -216,19 +216,22 @@ class Behaviors {
 
 			Animation animation = animationComponent.getCurrentAnimation();
 
-			int frameIndex = getAnimationForAngle(angle - 5f);
+			int framesCount = animation.getFramesCount();
+			float frameAngle = 360f / framesCount;
+			
+			int frameIndex = getAnimationForAngle(angle - (frameAngle * 0.5f), framesCount);
 			Sprite frame = animation.getFrame(frameIndex);
 
 			spriteComponent.setSprite(frame);
 			spriteComponent.setUpdateRotation(false);
 		}
 
-		private int getAnimationForAngle(float angle) {
-			// return 0;
+		private int getAnimationForAngle(float angle, int animationFrames) {
 			if (angle < 360f)
 				angle += 360f;
 			angle %= 360f;
-			double floor = Math.floor(angle * 0.1f);
+			float anglePerFrame = (float) animationFrames / 360f;
+			double floor = Math.floor(angle * anglePerFrame);
 			return (int) (floor);
 		}
 
