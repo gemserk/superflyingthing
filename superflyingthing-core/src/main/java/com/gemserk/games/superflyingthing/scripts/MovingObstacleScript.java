@@ -3,18 +3,19 @@ package com.gemserk.games.superflyingthing.scripts;
 import com.artemis.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
+import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.scripts.Behaviors.PerformDamageToCollidingEntityBehavior;
+import com.gemserk.games.superflyingthing.scripts.Behaviors.PerformDamageToCollidingEntityScript;
 
 public class MovingObstacleScript extends ScriptJavaImpl {
 
 	private final Vector2[] points;
 	int currentTarget;
 	
-	private Behavior performDamageToCollidingEntitiesBehavior = new PerformDamageToCollidingEntityBehavior();
+	private Script performDamageToCollidingEntitiesBehavior = new PerformDamageToCollidingEntityScript();
 
 	public MovingObstacleScript(Vector2[] points, int currentTarget) {
 		this.points = points;

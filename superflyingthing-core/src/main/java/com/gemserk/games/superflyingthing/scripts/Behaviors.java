@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -305,7 +306,7 @@ class Behaviors {
 		}
 	}
 
-	public static class PerformDamageToCollidingEntityBehavior extends Behavior {
+	public static class PerformDamageToCollidingEntityScript extends ScriptJavaImpl {
 
 		private final Vector2 aux = new Vector2();
 

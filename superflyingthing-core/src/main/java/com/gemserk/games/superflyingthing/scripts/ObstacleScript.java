@@ -1,16 +1,12 @@
 package com.gemserk.games.superflyingthing.scripts;
 
-import com.artemis.Entity;
-import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.games.superflyingthing.scripts.Behaviors.PerformDamageToCollidingEntityBehavior;
+import com.gemserk.commons.artemis.scripts.ScriptCompositeImpl;
+import com.gemserk.games.superflyingthing.scripts.Behaviors.PerformDamageToCollidingEntityScript;
 
-public class ObstacleScript extends ScriptJavaImpl {
+public class ObstacleScript extends ScriptCompositeImpl {
 	
-	private Behavior performDamageToCollidingEntitiesBehavior = new PerformDamageToCollidingEntityBehavior();
-
-	@Override
-	public void update(com.artemis.World world, Entity e) {
-		performDamageToCollidingEntitiesBehavior.update(world, e);
+	public ObstacleScript() {
+		super(new PerformDamageToCollidingEntityScript());
 	}
 	
 }
