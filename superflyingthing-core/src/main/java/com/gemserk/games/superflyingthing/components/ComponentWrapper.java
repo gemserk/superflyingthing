@@ -10,9 +10,12 @@ import com.gemserk.games.superflyingthing.components.Components.AnimationCompone
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
+import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
+import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class ComponentWrapper {
 	
@@ -26,6 +29,9 @@ public class ComponentWrapper {
 	private static final Class<ParticleEmitterComponent> particleEmitterComponentClass = ParticleEmitterComponent.class;
 	private static final Class<ControllerComponent> controllerComponentClass = ControllerComponent.class;
 	private static final Class<GameDataComponent> gameDataComponentClass = GameDataComponent.class;
+	private static final Class<TargetComponent> targetComponentClass = TargetComponent.class;
+	private static final Class<HealthComponent> healthComponentClass = HealthComponent.class;
+	private static final Class<DamageComponent> damageComponentClass = DamageComponent.class;
 	
 	public static Physics getPhysics(Entity e) {
 		return getPhysicsComponent(e).getPhysics();
@@ -47,7 +53,7 @@ public class ComponentWrapper {
 		return e.getComponent(spriteComponentClass);
 	}
 	
-	public static AnimationComponent getAnimation(Entity e) {
+	public static AnimationComponent getAnimationComponent(Entity e) {
 		return e.getComponent(animationComponentClass);
 	}
 	
@@ -55,7 +61,7 @@ public class ComponentWrapper {
 		return e.getComponent(cameraComponentClass);
 	}
 	
-	public static AttachmentComponent getEntityAttachment(Entity e) {
+	public static AttachmentComponent getAttachmentComponent(Entity e) {
 		return e.getComponent(attachmentComponentClass);
 	}
 	
@@ -75,4 +81,15 @@ public class ComponentWrapper {
 		return e.getComponent(gameDataComponentClass);
 	}
 
+	public static TargetComponent getTargetComponent(Entity e) {
+		return e.getComponent(targetComponentClass);
+	}
+	
+	public static HealthComponent getHealthComponent(Entity e) {
+		return e.getComponent(healthComponentClass);
+	}
+	
+	public static DamageComponent getDamageComponent(Entity e) {
+		return e.getComponent(damageComponentClass);
+	}
 }

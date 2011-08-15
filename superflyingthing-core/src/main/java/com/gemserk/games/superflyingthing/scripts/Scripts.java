@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.scripts;
 
-import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -45,7 +44,7 @@ public class Scripts {
 		Script fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerScript();
 		Script collisionHandlerBehavior = new Behaviors.CollisionHandlerScript();
 		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
-		
+
 		Script performDamageFromCollidingEntityScript = new Behaviors.PerformDamageFromCollidingEntityScript();
 
 		@Override
@@ -77,12 +76,9 @@ public class Scripts {
 		private final EventManager eventManager;
 
 		Script removeWhenGrabbedBehavior;
-		
+
 		float rotationSpeed = 0.3f;
 		float angle = 0f;
-		
-		ComponentMapper<AnimationComponent> animationComponentMapper;
-		ComponentMapper<SpriteComponent> spriteComponentMapper;
 
 		public StarScript(EventManager eventManager) {
 			this.eventManager = eventManager;
@@ -91,8 +87,6 @@ public class Scripts {
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedScript();
-			animationComponentMapper = new ComponentMapper<AnimationComponent>(AnimationComponent.class, world.getEntityManager());
-			spriteComponentMapper = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world.getEntityManager());
 		}
 
 		@Override
@@ -103,8 +97,8 @@ public class Scripts {
 		}
 
 		public void updateAnimation(com.artemis.World world, Entity e) {
-			AnimationComponent animationComponent = animationComponentMapper.get(e);
-			SpriteComponent spriteComponent = spriteComponentMapper.get(e);
+			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
+			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 
 			angle += rotationSpeed * (float) world.getDelta();
 
@@ -187,7 +181,7 @@ public class Scripts {
 			if (!enabled)
 				return;
 
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e);
 			Entity attachedEntity = entityAttachment.entity;
 
 			if (attachedEntity == null)
@@ -246,7 +240,7 @@ public class Scripts {
 			attachEntityBehavior.update(world, e);
 			calculateInputDirectionBehavior.update(world, e);
 
-			AttachmentComponent attachmentComponent = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(e);
 			if (attachmentComponent.entity == null)
 				return;
 
@@ -348,7 +342,7 @@ public class Scripts {
 			if (ship == null)
 				return;
 
-			HealthComponent healthComponent = ship.getComponent(HealthComponent.class);
+			HealthComponent healthComponent = ComponentWrapper.getHealthComponent(ship);
 			if (healthComponent == null)
 				return;
 			if (!healthComponent.getHealth().isEmpty())
@@ -392,7 +386,7 @@ public class Scripts {
 
 			Entity attachedShip = entityFactory.instantiate(attachedShipTemplate, parameters);
 
-			AttachmentComponent attachmentComponent = gameDataComponent.startPlanet.getComponent(AttachmentComponent.class);
+			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(gameDataComponent.startPlanet);
 			attachmentComponent.setEntity(attachedShip);
 			attachmentComponent.setJoint(null);
 
@@ -471,7 +465,7 @@ public class Scripts {
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			AnimationComponent animationComponent = e.getComponent(AnimationComponent.class);
+			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 			Animation animation = animationComponent.getCurrentAnimation();
 			animation.update(world.getDelta());
 			Sprite sprite = animation.getCurrentFrame();

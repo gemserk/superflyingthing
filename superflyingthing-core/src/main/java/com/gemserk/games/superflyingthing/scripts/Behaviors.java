@@ -46,7 +46,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			TargetComponent targetComponent = e.getComponent(TargetComponent.class);
+			TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
 			Entity target = targetComponent.target;
 			if (target == null)
 				return;
@@ -65,7 +65,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
 			Vector2 direction = movementComponent.direction;
 
 			direction.nor();
@@ -98,7 +98,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e);
 
 			if (entityAttachment.entity == null)
 				return;
@@ -130,7 +130,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e);
+			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e);
 			if (entityAttachment.entity == null)
 				return;
 			if (entityAttachment.joint != null)
@@ -165,8 +165,8 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			MovementComponent movementComponent = e.getComponent(MovementComponent.class);
-			ControllerComponent controllerComponent = e.getComponent(ControllerComponent.class);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
+			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
 
 			if (movementComponent == null)
 				return;
@@ -195,7 +195,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
+			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 			Spatial spatial = ComponentWrapper.getSpatial(e);
 
@@ -254,7 +254,7 @@ public class Behaviors {
 		}
 
 		private void updateAttachToAttachable(Entity e1, Entity e2) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getEntityAttachment(e2);
+			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e2);
 			if (entityAttachment == null)
 				return;
 			if (entityAttachment.entity != null)
@@ -275,7 +275,7 @@ public class Behaviors {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
 			if (gameDataComponent == null)
 				return;
-			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);
+			TargetComponent targetComponent = ComponentWrapper.getTargetComponent(gameDataComponent.camera);
 
 			Entity ship = gameDataComponent.ship;
 			if (ship == null) {
@@ -308,7 +308,7 @@ public class Behaviors {
 				if (otherEntity == null)
 					continue;
 
-				HealthComponent healthComponent = e.getComponent(HealthComponent.class);
+				HealthComponent healthComponent = ComponentWrapper.getHealthComponent(e);
 				if (healthComponent == null)
 					continue;
 
@@ -319,7 +319,7 @@ public class Behaviors {
 				if (dot < 0)
 					dot = -dot;
 
-				DamageComponent damageComponent = otherEntity.getComponent(DamageComponent.class);
+				DamageComponent damageComponent = ComponentWrapper.getDamageComponent(otherEntity);
 				if (damageComponent == null)
 					continue;
 				float damage = damageComponent.getDamage() * world.getDelta() * 0.001f * dot;

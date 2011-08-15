@@ -46,7 +46,7 @@ public class LaserGunScript extends ScriptJavaImpl {
 		}
 		weaponComponent.setReloadTime(reloadTime);
 
-		AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
+		AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 		Animation currentAnimation = animationComponent.getCurrentAnimation();
 		currentAnimation.update(world.getDelta());
 
