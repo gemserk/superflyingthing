@@ -44,6 +44,8 @@ public class Scripts {
 		Script fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerScript();
 		Script collisionHandlerBehavior = new Behaviors.CollisionHandlerScript();
 		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
+		
+		Script performDamageFromCollidingEntityScript = new Behaviors.PerformDamageFromCollidingEntityScript();
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
@@ -51,6 +53,7 @@ public class Scripts {
 			fixDirectionFromControllerBehavior.update(world, e);
 			collisionHandlerBehavior.update(world, e);
 			updateSpriteFromAnimation.update(world, e);
+			performDamageFromCollidingEntityScript.update(world, e);
 		}
 
 	}

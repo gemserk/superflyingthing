@@ -203,7 +203,7 @@ public class Behaviors {
 
 			int framesCount = animation.getFramesCount();
 			float frameAngle = 360f / framesCount;
-			
+
 			int frameIndex = getAnimationForAngle(angle - (frameAngle * 0.5f), framesCount);
 			Sprite frame = animation.getFrame(frameIndex);
 
@@ -289,7 +289,7 @@ public class Behaviors {
 		}
 	}
 
-	public static class PerformDamageToCollidingEntityScript extends ScriptJavaImpl {
+	public static class PerformDamageFromCollidingEntityScript extends ScriptJavaImpl {
 
 		private final Vector2 aux = new Vector2();
 
@@ -306,18 +306,20 @@ public class Behaviors {
 				if (otherEntity == null)
 					continue;
 
-				HealthComponent healthComponent = otherEntity.getComponent(HealthComponent.class);
+				HealthComponent healthComponent = e.getComponent(HealthComponent.class);
 				if (healthComponent == null)
-					return;
+					continue;
 
-				Spatial otherEntitySpatial = ComponentWrapper.getSpatial(otherEntity);
+				Spatial spatial = ComponentWrapper.getSpatial(e);
 
-				aux.set(1f, 0f).rotate(otherEntitySpatial.getAngle());
+				aux.set(1f, 0f).rotate(spatial.getAngle());
 				float dot = aux.dot(contact.getNormal(i));
 				if (dot < 0)
 					dot = -dot;
 
-				DamageComponent damageComponent = e.getComponent(DamageComponent.class);
+				DamageComponent damageComponent = otherEntity.getComponent(DamageComponent.class);
+				if (damageComponent == null)
+					continue;
 				float damage = damageComponent.getDamage() * world.getDelta() * 0.001f * dot;
 				healthComponent.getHealth().remove(damage);
 			}

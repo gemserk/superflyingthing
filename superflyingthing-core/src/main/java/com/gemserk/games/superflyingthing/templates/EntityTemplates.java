@@ -59,7 +59,6 @@ import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
-import com.gemserk.games.superflyingthing.scripts.ObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
@@ -654,7 +653,6 @@ public class EntityTemplates {
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
 		e.addComponent(new RenderableComponent(-60));
 		e.addComponent(new Components.DamageComponent(3000f));
-		e.addComponent(new ScriptComponent(new ObstacleScript()));
 
 		e.refresh();
 		return e;
