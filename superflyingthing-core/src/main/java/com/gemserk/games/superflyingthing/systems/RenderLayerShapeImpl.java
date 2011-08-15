@@ -10,12 +10,14 @@ import com.gemserk.commons.artemis.systems.SpriteComponentComparator;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 
 public class RenderLayerShapeImpl implements RenderLayer {
 
 	private static final SpriteComponentComparator spriteComponentComparator = new SpriteComponentComparator();
+	private static final Class<RenderableComponent> renderableComponentClass = RenderableComponent.class;
+	private static final Class<ShapeComponent> shapeComponentClass = ShapeComponent.class;
+	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
 
 	private final int minLayer, maxLayer;
 
@@ -41,15 +43,15 @@ public class RenderLayerShapeImpl implements RenderLayer {
 
 	@Override
 	public boolean belongs(Entity e) {
-		RenderableComponent renderableComponent = e.getComponent(RenderableComponent.class);
+		RenderableComponent renderableComponent = e.getComponent(renderableComponentClass);
 		if (renderableComponent == null)
 			return false;
 
-		ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
+		ShapeComponent shapeComponent = e.getComponent(shapeComponentClass);
 		if (shapeComponent == null)
 			return false;
 		
-		SpatialComponent spatialComponent = e.getComponent(SpatialComponent.class);
+		SpatialComponent spatialComponent = e.getComponent(spatialComponentClass);
 		if (spatialComponent == null)
 			return false;
 		
@@ -72,8 +74,8 @@ public class RenderLayerShapeImpl implements RenderLayer {
 		camera.apply();
 		for (int i = 0; i < orderedByLayerEntities.size; i++) {
 			Entity e = orderedByLayerEntities.get(i);
-			ShapeComponent shapeComponent = e.getComponent(ShapeComponent.class);
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			ShapeComponent shapeComponent = e.getComponent(shapeComponentClass);
+			Spatial spatial = e.getComponent(spatialComponentClass).getSpatial();
 			if (shapeComponent.texture != null)
 				shapeComponent.texture.bind();
 			ImmediateModeRendererUtils.draw(GL10.GL_TRIANGLES, shapeComponent.mesh2d, spatial.getX(), spatial.getY(), spatial.getAngle());
