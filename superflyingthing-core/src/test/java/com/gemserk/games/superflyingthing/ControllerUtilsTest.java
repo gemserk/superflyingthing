@@ -6,7 +6,7 @@ import org.hamcrest.core.IsEqual;
 import org.junit.Test;
 
 import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
-import com.gemserk.games.superflyingthing.scripts.ControllerUtils;
+import com.gemserk.games.superflyingthing.scripts.controllers.ControllerUtils;
 
 public class ControllerUtilsTest {
 	

@@ -124,11 +124,11 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 
 		Entity e = (Entity) fixture.getBody().getUserData();
 		if (e != null) {
-			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
 			if (grabbableComponent != null)
 				return 1;
 
-			AttachmentComponent attachmentComponent = e.getComponent(AttachmentComponent.class);
+			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(e);
 			if (attachmentComponent != null)
 				return 1;
 		}
@@ -141,7 +141,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 		Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
 		shipController.setShouldReleaseShip(false);
 
-		AttachmentComponent attachmentComponent = startPlanet.getComponent(AttachmentComponent.class);
+		AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(startPlanet);
 		if (attachmentComponent == null)
 			return;
 

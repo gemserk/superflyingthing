@@ -98,9 +98,9 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 			Body body = lastCollisionFixture.getBody();
 			Entity entity = (Entity) body.getUserData();
 			if (entity != null) {
-				HealthComponent healthComponent = entity.getComponent(HealthComponent.class);
+				HealthComponent healthComponent = ComponentWrapper.getHealthComponent(entity);
 				if (healthComponent != null) {
-					DamageComponent damageComponent = e.getComponent(DamageComponent.class);
+					DamageComponent damageComponent = ComponentWrapper.getDamageComponent(e);
 					Container health = healthComponent.getHealth();
 					health.remove(damageComponent.getDamage() * world.getDelta() * 0.001f);
 				}

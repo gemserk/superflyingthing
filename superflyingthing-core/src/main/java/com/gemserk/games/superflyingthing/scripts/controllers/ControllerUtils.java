@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing.scripts;
+package com.gemserk.games.superflyingthing.scripts.controllers;
 
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.interpolator.function.InterpolationFunction;

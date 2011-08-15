@@ -118,7 +118,7 @@ public class Scripts {
 		}
 
 		private void updateGrabbable(Entity e) {
-			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
 			if (!grabbableComponent.grabbed)
 				return;
 
@@ -195,7 +195,7 @@ public class Scripts {
 				physicsWorld.destroyJoint(entityAttachment.joint);
 			}
 
-			AttachableComponent attachableComponent = attachedEntity.getComponent(AttachableComponent.class);
+			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(attachedEntity);
 			attachableComponent.owner = null;
 
 			entityAttachment.joint = null;
@@ -390,7 +390,7 @@ public class Scripts {
 			attachmentComponent.setEntity(attachedShip);
 			attachmentComponent.setJoint(null);
 
-			AttachableComponent attachableComponent = attachedShip.getComponent(AttachableComponent.class);
+			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(attachedShip);
 			attachableComponent.setOwner(gameDataComponent.startPlanet);
 
 			gameDataComponent.attachedShip = attachedShip;
@@ -405,7 +405,7 @@ public class Scripts {
 			if (gameDataComponent.ship != null)
 				return;
 
-			AttachableComponent attachableComponent = gameDataComponent.attachedShip.getComponent(AttachableComponent.class);
+			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(gameDataComponent.attachedShip);
 			if (attachableComponent.getOwner() != null)
 				return;
 

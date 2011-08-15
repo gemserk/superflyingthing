@@ -7,7 +7,6 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.scripts.ControllerUtils;
 
 public class TiltAndroidControllerScript extends ScriptJavaImpl {
 	

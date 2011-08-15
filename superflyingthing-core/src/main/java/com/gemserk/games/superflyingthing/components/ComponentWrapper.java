@@ -7,15 +7,18 @@ import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
+import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
 public class ComponentWrapper {
 	
@@ -32,6 +35,9 @@ public class ComponentWrapper {
 	private static final Class<TargetComponent> targetComponentClass = TargetComponent.class;
 	private static final Class<HealthComponent> healthComponentClass = HealthComponent.class;
 	private static final Class<DamageComponent> damageComponentClass = DamageComponent.class;
+	private static final Class<WeaponComponent> weaponComponentClass = WeaponComponent.class;
+	private static final Class<GrabbableComponent> grabbableComponentClass = GrabbableComponent.class;
+	private static final Class<AttachableComponent> attachableComponentClass = AttachableComponent.class;
 	
 	public static Physics getPhysics(Entity e) {
 		return getPhysicsComponent(e).getPhysics();
@@ -65,6 +71,10 @@ public class ComponentWrapper {
 		return e.getComponent(attachmentComponentClass);
 	}
 	
+	public static AttachableComponent getAttachableComponent(Entity e) {
+		return e.getComponent(attachableComponentClass);
+	}
+	
 	public static MovementComponent getMovementComponent(Entity e) {
 		return e.getComponent(movementComponentClass);
 	}
@@ -91,5 +101,13 @@ public class ComponentWrapper {
 	
 	public static DamageComponent getDamageComponent(Entity e) {
 		return e.getComponent(damageComponentClass);
+	}
+	
+	public static WeaponComponent getWeaponComponent(Entity e) {
+		return e.getComponent(weaponComponentClass);
+	}
+	
+	public static GrabbableComponent getGrabbableComponent(Entity e) {
+		return e.getComponent(grabbableComponentClass);
 	}
 }

@@ -16,10 +16,12 @@ public class PortalScript extends ScriptJavaImpl {
 	// Could be converted to be a system.
 
 	private static final Vector2 direction = new Vector2();
+	
+	private static final Class<PortalComponent> portalComponentClass = PortalComponent.class;
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
-		PortalComponent portalComponent = e.getComponent(PortalComponent.class);
+		PortalComponent portalComponent = e.getComponent(portalComponentClass);
 
 		Physics physics = ComponentWrapper.getPhysics(e);
 		Contact contact = physics.getContact();
@@ -48,7 +50,7 @@ public class PortalScript extends ScriptJavaImpl {
 			Spatial targetPortalSpatial = ComponentWrapper.getSpatial(portal);
 			Spatial entitySpatial = ComponentWrapper.getSpatial(e2);
 
-			PortalComponent targetPortalComponent = portal.getComponent(PortalComponent.class);
+			PortalComponent targetPortalComponent = portal.getComponent(portalComponentClass);
 			direction.set(targetPortalSpatial.getWidth() * 0.5f, 0f).rotate(targetPortalComponent.getOutAngle());
 
 			entitySpatial.setPosition(targetPortalSpatial.getX() + direction.x, //

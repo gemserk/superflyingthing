@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.scripts.ControllerUtils;
 
 public class KeyboardControllerScript extends ScriptJavaImpl {
 	

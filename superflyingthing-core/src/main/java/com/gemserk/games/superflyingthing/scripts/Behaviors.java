@@ -138,7 +138,7 @@ public class Behaviors {
 
 			Gdx.app.log("SuperFlyingThing", "Building joint for ship with planet");
 
-			AttachableComponent attachableComponent = entityAttachment.entity.getComponent(AttachableComponent.class);
+			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(entityAttachment.entity);
 			attachableComponent.owner = e;
 
 			Spatial spatial = ComponentWrapper.getSpatial(e);
@@ -155,7 +155,7 @@ public class Behaviors {
 	public static class RemoveWhenGrabbedScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e) {
-			GrabbableComponent grabbableComponent = e.getComponent(GrabbableComponent.class);
+			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
 			if (grabbableComponent.grabbed)
 				world.deleteEntity(e);
 		}
@@ -245,7 +245,7 @@ public class Behaviors {
 		private void updateGrabGrabbable(Entity e1, Entity e2) {
 			if (e2 == null)
 				return;
-			GrabbableComponent grabbableComponent = e2.getComponent(GrabbableComponent.class);
+			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e2);
 			if (grabbableComponent == null)
 				return;
 			if (grabbableComponent.grabbed)
@@ -283,7 +283,7 @@ public class Behaviors {
 				return;
 			}
 
-			AttachableComponent attachableComponent = ship.getComponent(AttachableComponent.class);
+			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(ship);
 			if (attachableComponent.getOwner() != null)
 				targetComponent.setTarget(attachableComponent.getOwner());
 			else

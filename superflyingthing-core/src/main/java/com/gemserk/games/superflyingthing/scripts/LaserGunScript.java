@@ -25,7 +25,7 @@ public class LaserGunScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
-		WeaponComponent weaponComponent = e.getComponent(WeaponComponent.class);
+		WeaponComponent weaponComponent = ComponentWrapper.getWeaponComponent(e);
 		int reloadTime = weaponComponent.getReloadTime();
 		reloadTime -= world.getDelta();
 
