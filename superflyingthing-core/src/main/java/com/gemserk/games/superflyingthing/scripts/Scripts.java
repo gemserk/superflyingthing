@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.scripts;
 
+import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -76,9 +77,12 @@ public class Scripts {
 		private final EventManager eventManager;
 
 		Script removeWhenGrabbedBehavior;
-
+		
 		float rotationSpeed = 0.3f;
 		float angle = 0f;
+		
+		ComponentMapper<AnimationComponent> animationComponentMapper;
+		ComponentMapper<SpriteComponent> spriteComponentMapper;
 
 		public StarScript(EventManager eventManager) {
 			this.eventManager = eventManager;
@@ -87,6 +91,8 @@ public class Scripts {
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedScript();
+			animationComponentMapper = new ComponentMapper<AnimationComponent>(AnimationComponent.class, world.getEntityManager());
+			spriteComponentMapper = new ComponentMapper<SpriteComponent>(SpriteComponent.class, world.getEntityManager());
 		}
 
 		@Override
@@ -97,8 +103,8 @@ public class Scripts {
 		}
 
 		public void updateAnimation(com.artemis.World world, Entity e) {
-			AnimationComponent animationComponent = ComponentWrapper.getAnimation(e);
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			AnimationComponent animationComponent = animationComponentMapper.get(e);
+			SpriteComponent spriteComponent = spriteComponentMapper.get(e);
 
 			angle += rotationSpeed * (float) world.getDelta();
 
@@ -336,7 +342,7 @@ public class Scripts {
 			if (invulnerable)
 				return;
 
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
 
 			Entity ship = gameDataComponent.ship;
 			if (ship == null)
@@ -372,7 +378,7 @@ public class Scripts {
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
 
 			if (gameDataComponent.attachedShip != null)
 				return;
@@ -397,7 +403,7 @@ public class Scripts {
 		}
 
 		private void generateShipIfAttachedShipReleased(com.artemis.World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
 
 			if (gameDataComponent.attachedShip == null)
 				return;

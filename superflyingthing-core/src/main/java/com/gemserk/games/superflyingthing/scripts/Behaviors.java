@@ -19,6 +19,7 @@ import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
@@ -34,7 +35,8 @@ public class Behaviors {
 		@Override
 		public void update(World world, Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
-			Camera camera = ComponentWrapper.getCamera(e);
+			CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(e);
+			Camera camera = cameraComponent.getCamera();
 			camera.setPosition(spatial.getX(), spatial.getY());
 		}
 
@@ -106,7 +108,7 @@ public class Behaviors {
 
 			Entity attachedEntity = entityAttachment.entity;
 			Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
-			MovementComponent movementComponent = ComponentWrapper.getComponent(attachedEntity, MovementComponent.class);
+			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(attachedEntity);
 
 			Vector2 superSheepPosition = attachedEntitySpatial.getPosition();
 
@@ -270,7 +272,7 @@ public class Behaviors {
 	public static class FixCameraTargetScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameData(e);
+			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
 			if (gameDataComponent == null)
 				return;
 			TargetComponent targetComponent = gameDataComponent.camera.getComponent(TargetComponent.class);

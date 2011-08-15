@@ -1,11 +1,9 @@
 package com.gemserk.games.superflyingthing.components;
 
-import com.artemis.Component;
 import com.artemis.Entity;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
-import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
@@ -18,63 +16,63 @@ import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterC
 
 public class ComponentWrapper {
 	
+	private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
+	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
+	private static final Class<SpriteComponent> spriteComponentClass = SpriteComponent.class;
+	private static final Class<AnimationComponent> animationComponentClass = AnimationComponent.class;
+	private static final Class<CameraComponent> cameraComponentClass = CameraComponent.class;
+	private static final Class<AttachmentComponent> attachmentComponentClass = AttachmentComponent.class;
+	private static final Class<MovementComponent> movementComponentClass = MovementComponent.class;
+	private static final Class<ParticleEmitterComponent> particleEmitterComponentClass = ParticleEmitterComponent.class;
+	private static final Class<ControllerComponent> controllerComponentClass = ControllerComponent.class;
+	private static final Class<GameDataComponent> gameDataComponentClass = GameDataComponent.class;
+	
 	public static Physics getPhysics(Entity e) {
-		PhysicsComponent physicsComponent = getComponent(e, PhysicsComponent.class);
-		return physicsComponent.getPhysics();
+		return getPhysicsComponent(e).getPhysics();
 	}
 
 	public static Spatial getSpatial(Entity e) {
-		SpatialComponent spatialComponent = getComponent(e, SpatialComponent.class);
-		return spatialComponent.getSpatial();
+		return getSpatialComponent(e).getSpatial();
+	}
+	
+	public static PhysicsComponent getPhysicsComponent(Entity e) {
+		return e.getComponent(physicsComponentClass);
+	}
+	
+	public static SpatialComponent getSpatialComponent(Entity e) {
+		return e.getComponent(spatialComponentClass);
 	}
 
 	public static SpriteComponent getSpriteComponent(Entity e) {
-		return getComponent(e, SpriteComponent.class);
+		return e.getComponent(spriteComponentClass);
 	}
 	
 	public static AnimationComponent getAnimation(Entity e) {
-		return getComponent(e, AnimationComponent.class);
+		return e.getComponent(animationComponentClass);
 	}
 	
-	public static Camera getCamera(Entity e) {
-		CameraComponent component = getComponent(e, CameraComponent.class);
-		if (component == null)
-			return null;
-		return component.getCamera();
-	}
-
 	public static CameraComponent getCameraComponent(Entity e) {
-		return getComponent(e, CameraComponent.class);
+		return e.getComponent(cameraComponentClass);
 	}
 	
 	public static AttachmentComponent getEntityAttachment(Entity e) {
-		return getComponent(e, AttachmentComponent.class);
+		return e.getComponent(attachmentComponentClass);
 	}
 	
 	public static MovementComponent getMovementComponent(Entity e) {
-		return getComponent(e, MovementComponent.class);
+		return e.getComponent(movementComponentClass);
 	}
 	
 	public static ParticleEmitterComponent getParticleEmitter(Entity e) {
-		return getComponent(e, ParticleEmitterComponent.class);
+		return e.getComponent(particleEmitterComponentClass);
 	}
 	
 	public static ControllerComponent getControllerComponent(Entity e) {
-		return getComponent(e, ControllerComponent.class);
+		return e.getComponent(controllerComponentClass);
 	}
 	
-	public static void addMovementComponent(Entity e, MovementComponent movementComponent) {
-		e.addComponent(movementComponent);
-	}
-
-	public static <T> T getComponent(Entity e, Class<? extends Component> clazz) {
-		if (e == null)
-			return null;
-		return (T) e.getComponent(clazz);
-	}
-
-	public static GameDataComponent getGameData(Entity e) {
-		return e.getComponent(GameDataComponent.class);
+	public static GameDataComponent getGameDataComponent(Entity e) {
+		return e.getComponent(gameDataComponentClass);
 	}
 
 }
