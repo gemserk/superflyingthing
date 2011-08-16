@@ -28,14 +28,14 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	private Entity recordingShip;
 
 	private Replay currentReplay;
-	
+
 	private int replayUpdateInterval = 10;
 	private int currentUpdateInterval = replayUpdateInterval;
 
 	// TODO: remove them, should not be here.
 	private final EntityFactory entityFactory;
 	private final EntityTemplate shipReplayTemplate;
-	
+
 	public ReplayRecorderScript(EventListenerManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate) {
 		this.eventListenerManager = eventListenerManager;
 		this.entityFactory = entityFactory;
@@ -59,22 +59,15 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	}
 
 	private void shipDeath(com.artemis.World world, Entity e, Event event) {
-		// adds the last replay frame 
+		// adds the last replay frame
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
 		Spatial spatial = spatialComponent.getSpatial();
 		replayTime += world.getDelta();
-		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), spatial.getAngle()));
+		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), (int) spatial.getAngle()));
 
 		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
 		ReplayList replayList = replayComponent.getReplayList();
 		replayList.add(currentReplay);
-
-		// add new entity with ship replay template to test...
-
-		ArrayList<Replay> replays = replayList.getReplays();
-		for (int i = 0; i < replays.size(); i++) {
-			entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", replays.get(i)));
-		}
 
 		// stops the ship recording
 		recording = false;
@@ -88,25 +81,35 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 		currentReplay = new Replay();
 		replayTime = 0;
+
+		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
+		ReplayList replayList = replayComponent.getReplayList();
+
+		// reproduce each replay to test....
+		
+		ArrayList<Replay> replays = replayList.getReplays();
+		for (int i = 0; i < replays.size(); i++) {
+			entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", replays.get(i)));
+		}
 	}
 
 	public void update(com.artemis.World world, Entity e) {
 		if (!recording)
 			return;
-		
+
 		currentUpdateInterval--;
-		
-		if (currentUpdateInterval> 0) {
+
+		if (currentUpdateInterval > 0) {
 			replayTime += world.getDelta();
 			return;
 		}
-		
+
 		currentUpdateInterval = replayUpdateInterval;
-		
+
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
 		Spatial spatial = spatialComponent.getSpatial();
 
-		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), spatial.getAngle()));
+		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), (int) spatial.getAngle()));
 
 		replayTime += world.getDelta();
 	}

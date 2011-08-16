@@ -12,9 +12,9 @@ public class Replay {
 		public int time;
 
 		public float x, y;
-		public float angle;
+		public int angle;
 
-		public ReplayEntry(int time, float x, float y, float angle) {
+		public ReplayEntry(int time, float x, float y, int angle) {
 			this.time = time;
 			this.x = x;
 			this.y = y;

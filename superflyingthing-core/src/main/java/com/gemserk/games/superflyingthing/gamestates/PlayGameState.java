@@ -319,6 +319,7 @@ public class PlayGameState extends GameStateImpl {
 
 			// @EventListener(Events.destinationPlanetReached)
 			public void gameFinished(Event e) {
+				
 				PlayGameState.this.gameFinished();
 				incrementTimer = false;
 				if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
@@ -734,6 +735,8 @@ public class PlayGameState extends GameStateImpl {
 		entityFactory.instantiate(userMessageTemplate, parameters);
 
 		gameOverTimer = new CountDownTimer(2500, true);
+		
+		// start replays when game ends...
 
 		// container.add(message);
 
