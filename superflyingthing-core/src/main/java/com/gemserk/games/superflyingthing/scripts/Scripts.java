@@ -131,17 +131,15 @@ public class Scripts {
 
 		private final EventListenerManager eventListenerManager;
 		private final World physicsWorld;
-		private final EventManager eventManager;
 
 		Script attachEntityBehavior;
 		Script calculateInputDirectionBehavior;
 
 		boolean enabled = true;
 
-		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager, EventManager eventManager) {
+		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager) {
 			this.physicsWorld = physicsWorld;
 			this.eventListenerManager = eventListenerManager;
-			this.eventManager = eventManager;
 			attachEntityBehavior = new Behaviors.AttachEntityScript(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionScript();
 		}
@@ -202,8 +200,6 @@ public class Scripts {
 
 			entityAttachment.joint = null;
 			entityAttachment.entity = null;
-			
-			eventManager.registerEvent(Events.shipReleased, e);
 		}
 
 		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {
@@ -449,6 +445,8 @@ public class Scripts {
 
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
+			
+			eventManager.registerEvent(Events.shipReleased, gameDataComponent.ship);
 		}
 	}
 

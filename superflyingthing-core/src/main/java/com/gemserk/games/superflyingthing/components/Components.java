@@ -1,8 +1,5 @@
 package com.gemserk.games.superflyingthing.components;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.artemis.Component;
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.Texture;
@@ -16,7 +13,6 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.Trigger;
 
 public class Components {
 
@@ -50,24 +46,6 @@ public class Components {
 
 		public ControllerComponent(ShipController controller) {
 			this.shipControllerImpl = controller;
-		}
-
-	}
-
-	public static class TriggerComponent extends Component {
-
-		private Map<String, Trigger> triggers;
-
-		public Trigger getTrigger(String name) {
-			return triggers.get(name);
-		}
-
-		public TriggerComponent() {
-			this(new HashMap<String, Trigger>());
-		}
-
-		public TriggerComponent(Map<String, Trigger> triggers) {
-			this.triggers = triggers;
 		}
 
 	}
