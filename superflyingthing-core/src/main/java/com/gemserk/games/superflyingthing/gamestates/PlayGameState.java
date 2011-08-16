@@ -367,7 +367,7 @@ public class PlayGameState extends GameStateImpl {
 		};
 
 		entityBuilder //
-				.component(new TagComponent("ControllerSwitcher")) //
+				.component(new TagComponent(Groups.ControllerSwitcher)) //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					private int current = 0;
@@ -415,13 +415,36 @@ public class PlayGameState extends GameStateImpl {
 				})).build();
 
 		entityBuilder //
-				.component(new TagComponent("ReplayRecorder")) //
+				.component(new TagComponent(Groups.ReplayRecorder)) //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					@Override
-					public void init(com.artemis.World world, Entity e) {
-
+					public void init(final com.artemis.World world, final Entity e) {
+						eventListenerManager.register(Events.shipDeath, new EventListener() {
+							@Override
+							public void onEvent(Event event) {
+								shipDeath(world, e, event);
+							}
+						});
+						eventListenerManager.register(Events.shipReleased, new EventListener() {
+							@Override
+							public void onEvent(Event event) {
+								shipReleased(world, e, event);
+							}
+						});
 					}
+					
+					private void shipDeath(com.artemis.World world, Entity e, Event event) {
+						// stops the ship recording
+					}
+					
+					private void shipReleased(com.artemis.World world, Entity e, Event event) {
+						// starts a new ship recording						
+					}
+					
+					public void update(com.artemis.World world, Entity e) {
+						
+					};
 
 				})) //
 				.build();
@@ -455,7 +478,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final ShipController controller = new ShipController();
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager, eventManager));
 
 			for (int i = 0; i < level.destinationPlanets.size(); i++) {
 				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
@@ -609,7 +632,7 @@ public class PlayGameState extends GameStateImpl {
 			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
 
 			final ShipController controller = new ShipController();
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager, eventManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 
@@ -699,7 +722,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final ShipController controller = new ShipController();
 
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
+			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager, eventManager));
 
 			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 

@@ -131,15 +131,17 @@ public class Scripts {
 
 		private final EventListenerManager eventListenerManager;
 		private final World physicsWorld;
+		private final EventManager eventManager;
 
 		Script attachEntityBehavior;
 		Script calculateInputDirectionBehavior;
 
 		boolean enabled = true;
 
-		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager) {
+		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager, EventManager eventManager) {
 			this.physicsWorld = physicsWorld;
 			this.eventListenerManager = eventListenerManager;
+			this.eventManager = eventManager;
 			attachEntityBehavior = new Behaviors.AttachEntityScript(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionScript();
 		}
@@ -200,6 +202,8 @@ public class Scripts {
 
 			entityAttachment.joint = null;
 			entityAttachment.entity = null;
+			
+			eventManager.registerEvent(Events.shipReleased, e);
 		}
 
 		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {

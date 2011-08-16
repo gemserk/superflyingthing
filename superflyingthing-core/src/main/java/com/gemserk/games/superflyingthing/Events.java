@@ -19,5 +19,11 @@ public class Events {
 	 * Should be registered when the game mode has finished (example: the ship reached the planet).
 	 */
 	public static final String gameFinished = "gameFinished";
+	
+	
+	/**
+	 * Sent when the ship was released from the planet.
+	 */
+	public static final String shipReleased = "shipReleased";
 
 }
