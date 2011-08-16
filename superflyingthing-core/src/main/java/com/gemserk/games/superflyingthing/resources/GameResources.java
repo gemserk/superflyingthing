@@ -15,10 +15,11 @@ public class GameResources extends LibgdxResourceBuilder {
 
 	private GameResources(ResourceManager<String> resourceManager) {
 		super(resourceManager);
-		texture("GemserkLogoTexture", "data/images/logo-gemserk-512x128.png");
-		texture("GemserkLogoTextureBlur", "data/images/logo-gemserk-512x128-blur.png");
-		texture("LwjglLogoTexture", "data/images/logo-lwjgl-512x256-inverted.png");
-		texture("LibgdxLogoTexture", "data/images/logo-libgdx-clockwork-512x256.png");
+		texture("GemserkLogoTexture", "data/images/logos/logo-gemserk-512x128.png");
+		texture("GemserkLogoTextureBlur", "data/images/logos/logo-gemserk-512x128-blur.png");
+		texture("LwjglLogoTexture", "data/images/logos/logo-lwjgl-512x256-inverted.png");
+		texture("LibgdxLogoTexture", "data/images/logos/logo-libgdx-clockwork-512x256.png");
+		
 		texture("WhiteRectangleTexture", "data/images/white-rectangle.png");
 
 		sprite("GemserkLogo", "GemserkLogoTexture");
@@ -88,16 +89,16 @@ public class GameResources extends LibgdxResourceBuilder {
 		texture("LaserTexture", "data/images/laser-bullet.png");
 		sprite("LaserSprite", "LaserTexture");
 
-		texture("ShipSpriteSheet", "data/images/ship_animation.png");
+		texture("ShipSpriteSheet", "data/images/spritesheets/ship-animation.png");
 		animation("ShipAnimation", "ShipSpriteSheet", 0, 0, 57, 57, 72, false, 0);
 
-		texture("StarSpriteSheet", "data/images/star-animation.png");
+		texture("StarSpriteSheet", "data/images/spritesheets/star-animation.png");
 		animation("StarAnimation", "StarSpriteSheet", 0, 0, 64, 64, 36, false, 0);
 
-		texture("LaserGunSpriteSheet", "data/images/laser-gun-animation.png");
+		texture("LaserGunSpriteSheet", "data/images/spritesheets/laser-gun-animation.png");
 		animation("LaserGunAnimation", "LaserGunSpriteSheet", 0, 0, 64, 64, 36, true, 100);
 		
-		texture("PlanetFillAnimationSpriteSheet", "data/images/planet-fill-animation.png");
+		texture("PlanetFillAnimationSpriteSheet", "data/images/spritesheets/planet-fill-animation.png");
 		animation("PlanetFillAnimation", "PlanetFillAnimationSpriteSheet", 0, 0, 128, 128, 16, false, 65);
 		
 		texture("IconsSpriteSheet", "data/images/icons.png", true);
