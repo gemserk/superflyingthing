@@ -25,11 +25,14 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	private Entity recordingShip;
 
 	private Replay currentReplay;
+	
+	private int replayUpdateInterval = 5;
+	private int currentUpdateInterval = replayUpdateInterval;
 
-	// TODO: remove thiem, should not be here.
+	// TODO: remove them, should not be here.
 	private final EntityFactory entityFactory;
 	private final EntityTemplate shipReplayTemplate;
-
+	
 	public ReplayRecorderScript(EventListenerManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate) {
 		this.eventListenerManager = eventListenerManager;
 		this.entityFactory = entityFactory;
@@ -77,11 +80,18 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	public void update(com.artemis.World world, Entity e) {
 		if (!recording)
 			return;
-
+		
+		currentUpdateInterval--;
+		
+		if (currentUpdateInterval> 0) {
+			replayTime += world.getDelta();
+			return;
+		}
+		
+		currentUpdateInterval = replayUpdateInterval;
+		
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
 		Spatial spatial = spatialComponent.getSpatial();
-
-		// Gdx.app.log("SuperFlyingThing", "position: " + spatial.getPosition() + ", angle: " + spatial.getAngle());
 
 		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), spatial.getAngle()));
 

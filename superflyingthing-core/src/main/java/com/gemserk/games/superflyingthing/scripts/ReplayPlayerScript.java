@@ -51,10 +51,15 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 		// interpolate time between previousReplayEntry and currentOne....
 
 		float t = (float) time / (float) (currentReplayEntry.time - previousReplayEntry.time);
-		
+
 		float x = FloatInterpolator.interpolate(previousReplayEntry.x, currentReplayEntry.x, t);
 		float y = FloatInterpolator.interpolate(previousReplayEntry.y, currentReplayEntry.y, t);
+
+		// float angleDiff = Math.abs(currentReplayEntry.angle - previousReplayEntry.angle);
+
 		float angle = FloatInterpolator.interpolate(previousReplayEntry.angle, currentReplayEntry.angle, t);
+
+		// problems between current angle and next angle when angle variates between 360 and 0?
 
 		spatial.setPosition(x, y);
 		spatial.setAngle(angle);
