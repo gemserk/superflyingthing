@@ -22,10 +22,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
@@ -84,7 +81,6 @@ import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
-import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
@@ -432,21 +428,15 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		Replay replay = new Replay();
-		Sprite whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
-		
+
 		replay.replayEntries.add(new ReplayEntry(0, 2f, 2f, 0f));
 		replay.replayEntries.add(new ReplayEntry(1500, 5f, 7f, 320f));
 		replay.replayEntries.add(new ReplayEntry(2500, 8f, 3f, 180f));
 		replay.replayEntries.add(new ReplayEntry(5500, 2f, 7f, 50f));
 		replay.replayEntries.add(new ReplayEntry(7500, 3f, 3f, 0f));
-		
-		entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(0f, 0f, 1f, 1f, 0f))) //
-				.component(new SpriteComponent(whiteRectangleSprite)) //
-				.component(new RenderableComponent(5)) //
-				// ship animation component?
-				.component(new ScriptComponent(new ReplayPlayerScript(replay))) //
-				.build();
+
+		parameters.clear();
+		entityFactory.instantiate(entityTemplates.getReplayShipTemplate(), parameters.put("replay", replay));
 
 	}
 

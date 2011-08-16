@@ -22,6 +22,7 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.Script;
+import com.gemserk.commons.artemis.scripts.ScriptCompositeImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
@@ -55,11 +56,14 @@ import com.gemserk.games.superflyingthing.components.Components.MovementComponen
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.TagComponent;
+import com.gemserk.games.superflyingthing.scripts.Behaviors;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
+import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
@@ -119,6 +123,10 @@ public class EntityTemplates {
 
 	public EntityTemplate getCameraTemplate() {
 		return cameraTemplate;
+	}
+	
+	public EntityTemplate getReplayShipTemplate() {
+		return replayShipTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
@@ -274,7 +282,7 @@ public class EntityTemplates {
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 			Vector2 position = parameters.get("position");
-			
+
 			Float maxLinearSpeed = parameters.get("maxLinearSpeed");
 			Float maxAngularVelocity = parameters.get("maxAngularVelocity");
 
@@ -322,6 +330,34 @@ public class EntityTemplates {
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(spriteComponent);
 			entity.addComponent(new RenderableComponent(-1));
+		}
+	};
+
+	private EntityTemplate replayShipTemplate = new EntityTemplate() {
+
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity e) {
+			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
+
+			Replay replay = parameters.get("replay");
+
+			e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f)));
+			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
+			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.7f, 0.7f, 0.7f, 0.8f)));
+			e.addComponent(new RenderableComponent(0));
+			e.addComponent(new ScriptComponent(new ScriptCompositeImpl( //
+					new ReplayPlayerScript(replay), //
+					new Behaviors.UpdateSpriteFromAnimationScript() //
+					)));
+
 		}
 	};
 
