@@ -2,11 +2,10 @@ package com.gemserk.games.superflyingthing.systems;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.utils.Array;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.systems.OrderedByLayerEntities;
 import com.gemserk.commons.artemis.systems.RenderLayer;
-import com.gemserk.commons.artemis.systems.SpriteComponentComparator;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
@@ -14,21 +13,16 @@ import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 
 public class RenderLayerShapeImpl implements RenderLayer {
 
-	private static final SpriteComponentComparator spriteComponentComparator = new SpriteComponentComparator();
 	private static final Class<RenderableComponent> renderableComponentClass = RenderableComponent.class;
 	private static final Class<ShapeComponent> shapeComponentClass = ShapeComponent.class;
 	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
 
-	private final int minLayer, maxLayer;
-
-	Array<Entity> orderedByLayerEntities = new Array<Entity>();
-
-	Libgdx2dCamera camera;
+	private final Libgdx2dCamera camera;
+	private final OrderedByLayerEntities orderedByLayerEntities;
 
 	public RenderLayerShapeImpl(int minLayer, int maxLayer, Libgdx2dCamera camera) {
-		this.minLayer = minLayer;
-		this.maxLayer = maxLayer;
 		this.camera = camera;
+		this.orderedByLayerEntities = new OrderedByLayerEntities(minLayer, maxLayer);
 	}
 	
 	@Override
@@ -55,24 +49,23 @@ public class RenderLayerShapeImpl implements RenderLayer {
 		if (spatialComponent == null)
 			return false;
 		
-		return renderableComponent.getLayer() >= minLayer && renderableComponent.getLayer() < maxLayer;
+		return orderedByLayerEntities.belongs(renderableComponent.getLayer());
 	}
 
 	@Override
 	public void add(Entity entity) {
 		orderedByLayerEntities.add(entity);
-		orderedByLayerEntities.sort(spriteComponentComparator);
 	}
 
 	@Override
 	public void remove(Entity entity) {
-		orderedByLayerEntities.removeValue(entity, true);
+		orderedByLayerEntities.remove(entity);
 	}
 
 	@Override
 	public void render() {
 		camera.apply();
-		for (int i = 0; i < orderedByLayerEntities.size; i++) {
+		for (int i = 0; i < orderedByLayerEntities.size(); i++) {
 			Entity e = orderedByLayerEntities.get(i);
 			ShapeComponent shapeComponent = e.getComponent(shapeComponentClass);
 			Spatial spatial = e.getComponent(spatialComponentClass).getSpatial();
