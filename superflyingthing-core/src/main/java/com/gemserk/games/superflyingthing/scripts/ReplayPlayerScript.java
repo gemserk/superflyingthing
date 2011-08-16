@@ -48,8 +48,6 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(e);
 		Spatial spatial = spatialComponent.getSpatial();
 
-		// interpolate time between previousReplayEntry and currentOne....
-
 		float t = (float) time / (float) (currentReplayEntry.time - previousReplayEntry.time);
 
 		float x = FloatInterpolator.interpolate(previousReplayEntry.x, currentReplayEntry.x, t);

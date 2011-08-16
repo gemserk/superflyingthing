@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.scripts;
 
+import java.util.ArrayList;
+
 import com.artemis.Entity;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.Event;
@@ -15,6 +17,7 @@ import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
+import com.gemserk.games.superflyingthing.components.ReplayList;
 
 public class ReplayRecorderScript extends ScriptJavaImpl {
 
@@ -26,7 +29,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 	private Replay currentReplay;
 	
-	private int replayUpdateInterval = 5;
+	private int replayUpdateInterval = 10;
 	private int currentUpdateInterval = replayUpdateInterval;
 
 	// TODO: remove them, should not be here.
@@ -56,16 +59,26 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	}
 
 	private void shipDeath(com.artemis.World world, Entity e, Event event) {
-		// stops the ship recording
-		recording = false;
-		recordingShip = null;
+		// adds the last replay frame 
+		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
+		Spatial spatial = spatialComponent.getSpatial();
+		replayTime += world.getDelta();
+		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), spatial.getAngle()));
 
 		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
-		replayComponent.getReplayList().add(currentReplay);
+		ReplayList replayList = replayComponent.getReplayList();
+		replayList.add(currentReplay);
 
 		// add new entity with ship replay template to test...
 
-		entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", currentReplay));
+		ArrayList<Replay> replays = replayList.getReplays();
+		for (int i = 0; i < replays.size(); i++) {
+			entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", replays.get(i)));
+		}
+
+		// stops the ship recording
+		recording = false;
+		recordingShip = null;
 	}
 
 	private void shipReleased(com.artemis.World world, Entity e, Event event) {
