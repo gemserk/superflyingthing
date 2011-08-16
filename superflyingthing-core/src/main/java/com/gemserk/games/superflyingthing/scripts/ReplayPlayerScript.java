@@ -68,7 +68,14 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 			
 			return;
 		}
-
+		
+		if (Math.abs(currentReplayEntry.x - previousReplayEntry.x) > 1f || Math.abs(currentReplayEntry.y - previousReplayEntry.y) > 1f) {
+			// in this case, do not interpolate and move to the next frame...
+			time = 0;
+			nextReplayFrame();
+			return;
+		}
+		
 		float t = (float) time / (float) (currentReplayEntry.time - previousReplayEntry.time);
 
 		float x = FloatInterpolator.interpolate(previousReplayEntry.x, currentReplayEntry.x, t);
