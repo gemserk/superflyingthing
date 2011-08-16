@@ -171,7 +171,7 @@ public class SettingsGameState extends GameStateImpl {
 			if (currentControllerType == controllerType)
 				multipleButtonControlWithUnderline.select(controllerTextButton);
 
-			y -= height * 0.15f;
+			y -= height * 0.12f;
 		}
 
 		container.add(GuiControls.textButton() //
@@ -239,10 +239,10 @@ public class SettingsGameState extends GameStateImpl {
 	private ControllerType[] getAvailableControllers() {
 		if (Gdx.app.getType() == ApplicationType.Android)
 			return new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
-					ControllerType.AnalogController, ControllerType.TiltController };
+					ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
 		else
 			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
-					ControllerType.AxisController, ControllerType.AnalogController };
+					ControllerType.AxisController, ControllerType.AnalogController, ControllerType.TargetController };
 	}
 
 	private void controllerTestBed() {

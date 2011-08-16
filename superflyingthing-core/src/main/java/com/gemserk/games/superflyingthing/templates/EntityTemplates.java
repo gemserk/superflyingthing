@@ -148,7 +148,7 @@ public class EntityTemplates {
 			Spatial spatial = parameters.get("spatial");
 			Entity target = parameters.get("target");
 
-			entity.addComponent(new TagComponent("MainCamera"));
+			entity.addComponent(new TagComponent(Groups.MainCamera));
 			entity.addComponent(new TargetComponent(target));
 			entity.addComponent(new Components.CameraComponent(camera, libgdxCamera));
 			entity.addComponent(new SpatialComponent(spatial));

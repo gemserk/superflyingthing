@@ -211,6 +211,7 @@ public class PlayGameState extends GameStateImpl {
 		controllerTemplates.analogControllerTemplate = new ControllerTemplates.AnalogControllerTemplate(resourceManager);
 		controllerTemplates.tiltAndroidControllerTemplate = new ControllerTemplates.TiltAndroidControllerTemplate();
 		controllerTemplates.analogKeyboardControllerTemplate = new ControllerTemplates.AnalogKeyboardControllerTemplate();
+		controllerTemplates.targetControllerTemplate = new ControllerTemplates.TargetControllerTemplate();
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;

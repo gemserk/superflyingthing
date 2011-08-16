@@ -21,11 +21,12 @@ import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicCont
 import com.gemserk.games.superflyingthing.scripts.controllers.AxisControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
+import com.gemserk.games.superflyingthing.scripts.controllers.TargetControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.TiltAndroidControllerScript;
 import com.gemserk.resources.ResourceManager;
 
 public class ControllerTemplates {
-	
+
 	public static class KeyboardControllerTemplate implements EntityTemplate {
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
@@ -44,7 +45,7 @@ public class ControllerTemplates {
 			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
-	
+
 	public static class AnalogKeyboardControllerTemplate implements EntityTemplate {
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
@@ -63,7 +64,7 @@ public class ControllerTemplates {
 			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
-	
+
 	public static class AndroidClassicControllerTemplate implements EntityTemplate {
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
@@ -82,16 +83,16 @@ public class ControllerTemplates {
 			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
-	
+
 	public static class AxisControllerTemplate implements EntityTemplate {
-		
+
 		private final ResourceManager<String> resourceManager;
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("layer", new Integer(500));
 		}
-		
+
 		public AxisControllerTemplate(ResourceManager<String> resourceManager) {
 			this.resourceManager = resourceManager;
 		}
@@ -106,13 +107,13 @@ public class ControllerTemplates {
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", Groups.PlayerController);
-			Integer layer = parameters.get("layer"); 
+			Integer layer = parameters.get("layer");
 
-			String spriteId = parameters.get("spriteId", "WhiteRectangle"); 
+			String spriteId = parameters.get("spriteId", "WhiteRectangle");
 			Spatial spatial = parameters.get("spatial", new SpatialImpl(0, 0, 2f, 1000f, 0f));
-			
+
 			Sprite sprite = resourceManager.getResourceValue(spriteId);
-			
+
 			entity.addComponent(new ScriptComponent(new AxisControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.3f)));
@@ -121,16 +122,16 @@ public class ControllerTemplates {
 			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
-	
+
 	public static class AnalogControllerTemplate implements EntityTemplate {
-		
+
 		private final ResourceManager<String> resourceManager;
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("layer", new Integer(500));
 		}
-		
+
 		public AnalogControllerTemplate(ResourceManager<String> resourceManager) {
 			this.resourceManager = resourceManager;
 		}
@@ -145,13 +146,13 @@ public class ControllerTemplates {
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", Groups.PlayerController);
-			Integer layer = parameters.get("layer"); 
+			Integer layer = parameters.get("layer");
 
-			String spriteId = parameters.get("spriteId", "WhiteRectangle"); 
+			String spriteId = parameters.get("spriteId", "WhiteRectangle");
 			Spatial spatial = parameters.get("spatial", new SpatialImpl(0, 0, 8f, 8f, 0f));
-			
+
 			Sprite sprite = resourceManager.getResourceValue(spriteId);
-			
+
 			entity.addComponent(new ScriptComponent(new AnalogControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new SpriteComponent(sprite, new Color(1f, 1f, 1f, 0.5f)));
@@ -160,7 +161,7 @@ public class ControllerTemplates {
 			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
-	
+
 	public static class TiltAndroidControllerTemplate implements EntityTemplate {
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
@@ -180,13 +181,33 @@ public class ControllerTemplates {
 		}
 	}
 	
+	public static class TargetControllerTemplate implements EntityTemplate {
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+			ShipController controller = parameters.get("controller");
+			String tag = parameters.get("tag", Groups.PlayerController);
+			entity.addComponent(new ScriptComponent(new TargetControllerScript(controller)));
+			entity.addComponent(new TagComponent(tag));
+			entity.addComponent(new ControllerComponent(controller));
+		}
+	}
+
 	public EntityTemplate keyboardControllerTemplate;
 	public EntityTemplate analogKeyboardControllerTemplate;
 	public EntityTemplate androidClassicControllerTemplate;
 	public EntityTemplate axisControllerTemplate;
 	public EntityTemplate analogControllerTemplate;
 	public EntityTemplate tiltAndroidControllerTemplate;
-	
+	public EntityTemplate targetControllerTemplate;
+
 	public EntityTemplate getControllerTemplate(ControllerType controllerType) {
 		switch (controllerType) {
 		case KeyboardController:
@@ -201,9 +222,10 @@ public class ControllerTemplates {
 			return analogControllerTemplate;
 		case TiltController:
 			return tiltAndroidControllerTemplate;
+		case TargetController:
+			return targetControllerTemplate;
 		}
 		return keyboardControllerTemplate;
 	}
 
-	
 }
