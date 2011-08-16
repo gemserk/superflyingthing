@@ -6,7 +6,11 @@ import com.badlogic.gdx.Gdx;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
@@ -19,6 +23,9 @@ import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
  */
 public class ReplayPlayerScript extends ScriptJavaImpl {
 
+	private final EntityFactory entityFactory;
+	private final EntityTemplate particleEmitterTemplate;
+
 	private final Replay replay;
 	private int time;
 
@@ -28,9 +35,12 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 	private int currentFrame;
 
 	private boolean finished;
+	private Parameters parameters = new ParametersWrapper();
 
-	public ReplayPlayerScript(Replay replay) {
+	public ReplayPlayerScript(Replay replay, EntityFactory entityFactory, EntityTemplate particleEmitterTemplate) {
 		this.replay = replay;
+		this.entityFactory = entityFactory;
+		this.particleEmitterTemplate = particleEmitterTemplate;
 	}
 
 	@Override
@@ -42,11 +52,22 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 	}
 
 	public void update(com.artemis.World world, Entity e) {
-		if (finished)
-			return;
-
+		
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(e);
 		Spatial spatial = spatialComponent.getSpatial();
+		
+		if (finished) {
+			// removes entity if replay is finished.
+			
+			parameters.put("position", spatial.getPosition());
+			parameters.put("emitter", "ExplosionEmitter");
+			
+			entityFactory.instantiate(particleEmitterTemplate, parameters);
+			
+			e.delete();
+			
+			return;
+		}
 
 		float t = (float) time / (float) (currentReplayEntry.time - previousReplayEntry.time);
 

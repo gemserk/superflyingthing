@@ -354,7 +354,7 @@ public class EntityTemplates {
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.7f, 0.7f, 0.7f, 0.8f)));
 			e.addComponent(new RenderableComponent(0));
 			e.addComponent(new ScriptComponent(new ScriptCompositeImpl( //
-					new ReplayPlayerScript(replay), //
+					new ReplayPlayerScript(replay, entityFactory, getParticleEmitterTemplate()), //
 					new Behaviors.UpdateSpriteFromAnimationScript() //
 					)));
 
