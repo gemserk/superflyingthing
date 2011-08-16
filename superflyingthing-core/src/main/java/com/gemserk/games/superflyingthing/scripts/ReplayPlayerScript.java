@@ -56,11 +56,18 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 		float y = FloatInterpolator.interpolate(previousReplayEntry.y, currentReplayEntry.y, t);
 
 		float angleDiff = Math.abs(currentReplayEntry.angle - previousReplayEntry.angle);
-		if (angleDiff > 180)
-			Gdx.app.log("SuperFlyingThing", "angle diff greater than 180 : " + angleDiff);
-		float angle = FloatInterpolator.interpolate(previousReplayEntry.angle, currentReplayEntry.angle, t);
 
-		// problems between current angle and next angle when angle variates between 360 and 0?
+		float previousAngle = previousReplayEntry.angle;
+		float nextAngle = currentReplayEntry.angle;
+
+		if (angleDiff > 180) {
+			if (previousAngle > nextAngle)
+				previousAngle -= 360f;
+			else
+				nextAngle -= 360f;
+		}
+
+		float angle = FloatInterpolator.interpolate(previousAngle, nextAngle, t);
 
 		spatial.setPosition(x, y);
 		spatial.setAngle(angle);
