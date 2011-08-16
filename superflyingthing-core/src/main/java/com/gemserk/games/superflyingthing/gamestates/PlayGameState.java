@@ -373,6 +373,10 @@ public class PlayGameState extends GameStateImpl {
 					private int current = 0;
 					private ShipController controller;
 
+					private ControllerType[] controllerTypes = new ControllerType[] { ControllerType.KeyboardController, //
+							ControllerType.AnalogKeyboardController, ControllerType.ClassicController, ControllerType.AxisController, //
+							ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
+
 					@Override
 					public void update(com.artemis.World world, Entity e) {
 
@@ -386,52 +390,15 @@ public class PlayGameState extends GameStateImpl {
 						if (currentController == null) {
 
 							current++;
-							if (current > 5)
+							if (current >= controllerTypes.length)
 								current = 0;
 
-							String controllerName = "";
+							ControllerType controllerType = controllerTypes[current];
+							String controllerName = controllerType.name();
 
-							if (current == 0) {
-								controllerName = "AndroidClassicController";
-								parameters.clear();
-								parameters.put("controller", controller);
-								entityFactory.instantiate(controllerTemplates.androidClassicControllerTemplate, parameters);
-							}
-
-							if (current == 1) {
-								controllerName = "AxisController";
-								parameters.clear();
-								parameters.put("controller", controller);
-								entityFactory.instantiate(controllerTemplates.axisControllerTemplate, parameters);
-							}
-
-							if (current == 2) {
-								controllerName = "AnalogController";
-								parameters.clear();
-								parameters.put("controller", controller);
-								entityFactory.instantiate(controllerTemplates.analogControllerTemplate, parameters);
-							}
-
-							if (current == 3) {
-								controllerName = "TiltController";
-								parameters.clear();
-								parameters.put("controller", controller);
-								entityFactory.instantiate(controllerTemplates.tiltAndroidControllerTemplate, parameters);
-							}
-
-							if (current == 4) {
-								controllerName = "ClassicKeyboardController";
-								parameters.clear();
-								parameters.put("controller", controller);
-								entityFactory.instantiate(controllerTemplates.keyboardControllerTemplate, parameters);
-							}
-
-							if (current == 5) {
-								controllerName = "AnalogKeyboardController";
-								parameters.clear();
-								parameters.put("controller", controller);
-								entityFactory.instantiate(controllerTemplates.analogKeyboardControllerTemplate, parameters);
-							}
+							parameters.clear();
+							parameters.put("controller", controller);
+							entityFactory.instantiate(controllerTemplates.getControllerTemplate(controllerType), parameters);
 
 							Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
 							parameters.clear();
@@ -439,16 +406,25 @@ public class PlayGameState extends GameStateImpl {
 							parameters.put("text", controllerName);
 							parameters.put("time", 1000);
 							entityFactory.instantiate(userMessageTemplate, parameters);
-
 						}
 
-						if (inputDevicesMonitor.getButton("switchControls").isReleased()) {
-							// controller = currentController.getComponent(ControllerComponent.class).getController();
+						if (inputDevicesMonitor.getButton("switchControls").isReleased()) 
 							currentController.delete();
-						}
 
 					}
 				})).build();
+
+		entityBuilder //
+				.component(new TagComponent("ReplayRecorder")) //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					@Override
+					public void init(com.artemis.World world, Entity e) {
+
+					}
+
+				})) //
+				.build();
 
 	}
 
