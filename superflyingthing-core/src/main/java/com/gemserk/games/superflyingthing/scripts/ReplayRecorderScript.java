@@ -26,6 +26,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	private boolean recording;
 	private int replayTime;
 	private Entity recordingShip;
+	private Spatial recordingShipSpatial;
 
 	private Replay currentReplay;
 
@@ -60,10 +61,8 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 	private void shipDeath(com.artemis.World world, Entity e, Event event) {
 		// adds the last replay frame
-		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
-		Spatial spatial = spatialComponent.getSpatial();
 		replayTime += world.getDelta();
-		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), (int) spatial.getAngle()));
+		currentReplay.replayEntries.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
 
 		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
 		ReplayList replayList = replayComponent.getReplayList();
@@ -107,9 +106,9 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		currentUpdateInterval = replayUpdateInterval;
 
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
-		Spatial spatial = spatialComponent.getSpatial();
+		recordingShipSpatial = spatialComponent.getSpatial();
 
-		currentReplay.replayEntries.add(new ReplayEntry(replayTime, spatial.getX(), spatial.getY(), (int) spatial.getAngle()));
+		currentReplay.replayEntries.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
 
 		replayTime += world.getDelta();
 	}
