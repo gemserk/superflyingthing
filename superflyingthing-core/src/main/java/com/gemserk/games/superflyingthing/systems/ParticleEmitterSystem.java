@@ -15,7 +15,7 @@ import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 
 public class ParticleEmitterSystem extends EntityProcessingSystem {
-	
+
 	protected static final Logger logger = LoggerFactory.getLogger(ParticleEmitterSystem.class);
 
 	ComponentMapper<ParticleEmitterComponent> particleEmitterComponentMapper;
@@ -38,16 +38,16 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 	@Override
 	protected void added(Entity e) {
-		if (logger.isDebugEnabled())
-			logger.debug("Entity with particle emitter added");
+		// if (logger.isDebugEnabled())
+		// logger.debug("Entity with particle emitter added");
 	}
-	
+
 	@Override
 	protected void removed(Entity e) {
-		if (logger.isDebugEnabled())
-			logger.debug("Entity with particle emitter removed");
+		// if (logger.isDebugEnabled())
+		// logger.debug("Entity with particle emitter removed");
 	}
-	
+
 	@Override
 	protected void begin() {
 		super.begin();
@@ -78,7 +78,7 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 		emitter.setPosition(spatial.getX(), spatial.getY());
 
 		emitter.draw(spriteBatch, deltaF);
-		
+
 		emitter.getAngle().setHigh(hmin, hmax);
 		emitter.getAngle().setLow(lmin, lmax);
 	}

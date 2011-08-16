@@ -80,9 +80,6 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		texture("ObstacleTexture", "data/images/tile01.jpg", true);
 
-		texture("ItemTexture", "data/images/item.png");
-		sprite("Item", "ItemTexture");
-
 		texture("PortalTexture", "data/images/portal.png");
 		sprite("PortalSprite", "PortalTexture");
 		
