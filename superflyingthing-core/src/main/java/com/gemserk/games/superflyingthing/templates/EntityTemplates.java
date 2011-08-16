@@ -254,11 +254,15 @@ public class EntityTemplates {
 
 	private EntityTemplate attachedShipTemplate = new EntityTemplate() {
 
-		ParametersWithFallBack defaultParameters = new ParametersWithFallBack();
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+		{
+			parameters.put("maxLinearSpeed", new Float(3.5f));
+			parameters.put("maxAngularVelocity", new Float(360f));
+		}
 
 		@Override
 		public void apply(Entity entity, Parameters parameters) {
-			defaultParameters.setParameters(parameters);
+			this.parameters.setParameters(parameters);
 			apply(entity);
 		}
 
@@ -269,7 +273,10 @@ public class EntityTemplates {
 
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
-			Vector2 position = defaultParameters.get("position");
+			Vector2 position = parameters.get("position");
+			
+			Float maxLinearSpeed = parameters.get("maxLinearSpeed");
+			Float maxAngularVelocity = parameters.get("maxAngularVelocity");
 
 			Body body = bodyBuilder //
 					.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -287,7 +294,7 @@ public class EntityTemplates {
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(1f, 0f, 4.5f, 360f));
+			e.addComponent(new MovementComponent(1f, 0f, maxLinearSpeed, maxAngularVelocity));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));

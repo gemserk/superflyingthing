@@ -227,6 +227,8 @@ public class ControllerTestGameState extends GameStateImpl {
 				parameters //
 						.put("spatial", new SpatialImpl(-5f, 0f, 0.8f, 0.8f, 0f)) //
 						.put("controller", controller) //
+						.put("maxLinearSpeed", 3.5f) //
+						.put("maxAngularVelocity", 360f) //
 				);
 
 		parameters.clear();
