@@ -17,7 +17,6 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
@@ -355,12 +354,12 @@ public class Scripts {
 
 			entityFactory.instantiate(particleEmitterTemplate, parameters);
 
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
+			// SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
 
-			parameters.put("spatial", new SpatialImpl(spatial));
-			parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
+			// parameters.put("spatial", new SpatialImpl(spatial));
+			// parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
 
-			entityFactory.instantiate(deadShipTemplate, parameters);
+			// entityFactory.instantiate(deadShipTemplate, parameters);
 
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
@@ -445,7 +444,7 @@ public class Scripts {
 
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
-			
+
 			eventManager.registerEvent(Events.shipReleased, gameDataComponent.ship);
 		}
 	}

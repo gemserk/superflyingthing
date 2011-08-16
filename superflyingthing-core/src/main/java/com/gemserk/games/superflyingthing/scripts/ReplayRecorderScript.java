@@ -6,7 +6,10 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
@@ -20,11 +23,17 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	private boolean recording;
 	private int replayTime;
 	private Entity recordingShip;
-	
+
 	private Replay currentReplay;
 
-	public ReplayRecorderScript(EventListenerManager eventListenerManager) {
+	// TODO: remove thiem, should not be here.
+	private final EntityFactory entityFactory;
+	private final EntityTemplate shipReplayTemplate;
+
+	public ReplayRecorderScript(EventListenerManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate) {
 		this.eventListenerManager = eventListenerManager;
+		this.entityFactory = entityFactory;
+		this.shipReplayTemplate = shipReplayTemplate;
 	}
 
 	@Override
@@ -47,10 +56,13 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		// stops the ship recording
 		recording = false;
 		recordingShip = null;
-		
+
 		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
 		replayComponent.getReplayList().add(currentReplay);
 
+		// add new entity with ship replay template to test...
+
+		entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", currentReplay));
 	}
 
 	private void shipReleased(com.artemis.World world, Entity e, Event event) {

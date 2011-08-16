@@ -66,8 +66,6 @@ import com.gemserk.games.superflyingthing.components.Components.ControllerCompon
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
-import com.gemserk.games.superflyingthing.components.Replay;
-import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
 import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -424,19 +422,19 @@ public class PlayGameState extends GameStateImpl {
 		entityBuilder //
 				.component(new TagComponent(Groups.ReplayRecorder)) //
 				.component(new ReplayComponent(replayList)) //
-				.component(new ScriptComponent(new ReplayRecorderScript(eventListenerManager))) //
+				.component(new ScriptComponent(new ReplayRecorderScript(eventListenerManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
 				.build();
 
-		Replay replay = new Replay();
-
-		replay.replayEntries.add(new ReplayEntry(0, 2f, 2f, 0f));
-		replay.replayEntries.add(new ReplayEntry(1500, 5f, 7f, 320f));
-		replay.replayEntries.add(new ReplayEntry(2500, 8f, 3f, 180f));
-		replay.replayEntries.add(new ReplayEntry(5500, 2f, 7f, 50f));
-		replay.replayEntries.add(new ReplayEntry(7500, 3f, 3f, 0f));
-
-		parameters.clear();
-		entityFactory.instantiate(entityTemplates.getReplayShipTemplate(), parameters.put("replay", replay));
+		// Replay replay = new Replay();
+		//
+		// replay.replayEntries.add(new ReplayEntry(0, 2f, 2f, 0f));
+		// replay.replayEntries.add(new ReplayEntry(1500, 5f, 7f, 320f));
+		// replay.replayEntries.add(new ReplayEntry(2500, 8f, 3f, 180f));
+		// replay.replayEntries.add(new ReplayEntry(5500, 2f, 7f, 50f));
+		// replay.replayEntries.add(new ReplayEntry(7500, 3f, 3f, 0f));
+		//
+		// parameters.clear();
+		// entityFactory.instantiate(entityTemplates.getReplayShipTemplate(), parameters.put("replay", replay));
 
 	}
 
