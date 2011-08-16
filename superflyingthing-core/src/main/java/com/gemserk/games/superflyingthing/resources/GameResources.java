@@ -78,7 +78,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		particleEffect("ThrustEffect", "data/particles/ThrustEffect", "data/particles");
 		particleEmitter("ThrustEmitter", "ThrustEffect", "Thrust");
 
-		texture("ObstacleTexture", "data/images/tile01.jpg", true);
+		texture("ObstacleTexture", "data/images/tile01.png", true);
 
 		texture("PortalTexture", "data/images/portal.png");
 		sprite("PortalSprite", "PortalTexture");
