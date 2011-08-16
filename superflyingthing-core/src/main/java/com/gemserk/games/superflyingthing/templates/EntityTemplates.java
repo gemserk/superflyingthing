@@ -348,10 +348,12 @@ public class EntityTemplates {
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 			Replay replay = parameters.get("replay");
+			
+			e.setGroup(Groups.ReplayShipGroup);
 
 			e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f)));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
-			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.7f, 0.7f, 0.7f, 0.8f)));
+			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.5f, 0.5f, 0.5f, 1f)));
 			e.addComponent(new RenderableComponent(0));
 			e.addComponent(new ScriptComponent(new ScriptCompositeImpl( //
 					new ReplayPlayerScript(replay, entityFactory, getParticleEmitterTemplate()), //

@@ -10,4 +10,6 @@ public class Groups {
 	public static final String ControllerSwitcher = "ControllerSwitcher";
 	public static final String ReplayRecorder = "ReplayRecorder";
 	
+	public static final String ReplayShipGroup = "ReplayShipGroup";
+	
 }

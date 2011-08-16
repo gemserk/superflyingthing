@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.scripts;
 import java.util.ArrayList;
 
 import com.artemis.Entity;
+import com.artemis.utils.ImmutableBag;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
@@ -18,6 +19,7 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
 import com.gemserk.games.superflyingthing.components.ReplayList;
+import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class ReplayRecorderScript extends ScriptJavaImpl {
 
@@ -26,7 +28,6 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	private boolean recording;
 	private int replayTime;
 	private Entity recordingShip;
-	private Spatial recordingShipSpatial;
 
 	private Replay currentReplay;
 
@@ -60,10 +61,6 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	}
 
 	private void shipDeath(com.artemis.World world, Entity e, Event event) {
-		// adds the last replay frame
-		replayTime += world.getDelta();
-		currentReplay.replayEntries.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
-
 		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
 		ReplayList replayList = replayComponent.getReplayList();
 		replayList.add(currentReplay);
@@ -84,8 +81,12 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(e);
 		ReplayList replayList = replayComponent.getReplayList();
 
+		// remove previous replays being reproduced
+		ImmutableBag<Entity> previousReplays = world.getGroupManager().getEntities(Groups.ReplayShipGroup);
+		for (int i = 0; i < previousReplays.size(); i++)
+			previousReplays.get(i).delete();
+
 		// reproduce each replay to test....
-		
 		ArrayList<Replay> replays = replayList.getReplays();
 		for (int i = 0; i < replays.size(); i++) {
 			entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", replays.get(i)));
@@ -106,7 +107,12 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		currentUpdateInterval = replayUpdateInterval;
 
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
-		recordingShipSpatial = spatialComponent.getSpatial();
+
+		// recordingShip could be deleted already :(
+		if (spatialComponent == null)
+			return;
+
+		Spatial recordingShipSpatial = spatialComponent.getSpatial();
 
 		currentReplay.replayEntries.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
 
