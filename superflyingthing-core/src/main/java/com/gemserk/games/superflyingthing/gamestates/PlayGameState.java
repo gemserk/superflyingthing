@@ -128,7 +128,7 @@ public class PlayGameState extends GameStateImpl {
 	EntityTemplate userMessageTemplate;
 
 	private GamePreferences gamePreferences;
-	
+
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
@@ -234,8 +234,8 @@ public class PlayGameState extends GameStateImpl {
 
 		container.add(itemsTakenLabel);
 		container.add(timerLabel);
-		
-		if(tiltValueEnabled){
+
+		if (tiltValueEnabled) {
 			tiltvalue = GuiControls.label("") //
 					.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.90f) //
 					.font(font) //
@@ -293,6 +293,7 @@ public class PlayGameState extends GameStateImpl {
 						gameFinished(event);
 					}
 				});
+				timerLabelBuilder.append("Time: ");
 			}
 
 			// @EventListener(Events.itemTaken)
@@ -323,10 +324,13 @@ public class PlayGameState extends GameStateImpl {
 
 				Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
 				playerController.delete();
-				
+
 				Entity controllerSwitcher = world.getTagManager().getEntity("ControllerSwitcher");
 				controllerSwitcher.delete();
 			}
+
+			private int seconds = -1;
+			private StringBuilder timerLabelBuilder = new StringBuilder();
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
@@ -334,7 +338,15 @@ public class PlayGameState extends GameStateImpl {
 				if (incrementTimer)
 					gameData.time += world.getDelta();
 
-				timerLabel.setText("Time: " + seconds(gameData.time));
+				if (seconds == seconds(gameData.time))
+					return;
+
+				timerLabelBuilder.delete(6, timerLabelBuilder.length());
+				timerLabelBuilder.append(seconds(gameData.time));
+
+				timerLabel.setText(timerLabelBuilder);
+
+				seconds = seconds(gameData.time);
 			}
 
 			private int seconds(int ms) {
@@ -758,18 +770,11 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 	}
-	
-	private static String[] endMessages = new String[] {
-		"Great Job!",
-		"Nicely Done!",
-		"You made it!",
-		"Good Work!",
-		"You Rock!",
-	};
-	
-	
+
+	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
+
 	private String getRandomEndMessage() {
-		return endMessages[MathUtils.random(endMessages.length -1)];
+		return endMessages[MathUtils.random(endMessages.length - 1)];
 	}
 
 	@Override
@@ -786,8 +791,7 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-	
-	
+
 	@Override
 	public void update(int delta) {
 		GamePreferences gamePreferences = game.getGamePreferences();
@@ -816,16 +820,13 @@ public class PlayGameState extends GameStateImpl {
 			}
 		}
 
-		
-		
-		
 		worldWrapper.update(delta);
-		if(tiltValueEnabled){
+		if (tiltValueEnabled) {
 			float pitch = Gdx.input.getPitch();
-			tilttime+=delta;
-			if(tilttime>200){
-				tiltvalue.setText(String.format("%8.4f",pitch));
-				tilttime-=200;
+			tilttime += delta;
+			if (tilttime > 200) {
+				tiltvalue.setText(String.format("%8.4f", pitch));
+				tilttime -= 200;
 			}
 		}
 	}
@@ -837,17 +838,17 @@ public class PlayGameState extends GameStateImpl {
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
 		game.getBackgroundGameScreen().dispose();
-		
+
 		// recreate controller ...
-		
+
 		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
 		if (playerController != null) {
-			
+
 			ControllerComponent controllerComponent = playerController.getComponent(ControllerComponent.class);
 			// mark current controller to be deleted
 			playerController.delete();
-			
-			// creates a new controller using new preferences 
+
+			// creates a new controller using new preferences
 			createGameController(controllerComponent.getController());
 		}
 	}

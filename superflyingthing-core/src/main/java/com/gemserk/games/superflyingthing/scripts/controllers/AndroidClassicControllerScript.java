@@ -6,10 +6,12 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class AndroidClassicControllerScript extends ScriptJavaImpl {
-	
-	// TODO: add some controller explanation 
+
+	// TODO: add some controller explanation
 
 	private final ShipController controller;
+
+	// private int updateCount = 0;
 
 	public AndroidClassicControllerScript(ShipController controller) {
 		this.controller = controller;
@@ -37,12 +39,18 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 			else if (Gdx.input.getX(i) > Gdx.graphics.getWidth() * 0.5f)
 				direction = -1f;
 
+			// updateCount++;
+
 			float movementDirection = controller.getMovementDirection();
 			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.1f, (0.001f * world.getDelta()), 5f);
 			controller.setMovementDirection(movementDirection);
-			
+
 			return;
 		}
+
+		// if (updateCount != 0)
+		// Gdx.app.log("SuperFlyingThing", "updateCount: " + updateCount);
+		// updateCount = 0;
 
 		controller.setMovementDirection(0f);
 	}

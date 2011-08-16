@@ -115,7 +115,7 @@ public class GameOverGameState extends GameStateImpl {
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
 				monitorKeys("mainMenu", Keys.BACK, Keys.ESCAPE);
-				monitorKeys("restartLevel", Keys.R);
+				monitorKey("restartLevel", Keys.R);
 				monitorKeys("nextLevel", Keys.SPACE, Keys.ENTER, Keys.N);
 			}
 		};
