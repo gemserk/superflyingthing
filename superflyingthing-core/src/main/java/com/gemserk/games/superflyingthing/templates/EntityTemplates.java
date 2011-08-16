@@ -124,7 +124,7 @@ public class EntityTemplates {
 	public EntityTemplate getCameraTemplate() {
 		return cameraTemplate;
 	}
-	
+
 	public EntityTemplate getReplayShipTemplate() {
 		return replayShipTemplate;
 	}
@@ -348,7 +348,7 @@ public class EntityTemplates {
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 			Replay replay = parameters.get("replay");
-			
+
 			e.setGroup(Groups.ReplayShipGroup);
 
 			e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f)));
@@ -671,8 +671,8 @@ public class EntityTemplates {
 				float[] pt = triangulator.getTrianglePoint(i, p);
 				v[p] = new Vector2(pt[0], pt[1]);
 
-				mesh2dBuilder.color(0.8f, 0.8f, 0.8f, 1f);
-				mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
+				mesh2dBuilder.color(0.85f, 0.7f, 0.5f, 1f);
+				mesh2dBuilder.texCoord(pt[0] * 0.25f, pt[1] * 0.25f);
 				// mesh2dBuilder.texCoord(pt[0], pt[1]);
 				mesh2dBuilder.vertex(pt[0], pt[1]);
 

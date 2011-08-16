@@ -104,6 +104,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		
 		sprite("StarSprite", "IconsSpriteSheet", 0, 0, 64, 64);
 		sprite("TickSprite", "IconsSpriteSheet", 0, 64, 64, 64);
+		
+		texture("FogTexture", "data/images/fog.png");
+		sprite("FogSprite", "FogTexture");
 
 	}
 

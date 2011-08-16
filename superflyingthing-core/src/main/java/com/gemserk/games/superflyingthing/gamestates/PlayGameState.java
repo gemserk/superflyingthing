@@ -58,10 +58,13 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
@@ -168,10 +171,13 @@ public class PlayGameState extends GameStateImpl {
 		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
 
-		renderLayers.add(new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera));
+		renderLayers.add(new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch));
+		renderLayers.add(new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
 		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(new RenderLayerSpriteBatchImpl(100, 10000, guiCamera));
@@ -319,7 +325,7 @@ public class PlayGameState extends GameStateImpl {
 
 			// @EventListener(Events.destinationPlanetReached)
 			public void gameFinished(Event e) {
-				
+
 				PlayGameState.this.gameFinished();
 				incrementTimer = false;
 				if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
@@ -426,10 +432,50 @@ public class PlayGameState extends GameStateImpl {
 				.component(new ScriptComponent(new ReplayRecorderScript(eventListenerManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
 				.build();
 
+		entityBuilder //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					@Override
+					public void update(com.artemis.World world, Entity e) {
+						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+						CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
+
+						Camera camera = cameraComponent.getCamera();
+
+						secondBackgroundLayerCamera.move(camera.getX(), camera.getY());
+						secondBackgroundLayerCamera.zoom(camera.getZoom() * 0.25f);
+						secondBackgroundLayerCamera.rotate(camera.getAngle());
+					}
+
+				})) //
+				.build();
+
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
 		createWorldLimits(worldWidth, worldHeight, 0.2f);
+	}
+
+	private void generateRandomClouds(float width, float height, int count) {
+		Sprite sprite = resourceManager.getResourceValue("FogSprite");
+
+		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK };
+
+		for (int i = 0; i < count; i++) {
+
+			float x = MathUtils.random(0, width);
+			float y = MathUtils.random(0, height);
+
+			float w = MathUtils.random(50, 100f);
+			float h = w;
+
+			float angle = MathUtils.random(0, 359f);
+
+			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
+			color.a = 0.3f;
+
+			entityTemplates.staticSprite(new Sprite(sprite), x, y, w, h, angle, -200, 0.5f, 0.5f, color);
+		}
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
@@ -526,6 +572,8 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
 					.build();
 
+			generateRandomClouds(worldWidth, worldHeight, 4);
+
 		}
 
 		void create(PlayGameState p) {
@@ -621,6 +669,8 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
 							entityFactory, gameData, controller, false))).build();
+			
+			generateRandomClouds(worldWidth, worldHeight, 4);
 
 		}
 	}
@@ -711,6 +761,8 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
 							entityFactory, gameData, controller, true))).build();
+			
+			generateRandomClouds(worldWidth, worldHeight, 4);
 
 		}
 	}
@@ -735,7 +787,7 @@ public class PlayGameState extends GameStateImpl {
 		entityFactory.instantiate(userMessageTemplate, parameters);
 
 		gameOverTimer = new CountDownTimer(2500, true);
-		
+
 		// start replays when game ends...
 
 		// container.add(message);
@@ -751,6 +803,7 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
+	private Libgdx2dCamera secondBackgroundLayerCamera;
 
 	private String getRandomEndMessage() {
 		return endMessages[MathUtils.random(endMessages.length - 1)];
