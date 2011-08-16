@@ -17,6 +17,7 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
+import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
@@ -38,6 +39,7 @@ public class ComponentWrapper {
 	private static final Class<WeaponComponent> weaponComponentClass = WeaponComponent.class;
 	private static final Class<GrabbableComponent> grabbableComponentClass = GrabbableComponent.class;
 	private static final Class<AttachableComponent> attachableComponentClass = AttachableComponent.class;
+	private static final Class<ReplayComponent> replayComponentClass = ReplayComponent.class;
 	
 	public static Physics getPhysics(Entity e) {
 		return getPhysicsComponent(e).getPhysics();
@@ -110,4 +112,9 @@ public class ComponentWrapper {
 	public static GrabbableComponent getGrabbableComponent(Entity e) {
 		return e.getComponent(grabbableComponentClass);
 	}
+	
+	public static ReplayComponent getReplayComponent(Entity e) {
+		return e.getComponent(replayComponentClass);
+	}
+
 }

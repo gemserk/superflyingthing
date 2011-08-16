@@ -111,11 +111,11 @@ public class Components {
 		public void setMaxAngularVelocity(float maxAngularVelocity) {
 			this.maxAngularVelocity = maxAngularVelocity;
 		}
-		
+
 		public float getMaxLinearSpeed() {
 			return maxLinearSpeed;
 		}
-		
+
 		public void setMaxLinearSpeed(float maxLinearSpeed) {
 			this.maxLinearSpeed = maxLinearSpeed;
 		}
@@ -139,19 +139,19 @@ public class Components {
 		}
 
 	}
-	
+
 	public static class DamageComponent extends Component {
-		
+
 		private float damage;
-		
+
 		public float getDamage() {
 			return damage;
 		}
-		
+
 		public DamageComponent(float damage) {
 			this.damage = damage;
 		}
-		
+
 	}
 
 	public static class TargetComponent extends Component {
@@ -337,7 +337,7 @@ public class Components {
 		public String getTargetPortalId() {
 			return targetPortalId;
 		}
-		
+
 		public float getOutAngle() {
 			return outAngle;
 		}
@@ -345,6 +345,20 @@ public class Components {
 		public PortalComponent(String targetPortalId, float outAngle) {
 			this.targetPortalId = targetPortalId;
 			this.outAngle = outAngle;
+		}
+
+	}
+
+	public static class ReplayComponent extends Component {
+
+		private final ReplayList replayList;
+		
+		public ReplayList getReplayList() {
+			return replayList;
+		}
+
+		public ReplayComponent(ReplayList replayList) {
+			this.replayList = replayList;
 		}
 
 	}
