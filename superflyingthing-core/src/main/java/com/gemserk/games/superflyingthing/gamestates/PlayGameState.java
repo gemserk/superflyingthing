@@ -540,14 +540,14 @@ public class PlayGameState extends GameStateImpl {
 
 			parameters.clear();
 
-			parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
-			parameters.put("angle", laserTurret.angle);
-			parameters.put("fireRate", laserTurret.fireRate);
-			parameters.put("bulletDuration", laserTurret.bulletDuration);
-			parameters.put("currentReloadTime", laserTurret.currentReloadTime);
-			parameters.put("script", new LaserGunScript(entityFactory));
-
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters);
+			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
+					.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
+					.put("angle", laserTurret.angle) //
+					.put("fireRate", laserTurret.fireRate) //
+					.put("bulletDuration", laserTurret.bulletDuration) //
+					.put("currentReloadTime", laserTurret.currentReloadTime) //
+					.put("script", new LaserGunScript(entityFactory)) //
+					);
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {
@@ -555,14 +555,11 @@ public class PlayGameState extends GameStateImpl {
 
 			parameters.clear();
 
-			parameters.put("id", portal.id);
-			parameters.put("targetPortalId", portal.targetPortalId);
-			parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
-			// parameters.put("script", new PortalScript());
-
-			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters);
-
-			// entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
+			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
+					.put("id", portal.id) //
+					.put("targetPortalId", portal.targetPortalId) //
+					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
+					);
 		}
 
 		gameData.totalItems = level.items.size();
