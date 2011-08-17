@@ -159,11 +159,9 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new ContainerSystem());
 		worldWrapper.addUpdateSystem(new OwnerSystem());
+
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-
-		// worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
-
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
 
 		worldWrapper.init();
