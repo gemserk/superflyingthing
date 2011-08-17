@@ -496,99 +496,98 @@ public class PlayGameState extends GameStateImpl {
 		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight, 0f);
 	}
 
-	class ChallengeMode {
+	void loadLevel(Level level) {
+		float worldWidth = level.w;
+		float worldHeight = level.h;
 
-		void loadLevel(EntityTemplates templates, Level level) {
-			float worldWidth = level.w;
-			float worldHeight = level.h;
+		float cameraZoom = Gdx.graphics.getWidth() * level.zoom / 800f;
 
-			// float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
-			float cameraZoom = Gdx.graphics.getWidth() * level.zoom / 800f;
+		final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
-			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+		final ShipController controller = new ShipController();
 
-			final ShipController controller = new ShipController();
+		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
+		for (int i = 0; i < level.destinationPlanets.size(); i++) {
+			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
+			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
+		}
 
-			for (int i = 0; i < level.destinationPlanets.size(); i++) {
-				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
+		parameters.clear();
+		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
+				.put("camera", camera) //
+				.put("libgdxCamera", worldCamera) //
+				.put("script", new CameraScript(eventManager, eventListenerManager)) //
+				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
+				);
+
+		for (int i = 0; i < level.obstacles.size(); i++) {
+			Obstacle o = level.obstacles.get(i);
+			if (o.bodyType == BodyType.StaticBody)
+				entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+			else {
+				entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 			}
+		}
+
+		for (int i = 0; i < level.items.size(); i++) {
+			Level.Item item = level.items.get(i);
+			entityTemplates.star(item.x, item.y, new StarScript(eventManager));
+		}
+
+		for (int i = 0; i < level.laserTurrets.size(); i++) {
+			LaserTurret laserTurret = level.laserTurrets.get(i);
 
 			parameters.clear();
-			parameters.put("camera", camera);
-			parameters.put("libgdxCamera", worldCamera);
-			parameters.put("script", new CameraScript(eventManager, eventListenerManager));
-			parameters.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f));
-			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
 
-			for (int i = 0; i < level.obstacles.size(); i++) {
-				Obstacle o = level.obstacles.get(i);
-				if (o.bodyType == BodyType.StaticBody)
-					entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-				else {
-					entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-				}
-			}
+			parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
+			parameters.put("angle", laserTurret.angle);
+			parameters.put("fireRate", laserTurret.fireRate);
+			parameters.put("bulletDuration", laserTurret.bulletDuration);
+			parameters.put("currentReloadTime", laserTurret.currentReloadTime);
+			parameters.put("script", new LaserGunScript(entityFactory));
 
-			for (int i = 0; i < level.items.size(); i++) {
-				Level.Item item = level.items.get(i);
-				entityTemplates.star(item.x, item.y, new StarScript(eventManager));
-			}
-
-			for (int i = 0; i < level.laserTurrets.size(); i++) {
-				LaserTurret laserTurret = level.laserTurrets.get(i);
-
-				parameters.clear();
-
-				parameters.put("position", new Vector2(laserTurret.x, laserTurret.y));
-				parameters.put("angle", laserTurret.angle);
-				parameters.put("fireRate", laserTurret.fireRate);
-				parameters.put("bulletDuration", laserTurret.bulletDuration);
-				parameters.put("currentReloadTime", laserTurret.currentReloadTime);
-				parameters.put("script", new LaserGunScript(entityFactory));
-
-				entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters);
-			}
-
-			for (int i = 0; i < level.portals.size(); i++) {
-				Portal portal = level.portals.get(i);
-
-				parameters.clear();
-
-				parameters.put("id", portal.id);
-				parameters.put("targetPortalId", portal.targetPortalId);
-				parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
-				// parameters.put("script", new PortalScript());
-
-				entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters);
-
-				// entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
-			}
-
-			gameData.totalItems = level.items.size();
-			if (gameData.totalItems > 0)
-				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-
-			createWorldLimits(worldWidth, worldHeight);
-
-			createGameController(controller);
-
-			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
-					.build();
-
-			generateRandomClouds(worldWidth, worldHeight, 4);
-
+			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters);
 		}
+
+		for (int i = 0; i < level.portals.size(); i++) {
+			Portal portal = level.portals.get(i);
+
+			parameters.clear();
+
+			parameters.put("id", portal.id);
+			parameters.put("targetPortalId", portal.targetPortalId);
+			parameters.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle));
+			// parameters.put("script", new PortalScript());
+
+			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters);
+
+			// entityTemplates.portal(portal.id, portal.targetPortalId, portal.x, portal.y, new PortalScript());
+		}
+
+		gameData.totalItems = level.items.size();
+		if (gameData.totalItems > 0)
+			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+
+		createWorldLimits(worldWidth, worldHeight);
+
+		createGameController(controller);
+
+		entityBuilder //
+				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
+				.build();
+
+		generateRandomClouds(worldWidth, worldHeight, 4);
+	}
+
+	class ChallengeMode {
 
 		void create() {
 
 			if (Levels.hasLevel(GameInformation.level)) {
 				Level level = Levels.level(GameInformation.level);
-				loadLevel(entityTemplates, level);
+				loadLevel(level);
 			}
 
 		}
@@ -615,7 +614,6 @@ public class PlayGameState extends GameStateImpl {
 			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
 
 			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
-
 			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
 
 			float obstacleX = 12f;
