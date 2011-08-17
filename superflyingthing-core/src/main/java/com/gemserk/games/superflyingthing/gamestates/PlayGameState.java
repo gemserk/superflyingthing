@@ -260,13 +260,13 @@ public class PlayGameState extends GameStateImpl {
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			new ChallengeMode().create();
+			loadLevelForChallengeMode();
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			new RandomMode().create(true);
+			loadRandomLevelForRandomMode(true);
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			new RandomMode().create(false);
+			loadRandomLevelForRandomMode(false);
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
@@ -491,10 +491,10 @@ public class PlayGameState extends GameStateImpl {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
 		float limitWidth = 0.1f;
-		entityTemplates.boxObstacle(centerX, -offset, worldWidth, limitWidth, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth, limitWidth, 0f);
-		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight, 0f);
-		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight, 0f);
+		entityTemplates.boxObstacle(centerX, -offset, worldWidth+1, limitWidth, 0f);
+		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth+1, limitWidth, 0f);
+		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight+1, 0f);
+		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight+1, 0f);
 	}
 
 	void loadLevel(Level level, boolean shipInvulnerable) {
@@ -575,23 +575,32 @@ public class PlayGameState extends GameStateImpl {
 		generateRandomClouds(worldWidth, worldHeight, 4);
 	}
 
-	class ChallengeMode {
+	void loadLevelForChallengeMode() {
+		if (Levels.hasLevel(GameInformation.level)) {
+			Level level = Levels.level(GameInformation.level);
+			loadLevel(level, false);
 
-		void create() {
-
-			if (Levels.hasLevel(GameInformation.level)) {
-				Level level = Levels.level(GameInformation.level);
-				loadLevel(level, false);
-
-				gameData.totalItems = level.items.size();
-				if (gameData.totalItems > 0)
-					itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-			}
-
+			gameData.totalItems = level.items.size();
+			if (gameData.totalItems > 0)
+				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 		}
 	}
 
-	class RandomMode {
+	void loadRandomLevelForRandomMode(boolean invulnerable) {
+
+		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator();
+
+		Level level = randomLevelGenerator.generateRandomLevel();
+		loadLevel(level, invulnerable);
+
+		int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);
+
+		gameData.totalItems = starsCount;
+		if (gameData.totalItems > 0)
+			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+	}
+
+	class RandomLevelGenerator {
 
 		boolean insideObstacle;
 
@@ -605,7 +614,7 @@ public class PlayGameState extends GameStateImpl {
 			return shapes[MathUtils.random(shapes.length - 1)];
 		}
 
-		void create(boolean shipInvulnerable) {
+		Level generateRandomLevel() {
 
 			Level level = new Level();
 
@@ -622,14 +631,8 @@ public class PlayGameState extends GameStateImpl {
 				level.obstacles.add(new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f)));
 				obstacleX += 8f;
 			}
-			
-			loadLevel(level, shipInvulnerable);
 
-			int itemsCount = generateStars(level.w, level.h, 10);
-
-			gameData.totalItems = itemsCount;
-			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-
+			return level;
 		}
 
 		private int generateStars(float worldWidth, float worldHeight, int maxStars) {
