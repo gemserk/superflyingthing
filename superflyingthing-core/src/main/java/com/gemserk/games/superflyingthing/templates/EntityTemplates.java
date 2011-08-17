@@ -22,7 +22,6 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.Script;
-import com.gemserk.commons.artemis.scripts.ScriptCompositeImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
@@ -355,10 +354,10 @@ public class EntityTemplates {
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.5f, 0.5f, 0.5f, 1f)));
 			e.addComponent(new RenderableComponent(0));
-			e.addComponent(new ScriptComponent(new ScriptCompositeImpl( //
+			e.addComponent(new ScriptComponent( //
 					new ReplayPlayerScript(replay, entityFactory, getParticleEmitterTemplate()), //
 					new Behaviors.UpdateSpriteFromAnimationScript() //
-					)));
+			));
 
 		}
 	};
