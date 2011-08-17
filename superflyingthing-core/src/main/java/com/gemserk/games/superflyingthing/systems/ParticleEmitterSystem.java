@@ -1,8 +1,5 @@
 package com.gemserk.games.superflyingthing.systems;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
@@ -16,7 +13,7 @@ import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterC
 
 public class ParticleEmitterSystem extends EntityProcessingSystem {
 
-	protected static final Logger logger = LoggerFactory.getLogger(ParticleEmitterSystem.class);
+	// protected static final Logger logger = LoggerFactory.getLogger(ParticleEmitterSystem.class);
 
 	ComponentMapper<ParticleEmitterComponent> particleEmitterComponentMapper;
 

@@ -1,0 +1,82 @@
+
+generated1.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+fog
+  rotate: false
+  xy: 0, 0
+  size: 249, 255
+  orig: 256, 256
+  offset: 0, 1
+  index: -1
+tile01
+  rotate: false
+  xy: 0, 257
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+planet
+  rotate: false
+  xy: 251, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+level-button
+  rotate: false
+  xy: 381, 0
+  size: 128, 128
+  orig: 128, 128
+  offset: 0, 0
+  index: -1
+planet
+  rotate: false
+  xy: 0, 387
+  size: 120, 120
+  orig: 128, 128
+  offset: 4, 4
+  index: -1
+portal
+  rotate: false
+  xy: 130, 257
+  size: 90, 93
+  orig: 128, 128
+  offset: 20, 18
+  index: -1
+white-rectangle-direction
+  rotate: false
+  xy: 122, 387
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+laser-bullet
+  rotate: false
+  xy: 251, 130
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+white-rectangle
+  rotate: false
+  xy: 317, 130
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+star
+  rotate: false
+  xy: 122, 453
+  size: 59, 53
+  orig: 64, 64
+  offset: 3, 6
+  index: -1
+tick
+  rotate: false
+  xy: 188, 387
+  size: 50, 52
+  orig: 64, 64
+  offset: 10, 9
+  index: -1
