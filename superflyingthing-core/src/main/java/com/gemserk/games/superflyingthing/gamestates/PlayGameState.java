@@ -29,6 +29,7 @@ import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
@@ -303,16 +304,23 @@ public class PlayGameState extends GameStateImpl {
 						gameFinished(event);
 					}
 				});
+
+				// EventListenerReflectionRegistrator.registerEventListeners(this, eventListenerManager);
 				timerLabelBuilder.append("Time: ");
 			}
 
-			// @EventListener(Events.itemTaken)
+			// @Override
+			// public void dispose(com.artemis.World world, Entity e) {
+			// EventListenerReflectionRegistrator.unregisterEventListeners(this, eventListenerManager);
+			// }
+
+			@Handles
 			public void itemTaken(Event e) {
 				gameData.currentItems++;
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
 
-			// @EventListener(Events.destinationPlanetReached)
+			@Handles
 			public void gameStarted(Event e) {
 				if (GameInformation.gameMode != GameInformation.ChallengeGameMode)
 					return;
@@ -323,7 +331,7 @@ public class PlayGameState extends GameStateImpl {
 				entityFactory.instantiate(userMessageTemplate, parameters);
 			}
 
-			// @EventListener(Events.destinationPlanetReached)
+			@Handles
 			public void gameFinished(Event e) {
 
 				PlayGameState.this.gameFinished();
@@ -669,7 +677,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
 							entityFactory, gameData, controller, false))).build();
-			
+
 			generateRandomClouds(worldWidth, worldHeight, 4);
 
 		}
@@ -761,7 +769,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
 							entityFactory, gameData, controller, true))).build();
-			
+
 			generateRandomClouds(worldWidth, worldHeight, 4);
 
 		}
