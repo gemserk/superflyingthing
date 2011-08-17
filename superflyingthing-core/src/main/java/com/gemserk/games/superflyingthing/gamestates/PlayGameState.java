@@ -77,6 +77,7 @@ import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
+import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
@@ -496,7 +497,7 @@ public class PlayGameState extends GameStateImpl {
 		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight, 0f);
 	}
 
-	void loadLevel(Level level) {
+	void loadLevel(Level level, boolean shipInvulnerable) {
 		float worldWidth = level.w;
 		float worldHeight = level.h;
 
@@ -562,17 +563,13 @@ public class PlayGameState extends GameStateImpl {
 					);
 		}
 
-		gameData.totalItems = level.items.size();
-		if (gameData.totalItems > 0)
-			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-
 		createWorldLimits(worldWidth, worldHeight);
 
 		createGameController(controller);
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, false))) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
 				.build();
 
 		generateRandomClouds(worldWidth, worldHeight, 4);
@@ -584,7 +581,11 @@ public class PlayGameState extends GameStateImpl {
 
 			if (Levels.hasLevel(GameInformation.level)) {
 				Level level = Levels.level(GameInformation.level);
-				loadLevel(level);
+				loadLevel(level, false);
+
+				gameData.totalItems = level.items.size();
+				if (gameData.totalItems > 0)
+					itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
 
 		}
@@ -605,25 +606,36 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 		void create(boolean shipInvulnerable) {
-			float worldWidth = MathUtils.random(30f, 150f);
-			float worldHeight = MathUtils.random(10f, 20f);
 
-			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
+			Level level = new Level();
 
-			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
-			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+			level.w = MathUtils.random(30f, 250f);
+			level.h = MathUtils.random(10f, 30f);
+
+			level.startPlanet = new StartPlanet(5f, level.h * 0.5f);
+			level.destinationPlanets.add(new DestinationPlanet(level.w - 5f, level.h * 0.5f));
 
 			float obstacleX = 12f;
 
-			while (obstacleX < worldWidth - 17f) {
-				entityTemplates.obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f));
-				entityTemplates.obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f));
+			while (obstacleX < level.w - 17f) {
+				level.obstacles.add(new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f)));
+				level.obstacles.add(new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f)));
 				obstacleX += 8f;
 			}
+			
+			loadLevel(level, shipInvulnerable);
 
+			int itemsCount = generateStars(level.w, level.h, 10);
+
+			gameData.totalItems = itemsCount;
+			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+
+		}
+
+		private int generateStars(float worldWidth, float worldHeight, int maxStars) {
 			int itemsCount = 0;
 
-			for (int i = 0; i < 10; i++) {
+			for (int i = 0; i < maxStars; i++) {
 				float x = MathUtils.random(10f, worldWidth - 10f);
 				float y = MathUtils.random(2f, worldHeight - 2f);
 				float w = 0.2f;
@@ -646,33 +658,7 @@ public class PlayGameState extends GameStateImpl {
 
 				itemsCount++;
 			}
-
-			gameData.totalItems = itemsCount;
-			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-
-			parameters.clear();
-			parameters.put("camera", camera);
-			parameters.put("libgdxCamera", worldCamera);
-			parameters.put("script", new CameraScript(eventManager, eventListenerManager));
-			parameters.put("spatial", new SpatialImpl(5f, worldHeight * 0.5f, 1f, 1f, 0f));
-			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
-
-			final ShipController controller = new ShipController();
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
-
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
-
-			createWorldLimits(worldWidth, worldHeight, 0f);
-
-			createGameController(controller);
-
-			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
-							entityFactory, gameData, controller, shipInvulnerable))).build();
-
-			generateRandomClouds(worldWidth, worldHeight, 4);
-
+			return itemsCount;
 		}
 	}
 

@@ -26,6 +26,13 @@ public class Level {
 		public Obstacle(Vector2[] vertices) {
 			this.vertices = vertices;
 		}
+		
+		public Obstacle(Vector2[] vertices, float x, float y, float angle) {
+			this.vertices = vertices;
+			this.x = x;
+			this.y = y;
+			this.angle = angle;
+		}
 
 	}
 
