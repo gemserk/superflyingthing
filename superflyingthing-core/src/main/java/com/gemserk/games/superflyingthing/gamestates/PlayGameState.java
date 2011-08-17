@@ -259,13 +259,13 @@ public class PlayGameState extends GameStateImpl {
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			new ChallengeMode().create(this);
+			new ChallengeMode().create();
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			new PracticeMode().create(this);
+			new PracticeMode().create();
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			new RandomMode().create(this);
+			new RandomMode().create();
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
@@ -584,7 +584,7 @@ public class PlayGameState extends GameStateImpl {
 
 		}
 
-		void create(PlayGameState p) {
+		void create() {
 
 			if (Levels.hasLevel(GameInformation.level)) {
 				Level level = Levels.level(GameInformation.level);
@@ -608,9 +608,7 @@ public class PlayGameState extends GameStateImpl {
 			return shapes[MathUtils.random(shapes.length - 1)];
 		}
 
-		void create(PlayGameState p) {
-			World physicsWorld = p.physicsWorld;
-
+		void create() {
 			float worldWidth = MathUtils.random(30f, 150f);
 			float worldHeight = MathUtils.random(10f, 20f);
 
@@ -697,10 +695,7 @@ public class PlayGameState extends GameStateImpl {
 			return shapes[MathUtils.random(shapes.length - 1)];
 		}
 
-		void create(PlayGameState p) {
-			World physicsWorld = p.physicsWorld;
-
-			p.entityTemplates = entityTemplates;
+		void create() {
 
 			float worldWidth = MathUtils.random(40f, 40f);
 			float worldHeight = MathUtils.random(15f, 15f);
