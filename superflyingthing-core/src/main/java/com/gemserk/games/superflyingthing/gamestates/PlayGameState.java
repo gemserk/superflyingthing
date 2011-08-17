@@ -173,7 +173,7 @@ public class PlayGameState extends GameStateImpl {
 		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		final Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
@@ -468,14 +468,14 @@ public class PlayGameState extends GameStateImpl {
 	private void generateRandomClouds(float width, float height, int count) {
 		Sprite sprite = resourceManager.getResourceValue("FogSprite");
 
-		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK };
+		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK, Colors.magenta };
 
 		for (int i = 0; i < count; i++) {
 
 			float x = MathUtils.random(0, width);
 			float y = MathUtils.random(0, height);
 
-			float w = MathUtils.random(50, 100f);
+			float w = MathUtils.random(50, 80f);
 			float h = w;
 
 			float angle = MathUtils.random(0, 359f);
@@ -491,10 +491,10 @@ public class PlayGameState extends GameStateImpl {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
 		float limitWidth = 0.1f;
-		entityTemplates.boxObstacle(centerX, -offset, worldWidth+1, limitWidth, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth+1, limitWidth, 0f);
-		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight+1, 0f);
-		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight+1, 0f);
+		entityTemplates.boxObstacle(centerX, -offset, worldWidth + 1, limitWidth, 0f);
+		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
+		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight + 1, 0f);
+		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
 	}
 
 	void loadLevel(Level level, boolean shipInvulnerable) {
@@ -572,7 +572,7 @@ public class PlayGameState extends GameStateImpl {
 				.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
 				.build();
 
-		generateRandomClouds(worldWidth, worldHeight, 4);
+		generateRandomClouds(worldWidth, worldHeight, 6);
 	}
 
 	void loadLevelForChallengeMode() {
@@ -636,6 +636,8 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 		private int generateStars(float worldWidth, float worldHeight, int maxStars) {
+			// I need the bodies already loaded to call the query callback to know if I can create a new star in the position or not...
+			// don't know another solution for now.
 			int itemsCount = 0;
 
 			for (int i = 0; i < maxStars; i++) {
@@ -701,7 +703,6 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
-	private Libgdx2dCamera secondBackgroundLayerCamera;
 
 	private String getRandomEndMessage() {
 		return endMessages[MathUtils.random(endMessages.length - 1)];
