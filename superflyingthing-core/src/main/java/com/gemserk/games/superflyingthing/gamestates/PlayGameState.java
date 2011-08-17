@@ -262,10 +262,10 @@ public class PlayGameState extends GameStateImpl {
 			new ChallengeMode().create();
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			new PracticeMode().create();
+			new RandomMode().create(true);
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			new RandomMode().create();
+			new RandomMode().create(false);
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
@@ -608,7 +608,7 @@ public class PlayGameState extends GameStateImpl {
 			return shapes[MathUtils.random(shapes.length - 1)];
 		}
 
-		void create() {
+		void create(boolean shipInvulnerable) {
 			float worldWidth = MathUtils.random(30f, 150f);
 			float worldHeight = MathUtils.random(10f, 20f);
 
@@ -674,96 +674,7 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
-							entityFactory, gameData, controller, false))).build();
-
-			generateRandomClouds(worldWidth, worldHeight, 4);
-
-		}
-	}
-
-	class PracticeMode {
-
-		boolean insideObstacle;
-
-		private final Shape[] shapes = new Shape[] { //
-		new Shape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }), //
-				new Shape(new Vector2[] { new Vector2(1.5f, 0f), new Vector2(0.5f, 2f), new Vector2(-1.5f, 1f), new Vector2(-0.5f, -2.5f) }), //
-				new Shape(new Vector2[] { new Vector2(2f, 1f), new Vector2(-3f, 1.2f), new Vector2(-2.5f, -0.8f), new Vector2(2.5f, -2f) }), //
-		};
-
-		private Shape getRandomShape() {
-			return shapes[MathUtils.random(shapes.length - 1)];
-		}
-
-		void create() {
-
-			float worldWidth = MathUtils.random(40f, 40f);
-			float worldHeight = MathUtils.random(15f, 15f);
-
-			Gdx.app.log("SuperFlyingThing", "new world generated with size " + worldWidth + ", " + worldHeight);
-
-			float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
-
-			Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
-
-			float obstacleX = 12f;
-
-			while (obstacleX < worldWidth - 17f) {
-				entityTemplates.obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f));
-				entityTemplates.obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, worldHeight), MathUtils.random(0f, 359f));
-				obstacleX += 8f;
-			}
-
-			int itemsCount = 0;
-
-			for (int i = 0; i < 10; i++) {
-				float x = MathUtils.random(10f, worldWidth - 10f);
-				float y = MathUtils.random(2f, worldHeight - 2f);
-				float w = 0.2f;
-				float h = 0.2f;
-
-				insideObstacle = false;
-
-				physicsWorld.QueryAABB(new QueryCallback() {
-					@Override
-					public boolean reportFixture(Fixture fixture) {
-						insideObstacle = true;
-						return false;
-					}
-				}, x - w, y - h, x + w, y + h);
-
-				if (insideObstacle)
-					continue;
-
-				entityTemplates.star(x, y, new StarScript(eventManager));
-
-				itemsCount++;
-			}
-
-			gameData.totalItems = itemsCount;
-			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-
-			parameters.clear();
-			parameters.put("camera", camera);
-			parameters.put("libgdxCamera", worldCamera);
-			parameters.put("script", new CameraScript(eventManager, eventListenerManager));
-			parameters.put("spatial", new SpatialImpl(5f, worldHeight * 0.5f, 1f, 1f, 0f));
-			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters);
-
-			final ShipController controller = new ShipController();
-
-			Entity startPlanet = entityTemplates.startPlanet(5f, worldHeight * 0.5f, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
-
-			entityTemplates.destinationPlanet(worldWidth - 5f, worldHeight * 0.5f, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
-
-			createWorldLimits(worldWidth, worldHeight, 0f);
-
-			createGameController(controller);
-
-			entityBuilder //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, entityTemplates, //
-							entityFactory, gameData, controller, true))).build();
+							entityFactory, gameData, controller, shipInvulnerable))).build();
 
 			generateRandomClouds(worldWidth, worldHeight, 4);
 
