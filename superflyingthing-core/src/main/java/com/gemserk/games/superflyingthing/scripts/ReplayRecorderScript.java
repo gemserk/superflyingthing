@@ -105,7 +105,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		if (frameTime < 0.1f)
 			return;
 
-		frameTime = 0f;
+		frameTime -= 0.1f;
 
 		replayTime += 100;
 
