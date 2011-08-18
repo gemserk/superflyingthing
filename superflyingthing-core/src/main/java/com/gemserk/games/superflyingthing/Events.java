@@ -25,5 +25,17 @@ public class Events {
 	 * Sent when the ship was released from the planet.
 	 */
 	public static final String shipReleased = "shipReleased";
+	
+	// Gamestate events
+	
+	/**
+	 * Used to send the event to all game states to toggle first background rendering.
+	 */
+	public static final String toggleFirstBackground = "toggleFirstBackground";
+	
+	/**
+	 * Used to send the event to all game states to toggle second background rendering.
+	 */
+	public static final String toggleSecondBackground = "toggleSecondBackground";
 
 }

@@ -290,8 +290,9 @@ public class SettingsGameState extends GameStateImpl {
 
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			back();
-	}
 
+	}
+	
 	@Override
 	public void show() {
 		super.show();

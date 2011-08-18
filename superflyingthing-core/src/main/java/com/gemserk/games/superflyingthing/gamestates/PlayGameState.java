@@ -152,6 +152,18 @@ public class PlayGameState extends GameStateImpl {
 		this.game = game;
 	}
 
+	@Handles
+	public void toggleFirstBackground(Event e) {
+		if (renderLayers != null)
+			renderLayers.toggle(Layers.FirstBackground);
+	}
+
+	@Handles
+	public void toggleSecondBackground(Event e) {
+		if (renderLayers != null)
+			renderLayers.toggle(Layers.SecondBackground);
+	}
+
 	@Override
 	public void init() {
 		gameOverTimeTransition = null;
@@ -175,13 +187,13 @@ public class PlayGameState extends GameStateImpl {
 		final Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
-		RenderLayers renderLayers = new RenderLayers();
+		renderLayers = new RenderLayers();
 
-		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
+		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch), game.getGamePreferences().isSecondBackgroundEnabled());
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
-		
+
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
 		worldWrapper = new WorldWrapper(world);
@@ -677,6 +689,7 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
+	private RenderLayers renderLayers;
 
 	private String getRandomEndMessage() {
 		return endMessages[MathUtils.random(endMessages.length - 1)];

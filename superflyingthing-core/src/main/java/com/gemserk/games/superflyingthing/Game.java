@@ -16,6 +16,13 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
+import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventListenerManager;
+import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
+import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
@@ -86,6 +93,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
+	private EventListenerManager eventListenerManager;
+	private EventManager eventManager;
+
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
 	 */
@@ -155,6 +165,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
 
+	/**
+	 * Used to communicate between gamestates.
+	 */
+	public EventListenerManager getEventListenerManager() {
+		return eventListenerManager;
+	}
+	
+	/**
+	 * Used to communicate between gamestates.
+	 */
+	public EventManager getEventManager() {
+		return eventManager;
+	}
+
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}
@@ -187,6 +211,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				playerProfile.setControllerType(ControllerType.KeyboardController);
 			gamePreferences.updatePlayerProfile(playerProfile);
 		}
+
+		eventListenerManager = new EventListenerManagerImpl();
+		eventManager = new EventManagerImpl();
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
@@ -237,7 +264,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		backgroundGameScreen = new ScreenImpl(backgroundGameState);
 		settingsScreen = new ScreenImpl(settingsGameState);
 		controllersTestScreen = new ScreenImpl(controllerTestGameState);
-
+		
+		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventListenerManager);
+		
+		registrator.registerEventListeners(playGameState);
+		registrator.registerEventListeners(backgroundGameState);
+		registrator.registerEventListeners(this);
+		
 		setScreen(splashScreen);
 
 		Analytics.traker.trackPageView("/start", "/start", null);
@@ -249,6 +282,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("grabScreenshot", Keys.NUM_9);
 				monitorKey("toggleFps", Keys.NUM_8);
 				monitorKey("toggleBox2dDebug", Keys.NUM_7);
+				monitorKey("toggleBackground", Keys.NUM_6);
 			}
 		};
 
@@ -364,6 +398,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		if (inputDevicesMonitor.getButton("toggleDebug").isReleased())
 			Game.setDebugMode(!Game.isDebugMode());
+		
+		if (inputDevicesMonitor.getButton("toggleBackground").isReleased()) {
+			eventManager.registerEvent(Events.toggleFirstBackground, this);
+			eventManager.registerEvent(Events.toggleSecondBackground, this);
+		}
 
 		super.render();
 
@@ -385,6 +424,23 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		if (Game.isDebugMode()) {
 			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}
+		
+		for (int i = 0; i < eventManager.getEventCount(); i++) {
+			Event event = eventManager.getEvent(i);
+			eventListenerManager.process(event);
+		}
+		
+		eventManager.clear();
+	}
+	
+	@Handles
+	public void toggleFirstBackground(Event e) {
+		gamePreferences.setFirstBackgroundEnabled(!gamePreferences.isFirstBackgroundEnabled());
+	}
+
+	@Handles
+	public void toggleSecondBackground(Event e) {
+		gamePreferences.setSecondBackgroundEnabled(!gamePreferences.isSecondBackgroundEnabled());
 	}
 
 	@Override

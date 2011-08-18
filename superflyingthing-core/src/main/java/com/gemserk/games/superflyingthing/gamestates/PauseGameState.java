@@ -32,7 +32,7 @@ public class PauseGameState extends GameStateImpl {
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
-	
+
 	public PauseGameState(Game game) {
 		this.game = game;
 	}
@@ -59,7 +59,7 @@ public class PauseGameState extends GameStateImpl {
 				.color(Color.GREEN) //
 				.font(titleFont)//
 				.build());
-		
+
 		container.add(GuiControls.textButton() //
 				.position(centerX, height * 0.73f) //
 				.text("Resume") //
@@ -138,12 +138,12 @@ public class PauseGameState extends GameStateImpl {
 			}
 		};
 	}
-	
+
 	private void instructions() {
 		game.getGamePreferences().setTutorialEnabled(true);
 		game.transition(game.getInstructionsScreen(), 500, 0);
 	}
-	
+
 	private void settings() {
 		// sets previous screen....
 		game.getGameData().put("previousScreen", game.getPauseScreen());
@@ -161,7 +161,7 @@ public class PauseGameState extends GameStateImpl {
 						game.getPlayScreen().restart();
 					}
 				}).start();
-		
+
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level not finished", GameInformation.gameData.deaths);
@@ -196,7 +196,7 @@ public class PauseGameState extends GameStateImpl {
 			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
 		}
 	}
-	
+
 	private void resumeLevel() {
 		game.transition(game.getPlayScreen(), 500, 250);
 	}
