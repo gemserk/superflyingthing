@@ -165,7 +165,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 
-		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch));
+		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();

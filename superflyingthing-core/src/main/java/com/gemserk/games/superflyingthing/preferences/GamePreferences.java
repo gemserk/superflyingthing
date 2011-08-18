@@ -6,9 +6,7 @@ import com.badlogic.gdx.Preferences;
 public class GamePreferences {
 
 	private final Preferences preferences;
-
 	private PlayerProfile playerProfile;
-
 	private PlayerProfileJsonSerializer playerProfileJsonSerializer;
 
 	public boolean isTutorialEnabled() {
@@ -45,4 +43,23 @@ public class GamePreferences {
 		Gdx.app.log("SuperFlyingThing", "Saving current player profile information");
 	}
 
+	public boolean isFirstBackgroundEnabled() {
+		return preferences.getBoolean("firstBackgroundEnabled", false);
+	}
+
+	public void setFirstBackgroundEnabled(boolean firstBackgroundEnabled) {
+		preferences.putBoolean("firstBackgroundEnabled", firstBackgroundEnabled);
+		preferences.flush();
+		Gdx.app.log("SuperFlyingThing", "Saving preference firstBackgroundEnabled: " + firstBackgroundEnabled);
+	}
+	
+	public boolean isSecondBackgroundEnabled() {
+		return preferences.getBoolean("secondBackgroundEnabled", false);
+	}
+
+	public void setSecondBackgroundEnabled(boolean secondBackgroundEnabled) {
+		preferences.putBoolean("secondBackgroundEnabled", secondBackgroundEnabled);
+		preferences.flush();
+		Gdx.app.log("SuperFlyingThing", "Saving preference secondBackgroundEnabled: " + secondBackgroundEnabled);
+	}
 }

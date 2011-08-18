@@ -141,8 +141,8 @@ public class BackgroundGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 		
-		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch));
-		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
+		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
+		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch), game.getGamePreferences().isSecondBackgroundEnabled());
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
@@ -263,7 +263,7 @@ public class BackgroundGameState extends GameStateImpl {
 		float worldWidth = level.w;
 		float worldHeight = level.h;
 
-		float cameraZoom = Gdx.graphics.getWidth() * 10f / 800f;
+		float cameraZoom = Gdx.graphics.getWidth() * 12f / 800f;
 
 		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, //
 				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
