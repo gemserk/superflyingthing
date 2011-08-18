@@ -15,8 +15,8 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
-import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
@@ -129,7 +129,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	GameData gameData;
 
-	private EventListenerManager eventListenerManager;
+	private EventManager eventListenerManager;
 
 	private Container container;
 	private Libgdx2dCamera guiCamera;

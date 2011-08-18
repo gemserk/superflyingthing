@@ -24,8 +24,8 @@ import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
@@ -125,7 +125,7 @@ public class PlayGameState extends GameStateImpl {
 	private JointBuilder jointBuilder;
 	private Text timerLabel;
 
-	private EventListenerManager eventListenerManager;
+	private EventManager eventListenerManager;
 
 	EntityTemplate userMessageTemplate;
 

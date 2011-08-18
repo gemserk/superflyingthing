@@ -17,8 +17,8 @@ import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
@@ -91,7 +91,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private EventListenerManager eventListenerManager;
+	private EventManager eventListenerManager;
 
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
@@ -165,7 +165,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	/**
 	 * Used to communicate between gamestates.
 	 */
-	public EventListenerManager getEventListenerManager() {
+	public EventManager getEventListenerManager() {
 		return eventListenerManager;
 	}
 	

@@ -9,7 +9,6 @@ import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
-import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
@@ -129,7 +128,7 @@ public class Scripts {
 
 	public static class StartPlanetScript extends ScriptJavaImpl {
 
-		private final EventListenerManager eventListenerManager;
+		private final EventManager eventListenerManager;
 		private final World physicsWorld;
 
 		Script attachEntityBehavior;
@@ -137,7 +136,7 @@ public class Scripts {
 
 		boolean enabled = true;
 
-		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventListenerManager eventListenerManager) {
+		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventManager eventListenerManager) {
 			this.physicsWorld = physicsWorld;
 			this.eventListenerManager = eventListenerManager;
 			attachEntityBehavior = new Behaviors.AttachEntityScript(jointBuilder);
@@ -261,7 +260,7 @@ public class Scripts {
 	public static class GameScript extends ScriptJavaImpl {
 
 		private final EntityFactory entityFactory;
-		private final EventListenerManager eventListenerManager;
+		private final EventManager eventListenerManager;
 
 		private ShipController controller;
 		private GameData gameData;
@@ -279,7 +278,7 @@ public class Scripts {
 
 		// private EntityTemplate laserGunTemplate;
 
-		public GameScript(EventListenerManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
+		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
 				ShipController controller, boolean invulnerable) {
 
 			this.eventListenerManager = eventListenerManager;

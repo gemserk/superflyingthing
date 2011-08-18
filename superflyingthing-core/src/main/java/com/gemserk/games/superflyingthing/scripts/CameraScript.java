@@ -6,7 +6,7 @@ import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
-import com.gemserk.commons.artemis.events.EventListenerManager;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -19,7 +19,7 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class CameraScript extends ScriptJavaImpl {
 
-	private final EventListenerManager eventListenerManager;
+	private final EventManager eventListenerManager;
 
 	private final Vector2 transitionOrigin = new Vector2();
 	private final Vector2 transitionTarget = new Vector2();
@@ -29,7 +29,7 @@ public class CameraScript extends ScriptJavaImpl {
 	boolean movingToTarget = false;
 	private Entity owner;
 
-	public CameraScript(EventListenerManager eventListenerManager) {
+	public CameraScript(EventManager eventListenerManager) {
 		this.eventListenerManager = eventListenerManager;
 	}
 

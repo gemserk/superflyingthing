@@ -7,7 +7,7 @@ import com.artemis.utils.ImmutableBag;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
-import com.gemserk.commons.artemis.events.EventListenerManager;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -24,7 +24,7 @@ import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class ReplayRecorderScript extends ScriptJavaImpl {
 
-	private final EventListenerManager eventListenerManager;
+	private final EventManager eventListenerManager;
 
 	private boolean recording;
 	private int replayTime;
@@ -41,7 +41,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	private final EntityFactory entityFactory;
 	private final EntityTemplate shipReplayTemplate;
 
-	public ReplayRecorderScript(EventListenerManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate) {
+	public ReplayRecorderScript(EventManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate) {
 		this.eventListenerManager = eventListenerManager;
 		this.entityFactory = entityFactory;
 		this.shipReplayTemplate = shipReplayTemplate;
