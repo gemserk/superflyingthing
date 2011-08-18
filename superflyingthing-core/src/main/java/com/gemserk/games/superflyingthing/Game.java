@@ -350,6 +350,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	@Override
 	public void render() {
+		
+		GlobalTime.setDelta(Gdx.graphics.getDeltaTime());
+		
 		inputDevicesMonitor.update();
 
 		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased())

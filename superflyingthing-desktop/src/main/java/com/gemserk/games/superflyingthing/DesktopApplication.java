@@ -19,9 +19,9 @@ public class DesktopApplication {
 	protected static final Logger logger = LoggerFactory.getLogger(DesktopApplication.class);
 
 	public static void main(String[] argv) {
-		
+
 		System.out.println(System.getProperty("java.version"));
-		
+
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-4");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
@@ -35,8 +35,8 @@ public class DesktopApplication {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
-//		 config.width = 320;
-//		 config.height = 240;
+		// config.width = 320;
+		// config.height = 240;
 		// config.width = 1024;
 		// config.height = 768;
 		config.fullscreen = false;
@@ -51,7 +51,7 @@ public class DesktopApplication {
 				// Gdx.graphics.setVSync(true);
 				Display.setVSyncEnabled(false);
 				String remoteInput = System.getProperty("remoteInput");
-				if(remoteInput != null)
+				if (remoteInput != null)
 					Gdx.input = new RemoteInput(8190);
 				super.create();
 			}

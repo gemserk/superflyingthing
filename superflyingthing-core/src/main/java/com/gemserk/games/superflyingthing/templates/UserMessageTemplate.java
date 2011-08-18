@@ -16,6 +16,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.resources.ResourceManager;
 
 public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
@@ -43,7 +44,7 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 		final Integer time = parameters.get("time");
 		BitmapFont font = resourceManager.getResourceValue(fontId);
 		
-		float animationTime = (float) time;
+		float animationTime = (float) time  * 0.001f;
 
 		final Text textControl = GuiControls.label(text) //
 				.position(position.x, position.y) //
@@ -70,16 +71,13 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 
 		entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
-			int aliveTime = time;
 			Text text = textControl;
 			Animation internalAnimation = animation;
 
 			@Override
 			public void update(World world, Entity e) {
-				internalAnimation.update(world.getDelta());
-				aliveTime -= world.getDelta();
+				internalAnimation.update(GlobalTime.getDelta());
 				if (internalAnimation.isFinished()) {
-					// if (aliveTime <= 0) {
 					e.delete();
 					guiContainer.remove(text);
 				}
