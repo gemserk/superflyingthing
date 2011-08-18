@@ -10,7 +10,6 @@ import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
-import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
@@ -24,8 +23,6 @@ public class SplashGameState extends GameStateImpl {
 
 	private ResourceManager<String> resourceManager;
 
-	private CountDownTimer timer;
-
 	private Sprite gemserkLogo;
 
 	private Sprite lwjglLogo;
@@ -35,6 +32,8 @@ public class SplashGameState extends GameStateImpl {
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
+
+	float time;
 
 	public SplashGameState(Game game) {
 		this.game = game;
@@ -70,7 +69,7 @@ public class SplashGameState extends GameStateImpl {
 
 		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1000));
 
-		timer = new CountDownTimer(2000, true);
+		time = 2f;
 	}
 
 	@Override
@@ -93,11 +92,11 @@ public class SplashGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 
 		if (Gdx.input.justTouched())
-			timer.update(10000);
+			time = 0f;
 
-		timer.update(getDeltaInMs());
+		time -= getDelta();
 
-		if (timer.isRunning())
+		if (time > 0f)
 			return;
 
 		game.transition(game.getMainMenuScreen()) //
