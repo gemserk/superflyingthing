@@ -137,7 +137,7 @@ public class PlayGameState extends GameStateImpl {
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
-	
+
 	private TimeTransition gameOverTimeTransition;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
@@ -181,7 +181,7 @@ public class PlayGameState extends GameStateImpl {
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
 		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
-		renderLayers.add(new RenderLayerSpriteBatchImpl(100, 10000, guiCamera));
+		// renderLayers.add(new RenderLayerSpriteBatchImpl(100, 10000, guiCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
@@ -659,7 +659,7 @@ public class PlayGameState extends GameStateImpl {
 
 		entityFactory.instantiate(userMessageTemplate, parameters);
 
-//		gameOverTimer = new CountDownTimer(2500, true);
+		// gameOverTimer = new CountDownTimer(2500, true);
 		gameOverTimeTransition = new TimeTransition();
 		gameOverTimeTransition.start(2.5f);
 
