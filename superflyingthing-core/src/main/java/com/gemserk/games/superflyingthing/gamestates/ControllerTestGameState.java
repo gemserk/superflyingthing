@@ -46,6 +46,7 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
@@ -164,8 +165,8 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 
-		renderLayers.add("Background", new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch));
-		renderLayers.add("World", new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
+		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch));
+		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);

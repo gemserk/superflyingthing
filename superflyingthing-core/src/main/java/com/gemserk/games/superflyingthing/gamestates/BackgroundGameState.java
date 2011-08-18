@@ -48,6 +48,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
@@ -140,10 +141,10 @@ public class BackgroundGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 		
-		renderLayers.add("Background", new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch));
-		renderLayers.add("SecondBackground", new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
-		renderLayers.add("StaticObstacles", new RenderLayerShapeImpl(-100, -50, worldCamera));
-		renderLayers.add("World", new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
+		renderLayers.add(Layers.Background, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch));
+		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
+		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
+		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
