@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import org.lwjgl.opengl.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -49,7 +48,7 @@ public class DesktopApplication {
 			@Override
 			public void create() {
 				// Gdx.graphics.setVSync(true);
-				Display.setVSyncEnabled(false);
+//				Display.setVSyncEnabled(true);
 				String remoteInput = System.getProperty("remoteInput");
 				if (remoteInput != null)
 					Gdx.input = new RemoteInput(8190);

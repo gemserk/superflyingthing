@@ -6,6 +6,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 
 public class MovingObstacleScript extends ScriptJavaImpl {
@@ -32,9 +33,9 @@ public class MovingObstacleScript extends ScriptJavaImpl {
 		Body body = physics.getBody();
 
 		Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
-		force.nor().mul(50000f);
+		force.nor().mul(5000f * 100f * GlobalTime.getDelta());
 		body.applyForce(force, spatial.getPosition());
-		body.applyTorque(10f);
+		body.applyTorque(10f * GlobalTime.getDelta());
 
 		if (spatial.getPosition().dst(getCurrentTargetPosition()) < 1f) {
 			currentTarget++;
