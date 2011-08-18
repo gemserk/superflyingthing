@@ -322,14 +322,14 @@ public class PlayGameState extends GameStateImpl {
 				controllerSwitcher.delete();
 			}
 
-			private int seconds = -1;
+			private float seconds = -1;
 			private StringBuilder timerLabelBuilder = new StringBuilder();
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
 
 				if (incrementTimer)
-					gameData.time += world.getDelta();
+					gameData.time += getDelta();
 
 				if (seconds == seconds(gameData.time))
 					return;
@@ -342,8 +342,8 @@ public class PlayGameState extends GameStateImpl {
 				seconds = seconds(gameData.time);
 			}
 
-			private int seconds(int ms) {
-				return ms / 1000;
+			private int seconds(float seconds) {
+				return (int) seconds;
 			}
 
 		})).build();
