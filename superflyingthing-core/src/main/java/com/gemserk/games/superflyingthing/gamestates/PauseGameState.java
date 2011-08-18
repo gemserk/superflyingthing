@@ -221,10 +221,10 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		game.getPlayScreen().render(delta);
+		game.getPlayScreen().render();
 
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
@@ -233,8 +233,8 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
-		Synchronizers.synchronize(delta);
+	public void update() {
+		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("resume").isReleased())

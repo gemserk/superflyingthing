@@ -42,6 +42,8 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 		final Integer iterations = parameters.get("iterations");
 		final Integer time = parameters.get("time");
 		BitmapFont font = resourceManager.getResourceValue(fontId);
+		
+		float animationTime = (float) time;
 
 		final Text textControl = GuiControls.label(text) //
 				.position(position.x, position.y) //
@@ -51,10 +53,10 @@ public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {
 
 		final Animation animation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
 				.value(Builders.timelineValue("color") //
-						.keyFrame(0, new Color(1f, 1f, 1f, 0f)) //
-						.keyFrame(time * 0.25f, Color.WHITE) //
-						.keyFrame(time * 0.75f, Color.WHITE) //
-						.keyFrame(time, new Color(1f, 1f, 1f, 0f)) //
+						.keyFrame(0f, new Color(1f, 1f, 1f, 0f)) //
+						.keyFrame(animationTime * 0.25f, Color.WHITE) //
+						.keyFrame(animationTime * 0.75f, Color.WHITE) //
+						.keyFrame(animationTime, new Color(1f, 1f, 1f, 0f)) //
 				)) //
 				.delay(0f) //
 				.speed(1f) //

@@ -328,7 +328,7 @@ public class EntityTemplates {
 
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(spriteComponent);
-			entity.addComponent(new RenderableComponent(-1));
+			entity.addComponent(new RenderableComponent(1));
 		}
 	};
 
@@ -405,7 +405,7 @@ public class EntityTemplates {
 			entity.addComponent(new SpatialComponent(bulletSpatial));
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), color));
-			entity.addComponent(new RenderableComponent(2));
+			entity.addComponent(new RenderableComponent(5));
 			entity.addComponent(new Components.TimerComponent(duration));
 			entity.addComponent(new Components.DamageComponent(damage));
 			entity.addComponent(new OwnerComponent(owner));
@@ -452,7 +452,7 @@ public class EntityTemplates {
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new AnimationComponent(new Animation[] { idleAnimation }));
 			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), color));
-			entity.addComponent(new RenderableComponent(3));
+			entity.addComponent(new RenderableComponent(4));
 			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
 			entity.addComponent(new OwnerComponent(owner));
 			entity.addComponent(new ContainerComponent());
@@ -487,7 +487,7 @@ public class EntityTemplates {
 			entity.addComponent(new TagComponent(id));
 			entity.addComponent(new SpriteComponent(sprite));
 			entity.addComponent(new Components.PortalComponent(targetPortalId, spatial.getAngle()));
-			entity.addComponent(new RenderableComponent(4));
+			entity.addComponent(new RenderableComponent(-5));
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new ScriptComponent(script));
 
@@ -531,7 +531,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 
 		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame()));
-		e.addComponent(new RenderableComponent(0));
+		e.addComponent(new RenderableComponent(3));
 		e.addComponent(new GrabbableComponent());
 		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
 		e.addComponent(new ScriptComponent(script));

@@ -276,9 +276,10 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		game.getBackgroundGameScreen().render(delta);
+		game.getBackgroundGameScreen().setDelta(getDelta());
+		game.getBackgroundGameScreen().render();
 		spriteBatch.begin();
 		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
@@ -286,12 +287,14 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
-		Synchronizers.synchronize(delta);
+	public void update() {
+		Synchronizers.synchronize(getDelta());
+		
 		container.update();
 		inputDevicesMonitor.update();
-
-		game.getBackgroundGameScreen().update(delta);
+		
+		game.getBackgroundGameScreen().setDelta(getDelta());
+		game.getBackgroundGameScreen().update();
 
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			back();

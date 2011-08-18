@@ -74,7 +74,7 @@ public class SplashGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 
@@ -89,26 +89,30 @@ public class SplashGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
-		Synchronizers.synchronize(delta);
+	public void update() {
+		Synchronizers.synchronize(getDelta());
 
 		if (Gdx.input.justTouched())
 			timer.update(10000);
 
-		timer.update(delta);
+		timer.update(getDeltaInMs());
 
 		if (timer.isRunning())
 			return;
 
-		game.transition(game.getMainMenuScreen(), 500, 500);
+		game.transition(game.getMainMenuScreen()) //
+				.leaveTime(500) //
+				.enterTime(500) //
+				.disposeCurrent() //
+				.start();
 	}
-	
+
 	@Override
 	public void resume() {
 		game.getAdWhirlViewHandler().hide();
 		Gdx.input.setCatchBackKey(true);
 	}
-	
+
 	@Override
 	public void dispose() {
 		resourceManager.unloadAll();

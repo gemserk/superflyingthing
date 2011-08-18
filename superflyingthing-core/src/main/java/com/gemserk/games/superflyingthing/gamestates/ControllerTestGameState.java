@@ -272,7 +272,7 @@ public class ControllerTestGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		worldWrapper.render();
 
@@ -283,9 +283,9 @@ public class ControllerTestGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
-		Synchronizers.synchronize(delta);
-		worldWrapper.update(delta);
+	public void update() {
+		Synchronizers.synchronize(getDelta());
+		worldWrapper.update(getDeltaInMs());
 		container.update();
 		inputDevicesMonitor.update();
 

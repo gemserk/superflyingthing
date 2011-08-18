@@ -24,7 +24,6 @@ import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -35,6 +34,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
+import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
@@ -60,7 +60,6 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Colors;
-import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -197,11 +196,11 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new ContainerSystem());
 		worldWrapper.addUpdateSystem(new OwnerSystem());
 
+		// testing event listener auto registration using reflection
+		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventListenerManager));
+
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-
-		// worldWrapper.addRenderSystem(new ShapeRenderSystem(worldCamera));
-
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
 
 		worldWrapper.init();
@@ -286,34 +285,8 @@ public class PlayGameState extends GameStateImpl {
 			@Override
 			public void init(com.artemis.World world, Entity e) {
 				this.world = world;
-				// TODO: generate EventListeners and register them automatically using annotations.
-				eventListenerManager.register(Events.itemTaken, new EventListener() {
-					@Override
-					public void onEvent(Event event) {
-						itemTaken(event);
-					}
-				});
-				eventListenerManager.register(Events.gameStarted, new EventListener() {
-					@Override
-					public void onEvent(Event event) {
-						gameStarted(event);
-					}
-				});
-				eventListenerManager.register(Events.gameFinished, new EventListener() {
-					@Override
-					public void onEvent(Event event) {
-						gameFinished(event);
-					}
-				});
-
-				// EventListenerReflectionRegistrator.registerEventListeners(this, eventListenerManager);
 				timerLabelBuilder.append("Time: ");
 			}
-
-			// @Override
-			// public void dispose(com.artemis.World world, Entity e) {
-			// EventListenerReflectionRegistrator.unregisterEventListeners(this, eventListenerManager);
-			// }
 
 			@Handles
 			public void itemTaken(Event e) {
@@ -709,7 +682,7 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
@@ -724,7 +697,7 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
+	public void update() {
 		GamePreferences gamePreferences = game.getGamePreferences();
 		if (gamePreferences.isTutorialEnabled()) {
 			game.transition(game.getInstructionsScreen(), 0, 300, false);
@@ -732,11 +705,11 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 		inputDevicesMonitor.update();
-		Synchronizers.synchronize(delta);
+		Synchronizers.synchronize(getDelta());
 		container.update();
 
 		if (gameOverTimer != null) {
-			if (gameOverTimer.update(delta))
+			if (gameOverTimer.update(getDeltaInMs()))
 				done = true;
 		}
 
@@ -751,10 +724,10 @@ public class PlayGameState extends GameStateImpl {
 			}
 		}
 
-		worldWrapper.update(delta);
+		worldWrapper.update(getDeltaInMs());
 		if (tiltValueEnabled) {
 			float pitch = Gdx.input.getPitch();
-			tilttime += delta;
+			tilttime += getDeltaInMs();
 			if (tilttime > 200) {
 				tiltvalue.setText(String.format("%8.4f", pitch));
 				tilttime -= 200;

@@ -261,20 +261,28 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		private final Screen screen;
 		private final Game game;
 
-		int leaveTime;
-		int enterTime;
+		float leaveTime;
+		float enterTime;
 		boolean shouldDisposeCurrentScreen;
 
 		TransitionHandler leaveTransitionHandler = new TransitionHandler();
 
-		public TransitionBuilder leaveTime(int leaveTime) {
+		public TransitionBuilder leaveTime(float leaveTime) {
 			this.leaveTime = leaveTime;
 			return this;
 		}
 
-		public TransitionBuilder enterTime(int enterTime) {
+		public TransitionBuilder enterTime(float enterTime) {
 			this.enterTime = enterTime;
 			return this;
+		}
+		
+		public TransitionBuilder leaveTime(int leaveTime) {
+			return leaveTime((float) leaveTime * 0.001f);
+		}
+
+		public TransitionBuilder enterTime(int enterTime) {
+			return enterTime((float) enterTime * 0.001f);
 		}
 
 		public TransitionBuilder disposeCurrent() {

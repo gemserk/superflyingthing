@@ -214,10 +214,10 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		game.getPlayScreen().render(delta);
+		game.getPlayScreen().render();
 
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
@@ -226,12 +226,12 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
+	public void update() {
 
 		if (GameInformation.worldWrapper != null)
-			GameInformation.worldWrapper.update(delta);
+			GameInformation.worldWrapper.update(getDeltaInMs());
 
-		Synchronizers.synchronize(delta);
+		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
 		container.update();
 

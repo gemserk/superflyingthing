@@ -132,7 +132,7 @@ public class GenerateLevelThumbnailApplication {
 					}
 
 					@Override
-					public void render(int delta) {
+					public void render() {
 						Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 						worldWrapper.render();
 
@@ -147,10 +147,10 @@ public class GenerateLevelThumbnailApplication {
 					}
 
 					@Override
-					public void update(int delta) {
+					public void update() {
 						worldCamera.move(camera.getX(), camera.getY());
 						worldCamera.zoom(camera.getZoom());
-						worldWrapper.update(delta);
+						worldWrapper.update(getDeltaInMs());
 					}
 
 				}));

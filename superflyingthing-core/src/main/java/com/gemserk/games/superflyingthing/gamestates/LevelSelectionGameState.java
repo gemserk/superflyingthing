@@ -227,11 +227,12 @@ public class LevelSelectionGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void render(int delta) {
+	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
+		game.getBackgroundGameScreen().setDelta(getDelta());
 		if (selectedLevel != null)
-			game.getBackgroundGameScreen().render(delta);
+			game.getBackgroundGameScreen().render();
 
 		spriteBatch.begin();
 
@@ -250,13 +251,14 @@ public class LevelSelectionGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void update(int delta) {
-		Synchronizers.synchronize(delta);
+	public void update() {
+		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			back();
-		game.getBackgroundGameScreen().update(delta);
+		game.getBackgroundGameScreen().setDelta(getDelta());
+		game.getBackgroundGameScreen().update();
 	}
 
 	@Override

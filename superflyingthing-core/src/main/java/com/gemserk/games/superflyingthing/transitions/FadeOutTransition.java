@@ -18,19 +18,19 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	private Sprite whiteRectangle;
 	ResourceManager<String> resourceManager;
 	SpriteBatch spriteBatch;
-	private final int time;
+	private final float time;
 	private Synchronizer synchronizer;
 	
 	public void setAlpha(float alpha) {
 		this.alpha = alpha;
 	}
 
-	public FadeOutTransition(Screen screen, int time) {
+	public FadeOutTransition(Screen screen, float time) {
 		super(screen, time);
 		this.time = time;
 	}
 
-	public FadeOutTransition(Screen screen, int time, TransitionHandler transitionHandler) {
+	public FadeOutTransition(Screen screen, float time, TransitionHandler transitionHandler) {
 		super(screen, time, transitionHandler);
 		this.time = time;
 	}
@@ -53,7 +53,7 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	}
 
 	@Override
-	public void postRender(int delta) {
+	public void postRender(float delta) {
 		whiteRectangle.setPosition(0, 0);
 		whiteRectangle.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		whiteRectangle.setColor(0f, 0f, 0f, alpha);
@@ -63,7 +63,7 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	}
 
 	@Override
-	public void internalUpdate(int delta) {
+	public void internalUpdate(float delta) {
 		super.internalUpdate(delta);
 		synchronizer.synchronize(delta);
 	}
