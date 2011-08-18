@@ -51,7 +51,7 @@ import com.gemserk.util.ScreenshotSaver;
 public class Game extends com.gemserk.commons.gdx.Game {
 
 	private static boolean debugMode;
-	private static boolean showFps = false;
+	private static boolean showFps = true;
 	private static boolean showBox2dDebug = false;
 
 	public static boolean isDebugMode() {
@@ -368,7 +368,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		spriteBatch.begin();
 		if (showFps)
-			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.95f, 0f, 0.5f);
+			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		if (Game.isDebugMode())
 			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "Debug", Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		spriteBatch.end();
