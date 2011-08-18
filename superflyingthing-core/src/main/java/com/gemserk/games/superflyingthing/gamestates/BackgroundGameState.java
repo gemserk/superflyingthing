@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
-
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -24,12 +22,12 @@ import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
-import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -140,12 +138,12 @@ public class BackgroundGameState extends GameStateImpl {
 		final Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
-		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
-
-		renderLayers.add(new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch));
-		renderLayers.add(new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
-		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
-		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera, spriteBatch));
+		RenderLayers renderLayers = new RenderLayers();
+		
+		renderLayers.add("Background", new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch));
+		renderLayers.add("SecondBackground", new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch));
+		renderLayers.add("StaticObstacles", new RenderLayerShapeImpl(-100, -50, worldCamera));
+		renderLayers.add("World", new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);

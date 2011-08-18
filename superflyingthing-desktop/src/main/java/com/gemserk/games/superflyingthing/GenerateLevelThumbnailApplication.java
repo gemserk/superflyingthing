@@ -1,7 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
-import java.util.ArrayList;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,7 +21,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.systems.RenderLayer;
+import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -92,10 +91,10 @@ public class GenerateLevelThumbnailApplication {
 						worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 						worldCamera.zoom(18f);
 
-						ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
+						RenderLayers renderLayers = new RenderLayers();
 
-						renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
-						renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
+						renderLayers.add("StaticObstacles", (new RenderLayerShapeImpl(-100, -50, worldCamera)));
+						renderLayers.add("World", new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 						ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
 

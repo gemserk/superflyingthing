@@ -19,10 +19,12 @@ public class RenderLayerShapeImpl implements RenderLayer {
 
 	private final Libgdx2dCamera camera;
 	private final OrderedByLayerEntities orderedByLayerEntities;
+	private boolean enabled;
 
 	public RenderLayerShapeImpl(int minLayer, int maxLayer, Libgdx2dCamera camera) {
 		this.camera = camera;
 		this.orderedByLayerEntities = new OrderedByLayerEntities(minLayer, maxLayer);
+		this.enabled = true;
 	}
 	
 	@Override
@@ -73,6 +75,16 @@ public class RenderLayerShapeImpl implements RenderLayer {
 				shapeComponent.texture.bind();
 			ImmediateModeRendererUtils.draw(GL10.GL_TRIANGLES, shapeComponent.mesh2d, spatial.getX(), spatial.getY(), spatial.getAngle());
 		}
+	}
+
+	@Override
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	@Override
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
 	}
 
 }

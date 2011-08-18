@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.util.ArrayList;
-
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -21,12 +19,12 @@ import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
-import com.gemserk.commons.artemis.systems.RenderLayer;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -55,7 +53,6 @@ import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
-import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -165,12 +162,10 @@ public class ControllerTestGameState extends GameStateImpl {
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		guiCamera = new Libgdx2dCameraTransformImpl();
 
-		ArrayList<RenderLayer> renderLayers = new ArrayList<RenderLayer>();
+		RenderLayers renderLayers = new RenderLayers();
 
-		renderLayers.add(new RenderLayerSpriteBatchImpl(-1000, -100, backgroundLayerCamera, spriteBatch));
-		renderLayers.add(new RenderLayerShapeImpl(-100, -50, worldCamera));
-		renderLayers.add(new RenderLayerSpriteBatchImpl(-50, 100, worldCamera, spriteBatch));
-		renderLayers.add(new RenderLayerSpriteBatchImpl(100, 100000, guiCamera));
+		renderLayers.add("Background", new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch));
+		renderLayers.add("World", new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
