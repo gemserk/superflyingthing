@@ -263,7 +263,7 @@ public class EntityTemplates {
 
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
-			parameters.put("maxLinearSpeed", new Float(3.5f));
+			parameters.put("maxLinearSpeed", new Float(4.5f));
 			parameters.put("maxAngularVelocity", new Float(360f));
 		}
 

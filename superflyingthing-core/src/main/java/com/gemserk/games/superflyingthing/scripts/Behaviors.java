@@ -78,7 +78,7 @@ public class Behaviors {
 
 			// body.getTransform().getPosition().set(position);
 			body.setTransform(position, desiredAngle * MathUtils.degreesToRadians);
-			body.applyForce(direction.tmp().mul(5000f), position);
+			body.applyForce(direction.tmp().mul(500000f * GlobalTime.getDelta()), position);
 
 			Vector2 linearVelocity = body.getLinearVelocity();
 
@@ -90,6 +90,7 @@ public class Behaviors {
 			if (speed > maxSpeed) {
 				linearVelocity.mul(maxSpeed / speed);
 				body.setLinearVelocity(linearVelocity);
+				System.out.println("limiting velocity!");
 			}
 		}
 
