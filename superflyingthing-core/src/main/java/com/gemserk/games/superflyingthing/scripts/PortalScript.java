@@ -7,6 +7,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.box2d.Contact;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
@@ -18,6 +19,8 @@ public class PortalScript extends ScriptJavaImpl {
 	private static final Vector2 direction = new Vector2();
 	
 	private static final Class<PortalComponent> portalComponentClass = PortalComponent.class;
+	
+	private float rotationSpeed = 250f;
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
@@ -27,7 +30,7 @@ public class PortalScript extends ScriptJavaImpl {
 		Contact contact = physics.getContact();
 
 		Spatial portalSpatial = ComponentWrapper.getSpatial(e);
-		portalSpatial.setAngle(portalSpatial.getAngle() + 0.25f * world.getDelta());
+		portalSpatial.setAngle(portalSpatial.getAngle() + rotationSpeed * GlobalTime.getDelta());
 
 		Entity portal = world.getTagManager().getEntity(portalComponent.getTargetPortalId());
 		if (portal == null)

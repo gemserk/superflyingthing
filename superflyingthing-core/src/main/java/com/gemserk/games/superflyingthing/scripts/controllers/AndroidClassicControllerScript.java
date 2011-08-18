@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.scripts.controllers;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class AndroidClassicControllerScript extends ScriptJavaImpl {
@@ -42,7 +43,7 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 			// updateCount++;
 
 			float movementDirection = controller.getMovementDirection();
-			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.1f, (0.001f * world.getDelta()), 5f);
+			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.1f, (GlobalTime.getDelta()), 5f);
 			controller.setMovementDirection(movementDirection);
 
 			return;

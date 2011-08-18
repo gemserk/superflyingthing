@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class KeyboardControllerScript extends ScriptJavaImpl {
@@ -49,7 +50,7 @@ public class KeyboardControllerScript extends ScriptJavaImpl {
 		// }
 
 		float movementDirection = controller.getMovementDirection();
-		movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.05f, (0.001f * world.getDelta()), 5f);
+		movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.05f, (GlobalTime.getDelta()), 5f);
 		controller.setMovementDirection(movementDirection);
 	}
 

@@ -8,6 +8,7 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
@@ -26,8 +27,8 @@ public class LaserGunScript extends ScriptJavaImpl {
 	@Override
 	public void update(com.artemis.World world, Entity e) {
 		WeaponComponent weaponComponent = ComponentWrapper.getWeaponComponent(e);
-		int reloadTime = weaponComponent.getReloadTime();
-		reloadTime -= world.getDelta();
+		float reloadTime = weaponComponent.getReloadTime();
+		reloadTime -= GlobalTime.getDelta();
 
 		if (reloadTime <= 0) {
 
@@ -36,7 +37,7 @@ public class LaserGunScript extends ScriptJavaImpl {
 			bulletParameters.put("owner", e);
 			bulletParameters.put("x", 0.5f);
 			bulletParameters.put("damage", 3000f);
-			bulletParameters.put("duration", weaponComponent.getBulletDuration());
+			bulletParameters.put("duration", (int) (weaponComponent.getBulletDuration() * 1000));
 			bulletParameters.put("color", spriteComponent.getColor());
 
 			EntityTemplate bulletTemplate = weaponComponent.getBulletTemplate();
@@ -48,7 +49,7 @@ public class LaserGunScript extends ScriptJavaImpl {
 
 		AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 		Animation currentAnimation = animationComponent.getCurrentAnimation();
-		currentAnimation.update(world.getDelta());
+		currentAnimation.update(GlobalTime.getDelta());
 
 		SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 		spriteComponent.setSprite(currentAnimation.getCurrentFrame());

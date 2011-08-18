@@ -16,6 +16,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
@@ -45,18 +46,18 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 	@Override
 	public void init(World world, Entity e) {
 		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
-		int totalTime = timerComponent.getTotalTime();
+		float totalTime = (float) timerComponent.getTotalTime() * 0.001f;
 
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 
 		laserTimelineAnimation = Builders.animation(Builders.timeline() //
 				.value(Builders.timelineValue("alpha") //
-						.keyFrame(0, 0f) //
+						.keyFrame(0f, 0f) //
 						.keyFrame(0.2f, 1f) //
 						.keyFrame(0.8f, 1f) //
 						.keyFrame(1f, 0f)) //
 				.value(Builders.timelineValue("width") //
-						.keyFrame(0, 0f) //
+						.keyFrame(0f, 0f) //
 						.keyFrame(0.2f, spatial.getHeight()) //
 						.keyFrame(0.8f, spatial.getHeight()) //
 						.keyFrame(1f, 0f)) //
@@ -73,12 +74,10 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 
 	@Override
 	public void update(World world, Entity e) {
-		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
 
-		laserTimelineAnimation.update((float) world.getDelta());
+		laserTimelineAnimation.update(GlobalTime.getDelta());
 
-		timerComponent.setCurrentTime(timerComponent.getCurrentTime() - world.getDelta());
-		if (timerComponent.isFinished()) {
+		if (laserTimelineAnimation.isFinished()) {
 			world.deleteEntity(e);
 			return;
 		}
@@ -102,7 +101,7 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 				if (healthComponent != null) {
 					DamageComponent damageComponent = ComponentWrapper.getDamageComponent(e);
 					Container health = healthComponent.getHealth();
-					health.remove(damageComponent.getDamage() * world.getDelta() * 0.001f);
+					health.remove(damageComponent.getDamage() * GlobalTime.getDelta());
 				}
 			}
 		}

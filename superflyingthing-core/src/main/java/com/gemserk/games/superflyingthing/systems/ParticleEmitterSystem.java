@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 
@@ -54,7 +55,7 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 	@Override
 	protected void process(Entity e) {
-		float deltaF = 0.001f * (float) world.getDelta();
+		float deltaF = GlobalTime.getDelta();
 		ParticleEmitterComponent particleEmitterComponent = particleEmitterComponentMapper.get(e);
 
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(e);

@@ -14,6 +14,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
@@ -31,8 +32,10 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 	private Replay currentReplay;
 
-	private int replayUpdateInterval = 10;
-	private int currentUpdateInterval = replayUpdateInterval;
+	// private int replayUpdateInterval = 10;
+	// private int currentUpdateInterval = replayUpdateInterval;
+
+	private float frameTime = 0f;
 
 	// TODO: remove them, should not be here.
 	private final EntityFactory entityFactory;
@@ -97,14 +100,23 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		if (!recording)
 			return;
 
-		currentUpdateInterval--;
+		frameTime += GlobalTime.getDelta();
 
-		if (currentUpdateInterval > 0) {
-			replayTime += world.getDelta();
+		if (frameTime < 0.1f)
 			return;
-		}
 
-		currentUpdateInterval = replayUpdateInterval;
+		frameTime = 0f;
+
+		replayTime += 100;
+
+		// currentUpdateInterval--;
+		//
+		// if (currentUpdateInterval > 0) {
+		// replayTime += world.getDelta();
+		// return;
+		// }
+		//
+		// currentUpdateInterval = replayUpdateInterval;
 
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
 
@@ -116,7 +128,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 		currentReplay.replayEntries.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
 
-		replayTime += world.getDelta();
+		// replayTime += world.getDelta();
 	}
 
 }

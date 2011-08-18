@@ -11,6 +11,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
@@ -27,7 +28,7 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 	private final EntityTemplate particleEmitterTemplate;
 
 	private final Replay replay;
-	private int time;
+	private float time;
 
 	private ReplayEntry previousReplayEntry;
 	private ReplayEntry currentReplayEntry;
@@ -76,7 +77,7 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 			return;
 		}
 		
-		float t = (float) time / (float) (currentReplayEntry.time - previousReplayEntry.time);
+		float t = (float) time / (float) getTimeBetweenFrames();
 
 		float x = FloatInterpolator.interpolate(previousReplayEntry.x, currentReplayEntry.x, t);
 		float y = FloatInterpolator.interpolate(previousReplayEntry.y, currentReplayEntry.y, t);
@@ -98,12 +99,16 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 		spatial.setPosition(x, y);
 		spatial.setAngle(angle);
 
-		time += world.getDelta();
+		time += GlobalTime.getDelta();
 
-		while (time > (currentReplayEntry.time - previousReplayEntry.time)) {
-			time -= (currentReplayEntry.time - previousReplayEntry.time);
+		while (time > getTimeBetweenFrames()) {
+			time -= getTimeBetweenFrames();
 			nextReplayFrame();
 		}
+	}
+
+	private float getTimeBetweenFrames() {
+		return (float)(currentReplayEntry.time - previousReplayEntry.time) * 0.001f;
 	}
 
 	private void nextReplayFrame() {

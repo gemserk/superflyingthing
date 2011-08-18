@@ -13,6 +13,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.Events;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
@@ -57,7 +58,7 @@ public class CameraScript extends ScriptJavaImpl {
 		Spatial targetSpatial = ComponentWrapper.getSpatial(entity);
 		transitionTarget.set(targetSpatial.getPosition());
 
-		timeTransition.start(800);
+		timeTransition.start(0.8f);
 		movingToTarget = true;
 	}
 
@@ -84,7 +85,7 @@ public class CameraScript extends ScriptJavaImpl {
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 
 		if (target == null) {
-			timeTransition.update(world.getDelta());
+			timeTransition.update(GlobalTime.getDelta());
 
 			if (!timeTransition.isFinished()) {
 				float x = FloatInterpolator.interpolate(transitionOrigin.x, transitionTarget.x, timeTransition.get());

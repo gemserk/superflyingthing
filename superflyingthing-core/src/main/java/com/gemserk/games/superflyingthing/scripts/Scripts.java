@@ -20,6 +20,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
@@ -76,7 +77,7 @@ public class Scripts {
 
 		Script removeWhenGrabbedBehavior;
 
-		float rotationSpeed = 0.3f;
+		float rotationSpeed = 300f;
 		float angle = 0f;
 
 		public StarScript(EventManager eventManager) {
@@ -99,7 +100,7 @@ public class Scripts {
 			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 
-			angle += rotationSpeed * (float) world.getDelta();
+			angle += rotationSpeed * GlobalTime.getDelta();
 
 			Animation animation = animationComponent.getCurrentAnimation();
 			int frameIndex = getAnimationForAngle(angle - 5f);
@@ -468,7 +469,7 @@ public class Scripts {
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
 			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 			Animation animation = animationComponent.getCurrentAnimation();
-			animation.update(world.getDelta());
+			animation.update(GlobalTime.getDelta());
 			Sprite sprite = animation.getCurrentFrame();
 			spriteComponent.setSprite(sprite);
 		}

@@ -15,6 +15,7 @@ import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
@@ -183,7 +184,7 @@ public class Behaviors {
 			float minAngularVelocity = 0f;
 
 			angularVelocity = (1 - movementDirection) * minAngularVelocity + movementDirection * maxAngularVelocity;
-			rotationAngle = angularVelocity * world.getDelta() * 0.001f;
+			rotationAngle = angularVelocity * GlobalTime.getDelta();
 
 			movementComponent.angularVelocity = angularVelocity;
 			direction.rotate(rotationAngle);
@@ -322,7 +323,7 @@ public class Behaviors {
 				DamageComponent damageComponent = ComponentWrapper.getDamageComponent(otherEntity);
 				if (damageComponent == null)
 					continue;
-				float damage = damageComponent.getDamage() * world.getDelta() * 0.001f * dot;
+				float damage = damageComponent.getDamage() * GlobalTime.getDelta() * dot;
 				healthComponent.getHealth().remove(damage);
 			}
 		}

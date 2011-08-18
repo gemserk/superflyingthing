@@ -259,28 +259,28 @@ public class Components {
 
 	public static class WeaponComponent extends Component {
 
-		private int fireRate;
-		private int reloadTime;
-		private int bulletDuration;
+		private float fireRate;
+		private float reloadTime;
+		private float bulletDuration;
 		private EntityTemplate bulletTemplate;
 
 		public void setFireRate(int fireRate) {
 			this.fireRate = fireRate;
 		}
 
-		public int getReloadTime() {
+		public float getReloadTime() {
 			return reloadTime;
 		}
 
-		public int getFireRate() {
+		public float getFireRate() {
 			return fireRate;
 		}
 
-		public int getBulletDuration() {
+		public float getBulletDuration() {
 			return bulletDuration;
 		}
 
-		public void setReloadTime(int reloadTime) {
+		public void setReloadTime(float reloadTime) {
 			this.reloadTime = reloadTime;
 		}
 
@@ -289,6 +289,10 @@ public class Components {
 		}
 
 		public WeaponComponent(int fireRate, int bulletDuration, int currentReloadTime, EntityTemplate bulletTemplate) {
+			this((float) fireRate * 0.001f, (float) bulletDuration * 0.001f, (float) currentReloadTime * 0.001f, bulletTemplate);
+		}
+		
+		public WeaponComponent(float fireRate, float bulletDuration, float currentReloadTime, EntityTemplate bulletTemplate) {
 			this.fireRate = fireRate;
 			this.bulletDuration = bulletDuration;
 			this.reloadTime = currentReloadTime;
