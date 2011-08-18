@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -32,8 +33,8 @@ public class SplashGameState extends GameStateImpl {
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
-
-	float time;
+	
+	private TimeTransition timeTransition;
 
 	public SplashGameState(Game game) {
 		this.game = game;
@@ -69,7 +70,8 @@ public class SplashGameState extends GameStateImpl {
 
 		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1000));
 
-		time = 2f;
+		timeTransition = new TimeTransition();
+		timeTransition.start(2f);
 	}
 
 	@Override
@@ -92,11 +94,11 @@ public class SplashGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 
 		if (Gdx.input.justTouched())
-			time = 0f;
+			timeTransition.update(100f);
 
-		time -= getDelta();
+		timeTransition.update(getDelta());
 
-		if (time > 0f)
+		if (!timeTransition.isFinished())
 			return;
 
 		game.transition(game.getMainMenuScreen()) //
