@@ -17,8 +17,6 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
-import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
@@ -131,7 +129,6 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	GameData gameData;
 
-	private EventManager eventManager;
 	private EventListenerManager eventListenerManager;
 
 	private Container container;
@@ -152,7 +149,6 @@ public class ControllerTestGameState extends GameStateImpl {
 		container = new Container();
 		spriteBatch = new SpriteBatch();
 
-		eventManager = new EventManagerImpl();
 		eventListenerManager = new EventListenerManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
@@ -206,7 +202,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
-				.component(new ScriptComponent(new EventSystemScript(eventManager, eventListenerManager))) //
+				.component(new ScriptComponent(new EventSystemScript(eventListenerManager))) //
 				.build();
 
 		// entity with some game logic
@@ -231,7 +227,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(entityTemplates.getCameraTemplate(), //
 				parameters.put("camera", camera) //
 						.put("libgdxCamera", worldCamera) //
-						.put("script", new CameraScript(eventManager, eventListenerManager)) //
+						.put("script", new CameraScript(eventListenerManager)) //
 						.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f))//
 				);
 
@@ -240,10 +236,10 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 
-		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(3f, 3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventListenerManager));
+		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventListenerManager));
+		entityTemplates.star(3f, 3f, new Scripts.StarScript(eventListenerManager));
+		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventListenerManager));
 
 		parameters.clear();
 		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), //

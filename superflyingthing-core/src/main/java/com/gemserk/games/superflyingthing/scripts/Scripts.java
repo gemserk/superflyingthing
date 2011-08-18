@@ -260,7 +260,6 @@ public class Scripts {
 
 	public static class GameScript extends ScriptJavaImpl {
 
-		private final EventManager eventManager;
 		private final EntityFactory entityFactory;
 		private final EventListenerManager eventListenerManager;
 
@@ -280,9 +279,9 @@ public class Scripts {
 
 		// private EntityTemplate laserGunTemplate;
 
-		public GameScript(EventManager eventManager, EventListenerManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
+		public GameScript(EventListenerManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
 				ShipController controller, boolean invulnerable) {
-			this.eventManager = eventManager;
+
 			this.eventListenerManager = eventListenerManager;
 			this.controller = controller;
 			this.gameData = gameData;
@@ -312,16 +311,16 @@ public class Scripts {
 					destinationPlanetReached(event);
 				}
 			});
-			eventManager.registerEvent(Events.gameStarted, owner);
+			eventListenerManager.registerEvent(Events.gameStarted, owner);
 		}
 
 		private void cameraReachedTarget(Event event) {
 			Gdx.app.log("SuperFlyingShip", "Camera reached target.");
-			eventManager.registerEvent(Events.enablePlanetReleaseShip, owner);
+			eventListenerManager.registerEvent(Events.enablePlanetReleaseShip, owner);
 		}
 
 		private void destinationPlanetReached(Event event) {
-			eventManager.registerEvent(Events.gameFinished, owner);
+			eventListenerManager.registerEvent(Events.gameFinished, owner);
 		}
 
 		@Override
@@ -366,9 +365,9 @@ public class Scripts {
 			gameDataComponent.ship = null;
 			gameData.deaths++;
 
-			eventManager.registerEvent(Events.shipDeath, e);
-			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
-			eventManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
+			eventListenerManager.registerEvent(Events.shipDeath, e);
+			eventListenerManager.registerEvent(Events.disablePlanetReleaseShip, e);
+			eventListenerManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
@@ -446,7 +445,7 @@ public class Scripts {
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
 
-			eventManager.registerEvent(Events.shipReleased, gameDataComponent.ship);
+			eventListenerManager.registerEvent(Events.shipReleased, gameDataComponent.ship);
 		}
 	}
 

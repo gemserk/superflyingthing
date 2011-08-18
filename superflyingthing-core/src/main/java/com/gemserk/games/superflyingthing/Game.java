@@ -19,8 +19,6 @@ import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
-import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
@@ -94,7 +92,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private EventListenerManager eventListenerManager;
-	private EventManager eventManager;
 
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
@@ -172,13 +169,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return eventListenerManager;
 	}
 	
-	/**
-	 * Used to communicate between gamestates.
-	 */
-	public EventManager getEventManager() {
-		return eventManager;
-	}
-
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}
@@ -213,7 +203,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		eventListenerManager = new EventListenerManagerImpl();
-		eventManager = new EventManagerImpl();
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
@@ -400,8 +389,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Game.setDebugMode(!Game.isDebugMode());
 		
 		if (inputDevicesMonitor.getButton("toggleBackground").isReleased()) {
-			eventManager.registerEvent(Events.toggleFirstBackground, this);
-			eventManager.registerEvent(Events.toggleSecondBackground, this);
+			eventListenerManager.registerEvent(Events.toggleFirstBackground, this);
+			eventListenerManager.registerEvent(Events.toggleSecondBackground, this);
 		}
 
 		super.render();
@@ -425,12 +414,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}
 		
-		for (int i = 0; i < eventManager.getEventCount(); i++) {
-			Event event = eventManager.getEvent(i);
-			eventListenerManager.process(event);
-		}
-		
-		eventManager.clear();
+		eventListenerManager.process();
 	}
 	
 	@Handles

@@ -20,8 +20,6 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
-import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
@@ -101,7 +99,6 @@ public class BackgroundGameState extends GameStateImpl {
 
 	private JointBuilder jointBuilder;
 
-	private EventManager eventManager;
 	private EventListenerManager eventListenerManager;
 
 	private Container guiContainer;
@@ -135,7 +132,6 @@ public class BackgroundGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 
-		eventManager = new EventManagerImpl();
 		eventListenerManager = new EventListenerManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
@@ -210,7 +206,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
-				.component(new ScriptComponent(new EventSystemScript(eventManager, eventListenerManager))) //
+				.component(new ScriptComponent(new EventSystemScript(eventListenerManager))) //
 				.build();
 
 		// entity with some game logic
@@ -288,14 +284,14 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
+			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventListenerManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 		}
 
 		parameters.clear();
 		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
 				.put("camera", camera) //
 				.put("libgdxCamera", worldCamera) //
-				.put("script", new CameraScript(eventManager, eventListenerManager)) //
+				.put("script", new CameraScript(eventListenerManager)) //
 				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)));
 
 		for (int i = 0; i < level.obstacles.size(); i++) {
@@ -309,7 +305,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.items.size(); i++) {
 			Level.Item item = level.items.get(i);
-			entityTemplates.star(item.x, item.y, new StarScript(eventManager));
+			entityTemplates.star(item.x, item.y, new StarScript(eventListenerManager));
 		}
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
@@ -337,7 +333,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, eventListenerManager, //
+				.component(new ScriptComponent(new Scripts.GameScript(eventListenerManager, //
 						entityTemplates, entityFactory, gameData, controller, false))) //
 				.build();
 

@@ -7,7 +7,6 @@ import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventListenerManager;
-import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -20,7 +19,6 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class CameraScript extends ScriptJavaImpl {
 
-	private final EventManager eventManager;
 	private final EventListenerManager eventListenerManager;
 
 	private final Vector2 transitionOrigin = new Vector2();
@@ -31,8 +29,7 @@ public class CameraScript extends ScriptJavaImpl {
 	boolean movingToTarget = false;
 	private Entity owner;
 
-	public CameraScript(EventManager eventManager, EventListenerManager eventListenerManager) {
-		this.eventManager = eventManager;
+	public CameraScript(EventListenerManager eventListenerManager) {
 		this.eventListenerManager = eventListenerManager;
 	}
 
@@ -93,7 +90,7 @@ public class CameraScript extends ScriptJavaImpl {
 				spatial.setPosition(x, y);
 			} else {
 				if (movingToTarget) {
-					eventManager.registerEvent(Events.cameraReachedTarget, e);
+					eventListenerManager.registerEvent(Events.cameraReachedTarget, e);
 					// to avoid sending same event several times.
 					movingToTarget = false;
 				}
