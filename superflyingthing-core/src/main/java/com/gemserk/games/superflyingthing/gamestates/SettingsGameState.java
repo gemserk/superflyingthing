@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import com.artemis.World;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -11,8 +12,16 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.EntityBuilder;
+import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
+import com.gemserk.commons.artemis.systems.RenderableSystem;
+import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.Screen;
+import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -22,10 +31,13 @@ import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Colors;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
+import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
 public class SettingsGameState extends GameStateImpl {
@@ -101,7 +113,9 @@ public class SettingsGameState extends GameStateImpl {
 	private GamePreferences gamePreferences;
 
 	private Container container;
-	private Sprite backgroundSprite;
+	private RenderLayers renderLayers;
+	private WorldWrapper worldWrapper;
+	private boolean toggleBackground;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -120,6 +134,8 @@ public class SettingsGameState extends GameStateImpl {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
+
+		toggleBackground = false;
 
 		spriteBatch = new SpriteBatch();
 
@@ -175,10 +191,26 @@ public class SettingsGameState extends GameStateImpl {
 		}
 
 		container.add(GuiControls.textButton() //
+				.text("Toggle background") //
+				.font(buttonFont) //
+				.center(1f, 0.5f) //
+				.position(width * 0.95f, height * 0.75f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						toggleBackground();
+					}
+				}) //
+				.build());
+
+		container.add(GuiControls.textButton() //
 				.text("Test") //
 				.font(buttonFont) //
-				.center(0.5f, 0.5f) //
-				.position(width * 0.85f, height * 0.6f) //
+				.center(1f, 0.5f) //
+				.position(width * 0.95f, height * 0.6f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -192,8 +224,8 @@ public class SettingsGameState extends GameStateImpl {
 		container.add(GuiControls.textButton() //
 				.text("Save") //
 				.font(buttonFont) //
-				.center(0.5f, 0.5f) //
-				.position(width * 0.85f, height * 0.45f) //
+				.center(1f, 0.5f) //
+				.position(width * 0.95f, height * 0.45f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -219,9 +251,27 @@ public class SettingsGameState extends GameStateImpl {
 						}
 					}));
 
-		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		backgroundSprite.setPosition(0f, 0f);
-		backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		renderLayers = new RenderLayers();
+
+		final Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+
+		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
+		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isSecondBackgroundEnabled());
+
+		World world = new com.artemis.World();
+		worldWrapper = new WorldWrapper(world);
+		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
+		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+		worldWrapper.init();
+
+		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), null);
+
+		Sprite sprite = resourceManager.getResourceValue("BackgroundSprite");
+		entityTemplates.staticSprite(sprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, -999, 0f, 0f, Color.WHITE);
+
+		sprite = resourceManager.getResourceValue("FogSprite");
+		entityTemplates.staticSprite(new Sprite(sprite), Gdx.graphics.getWidth() * 0.57f, Gdx.graphics.getHeight() * 0.23f, 160f, 160f, 86f, -400, 0.5f, 0.5f, Color.GREEN);
+		entityTemplates.staticSprite(new Sprite(sprite), Gdx.graphics.getWidth() * 0.24f, Gdx.graphics.getHeight() * 0.68f, 120f, 120f, 189f, -400, 0.5f, 0.5f, Color.RED);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -252,6 +302,12 @@ public class SettingsGameState extends GameStateImpl {
 				.start();
 	}
 
+	private void toggleBackground() {
+		toggleBackground = !toggleBackground;
+		renderLayers.toggle(Layers.FirstBackground);
+		renderLayers.toggle(Layers.SecondBackground);
+	}
+
 	private void save() {
 		// save control type to the player profile preferences.
 		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
@@ -260,6 +316,14 @@ public class SettingsGameState extends GameStateImpl {
 		gamePreferences.updatePlayerProfile(playerProfile);
 		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/save";
 		Analytics.traker.trackPageView(pageView, pageView, null);
+
+		// save background
+
+		if (toggleBackground) {
+			game.getEventManager().registerEvent(Events.toggleFirstBackground, this);
+			game.getEventManager().registerEvent(Events.toggleSecondBackground, this);
+		}
+
 		back();
 	}
 
@@ -275,8 +339,11 @@ public class SettingsGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+
+		worldWrapper.render();
+
+		// gui camera...
 		spriteBatch.begin();
-		backgroundSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
@@ -288,11 +355,13 @@ public class SettingsGameState extends GameStateImpl {
 		container.update();
 		inputDevicesMonitor.update();
 
+		worldWrapper.update(getDeltaInMs());
+
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			back();
 
 	}
-	
+
 	@Override
 	public void show() {
 		super.show();

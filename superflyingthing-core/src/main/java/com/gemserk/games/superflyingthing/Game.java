@@ -91,7 +91,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private EventManager eventListenerManager;
+	private EventManager eventManager;
 
 	/**
 	 * Used to store global information about the game and to send data between GameStates and Screens.
@@ -165,8 +165,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	/**
 	 * Used to communicate between gamestates.
 	 */
-	public EventManager getEventListenerManager() {
-		return eventListenerManager;
+	public EventManager getEventManager() {
+		return eventManager;
 	}
 	
 	public Game() {
@@ -202,7 +202,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			gamePreferences.updatePlayerProfile(playerProfile);
 		}
 
-		eventListenerManager = new EventListenerManagerImpl();
+		eventManager = new EventListenerManagerImpl();
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
@@ -254,10 +254,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		settingsScreen = new ScreenImpl(settingsGameState);
 		controllersTestScreen = new ScreenImpl(controllerTestGameState);
 		
-		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventListenerManager);
+		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 		
 		registrator.registerEventListeners(playGameState);
 		registrator.registerEventListeners(backgroundGameState);
+		registrator.registerEventListeners(settingsGameState);
 		registrator.registerEventListeners(this);
 		
 		setScreen(splashScreen);
@@ -389,8 +390,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Game.setDebugMode(!Game.isDebugMode());
 		
 		if (inputDevicesMonitor.getButton("toggleBackground").isReleased()) {
-			eventListenerManager.registerEvent(Events.toggleFirstBackground, this);
-			eventListenerManager.registerEvent(Events.toggleSecondBackground, this);
+			eventManager.registerEvent(Events.toggleFirstBackground, this);
+			eventManager.registerEvent(Events.toggleSecondBackground, this);
 		}
 
 		super.render();
@@ -414,7 +415,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}
 		
-		eventListenerManager.process();
+		eventManager.process();
 	}
 	
 	@Handles
