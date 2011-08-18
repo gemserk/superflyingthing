@@ -3,7 +3,7 @@ package com.gemserk.games.superflyingthing.scripts.controllers;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.games.superflyingthing.GlobalTime;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class AndroidClassicControllerScript extends ScriptJavaImpl {

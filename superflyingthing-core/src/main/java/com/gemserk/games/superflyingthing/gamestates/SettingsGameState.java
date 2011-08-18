@@ -101,7 +101,7 @@ public class SettingsGameState extends GameStateImpl {
 	private GamePreferences gamePreferences;
 
 	private Container container;
-	private Sprite whiteRectangleSprite;
+	private Sprite backgroundSprite;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -219,12 +219,9 @@ public class SettingsGameState extends GameStateImpl {
 						}
 					}));
 
-		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
-		whiteRectangleSprite.setPosition(0, 0);
-		whiteRectangleSprite.setSize(width, height);
-		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
-
-		game.getBackgroundGameScreen().init();
+		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
+		backgroundSprite.setPosition(0f, 0f);
+		backgroundSprite.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -278,10 +275,8 @@ public class SettingsGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		game.getBackgroundGameScreen().setDelta(getDelta());
-		game.getBackgroundGameScreen().render();
 		spriteBatch.begin();
-		whiteRectangleSprite.draw(spriteBatch);
+		backgroundSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
@@ -289,12 +284,9 @@ public class SettingsGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		
+
 		container.update();
 		inputDevicesMonitor.update();
-		
-		game.getBackgroundGameScreen().setDelta(getDelta());
-		game.getBackgroundGameScreen().update();
 
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			back();
@@ -303,7 +295,6 @@ public class SettingsGameState extends GameStateImpl {
 	@Override
 	public void show() {
 		super.show();
-		game.getBackgroundGameScreen().show();
 	}
 
 	@Override
@@ -311,7 +302,6 @@ public class SettingsGameState extends GameStateImpl {
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
 		game.getAdWhirlViewHandler().show();
-		game.getBackgroundGameScreen().resume();
 	}
 
 	@Override

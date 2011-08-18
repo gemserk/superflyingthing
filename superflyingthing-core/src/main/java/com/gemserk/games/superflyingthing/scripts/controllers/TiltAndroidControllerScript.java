@@ -4,9 +4,7 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 
 public class TiltAndroidControllerScript extends ScriptJavaImpl {
 	

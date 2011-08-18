@@ -13,10 +13,10 @@ import com.gemserk.animation4j.timeline.sync.TimelineSynchronizer;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
-import com.gemserk.games.superflyingthing.GlobalTime;
 import com.gemserk.resources.ResourceManager;
 
 public class UserMessageTemplate extends EntityTemplateWithDefaultParameters {

@@ -4,7 +4,7 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.games.superflyingthing.GlobalTime;
+import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class KeyboardControllerScript extends ScriptJavaImpl {
