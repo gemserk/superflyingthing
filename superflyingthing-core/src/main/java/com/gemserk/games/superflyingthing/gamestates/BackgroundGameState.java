@@ -13,6 +13,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
+import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -46,8 +47,6 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.componentsengine.utils.timers.CountDownTimer;
-import com.gemserk.componentsengine.utils.timers.Timer;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
@@ -105,9 +104,9 @@ public class BackgroundGameState extends GameStateImpl {
 	private EventManager eventManager;
 	private EventListenerManager eventListenerManager;
 
-	private Timer timer;
-
 	private Container guiContainer;
+
+	private TimeTransition restartTimeTransition;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -119,9 +118,9 @@ public class BackgroundGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		spriteBatch = new SpriteBatch();
+		restartTimeTransition = null;
 
-		timer = new CountDownTimer(4000, false);
+		spriteBatch = new SpriteBatch();
 
 		eventManager = new EventManagerImpl();
 		eventListenerManager = new EventListenerManagerImpl();
@@ -242,7 +241,9 @@ public class BackgroundGameState extends GameStateImpl {
 
 	private void gameFinished() {
 		// game.getBackgroundGameScreen().restart();
-		timer.reset();
+		restartTimeTransition = new TimeTransition();
+		restartTimeTransition.start(4f);
+		// timer.reset();
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
@@ -373,9 +374,12 @@ public class BackgroundGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
 
-		if (timer.update(getDeltaInMs()))
-			game.getBackgroundGameScreen().restart();
-		
+		if (restartTimeTransition != null) {
+			restartTimeTransition.update(getDelta());
+			if (restartTimeTransition.isFinished())
+				game.getBackgroundGameScreen().restart();
+		}
+
 		worldWrapper.update(getDeltaInMs());
 	}
 

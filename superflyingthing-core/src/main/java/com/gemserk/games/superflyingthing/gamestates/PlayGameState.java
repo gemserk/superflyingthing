@@ -19,6 +19,7 @@ import com.badlogic.gdx.physics.box2d.Fixture;
 import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
+import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -58,7 +59,6 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.componentsengine.utils.timers.CountDownTimer;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Shape;
@@ -130,8 +130,6 @@ public class PlayGameState extends GameStateImpl {
 	private EventManager eventManager;
 	private EventListenerManager eventListenerManager;
 
-	private CountDownTimer gameOverTimer;
-
 	EntityTemplate userMessageTemplate;
 
 	private GamePreferences gamePreferences;
@@ -139,6 +137,8 @@ public class PlayGameState extends GameStateImpl {
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
+	
+	private TimeTransition gameOverTimeTransition;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -154,7 +154,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		gameOverTimer = null;
+		gameOverTimeTransition = null;
 
 		resetPressed = false;
 		spriteBatch = new SpriteBatch();
@@ -659,7 +659,9 @@ public class PlayGameState extends GameStateImpl {
 
 		entityFactory.instantiate(userMessageTemplate, parameters);
 
-		gameOverTimer = new CountDownTimer(2500, true);
+//		gameOverTimer = new CountDownTimer(2500, true);
+		gameOverTimeTransition = new TimeTransition();
+		gameOverTimeTransition.start(2.5f);
 
 		// start replays when game ends...
 
@@ -708,8 +710,9 @@ public class PlayGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		container.update();
 
-		if (gameOverTimer != null) {
-			if (gameOverTimer.update(getDeltaInMs()))
+		if (gameOverTimeTransition != null) {
+			gameOverTimeTransition.update(getDelta());
+			if (gameOverTimeTransition.isFinished())
 				done = true;
 		}
 

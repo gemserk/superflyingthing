@@ -68,7 +68,7 @@ public class SplashGameState extends GameStateImpl {
 		SpriteUtils.centerOn(lwjglLogo, width * 0.85f, lwjglLogo.getHeight() * 0.5f);
 		SpriteUtils.centerOn(libgdxLogo, width * 0.15f, libgdxLogo.getHeight() * 0.5f);
 
-		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1000));
+		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1f));
 
 		timeTransition = new TimeTransition();
 		timeTransition.start(2f);
@@ -102,8 +102,8 @@ public class SplashGameState extends GameStateImpl {
 			return;
 
 		game.transition(game.getMainMenuScreen()) //
-				.leaveTime(500) //
-				.enterTime(500) //
+				.leaveTime(0.5f) //
+				.enterTime(0.5f) //
 				.disposeCurrent() //
 				.start();
 	}
