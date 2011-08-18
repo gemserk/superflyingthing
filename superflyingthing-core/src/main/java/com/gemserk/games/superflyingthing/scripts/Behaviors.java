@@ -90,7 +90,6 @@ public class Behaviors {
 			if (speed > maxSpeed) {
 				linearVelocity.mul(maxSpeed / speed);
 				body.setLinearVelocity(linearVelocity);
-				System.out.println("limiting velocity!");
 			}
 		}
 
