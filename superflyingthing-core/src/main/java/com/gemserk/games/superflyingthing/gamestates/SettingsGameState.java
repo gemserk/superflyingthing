@@ -7,7 +7,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.BitmapFont.HAlignment;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
@@ -155,7 +154,7 @@ public class SettingsGameState extends GameStateImpl {
 				.font(titleFont) //
 				.build());
 
-		float x = width * 0.05f;
+		float x = width * 0.025f;
 		float y = height * 0.75f;
 
 		Sprite underlineSprite = resourceManager.getResourceValue("WhiteRectangle");
@@ -194,7 +193,7 @@ public class SettingsGameState extends GameStateImpl {
 				.text("Toggle background") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.75f) //
+				.position(width * 0.975f, height * 0.75f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -210,7 +209,7 @@ public class SettingsGameState extends GameStateImpl {
 				.text("Toggle FPS") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.6f) //
+				.position(width * 0.975f, height * 0.63f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -221,12 +220,12 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		
+
 		container.add(GuiControls.textButton() //
 				.text("Test") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.45f) //
+				.position(width * 0.975f, height * 0.51f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -241,7 +240,7 @@ public class SettingsGameState extends GameStateImpl {
 				.text("Save") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.30f) //
+				.position(width * 0.975f, height * 0.39f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -252,20 +251,21 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-
-		if (Gdx.app.getType() != ApplicationType.Android)
-			container.add(new TextButton(buttonFont, "Back", width * 0.95f, height * 0.05f) //
-					.setNotOverColor(Color.WHITE) //
-					.setOverColor(Color.GREEN) //
-					.setColor(Color.WHITE) //
-					.setBoundsOffset(40f, 40f) //
-					.setAlignment(HAlignment.RIGHT) //
-					.setButtonHandler(new ButtonHandler() {
-						@Override
-						public void onReleased(Control control) {
-							back();
-						}
-					}));
+		container.add(GuiControls.textButton() //
+				.text("Cancel") //
+				.font(buttonFont) //
+				.center(1f, 0.5f) //
+				.position(width * 0.975f, height * 0.27f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						back();
+					}
+				}) //
+				.build());
 
 		renderLayers = new RenderLayers();
 
@@ -322,7 +322,7 @@ public class SettingsGameState extends GameStateImpl {
 		toggleBackground = !toggleBackground;
 		renderLayers.toggle(Layers.FirstBackground);
 		renderLayers.toggle(Layers.SecondBackground);
-		
+
 		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
 	}
 
