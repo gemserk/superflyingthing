@@ -25,7 +25,7 @@ import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -152,7 +152,7 @@ public class EntityTemplates {
 				.build();
 	}
 
-	private EntityTemplate cameraTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate cameraTemplate = new EntityTemplateImpl() {
 		@Override
 		public void apply(Entity entity) {
 
@@ -171,7 +171,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate particleEmitterTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
 		{
 			// used to transform the emitter and particles to the world coordinates space
@@ -198,7 +198,7 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate shipTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate shipTemplate = new EntityTemplateImpl() {
 
 		private final Vector2 direction = new Vector2();
 
@@ -252,7 +252,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate attachedShipTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate attachedShipTemplate = new EntityTemplateImpl() {
 
 		{
 			parameters.put("maxLinearSpeed", new Float(3.5f));
@@ -294,7 +294,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate deadShipTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate deadShipTemplate = new EntityTemplateImpl() {
 
 		@Override
 		public void apply(Entity entity) {
@@ -310,7 +310,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate replayShipTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate replayShipTemplate = new EntityTemplateImpl() {
 
 		@Override
 		public void apply(Entity e) {
@@ -332,7 +332,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate laserBulletTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate laserBulletTemplate = new EntityTemplateImpl() {
 
 		{
 			parameters.put("x", new Float(0f));
@@ -373,7 +373,7 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate laserGunTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate laserGunTemplate = new EntityTemplateImpl() {
 
 		{
 			parameters.put("position", new Vector2());
@@ -412,7 +412,7 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate portalTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate portalTemplate = new EntityTemplateImpl() {
 
 		{
 			parameters.put("sprite", "PortalSprite");
@@ -485,7 +485,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateImpl() {
 
 		private Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
 
@@ -697,7 +697,7 @@ public class EntityTemplates {
 
 	public EntityTemplate userMessageTemplate;
 
-	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateWithDefaultParameters() {
+	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {
 		@Override
 		public void apply(Entity entity) {
 			entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, getParticleEmitterTemplate())));

@@ -8,7 +8,7 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -26,7 +26,7 @@ import com.gemserk.resources.ResourceManager;
 
 public class ControllerTemplates {
 
-	public static class KeyboardControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class KeyboardControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -37,7 +37,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AnalogKeyboardControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class AnalogKeyboardControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -48,7 +48,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AndroidClassicControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class AndroidClassicControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -59,7 +59,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AxisControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class AxisControllerTemplate extends EntityTemplateImpl {
 
 		private final ResourceManager<String> resourceManager;
 
@@ -91,7 +91,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AnalogControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class AnalogControllerTemplate extends EntityTemplateImpl {
 
 		private final ResourceManager<String> resourceManager;
 
@@ -123,7 +123,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class TiltAndroidControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class TiltAndroidControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -134,7 +134,7 @@ public class ControllerTemplates {
 		}
 	}
 	
-	public static class TargetControllerTemplate extends EntityTemplateWithDefaultParameters {
+	public static class TargetControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
