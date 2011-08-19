@@ -188,7 +188,7 @@ public class PlayGameState extends GameStateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
-		
+
 		// used by the controllers to draw stuff, could be removed later
 		renderLayers.add(Layers.Controllers, new RenderLayerSpriteBatchImpl(200, 10000, guiCamera));
 
@@ -325,10 +325,12 @@ public class PlayGameState extends GameStateImpl {
 				}
 
 				Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
-				playerController.delete();
+				if (playerController != null)
+					playerController.delete();
 
 				Entity controllerSwitcher = world.getTagManager().getEntity(Groups.ControllerSwitcher);
-				controllerSwitcher.delete();
+				if (controllerSwitcher != null)
+					controllerSwitcher.delete();
 
 				Entity gameMode = world.getTagManager().getEntity(Groups.NormalGameModeLogic);
 				gameMode.delete();
@@ -370,53 +372,53 @@ public class PlayGameState extends GameStateImpl {
 			}
 		};
 
-		entityBuilder //
-				.component(new TagComponent(Groups.ControllerSwitcher)) //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					private int current = 0;
-					private ShipController controller;
-
-					private ControllerType[] controllerTypes = new ControllerType[] { ControllerType.KeyboardController, //
-							ControllerType.AnalogKeyboardController, ControllerType.ClassicController, ControllerType.AxisController, //
-							ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
-
-					@Override
-					public void update(com.artemis.World world, Entity e) {
-
-						Entity currentController = world.getTagManager().getEntity(Groups.PlayerController);
-
-						if (currentController != null) {
-							if (controller == null)
-								controller = currentController.getComponent(ControllerComponent.class).getController();
-						}
-
-						if (currentController == null) {
-
-							current++;
-							if (current >= controllerTypes.length)
-								current = 0;
-
-							ControllerType controllerType = controllerTypes[current];
-							String controllerName = controllerType.name();
-
-							parameters.clear();
-							parameters.put("controller", controller);
-							entityFactory.instantiate(controllerTemplates.getControllerTemplate(controllerType), parameters);
-
-							Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
-							parameters.clear();
-							parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-							parameters.put("text", controllerName);
-							parameters.put("time", 1000);
-							entityFactory.instantiate(userMessageTemplate, parameters);
-						}
-
-						if (inputDevicesMonitor.getButton("switchControls").isReleased())
-							currentController.delete();
-
-					}
-				})).build();
+		// entityBuilder //
+		// .component(new TagComponent(Groups.ControllerSwitcher)) //
+		// .component(new ScriptComponent(new ScriptJavaImpl() {
+		//
+		// private int current = 0;
+		// private ShipController controller;
+		//
+		// private ControllerType[] controllerTypes = new ControllerType[] { ControllerType.KeyboardController, //
+		// ControllerType.AnalogKeyboardController, ControllerType.ClassicController, ControllerType.AxisController, //
+		// ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
+		//
+		// @Override
+		// public void update(com.artemis.World world, Entity e) {
+		//
+		// Entity currentController = world.getTagManager().getEntity(Groups.PlayerController);
+		//
+		// if (currentController != null) {
+		// if (controller == null)
+		// controller = currentController.getComponent(ControllerComponent.class).getController();
+		// }
+		//
+		// if (currentController == null) {
+		//
+		// current++;
+		// if (current >= controllerTypes.length)
+		// current = 0;
+		//
+		// ControllerType controllerType = controllerTypes[current];
+		// String controllerName = controllerType.name();
+		//
+		// parameters.clear();
+		// parameters.put("controller", controller);
+		// entityFactory.instantiate(controllerTemplates.getControllerTemplate(controllerType), parameters);
+		//
+		// Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
+		// parameters.clear();
+		// parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
+		// parameters.put("text", controllerName);
+		// parameters.put("time", 1000);
+		// entityFactory.instantiate(userMessageTemplate, parameters);
+		// }
+		//
+		// if (inputDevicesMonitor.getButton("switchControls").isReleased())
+		// currentController.delete();
+		//
+		// }
+		// })).build();
 
 		// ReplayList replayList = new ReplayList();
 		//
@@ -427,7 +429,7 @@ public class PlayGameState extends GameStateImpl {
 		// .build();
 
 		entityBuilder //
-				.component(new ScriptComponent(new ScriptJavaImpl() { 
+				.component(new ScriptComponent(new ScriptJavaImpl() {
 
 					@Override
 					public void update(com.artemis.World world, Entity e) {
