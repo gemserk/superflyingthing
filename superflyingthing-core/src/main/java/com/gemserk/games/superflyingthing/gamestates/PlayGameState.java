@@ -424,7 +424,7 @@ public class PlayGameState extends GameStateImpl {
 		// .build();
 
 		entityBuilder //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
+				.component(new ScriptComponent(new ScriptJavaImpl() { 
 
 					@Override
 					public void update(com.artemis.World world, Entity e) {

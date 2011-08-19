@@ -312,6 +312,9 @@ public class SettingsGameState extends GameStateImpl {
 		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
 		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
 		Analytics.traker.trackPageView(pageView, pageView, null);
+
+		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
+
 		game.transition(game.getControllersTestScreen()) //
 				.enterTime(250) //
 				.leaveTime(250) //
@@ -322,8 +325,6 @@ public class SettingsGameState extends GameStateImpl {
 		toggleBackground = !toggleBackground;
 		renderLayers.toggle(Layers.FirstBackground);
 		renderLayers.toggle(Layers.SecondBackground);
-
-		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
 	}
 
 	private void save() {
