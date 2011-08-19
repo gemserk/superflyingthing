@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -27,6 +28,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
 import com.gemserk.commons.artemis.systems.PhysicsSystem;
+import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
@@ -42,6 +44,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
@@ -157,7 +160,7 @@ public class BackgroundGameState extends GameStateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
-		
+
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
 		worldWrapper = new WorldWrapper(world);
@@ -169,6 +172,9 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new ContainerSystem());
 		worldWrapper.addUpdateSystem(new OwnerSystem());
+		
+		// testing event listener auto registration using reflection
+		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -199,12 +205,14 @@ public class BackgroundGameState extends GameStateImpl {
 		loadLevel(entityTemplates, Levels.level(previewLevelNumber));
 		// loadLevel(entityTemplates, Levels.level(13));
 
-		entityFactory.instantiate(entityTemplates.userMessageTemplate, parameters.put("text", "Preview level " + (previewLevelNumber + 1) + "...")//
-				.put("fontId", "VersionFont")//
-				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.10f, Gdx.graphics.getHeight() * 0.2f))//
-				.put("time", 2500)//
-				.put("iterations", 50)//
-				);
+		BitmapFont font = resourceManager.getResourceValue("VersionFont");
+
+		guiContainer.add(GuiControls.label("Preview level " + (previewLevelNumber + 1) + "...") //
+				.position(Gdx.graphics.getWidth() * 0.025f, Gdx.graphics.getHeight() * 0.2f) //
+				.center(0f, 0.5f) //
+				.color(1f, 1f, 1f, 1f) //
+				.font(font) //
+				.build());
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
@@ -248,6 +256,10 @@ public class BackgroundGameState extends GameStateImpl {
 
 				})) //
 				.build();
+		
+		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
+		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+
 	}
 
 	private void gameFinished() {

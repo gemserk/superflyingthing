@@ -40,7 +40,6 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 	@Override
 	protected void process(Entity e) {
-		float deltaF = GlobalTime.getDelta();
 		ParticleEmitterComponent particleEmitterComponent = particleEmitterComponentMapper.get(e);
 
 		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(e);
@@ -60,7 +59,7 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 		emitter.setPosition(spatial.getX(), spatial.getY());
 
-		emitter.update(deltaF);
+		emitter.update(GlobalTime.getDelta());
 		// emitter.draw(spriteBatch);
 
 		emitter.getAngle().setHigh(hmin, hmax);
