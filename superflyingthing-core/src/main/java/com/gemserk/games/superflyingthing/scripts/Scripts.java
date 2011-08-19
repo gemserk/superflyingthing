@@ -272,11 +272,8 @@ public class Scripts {
 
 		private EntityTemplate shipTemplate;
 		private EntityTemplate attachedShipTemplate;
-		private EntityTemplate deadShipTemplate;
 		private EntityTemplate particleEmitterTemplate;
 		private Entity owner;
-
-		// private EntityTemplate laserGunTemplate;
 
 		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
 				ShipController controller, boolean invulnerable) {
@@ -290,9 +287,6 @@ public class Scripts {
 			shipTemplate = entityTemplates.getShipTemplate();
 			attachedShipTemplate = entityTemplates.getAttachedShipTemplate();
 			particleEmitterTemplate = entityTemplates.getParticleEmitterTemplate();
-			deadShipTemplate = entityTemplates.getDeadShipTemplate();
-
-			// laserGunTemplate = entityTemplates.getLaserGunTemplate();
 		}
 
 		@Override
@@ -353,13 +347,6 @@ public class Scripts {
 
 			entityFactory.instantiate(particleEmitterTemplate, parameters);
 
-			// SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-
-			// parameters.put("spatial", new SpatialImpl(spatial));
-			// parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
-
-			// entityFactory.instantiate(deadShipTemplate, parameters);
-
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
 			gameData.deaths++;
@@ -416,30 +403,6 @@ public class Scripts {
 			parameters.put("maxAngularVelocity", movementComponent.getMaxAngularVelocity());
 
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
-
-			// //
-
-			// Spatial shipSpatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-			// // SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(gameDataComponent.ship);
-			//
-			// Spatial childSpatial = new SpatialHierarchicalImpl(shipSpatial);
-			// childSpatial.setPosition(spatial.getX() + 1f, spatial.getY());
-			//
-			// // parameters.put("spatial", childSpatial);
-			// // parameters.put("sprite", new Sprite(spriteComponent.getSprite()));
-			//
-			// parameters.put("position", shipSpatial.getPosition());
-			// parameters.put("angle", shipSpatial.getAngle());
-			// parameters.put("fireRate", 2000);
-			// parameters.put("bulletDuration", 1500);
-			// parameters.put("owner", gameDataComponent.ship);
-			//
-			// Entity laserGun = entityFactory.instantiate(laserGunTemplate, parameters);
-			//
-			// laserGun.addComponent(new SpatialComponent(childSpatial));
-			// laserGun.refresh();
-
-			// //
 
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;

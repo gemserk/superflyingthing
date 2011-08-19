@@ -75,7 +75,8 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 		emitter.setPosition(spatial.getX(), spatial.getY());
 
-		emitter.draw(spriteBatch, deltaF);
+		emitter.update(deltaF);
+		emitter.draw(spriteBatch);
 
 		emitter.getAngle().setHigh(hmin, hmax);
 		emitter.getAngle().setLow(lmin, lmax);

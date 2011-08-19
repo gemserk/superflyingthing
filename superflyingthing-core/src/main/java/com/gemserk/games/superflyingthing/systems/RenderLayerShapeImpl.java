@@ -68,9 +68,12 @@ public class RenderLayerShapeImpl implements RenderLayer {
 	public void render() {
 		camera.apply();
 		for (int i = 0; i < orderedByLayerEntities.size(); i++) {
-			Entity e = orderedByLayerEntities.get(i);
-			ShapeComponent shapeComponent = e.getComponent(shapeComponentClass);
-			Spatial spatial = e.getComponent(spatialComponentClass).getSpatial();
+			Entity entity = orderedByLayerEntities.get(i);
+			RenderableComponent renderableComponent = entity.getComponent(renderableComponentClass);
+			if (!renderableComponent.isVisible())
+				continue;
+			ShapeComponent shapeComponent = entity.getComponent(shapeComponentClass);
+			Spatial spatial = entity.getComponent(spatialComponentClass).getSpatial();
 			if (shapeComponent.texture != null)
 				shapeComponent.texture.bind();
 			ImmediateModeRendererUtils.draw(GL10.GL_TRIANGLES, shapeComponent.mesh2d, spatial.getX(), spatial.getY(), spatial.getAngle());
