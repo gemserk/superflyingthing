@@ -100,7 +100,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 	private JointBuilder jointBuilder;
 
-	private EventManager eventListenerManager;
+	private EventManager eventManager;
 
 	private Container guiContainer;
 
@@ -133,7 +133,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		spriteBatch = new SpriteBatch();
 
-		eventListenerManager = new EventListenerManagerImpl();
+		eventManager = new EventListenerManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
 
@@ -180,7 +180,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
+		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
 		entityTemplates.userMessageTemplate = new UserMessageTemplate(guiContainer, resourceManager);
 
 		gameData = new GameData();
@@ -208,7 +208,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
-				.component(new ScriptComponent(new EventSystemScript(eventListenerManager))) //
+				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
 				.build();
 
 		// entity with some game logic
@@ -216,7 +216,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 			@Override
 			public void init(com.artemis.World world, Entity e) {
-				eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
+				eventManager.register(Events.destinationPlanetReached, new EventListener() {
 					@Override
 					public void onEvent(Event event) {
 						destinationPlanetReached(event);
@@ -282,18 +282,18 @@ public class BackgroundGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
+		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventListenerManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
+			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 		}
 
 		parameters.clear();
 		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
 				.put("camera", camera) //
 				.put("libgdxCamera", worldCamera) //
-				.put("script", new CameraScript(eventListenerManager)) //
+				.put("script", new CameraScript(eventManager)) //
 				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)));
 
 		for (int i = 0; i < level.obstacles.size(); i++) {
@@ -307,7 +307,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.items.size(); i++) {
 			Level.Item item = level.items.get(i);
-			entityTemplates.star(item.x, item.y, new StarScript(eventListenerManager));
+			entityTemplates.star(item.x, item.y, new StarScript(eventManager));
 		}
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
@@ -335,7 +335,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventListenerManager, //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, //
 						entityTemplates, entityFactory, gameData, controller, false))) //
 				.build();
 

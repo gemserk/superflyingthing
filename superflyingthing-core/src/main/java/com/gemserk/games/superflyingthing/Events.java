@@ -9,6 +9,10 @@ public class Events {
 	public static final String itemTaken = "itemTaken".intern();
 	public static final String shipDeath = "shipDeath".intern();
 	public static final String destinationPlanetReached = "destinationPlanetReached".intern();
+	
+	// for effects
+	
+	public static final String explosion = "explosion".intern();
 
 	/**
 	 * Should be registered when the game mode has started.

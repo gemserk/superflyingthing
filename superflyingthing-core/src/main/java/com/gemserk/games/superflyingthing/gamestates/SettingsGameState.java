@@ -264,7 +264,7 @@ public class SettingsGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.init();
 
-		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), null);
+		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), null, null);
 
 		Sprite sprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(sprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, -999, 0f, 0f, Color.WHITE);

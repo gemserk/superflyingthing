@@ -21,7 +21,11 @@ import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.Script;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
@@ -87,6 +91,7 @@ public class EntityTemplates {
 	private final EntityFactory entityFactory;
 
 	private final Parameters parameters = new ParametersWrapper();
+	private final EventManager eventManager;
 
 	public EntityTemplate getAttachedShipTemplate() {
 		return attachedShipTemplate;
@@ -127,12 +132,17 @@ public class EntityTemplates {
 	public EntityTemplate getReplayShipTemplate() {
 		return replayShipTemplate;
 	}
+	
+	public EntityTemplate getParticleEmitterSpawnerTemplate() {
+		return particleEmitterSpawnerTemplate;
+	}
 
-	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory) {
+	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory, EventManager eventManager) {
 		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
 		this.entityFactory = EntityFactory;
+		this.eventManager = eventManager;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.mesh2dBuilder = new Mesh2dBuilder();
 	}
@@ -356,7 +366,7 @@ public class EntityTemplates {
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.5f, 0.5f, 0.5f, 1f)));
 			e.addComponent(new RenderableComponent(0));
 			e.addComponent(new ScriptComponent( //
-					new ReplayPlayerScript(replay, entityFactory, getParticleEmitterTemplate()), //
+					new ReplayPlayerScript(replay, eventManager), //
 					new Behaviors.UpdateSpriteFromAnimationScript() //
 			));
 
@@ -759,5 +769,40 @@ public class EntityTemplates {
 	}
 
 	public EntityTemplate userMessageTemplate;
+	
+	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplate() {
+		
+		ParametersWithFallBack parameters = new ParametersWithFallBack();
+
+		@Override
+		public void apply(Entity entity, Parameters parameters) {
+			this.parameters.setParameters(parameters);
+			apply(entity);
+		}
+
+		@Override
+		public void apply(Entity entity) {
+
+			final EntityTemplate particleEmitterTemplate = getParticleEmitterTemplate();
+
+			entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+				
+				private Parameters parameters = new ParametersWrapper();
+				
+				@Handles
+				public void explosion(Event e) {
+					Spatial spatial = (Spatial) e.getSource();
+					
+					parameters.put("position", spatial.getPosition());
+					parameters.put("emitter", "ExplosionEmitter");
+					
+					entityFactory.instantiate(particleEmitterTemplate, parameters);
+				}
+				
+			}));
+			
+			
+		}
+	};
 
 }

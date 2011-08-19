@@ -341,17 +341,16 @@ public class Scripts {
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-
-			parameters.put("position", spatial.getPosition());
-			parameters.put("emitter", "ExplosionEmitter");
-
-			entityFactory.instantiate(particleEmitterTemplate, parameters);
+			// parameters.put("position", spatial.getPosition());
+			// parameters.put("emitter", "ExplosionEmitter");
+			// entityFactory.instantiate(particleEmitterTemplate, parameters);
 
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
 			gameData.deaths++;
 
-			eventListenerManager.registerEvent(Events.shipDeath, e);
+			eventListenerManager.registerEvent(Events.shipDeath, spatial);
+			eventListenerManager.registerEvent(Events.explosion, spatial);
 			eventListenerManager.registerEvent(Events.disablePlanetReleaseShip, e);
 			eventListenerManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
 		}

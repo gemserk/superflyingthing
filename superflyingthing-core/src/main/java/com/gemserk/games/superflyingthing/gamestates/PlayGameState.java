@@ -126,7 +126,7 @@ public class PlayGameState extends GameStateImpl {
 	private JointBuilder jointBuilder;
 	private Text timerLabel;
 
-	private EventManager eventListenerManager;
+	private EventManager eventManager;
 
 	EntityTemplate userMessageTemplate;
 
@@ -169,7 +169,7 @@ public class PlayGameState extends GameStateImpl {
 		resetPressed = false;
 		spriteBatch = new SpriteBatch();
 
-		eventListenerManager = new EventListenerManagerImpl();
+		eventManager = new EventListenerManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
 
@@ -206,7 +206,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new OwnerSystem());
 
 		// testing event listener auto registration using reflection
-		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventListenerManager));
+		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -220,7 +220,7 @@ public class PlayGameState extends GameStateImpl {
 
 		container = new Container();
 
-		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
+		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
 
 		// creates and registers all the controller templates
 		controllerTemplates = new ControllerTemplates();
@@ -282,7 +282,7 @@ public class PlayGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
-				.component(new ScriptComponent(new EventSystemScript(eventListenerManager))) //
+				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
 				.build();
 
 		// entity with some game logic
@@ -420,7 +420,7 @@ public class PlayGameState extends GameStateImpl {
 		entityBuilder //
 				.component(new TagComponent(Groups.ReplayRecorder)) //
 				.component(new ReplayComponent(replayList)) //
-				.component(new ScriptComponent(new ReplayRecorderScript(eventListenerManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
+				.component(new ScriptComponent(new ReplayRecorderScript(eventManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
 				.build();
 
 		entityBuilder //
@@ -440,6 +440,9 @@ public class PlayGameState extends GameStateImpl {
 
 				})) //
 				.build();
+
+		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
+		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
 
 	}
 
@@ -489,18 +492,18 @@ public class PlayGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventListenerManager));
+		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventListenerManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
+			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
 		}
 
 		parameters.clear();
 		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
 				.put("camera", camera) //
 				.put("libgdxCamera", worldCamera) //
-				.put("script", new CameraScript(eventListenerManager)) //
+				.put("script", new CameraScript(eventManager)) //
 				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
 				);
 
@@ -515,7 +518,7 @@ public class PlayGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.items.size(); i++) {
 			Level.Item item = level.items.get(i);
-			entityTemplates.star(item.x, item.y, new StarScript(eventListenerManager));
+			entityTemplates.star(item.x, item.y, new StarScript(eventManager));
 		}
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
@@ -551,7 +554,7 @@ public class PlayGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventListenerManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
 				.build();
 
 		generateRandomClouds(worldWidth, worldHeight, 6);
@@ -641,7 +644,7 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.star(x, y, new StarScript(eventListenerManager));
+				entityTemplates.star(x, y, new StarScript(eventManager));
 
 				itemsCount++;
 			}

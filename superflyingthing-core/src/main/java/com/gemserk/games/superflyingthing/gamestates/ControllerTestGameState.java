@@ -66,7 +66,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-			eventListenerManager.register(Events.itemTaken, new EventListener() {
+			eventManager.register(Events.itemTaken, new EventListener() {
 				@Override
 				public void onEvent(Event event) {
 					starsCollected++;
@@ -129,7 +129,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	GameData gameData;
 
-	private EventManager eventListenerManager;
+	private EventManager eventManager;
 
 	private Container container;
 	private Libgdx2dCamera guiCamera;
@@ -149,7 +149,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		container = new Container();
 		spriteBatch = new SpriteBatch();
 
-		eventListenerManager = new EventListenerManagerImpl();
+		eventManager = new EventListenerManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
 
@@ -184,7 +184,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory);
+		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
 
 		controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
@@ -202,7 +202,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
-				.component(new ScriptComponent(new EventSystemScript(eventListenerManager))) //
+				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
 				.build();
 
 		// entity with some game logic
@@ -227,7 +227,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(entityTemplates.getCameraTemplate(), //
 				parameters.put("camera", camera) //
 						.put("libgdxCamera", worldCamera) //
-						.put("script", new CameraScript(eventListenerManager)) //
+						.put("script", new CameraScript(eventManager)) //
 						.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f))//
 				);
 
@@ -236,10 +236,10 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 
-		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventListenerManager));
-		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventListenerManager));
-		entityTemplates.star(3f, 3f, new Scripts.StarScript(eventListenerManager));
-		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventListenerManager));
+		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(3f, 3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventManager));
 
 		parameters.clear();
 		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), //

@@ -111,7 +111,7 @@ public class GenerateLevelThumbnailApplication {
 
 						com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
-						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory);
+						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory, null);
 
 						Level level = Levels.level(8);
 
