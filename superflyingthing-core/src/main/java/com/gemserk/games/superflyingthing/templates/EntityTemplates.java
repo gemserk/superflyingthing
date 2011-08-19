@@ -66,6 +66,7 @@ import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
+import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -90,6 +91,8 @@ public class EntityTemplates {
 	private final Parameters parameters = new ParametersWrapper();
 	private final EventManager eventManager;
 
+	public EntityTemplate userMessageTemplate;
+	
 	public EntityTemplate getAttachedShipTemplate() {
 		return attachedShipTemplate;
 	}
@@ -132,6 +135,10 @@ public class EntityTemplates {
 
 	public EntityTemplate getParticleEmitterSpawnerTemplate() {
 		return particleEmitterSpawnerTemplate;
+	}
+	
+	public EntityTemplate getTimerTemplate() {
+		return timerTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory, EventManager eventManager) {
@@ -695,8 +702,6 @@ public class EntityTemplates {
 						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
-	public EntityTemplate userMessageTemplate;
-
 	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {
 		@Override
 		public void apply(Entity entity) {
@@ -704,5 +709,20 @@ public class EntityTemplates {
 		}
 	};
 	
+	private EntityTemplate timerTemplate = new EntityTemplateImpl() {
+		
+		{
+			parameters.put("time", new Float(0f));
+		}
+		
+		@Override
+		public void apply(Entity entity) {
+			Float time = parameters.get("time");
+			String eventId = parameters.get("eventId");
+			
+			entity.addComponent(new Components.TimerComponent(time));
+			entity.addComponent(new ScriptComponent(new TimerScript(eventManager, eventId)));
+		}
+	};
 
 }
