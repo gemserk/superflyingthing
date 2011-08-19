@@ -216,7 +216,10 @@ public class SettingsGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						Game.setShowFps(!Game.isShowFps());
+						boolean oldShowFps = Game.isShowFps();
+						String pageView = "/settings/fps/" + (oldShowFps ? "hide" : "show");
+						Analytics.traker.trackPageView(pageView,pageView, null);
+						Game.setShowFps(!oldShowFps);
 					}
 				}) //
 				.build());

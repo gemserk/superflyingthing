@@ -428,7 +428,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	
 	@Handles
 	public void toggleFirstBackground(Event e) {
-		gamePreferences.setFirstBackgroundEnabled(!gamePreferences.isFirstBackgroundEnabled());
+		boolean oldBackgroundState = gamePreferences.isFirstBackgroundEnabled();
+		String pageView = "/settings/background/" + (oldBackgroundState ? "hide" : "show");
+		Analytics.traker.trackPageView(pageView,pageView, null);
+		gamePreferences.setFirstBackgroundEnabled(!oldBackgroundState);
 	}
 
 	@Handles
