@@ -66,8 +66,6 @@ import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
-import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
@@ -81,7 +79,6 @@ import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
-import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
@@ -329,7 +326,7 @@ public class PlayGameState extends GameStateImpl {
 
 				Entity controllerSwitcher = world.getTagManager().getEntity(Groups.ControllerSwitcher);
 				controllerSwitcher.delete();
-				
+
 				Entity gameMode = world.getTagManager().getEntity(Groups.NormalGameModeLogic);
 				gameMode.delete();
 			}
@@ -418,13 +415,13 @@ public class PlayGameState extends GameStateImpl {
 					}
 				})).build();
 
-		ReplayList replayList = new ReplayList();
-
-		entityBuilder //
-				.component(new TagComponent(Groups.ReplayRecorder)) //
-				.component(new ReplayComponent(replayList)) //
-				.component(new ScriptComponent(new ReplayRecorderScript(eventManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
-				.build();
+		// ReplayList replayList = new ReplayList();
+		//
+		// entityBuilder //
+		// .component(new TagComponent(Groups.ReplayRecorder)) //
+		// .component(new ReplayComponent(replayList)) //
+		// .component(new ScriptComponent(new ReplayRecorderScript(eventManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
+		// .build();
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -556,7 +553,7 @@ public class PlayGameState extends GameStateImpl {
 		createGameController(controller);
 
 		entityBuilder //
-		.component(new TagComponent(Groups.NormalGameModeLogic)) //
+				.component(new TagComponent(Groups.NormalGameModeLogic)) //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
 				.build();
