@@ -26,7 +26,6 @@ import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
-import com.gemserk.commons.artemis.templates.ParametersWithFallBack;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -172,20 +171,12 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate particleEmitterTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
+	private EntityTemplate particleEmitterTemplate = new EntityTemplateWithDefaultParameters() {
 
 		{
 			// used to transform the emitter and particles to the world coordinates space
 			parameters.put("scale", new Float(0.02f));
 			parameters.put("position", new Vector2(0f, 0f));
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -207,20 +198,13 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate shipTemplate = new EntityTemplate() {
+	private EntityTemplate shipTemplate = new EntityTemplateWithDefaultParameters() {
 
 		private final Vector2 direction = new Vector2();
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("maxLinearSpeed", new Float(3.5f));
 			parameters.put("maxAngularVelocity", new Float(360f));
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -268,18 +252,11 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate attachedShipTemplate = new EntityTemplate() {
+	private EntityTemplate attachedShipTemplate = new EntityTemplateWithDefaultParameters() {
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("maxLinearSpeed", new Float(3.5f));
 			parameters.put("maxAngularVelocity", new Float(360f));
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -317,15 +294,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate deadShipTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
+	private EntityTemplate deadShipTemplate = new EntityTemplateWithDefaultParameters() {
 
 		@Override
 		public void apply(Entity entity) {
@@ -341,15 +310,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate replayShipTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
+	private EntityTemplate replayShipTemplate = new EntityTemplateWithDefaultParameters() {
 
 		@Override
 		public void apply(Entity e) {
@@ -371,9 +332,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate laserBulletTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
+	private EntityTemplate laserBulletTemplate = new EntityTemplateWithDefaultParameters() {
 
 		{
 			parameters.put("x", new Float(0f));
@@ -381,14 +340,6 @@ public class EntityTemplates {
 			parameters.put("angle", new Float(0f));
 			parameters.put("damage", new Float(1f));
 			parameters.put("color", Colors.lightBlue);
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			// if script was stateless, set it here to avoid building a new laser script each time.
-			// defaultParameters.put("script", new Scripts.LaserScript());
-			apply(entity);
 		}
 
 		@Override
@@ -422,9 +373,7 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate laserGunTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
+	private EntityTemplate laserGunTemplate = new EntityTemplateWithDefaultParameters() {
 
 		{
 			parameters.put("position", new Vector2());
@@ -433,12 +382,6 @@ public class EntityTemplates {
 			parameters.put("bulletDuration", new Integer(250));
 			parameters.put("currentReloadTime", new Integer(0));
 			parameters.put("color", Colors.lightGreen);
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -469,17 +412,10 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate portalTemplate = new EntityTemplate() {
+	private EntityTemplate portalTemplate = new EntityTemplateWithDefaultParameters() {
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("sprite", "PortalSprite");
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -549,20 +485,13 @@ public class EntityTemplates {
 		return e;
 	}
 
-	private EntityTemplate planetFillAnimationTemplate = new EntityTemplate() {
+	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateWithDefaultParameters() {
 
 		private Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("animation", "PlanetFillAnimation");
 			// parameters.put("color", Colors.yellow);
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -768,16 +697,7 @@ public class EntityTemplates {
 
 	public EntityTemplate userMessageTemplate;
 
-	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplate() {
-
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
-
+	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateWithDefaultParameters() {
 		@Override
 		public void apply(Entity entity) {
 			entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, getParticleEmitterTemplate())));

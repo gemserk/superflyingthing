@@ -8,10 +8,9 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.artemis.templates.ParametersWithFallBack;
+import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
-import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.TagComponent;
@@ -27,15 +26,7 @@ import com.gemserk.resources.ResourceManager;
 
 public class ControllerTemplates {
 
-	public static class KeyboardControllerTemplate implements EntityTemplate {
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
-
+	public static class KeyboardControllerTemplate extends EntityTemplateWithDefaultParameters {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -46,15 +37,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AnalogKeyboardControllerTemplate implements EntityTemplate {
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
-
+	public static class AnalogKeyboardControllerTemplate extends EntityTemplateWithDefaultParameters {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -65,15 +48,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AndroidClassicControllerTemplate implements EntityTemplate {
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
-
+	public static class AndroidClassicControllerTemplate extends EntityTemplateWithDefaultParameters {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -84,23 +59,16 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AxisControllerTemplate implements EntityTemplate {
+	public static class AxisControllerTemplate extends EntityTemplateWithDefaultParameters {
 
 		private final ResourceManager<String> resourceManager;
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("layer", new Integer(500));
 		}
 
 		public AxisControllerTemplate(ResourceManager<String> resourceManager) {
 			this.resourceManager = resourceManager;
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -123,23 +91,16 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class AnalogControllerTemplate implements EntityTemplate {
+	public static class AnalogControllerTemplate extends EntityTemplateWithDefaultParameters {
 
 		private final ResourceManager<String> resourceManager;
 
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
 		{
 			parameters.put("layer", new Integer(500));
 		}
 
 		public AnalogControllerTemplate(ResourceManager<String> resourceManager) {
 			this.resourceManager = resourceManager;
-		}
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
 		}
 
 		@Override
@@ -162,15 +123,7 @@ public class ControllerTemplates {
 		}
 	}
 
-	public static class TiltAndroidControllerTemplate implements EntityTemplate {
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
-
+	public static class TiltAndroidControllerTemplate extends EntityTemplateWithDefaultParameters {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
@@ -181,15 +134,7 @@ public class ControllerTemplates {
 		}
 	}
 	
-	public static class TargetControllerTemplate implements EntityTemplate {
-		ParametersWithFallBack parameters = new ParametersWithFallBack();
-
-		@Override
-		public void apply(Entity entity, Parameters parameters) {
-			this.parameters.setParameters(parameters);
-			apply(entity);
-		}
-
+	public static class TargetControllerTemplate extends EntityTemplateWithDefaultParameters {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
