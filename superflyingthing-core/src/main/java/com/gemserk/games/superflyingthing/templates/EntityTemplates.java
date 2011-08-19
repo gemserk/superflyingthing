@@ -21,11 +21,8 @@ import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
-import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.Script;
-import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateWithDefaultParameters;
@@ -65,6 +62,7 @@ import com.gemserk.games.superflyingthing.scripts.Behaviors;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
+import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
@@ -132,7 +130,7 @@ public class EntityTemplates {
 	public EntityTemplate getReplayShipTemplate() {
 		return replayShipTemplate;
 	}
-	
+
 	public EntityTemplate getParticleEmitterSpawnerTemplate() {
 		return particleEmitterSpawnerTemplate;
 	}
@@ -769,9 +767,9 @@ public class EntityTemplates {
 	}
 
 	public EntityTemplate userMessageTemplate;
-	
+
 	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplate() {
-		
+
 		ParametersWithFallBack parameters = new ParametersWithFallBack();
 
 		@Override
@@ -782,26 +780,7 @@ public class EntityTemplates {
 
 		@Override
 		public void apply(Entity entity) {
-
-			final EntityTemplate particleEmitterTemplate = getParticleEmitterTemplate();
-
-			entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
-				
-				private Parameters parameters = new ParametersWrapper();
-				
-				@Handles
-				public void explosion(Event e) {
-					Spatial spatial = (Spatial) e.getSource();
-					
-					parameters.put("position", spatial.getPosition());
-					parameters.put("emitter", "ExplosionEmitter");
-					
-					entityFactory.instantiate(particleEmitterTemplate, parameters);
-				}
-				
-			}));
-			
-			
+			entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, getParticleEmitterTemplate())));
 		}
 	};
 
