@@ -194,6 +194,7 @@ public class EntityTemplates {
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, 0f)));
 			entity.addComponent(new ParticleEmitterComponent(particleEmitter));
 			entity.addComponent(new ScriptComponent(script));
+			entity.addComponent(new RenderableComponent(150));
 		}
 
 	};

@@ -4,10 +4,8 @@ import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
@@ -18,20 +16,14 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 
 	ComponentMapper<ParticleEmitterComponent> particleEmitterComponentMapper;
 
-	SpriteBatch spriteBatch;
-
-	private final Libgdx2dCamera libgdx2dCamera;
-
-	public ParticleEmitterSystem(Libgdx2dCamera libgdx2dCamera) {
+	public ParticleEmitterSystem() {
 		super(ParticleEmitterComponent.class);
-		this.libgdx2dCamera = libgdx2dCamera;
 	}
 
 	@Override
 	protected void initialize() {
 		super.initialize();
 		particleEmitterComponentMapper = new ComponentMapper<ParticleEmitterComponent>(ParticleEmitterComponent.class, world.getEntityManager());
-		spriteBatch = new SpriteBatch();
 	}
 
 	@Override
@@ -44,13 +36,6 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 	protected void removed(Entity e) {
 		// if (logger.isDebugEnabled())
 		// logger.debug("Entity with particle emitter removed");
-	}
-
-	@Override
-	protected void begin() {
-		super.begin();
-		libgdx2dCamera.apply(spriteBatch);
-		spriteBatch.begin();
 	}
 
 	@Override
@@ -76,16 +61,10 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 		emitter.setPosition(spatial.getX(), spatial.getY());
 
 		emitter.update(deltaF);
-		emitter.draw(spriteBatch);
+		// emitter.draw(spriteBatch);
 
 		emitter.getAngle().setHigh(hmin, hmax);
 		emitter.getAngle().setLow(lmin, lmax);
-	}
-
-	@Override
-	protected void end() {
-		super.end();
-		spriteBatch.end();
 	}
 
 }

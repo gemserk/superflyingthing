@@ -68,6 +68,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.BasicAIShipControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
+import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -155,7 +156,8 @@ public class BackgroundGameState extends GameStateImpl {
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch), game.getGamePreferences().isSecondBackgroundEnabled());
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
-
+		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
+		
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
 		worldWrapper = new WorldWrapper(world);
@@ -170,7 +172,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-		worldWrapper.addRenderSystem(new ParticleEmitterSystem(worldCamera));
+		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
 
 		worldWrapper.init();
 
