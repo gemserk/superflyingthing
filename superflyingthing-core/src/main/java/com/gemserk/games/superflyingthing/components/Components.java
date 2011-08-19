@@ -303,18 +303,18 @@ public class Components {
 
 	public static class TimerComponent extends Component {
 
-		private int totalTime;
-		private int currentTime;
+		private float totalTime;
+		private float currentTime;
 
-		public int getTotalTime() {
+		public float getTotalTime() {
 			return totalTime;
 		}
 
-		public int getCurrentTime() {
+		public float getCurrentTime() {
 			return currentTime;
 		}
 
-		public void setCurrentTime(int currentTime) {
+		public void setCurrentTime(float currentTime) {
 			this.currentTime = currentTime;
 		}
 
@@ -326,7 +326,7 @@ public class Components {
 			currentTime = totalTime;
 		}
 
-		public TimerComponent(int time) {
+		public TimerComponent(float time) {
 			this.totalTime = time;
 			this.currentTime = time;
 		}

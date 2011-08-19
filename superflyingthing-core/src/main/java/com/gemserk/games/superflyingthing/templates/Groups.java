@@ -12,4 +12,6 @@ public class Groups {
 	
 	public static final String ReplayShipGroup = "ReplayShipGroup";
 	
+	public static final String NormalGameModeLogic = "NormalGameModeLogic";
+	
 }

@@ -327,8 +327,11 @@ public class PlayGameState extends GameStateImpl {
 				Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
 				playerController.delete();
 
-				Entity controllerSwitcher = world.getTagManager().getEntity("ControllerSwitcher");
+				Entity controllerSwitcher = world.getTagManager().getEntity(Groups.ControllerSwitcher);
 				controllerSwitcher.delete();
+				
+				Entity gameMode = world.getTagManager().getEntity(Groups.NormalGameModeLogic);
+				gameMode.delete();
 			}
 
 			private float seconds = -1;
@@ -553,6 +556,7 @@ public class PlayGameState extends GameStateImpl {
 		createGameController(controller);
 
 		entityBuilder //
+		.component(new TagComponent(Groups.NormalGameModeLogic)) //
 				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
 				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
 				.build();

@@ -46,7 +46,7 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 	@Override
 	public void init(World world, Entity e) {
 		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
-		float totalTime = (float) timerComponent.getTotalTime() * 0.001f;
+		float totalTime = timerComponent.getTotalTime();
 
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 
