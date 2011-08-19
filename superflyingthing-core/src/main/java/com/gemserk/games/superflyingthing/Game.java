@@ -71,6 +71,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static boolean isShowBox2dDebug() {
 		return showBox2dDebug;
 	}
+	
+	public static void setShowFps(boolean showFps) {
+		Game.showFps = showFps;
+	}
+	
+	public static boolean isShowFps() {
+		return showFps;
+	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
 

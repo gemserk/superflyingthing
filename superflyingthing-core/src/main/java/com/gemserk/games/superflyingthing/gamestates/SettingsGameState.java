@@ -207,10 +207,26 @@ public class SettingsGameState extends GameStateImpl {
 				.build());
 
 		container.add(GuiControls.textButton() //
-				.text("Test") //
+				.text("Toggle FPS") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
 				.position(width * 0.95f, height * 0.6f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						Game.setShowFps(!Game.isShowFps());
+					}
+				}) //
+				.build());
+		
+		container.add(GuiControls.textButton() //
+				.text("Test") //
+				.font(buttonFont) //
+				.center(1f, 0.5f) //
+				.position(width * 0.95f, height * 0.45f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -225,7 +241,7 @@ public class SettingsGameState extends GameStateImpl {
 				.text("Save") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.95f, height * 0.45f) //
+				.position(width * 0.95f, height * 0.30f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -306,6 +322,8 @@ public class SettingsGameState extends GameStateImpl {
 		toggleBackground = !toggleBackground;
 		renderLayers.toggle(Layers.FirstBackground);
 		renderLayers.toggle(Layers.SecondBackground);
+		
+		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
 	}
 
 	private void save() {
