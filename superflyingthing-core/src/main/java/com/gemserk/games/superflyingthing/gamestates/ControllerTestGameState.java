@@ -166,6 +166,9 @@ public class ControllerTestGameState extends GameStateImpl {
 		// renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
 		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), backgroundEnabled);
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
+		
+		// used by the controllers to draw stuff, could be removed later
+		renderLayers.add(Layers.Controllers, new RenderLayerSpriteBatchImpl(200, 10000, guiCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);

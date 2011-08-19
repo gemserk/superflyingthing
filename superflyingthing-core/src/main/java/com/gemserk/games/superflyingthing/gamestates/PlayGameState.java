@@ -188,6 +188,9 @@ public class PlayGameState extends GameStateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
+		
+		// used by the controllers to draw stuff, could be removed later
+		renderLayers.add(Layers.Controllers, new RenderLayerSpriteBatchImpl(200, 10000, guiCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);

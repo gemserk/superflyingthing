@@ -111,20 +111,23 @@ public class InstructionsGameState extends GameStateImpl {
 		case ClassicController:
 			return "LEFT HALF SCREEN - rotates the ship to the left\n" //
 					+ "RIGHT HALF SCREEN - rotates the ship to the right\n" //
-					+ "TOUCH SCREEN - releases the ship from the planet";
+					+ "TOUCH SCREEN - releases the ship from the planet\n";
 		case AxisController:
 			return "Press screen to define the Axis and then, \n" //
 					+ "LEFT SCREEN FROM AXIS - rotates the ship to the left\n" //
 					+ "RIGHT SCREEN FROM AXIS - rotates the ship to the right\n" //
-					+ "TOUCH SCREEN - releases the ship from the planet";
+					+ "TOUCH SCREEN - releases the ship from the planet\n";
 		case AnalogController:
 			return "Press screen to define the CENTER of the Stick and then, \n" //
 					+ "press near the CENTER to define the direction\n\n" //
-					+ "TOUCH SCREEN - releases the ship from the planet";
+					+ "TOUCH SCREEN - releases the ship from the planet\n";
 		case TiltController:
 			return "TILT LEFT - rotates the ship to the LEFT\n" //
 					+ "TILT RIGHT - rotates the ship to the RIGHT\n\n" //
-					+ "TOUCH SCREEN - releases the ship from the planet";
+					+ "TOUCH SCREEN - releases the ship from the planet\n";
+		case TargetController:
+			return "KEEP SCREEN TOUCHED - makes the ship follow the pointer\n" //
+					+ "TOUCH SCREEN - releases the ship from the planet\n";
 		}
 
 		return "";

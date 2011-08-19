@@ -7,5 +7,6 @@ public class Layers {
 	public static final String StaticObstacles = "StaticObstacles";
 	public static final String World = "World";
 	public static final String Explosions = "Explosions";
+	public static final String Controllers = "Controllers";
 
 }

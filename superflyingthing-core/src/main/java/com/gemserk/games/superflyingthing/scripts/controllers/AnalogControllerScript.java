@@ -12,7 +12,7 @@ import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class AnalogControllerScript extends ScriptJavaImpl {
 
-	// TODO: this control is like an analogic controller defining the desired direction like JSnakes, with the exception is relative to the first pressed position.
+	// TODO: this control is like an analog controller defining the desired direction like JSnakes, with the exception is relative to the first pressed position.
 
 	private final ShipController controller;
 	private boolean isTouched = false;
