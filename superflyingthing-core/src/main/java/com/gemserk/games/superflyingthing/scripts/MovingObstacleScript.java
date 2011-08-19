@@ -33,7 +33,7 @@ public class MovingObstacleScript extends ScriptJavaImpl {
 		Body body = physics.getBody();
 
 		Vector2 force = getCurrentTargetPosition().tmp().sub(spatial.getPosition());
-		force.nor().mul(5000f * 100f * GlobalTime.getDelta());
+		force.nor().mul(5000f * 1000f * GlobalTime.getDelta());
 		body.applyForce(force, spatial.getPosition());
 		body.applyTorque(10f * GlobalTime.getDelta());
 

@@ -43,7 +43,7 @@ portal
   xy: 130, 257
   size: 90, 93
   orig: 128, 128
-  offset: 20, 18
+  offset: 20, 19
   index: -1
 white-rectangle-direction
   rotate: false

@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.preferences;
 
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
@@ -44,7 +45,7 @@ public class GamePreferences {
 	}
 
 	public boolean isFirstBackgroundEnabled() {
-		return preferences.getBoolean("firstBackgroundEnabled", false);
+		return preferences.getBoolean("firstBackgroundEnabled", Gdx.app.getType() == ApplicationType.Android ? false : true);
 	}
 
 	public void setFirstBackgroundEnabled(boolean firstBackgroundEnabled) {
@@ -54,7 +55,7 @@ public class GamePreferences {
 	}
 	
 	public boolean isSecondBackgroundEnabled() {
-		return preferences.getBoolean("secondBackgroundEnabled", false);
+		return preferences.getBoolean("secondBackgroundEnabled", Gdx.app.getType() == ApplicationType.Android ? false : true);
 	}
 
 	public void setSecondBackgroundEnabled(boolean secondBackgroundEnabled) {

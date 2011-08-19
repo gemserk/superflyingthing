@@ -209,7 +209,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				playerProfile.setControllerType(ControllerType.KeyboardController);
 			gamePreferences.updatePlayerProfile(playerProfile);
 		}
-
+		
 		eventManager = new EventListenerManagerImpl();
 
 		resourceManager = new ResourceManagerImpl<String>();

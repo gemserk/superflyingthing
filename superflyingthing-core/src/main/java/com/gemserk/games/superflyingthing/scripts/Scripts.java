@@ -161,12 +161,10 @@ public class Scripts {
 
 		private void disablePlanetReleaseShip(Event event) {
 			enabled = false;
-			Gdx.app.log("SuperFlyingShip", "Release ship from planet disabled");
 		}
 
 		private void enablePlanetReleaseShip(Event event) {
 			enabled = true;
-			Gdx.app.log("SuperFlyingShip", "Release ship from planet enabled");
 		}
 
 		@Override
@@ -189,10 +187,8 @@ public class Scripts {
 			if (!shouldReleaseShip(world, e))
 				return;
 
-			if (entityAttachment.joint != null) {
-				Gdx.app.log("SuperFlyingThing", "Destroying planet joint");
+			if (entityAttachment.joint != null)
 				physicsWorld.destroyJoint(entityAttachment.joint);
-			}
 
 			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(attachedEntity);
 			attachableComponent.owner = null;
@@ -245,8 +241,6 @@ public class Scripts {
 
 			if (destinationReached)
 				return;
-
-			Gdx.app.log("SuperFlyingThing", "Registering event for destination reached");
 
 			eventManager.registerEvent(Events.destinationPlanetReached, e);
 			destinationReached = true;
@@ -308,7 +302,6 @@ public class Scripts {
 		}
 
 		private void cameraReachedTarget(Event event) {
-			Gdx.app.log("SuperFlyingShip", "Camera reached target.");
 			eventListenerManager.registerEvent(Events.enablePlanetReleaseShip, owner);
 		}
 
@@ -341,9 +334,6 @@ public class Scripts {
 				return;
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
-			// parameters.put("position", spatial.getPosition());
-			// parameters.put("emitter", "ExplosionEmitter");
-			// entityFactory.instantiate(particleEmitterTemplate, parameters);
 
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
