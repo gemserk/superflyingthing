@@ -262,15 +262,15 @@ public class PlayGameState extends GameStateImpl {
 
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
-
+		
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			loadLevelForChallengeMode();
+			level = loadLevelForChallengeMode();
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			loadRandomLevelForRandomMode(true);
+			level = loadRandomLevelForRandomMode(true);
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			loadRandomLevelForRandomMode(false);
+			level = loadRandomLevelForRandomMode(false);
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
@@ -359,7 +359,7 @@ public class PlayGameState extends GameStateImpl {
 				ReplayComponent replayComponent = replayRecorder.getComponent(ReplayComponent.class);
 				
 				game.getGameData().put("replayList", replayComponent.getReplayList());
-				game.getGameData().put("level", GameInformation.level);
+				game.getGameData().put("level", level);
 
 				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
 						.enterTime(300) //
@@ -595,7 +595,7 @@ public class PlayGameState extends GameStateImpl {
 		generateRandomClouds(worldWidth, worldHeight, 6);
 	}
 
-	void loadLevelForChallengeMode() {
+	Level loadLevelForChallengeMode() {
 		if (Levels.hasLevel(GameInformation.level)) {
 			Level level = Levels.level(GameInformation.level);
 			loadLevel(level, false);
@@ -603,10 +603,13 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = level.items.size();
 			if (gameData.totalItems > 0)
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+			
+			return level;
 		}
+		return null;
 	}
 
-	void loadRandomLevelForRandomMode(boolean invulnerable) {
+	Level loadRandomLevelForRandomMode(boolean invulnerable) {
 
 		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator();
 
@@ -618,6 +621,8 @@ public class PlayGameState extends GameStateImpl {
 		gameData.totalItems = starsCount;
 		if (gameData.totalItems > 0)
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
+		
+		return level;
 	}
 
 	class RandomLevelGenerator {
@@ -720,6 +725,7 @@ public class PlayGameState extends GameStateImpl {
 
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
 	private RenderLayers renderLayers;
+	private Level level;
 
 	private String getRandomEndMessage() {
 		return endMessages[MathUtils.random(endMessages.length - 1)];

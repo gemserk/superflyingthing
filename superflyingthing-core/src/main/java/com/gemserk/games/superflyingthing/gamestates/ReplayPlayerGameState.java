@@ -198,15 +198,15 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
-//		loadLevelForChallengeMode();
-		
-		Integer level = game.getGameData().get("level");
+		// loadLevelForChallengeMode();
+
+		Level level = game.getGameData().get("level");
 		ReplayList replayList = game.getGameData().get("replayList");
-		
-		loadLevel(Levels.level(level), true);
-		
+
+		loadLevel(level, true);
+
 		ArrayList<Replay> replays = replayList.getReplays();
-		
+
 		for (int i = 0; i < replays.size(); i++) {
 			Entity replayShip = entityFactory.instantiate(entityTemplates.getReplayShipTemplate());
 			parameters.clear();
