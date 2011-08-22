@@ -84,7 +84,6 @@ import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -553,7 +552,7 @@ public class PlayGameState extends GameStateImpl {
 
 		for (int i = 0; i < level.items.size(); i++) {
 			Level.Item item = level.items.get(i);
-			entityTemplates.star(item.x, item.y, new StarScript(eventManager));
+			entityTemplates.star(item.x, item.y);
 		}
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
@@ -685,7 +684,7 @@ public class PlayGameState extends GameStateImpl {
 				if (insideObstacle)
 					continue;
 
-				entityTemplates.star(x, y, new StarScript(eventManager));
+				entityTemplates.star(x, y);
 
 				itemsCount++;
 			}

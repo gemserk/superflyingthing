@@ -51,7 +51,6 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -241,10 +240,10 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 
-		entityTemplates.star(-3f, 3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(-3f, -3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(3f, 3f, new Scripts.StarScript(eventManager));
-		entityTemplates.star(3f, -3f, new Scripts.StarScript(eventManager));
+		entityTemplates.star(-3f, 3f);
+		entityTemplates.star(-3f, -3f);
+		entityTemplates.star(3f, 3f);
+		entityTemplates.star(3f, -3f);
 
 		parameters.clear();
 		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), //

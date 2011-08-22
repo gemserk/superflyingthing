@@ -70,6 +70,7 @@ import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
+import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateLibgdxCameraScript;
@@ -492,7 +493,7 @@ public class EntityTemplates {
 
 	};
 
-	public Entity star(float x, float y, Script script) {
+	public Entity star(float x, float y) {
 		Entity e = entityBuilder.build();
 
 		float radius = 0.3f;
@@ -517,7 +518,7 @@ public class EntityTemplates {
 		e.addComponent(new RenderableComponent(3));
 		e.addComponent(new GrabbableComponent());
 		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
-		e.addComponent(new ScriptComponent(script));
+		e.addComponent(new ScriptComponent(new StarScript(eventManager)));
 
 		e.refresh();
 		return e;
