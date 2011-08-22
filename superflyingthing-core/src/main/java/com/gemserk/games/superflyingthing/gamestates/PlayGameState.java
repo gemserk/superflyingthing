@@ -80,7 +80,6 @@ import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
-import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
@@ -513,7 +512,6 @@ public class PlayGameState extends GameStateImpl {
 		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
 				.put("camera", camera) //
 				.put("libgdxCamera", worldCamera) //
-				.put("script", new CameraScript(eventManager)) //
 				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
 				);
 

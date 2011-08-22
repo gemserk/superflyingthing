@@ -233,7 +233,6 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(entityTemplates.getCameraTemplate(), //
 				parameters.put("camera", camera) //
 						.put("libgdxCamera", worldCamera) //
-						.put("script", new CameraScript(eventManager)) //
 						.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f))//
 				);
 

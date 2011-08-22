@@ -53,12 +53,14 @@ import com.gemserk.games.superflyingthing.components.Components.AttachableCompon
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
+import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
@@ -68,6 +70,7 @@ import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
+import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -170,7 +173,6 @@ public class EntityTemplates {
 
 			Camera camera = parameters.get("camera");
 			Libgdx2dCamera libgdxCamera = parameters.get("libgdxCamera");
-			Script script = parameters.get("script");
 			Spatial spatial = parameters.get("spatial");
 			Entity target = parameters.get("target");
 
@@ -178,7 +180,8 @@ public class EntityTemplates {
 			entity.addComponent(new TargetComponent(target));
 			entity.addComponent(new Components.CameraComponent(camera, libgdxCamera));
 			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(new ScriptComponent(script));
+			entity.addComponent(new ScriptComponent(new CameraScript(eventManager), //
+					new UpdateCameraFromSpatialScript()));
 
 		}
 	};
@@ -260,7 +263,7 @@ public class EntityTemplates {
 			e.addComponent(new ScriptComponent(script));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new ContainerComponent());
-			e.addComponent(new Components.HealthComponent(new Container(100f, 100f)));
+			e.addComponent(new HealthComponent(new Container(100f, 100f)));
 		}
 	};
 

@@ -19,7 +19,7 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class CameraScript extends ScriptJavaImpl {
 
-	private final EventManager eventListenerManager;
+	private final EventManager eventManager;
 
 	private final Vector2 transitionOrigin = new Vector2();
 	private final Vector2 transitionTarget = new Vector2();
@@ -29,14 +29,14 @@ public class CameraScript extends ScriptJavaImpl {
 	boolean movingToTarget = false;
 	private Entity owner;
 
-	public CameraScript(EventManager eventListenerManager) {
-		this.eventListenerManager = eventListenerManager;
+	public CameraScript(EventManager eventManager) {
+		this.eventManager = eventManager;
 	}
 
 	@Override
 	public void init(com.artemis.World world, Entity e) {
 		this.owner = e;
-		eventListenerManager.register(Events.moveCameraToEntity, new EventListener() {
+		eventManager.register(Events.moveCameraToEntity, new EventListener() {
 			@Override
 			public void onEvent(Event event) {
 				moveCameraToPlanet(event);
@@ -62,19 +62,18 @@ public class CameraScript extends ScriptJavaImpl {
 	@Override
 	public void update(com.artemis.World world, Entity e) {
 		updatePosition(world, e);
+		updateLibgdxCamera(e);
+	}
 
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+	private void updateLibgdxCamera(Entity e) {
 		CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(e);
 		Camera camera = cameraComponent.getCamera();
-		camera.setPosition(spatial.getX(), spatial.getY());
-
 		Libgdx2dCamera libgdxCamera = cameraComponent.getLibgdx2dCamera();
-
 		libgdxCamera.move(camera.getX(), camera.getY());
 		libgdxCamera.zoom(camera.getZoom());
 		libgdxCamera.rotate(camera.getAngle());
 	}
-
+	
 	private void updatePosition(com.artemis.World world, Entity e) {
 		TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
 		Entity target = targetComponent.target;
@@ -90,7 +89,7 @@ public class CameraScript extends ScriptJavaImpl {
 				spatial.setPosition(x, y);
 			} else {
 				if (movingToTarget) {
-					eventListenerManager.registerEvent(Events.cameraReachedTarget, e);
+					eventManager.registerEvent(Events.cameraReachedTarget, e);
 					// to avoid sending same event several times.
 					movingToTarget = false;
 				}
