@@ -23,6 +23,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -38,6 +39,7 @@ import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
+import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -66,7 +68,6 @@ import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.components.TagComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -87,7 +88,6 @@ import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
-import com.gemserk.games.superflyingthing.systems.TagSystem;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
@@ -420,13 +420,13 @@ public class PlayGameState extends GameStateImpl {
 		// }
 		// })).build();
 
-		// ReplayList replayList = new ReplayList();
-		//
-		// entityBuilder //
-		// .component(new TagComponent(Groups.ReplayRecorder)) //
-		// .component(new ReplayComponent(replayList)) //
-		// .component(new ScriptComponent(new ReplayRecorderScript(eventManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
-		// .build();
+//		 ReplayList replayList = new ReplayList();
+//		
+//		 entityBuilder //
+//		 .component(new TagComponent(Groups.ReplayRecorder)) //
+//		 .component(new ReplayComponent(replayList)) //
+//		 .component(new ScriptComponent(new ReplayRecorderScript(eventManager, entityFactory, entityTemplates.getReplayShipTemplate()))) //
+//		 .build();
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
