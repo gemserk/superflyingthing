@@ -343,7 +343,28 @@ public class PlayGameState extends GameStateImpl {
 
 				// game is over, move to replay screen
 
-				game.transition(game.getGameOverScreen(), 0, 300, false);
+				// game.transition(game.getGameOverScreen(), 0, 300, false);
+
+				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
+				if (replayRecorder == null) {
+
+					game.transition(game.getGameOverScreen()).leaveTime(0) //
+							.enterTime(300) //
+							.disposeCurrent(false) //
+							.start();
+
+					return;
+				}
+
+				ReplayComponent replayComponent = replayRecorder.getComponent(ReplayComponent.class);
+				
+				game.getGameData().put("replayList", replayComponent.getReplayList());
+				game.getGameData().put("level", GameInformation.level);
+
+				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
+						.enterTime(300) //
+						.disposeCurrent(false) //
+						.start();
 
 			}
 
@@ -434,7 +455,7 @@ public class PlayGameState extends GameStateImpl {
 		entityBuilder //
 				.component(new TagComponent(Groups.ReplayRecorder)) //
 				.component(new ReplayComponent(replayList)) //
-				.component(new ScriptComponent(new ReplayRecorderScript(eventManager, entityFactory, entityTemplates.getReplayShipTemplate(), entityTemplates.getReplayPlayerTemplate()))) //
+				.component(new ScriptComponent(new ReplayRecorderScript())) //
 				.build();
 
 		entityBuilder //

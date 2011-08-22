@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.util.ArrayList;
+
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -56,6 +58,8 @@ import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Replay;
+import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -194,7 +198,23 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
 
-		loadLevelForChallengeMode();
+//		loadLevelForChallengeMode();
+		
+		Integer level = game.getGameData().get("level");
+		ReplayList replayList = game.getGameData().get("replayList");
+		
+		loadLevel(Levels.level(level), true);
+		
+		ArrayList<Replay> replays = replayList.getReplays();
+		
+		for (int i = 0; i < replays.size(); i++) {
+			Entity replayShip = entityFactory.instantiate(entityTemplates.getReplayShipTemplate());
+			parameters.clear();
+			entityFactory.instantiate(entityTemplates.getReplayPlayerTemplate(), parameters //
+					.put("replay", replays.get(i)) //
+					.put("target", replayShip) //
+					);
+		}
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
