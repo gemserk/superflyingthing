@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.scripts;
 
 import com.artemis.Entity;
 import com.gemserk.animation4j.gdx.Animation;
+import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -10,7 +11,6 @@ import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.AnimationComponent;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
 public class LaserGunScript extends ScriptJavaImpl {

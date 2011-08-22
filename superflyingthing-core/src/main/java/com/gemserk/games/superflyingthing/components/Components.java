@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
-import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
@@ -15,26 +14,6 @@ import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.superflyingthing.ShipController;
 
 public class Components {
-
-	public static class AnimationComponent extends Component {
-
-		private final Animation[] animations;
-
-		private int currentAnimation;
-
-		public Animation getCurrentAnimation() {
-			return animations[currentAnimation];
-		}
-
-		public void setCurrentAnimation(int currentAnimation) {
-			this.currentAnimation = currentAnimation;
-		}
-
-		public AnimationComponent(Animation[] spriteSheets) {
-			this.animations = spriteSheets;
-		}
-
-	}
 
 	public static class ControllerComponent extends Component {
 
