@@ -295,6 +295,7 @@ public class EntityTemplates {
 					.userData(e) //
 					.build();
 
+			e.addComponent(new TagComponent(Groups.ship));
 			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));

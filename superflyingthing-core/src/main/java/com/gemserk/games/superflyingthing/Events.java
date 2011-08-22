@@ -30,6 +30,11 @@ public class Events {
 	 */
 	public static final String shipReleased = "shipReleased";
 	
+	/**
+	 * Sent whenever a new ship is spawned.
+	 */
+	public static final String shipSpawned = "shipSpawned";
+	
 	// Gamestate events
 	
 	/**

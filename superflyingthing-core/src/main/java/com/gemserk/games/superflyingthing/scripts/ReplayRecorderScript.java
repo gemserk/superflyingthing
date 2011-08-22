@@ -59,6 +59,12 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 				shipDeath(world, e, event);
 			}
 		});
+		eventListenerManager.register(Events.shipSpawned, new EventListener() {
+			@Override
+			public void onEvent(Event event) {
+				shipSpawned(world, e, event);
+			}
+		});
 		eventListenerManager.register(Events.shipReleased, new EventListener() {
 			@Override
 			public void onEvent(Event event) {
@@ -76,8 +82,12 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		recording = false;
 		recordingShip = null;
 	}
-
+	
 	private void shipReleased(com.artemis.World world, Entity e, Event event) {
+		recordingShip = (Entity) event.getSource();
+	}
+
+	private void shipSpawned(com.artemis.World world, Entity e, Event event) {
 		// starts a new ship recording
 		recording = true;
 		recordingShip = (Entity) event.getSource();

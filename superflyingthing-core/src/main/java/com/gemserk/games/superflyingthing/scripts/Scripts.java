@@ -254,7 +254,7 @@ public class Scripts {
 	public static class GameScript extends ScriptJavaImpl {
 
 		private final EntityFactory entityFactory;
-		private final EventManager eventListenerManager;
+		private final EventManager eventManager;
 
 		private ShipController controller;
 		private GameData gameData;
@@ -272,7 +272,7 @@ public class Scripts {
 		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
 				ShipController controller, boolean invulnerable) {
 
-			this.eventListenerManager = eventListenerManager;
+			this.eventManager = eventListenerManager;
 			this.controller = controller;
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
@@ -286,27 +286,27 @@ public class Scripts {
 		@Override
 		public void init(com.artemis.World world, Entity e) {
 			this.owner = e;
-			eventListenerManager.register(Events.cameraReachedTarget, new EventListener() {
+			eventManager.register(Events.cameraReachedTarget, new EventListener() {
 				@Override
 				public void onEvent(Event event) {
 					cameraReachedTarget(event);
 				}
 			});
-			eventListenerManager.register(Events.destinationPlanetReached, new EventListener() {
+			eventManager.register(Events.destinationPlanetReached, new EventListener() {
 				@Override
 				public void onEvent(Event event) {
 					destinationPlanetReached(event);
 				}
 			});
-			eventListenerManager.registerEvent(Events.gameStarted, owner);
+			eventManager.registerEvent(Events.gameStarted, owner);
 		}
 
 		private void cameraReachedTarget(Event event) {
-			eventListenerManager.registerEvent(Events.enablePlanetReleaseShip, owner);
+			eventManager.registerEvent(Events.enablePlanetReleaseShip, owner);
 		}
 
 		private void destinationPlanetReached(Event event) {
-			eventListenerManager.registerEvent(Events.gameFinished, owner);
+			eventManager.registerEvent(Events.gameFinished, owner);
 		}
 
 		@Override
@@ -339,10 +339,10 @@ public class Scripts {
 			gameDataComponent.ship = null;
 			gameData.deaths++;
 
-			eventListenerManager.registerEvent(Events.shipDeath, spatial);
-			eventListenerManager.registerEvent(Events.explosion, spatial);
-			eventListenerManager.registerEvent(Events.disablePlanetReleaseShip, e);
-			eventListenerManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
+			eventManager.registerEvent(Events.shipDeath, spatial);
+			eventManager.registerEvent(Events.explosion, spatial);
+			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
+			eventManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
@@ -368,6 +368,8 @@ public class Scripts {
 			attachableComponent.setOwner(gameDataComponent.startPlanet);
 
 			gameDataComponent.attachedShip = attachedShip;
+			
+			eventManager.registerEvent(Events.shipSpawned, gameDataComponent.attachedShip);
 		}
 
 		private void generateShipIfAttachedShipReleased(com.artemis.World world, Entity e) {
@@ -396,7 +398,7 @@ public class Scripts {
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
 
-			eventListenerManager.registerEvent(Events.shipReleased, gameDataComponent.ship);
+			eventManager.registerEvent(Events.shipReleased, gameDataComponent.ship);
 		}
 	}
 
