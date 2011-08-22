@@ -57,7 +57,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
-import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -68,7 +68,6 @@ import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
@@ -208,13 +207,42 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		ArrayList<Replay> replays = replayList.getReplays();
 
 		for (int i = 0; i < replays.size(); i++) {
-			Entity replayShip = entityFactory.instantiate(entityTemplates.getReplayShipTemplate());
+
+			// could be a flag on the replay itself instead checking the last one.
+			boolean mainReplay = i == replays.size() - 1;
+
+			parameters.clear();
+			Entity replayShip = entityFactory.instantiate(entityTemplates.getReplayShipTemplate(), parameters //
+					.put("mainReplay", mainReplay) //
+					);
+
 			parameters.clear();
 			entityFactory.instantiate(entityTemplates.getReplayPlayerTemplate(), parameters //
 					.put("replay", replays.get(i)) //
 					.put("target", replayShip) //
 					);
+
+			// if (i == replays.size() - 1)
+			// replayShip.addComponent(new TagComponent(Groups.MainReplayShip));
+
 		}
+
+		entityBuilder //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					@Override
+					public void init(com.artemis.World world, Entity e) {
+						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+						TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
+
+						Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
+						targetComponent.setTarget(mainReplayShip);
+
+						// also starts a timer to invoke game over game state
+					}
+
+				})) //
+				.build();
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
@@ -295,7 +323,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+		entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
@@ -303,7 +331,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		}
 
 		parameters.clear();
-		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
 				.put("camera", camera) //
 				.put("libgdxCamera", worldCamera) //
 				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
@@ -351,12 +379,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		}
 
 		createWorldLimits(worldWidth, worldHeight);
-
-		entityBuilder //
-				.component(new TagComponent(Groups.NormalGameModeLogic)) //
-				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
-				.build();
 
 		generateRandomClouds(worldWidth, worldHeight, 6);
 	}

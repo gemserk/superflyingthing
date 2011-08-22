@@ -335,11 +335,18 @@ public class EntityTemplates {
 
 			// Replay replay = parameters.get("replay");
 
+			Boolean mainReplay = parameters.get("mainReplay");
+
+			Color color = mainReplay ? Color.WHITE : new Color(0.5f, 0.5f, 0.5f, 1f);
+
 			e.setGroup(Groups.ReplayShipGroup);
+
+			if (mainReplay)
+				e.addComponent(new TagComponent(Groups.MainReplayShip));
 
 			e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f)));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
-			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.5f, 0.5f, 0.5f, 1f)));
+			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), color));
 			e.addComponent(new RenderableComponent(0));
 			e.addComponent(new ScriptComponent( //
 					// new ReplayPlayerScript(replay, eventManager, e), //
