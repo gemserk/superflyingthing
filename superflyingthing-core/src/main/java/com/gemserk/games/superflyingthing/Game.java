@@ -41,6 +41,7 @@ import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PauseGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
+import com.gemserk.games.superflyingthing.gamestates.ReplayPlayerGameState;
 import com.gemserk.games.superflyingthing.gamestates.SelectPlayModeGameState;
 import com.gemserk.games.superflyingthing.gamestates.SettingsGameState;
 import com.gemserk.games.superflyingthing.gamestates.SplashGameState;
@@ -109,6 +110,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private GamePreferences gamePreferences;
 
 	private Rectangle adsMaxArea;
+	private Screen replayPlayerScreen;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -156,6 +158,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Screen getControllersTestScreen() {
 		return controllersTestScreen;
+	}
+	
+	public Screen getReplayPlayerScreen() {
+		return replayPlayerScreen;
 	}
 
 	public GamePreferences getGamePreferences() {
@@ -249,6 +255,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
 		controllerTestGameState.setResourceManager(resourceManager);
+		
+		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
+		replayPlayerGameState.setResourceManager(resourceManager);
 
 		playScreen = new ScreenImpl(playGameState);
 		pauseScreen = new ScreenImpl(pauseGameState);
@@ -261,12 +270,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		backgroundGameScreen = new ScreenImpl(backgroundGameState);
 		settingsScreen = new ScreenImpl(settingsGameState);
 		controllersTestScreen = new ScreenImpl(controllerTestGameState);
+		replayPlayerScreen = new ScreenImpl(replayPlayerGameState);
 		
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 		
 		registrator.registerEventListeners(playGameState);
 		registrator.registerEventListeners(backgroundGameState);
 		registrator.registerEventListeners(settingsGameState);
+		registrator.registerEventListeners(replayPlayerGameState);
 		registrator.registerEventListeners(this);
 		
 		setScreen(splashScreen);
