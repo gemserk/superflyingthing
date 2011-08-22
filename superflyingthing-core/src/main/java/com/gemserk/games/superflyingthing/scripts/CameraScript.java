@@ -6,8 +6,8 @@ import com.gemserk.animation4j.interpolator.FloatInterpolator;
 import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -34,15 +34,10 @@ public class CameraScript extends ScriptJavaImpl {
 	@Override
 	public void init(com.artemis.World world, Entity e) {
 		this.owner = e;
-		eventManager.register(Events.moveCameraToEntity, new EventListener() {
-			@Override
-			public void onEvent(Event event) {
-				moveCameraToPlanet(event);
-			}
-		});
 	}
 
-	private void moveCameraToPlanet(Event event) {
+	@Handles(ids=Events.moveCameraToEntity)
+	public void moveCameraToPlanet(Event event) {
 		Spatial spatial = ComponentWrapper.getSpatial(owner);
 		transitionOrigin.set(spatial.getPosition());
 

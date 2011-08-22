@@ -2,13 +2,13 @@ package com.gemserk.games.superflyingthing;
 
 public class Events {
 
-	public static final String enablePlanetReleaseShip = "enablePlanetReleaseShip".intern();
-	public static final String disablePlanetReleaseShip = "disablePlanetReleaseShip".intern();
-	public static final String moveCameraToEntity = "moveCameraToPlanet".intern();
-	public static final String cameraReachedTarget = "cameraReachedTarget".intern();
-	public static final String itemTaken = "itemTaken".intern();
-	public static final String shipDeath = "shipDeath".intern();
-	public static final String destinationPlanetReached = "destinationPlanetReached".intern();
+	public static final String enablePlanetReleaseShip = "enablePlanetReleaseShip";
+	public static final String disablePlanetReleaseShip = "disablePlanetReleaseShip";
+	public static final String moveCameraToEntity = "moveCameraToPlanet";
+	public static final String cameraReachedTarget = "cameraReachedTarget";
+	public static final String itemTaken = "itemTaken";
+	public static final String shipDeath = "shipDeath";
+	public static final String destinationPlanetReached = "destinationPlanetReached";
 	
 	// for effects
 	
