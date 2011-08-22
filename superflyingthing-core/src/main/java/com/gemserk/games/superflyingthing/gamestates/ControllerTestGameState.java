@@ -16,7 +16,7 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
-import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.EventSystemScript;
@@ -149,7 +149,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		container = new Container();
 		spriteBatch = new SpriteBatch();
 
-		eventManager = new EventListenerManagerImpl();
+		eventManager = new EventManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
 

@@ -17,7 +17,7 @@ import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListenerManagerImpl;
+import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
@@ -210,7 +210,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			gamePreferences.updatePlayerProfile(playerProfile);
 		}
 		
-		eventManager = new EventListenerManagerImpl();
+		eventManager = new EventManagerImpl();
 
 		resourceManager = new ResourceManagerImpl<String>();
 		GameResources.load(resourceManager);
