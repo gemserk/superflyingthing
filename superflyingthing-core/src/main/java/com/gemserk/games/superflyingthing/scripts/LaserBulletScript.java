@@ -9,6 +9,7 @@ import com.badlogic.gdx.physics.box2d.RayCastCallback;
 import com.gemserk.animation4j.timeline.Builders;
 import com.gemserk.animation4j.timeline.TimelineAnimation;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -20,7 +21,6 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
-import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
 
 public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback {
 

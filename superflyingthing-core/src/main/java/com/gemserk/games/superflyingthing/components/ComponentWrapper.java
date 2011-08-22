@@ -5,6 +5,7 @@ import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
+import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
@@ -19,7 +20,6 @@ import com.gemserk.games.superflyingthing.components.Components.MovementComponen
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
-import com.gemserk.games.superflyingthing.components.Components.TimerComponent;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
 public class ComponentWrapper {

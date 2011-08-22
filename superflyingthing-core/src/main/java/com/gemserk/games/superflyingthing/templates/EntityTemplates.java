@@ -23,6 +23,7 @@ import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
+import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.Script;
 import com.gemserk.commons.artemis.templates.EntityFactory;
@@ -373,7 +374,7 @@ public class EntityTemplates {
 			entity.addComponent(new ScriptComponent(script));
 			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), color));
 			entity.addComponent(new RenderableComponent(5));
-			entity.addComponent(new Components.TimerComponent((float) duration * 0.001f));
+			entity.addComponent(new TimerComponent((float) duration * 0.001f));
 			entity.addComponent(new Components.DamageComponent(damage));
 			entity.addComponent(new OwnerComponent(owner));
 		}
@@ -720,7 +721,7 @@ public class EntityTemplates {
 			Float time = parameters.get("time");
 			String eventId = parameters.get("eventId");
 			
-			entity.addComponent(new Components.TimerComponent(time));
+			entity.addComponent(new TimerComponent(time));
 			entity.addComponent(new ScriptComponent(new TimerScript(eventManager, eventId)));
 		}
 	};
