@@ -225,7 +225,39 @@ public class Behaviors {
 
 	}
 
-	public static class CollisionHandlerScript extends ScriptJavaImpl {
+	public static class AttachToAttachableScript extends ScriptJavaImpl {
+		@Override
+		public void update(World world, Entity e1) {
+			Physics physics = ComponentWrapper.getPhysics(e1);
+			if (physics == null)
+				return;
+			Contact contact = physics.getContact();
+			for (int i = 0; i < contact.getContactCount(); i++) {
+				if (!contact.isInContact(i))
+					continue;
+				Entity e2 = (Entity) contact.getUserData(i);
+				updateAttachToAttachable(e1, e2);
+				return;
+			}
+
+		}
+
+		private void updateAttachToAttachable(Entity e1, Entity e2) {
+			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e2);
+			if (entityAttachment == null)
+				return;
+			if (entityAttachment.entity != null)
+				return;
+			Spatial spatial = ComponentWrapper.getSpatial(e2);
+			if (spatial == null)
+				return;
+			entityAttachment.entity = e1;
+		}
+
+	}
+	
+	public static class GrabGrabbableScript extends ScriptJavaImpl {
+		
 		@Override
 		public void update(World world, Entity e1) {
 			Physics physics = ComponentWrapper.getPhysics(e1);
@@ -237,7 +269,6 @@ public class Behaviors {
 					continue;
 				Entity e2 = (Entity) contact.getUserData(i);
 				updateGrabGrabbable(e1, e2);
-				updateAttachToAttachable(e1, e2);
 				return;
 			}
 
@@ -252,18 +283,6 @@ public class Behaviors {
 			if (grabbableComponent.grabbed)
 				return;
 			grabbableComponent.grabbed = true;
-		}
-
-		private void updateAttachToAttachable(Entity e1, Entity e2) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e2);
-			if (entityAttachment == null)
-				return;
-			if (entityAttachment.entity != null)
-				return;
-			Spatial spatial = ComponentWrapper.getSpatial(e2);
-			if (spatial == null)
-				return;
-			entityAttachment.entity = e1;
 		}
 
 	}

@@ -41,7 +41,7 @@ public class Scripts {
 
 		Script fixMovementBehavior = new Behaviors.FixMovementScript();
 		Script fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerScript();
-		Script collisionHandlerBehavior = new Behaviors.CollisionHandlerScript();
+		Script collisionHandlerBehavior = new Behaviors.AttachToAttachableScript();
 		Script updateSpriteFromAnimation = new Behaviors.ShipAnimationScript();
 
 		Script performDamageFromCollidingEntityScript = new Behaviors.PerformDamageFromCollidingEntityScript();
@@ -74,9 +74,6 @@ public class Scripts {
 
 		private final EventManager eventManager;
 
-		float rotationSpeed = 300f;
-		float angle = 0f;
-
 		public StarScript(EventManager eventManager) {
 			this.eventManager = eventManager;
 		}
@@ -84,18 +81,32 @@ public class Scripts {
 		@Override
 		public void update(com.artemis.World world, Entity e) {
 			updateGrabbable(e);
-			updateAnimation(world, e);
 		}
 
-		public void updateAnimation(com.artemis.World world, Entity e) {
+		private void updateGrabbable(Entity e) {
+			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
+			if (!grabbableComponent.grabbed)
+				return;
+			Gdx.app.log("SuperFlyingThing", "Registering event for item taken");
+			eventManager.registerEvent(Events.itemTaken, e);
+		}
+	}
+	
+	public static class StarAnimationScript extends ScriptJavaImpl {
+
+		float rotationSpeed = 150f;
+		float angle = 0f;
+
+		@Override
+		public void update(com.artemis.World world, Entity e) {
 			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-
+			
 			angle += rotationSpeed * GlobalTime.getDelta();
-
+			
 			Animation animation = animationComponent.getCurrentAnimation();
 			int frameIndex = getAnimationForAngle(angle - 5f);
-
+			
 			Sprite frame = animation.getFrame(frameIndex);
 			spriteComponent.setSprite(frame);
 		}
@@ -108,13 +119,6 @@ public class Scripts {
 			return (int) (floor);
 		}
 
-		private void updateGrabbable(Entity e) {
-			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
-			if (!grabbableComponent.grabbed)
-				return;
-			Gdx.app.log("SuperFlyingThing", "Registering event for item taken");
-			eventManager.registerEvent(Events.itemTaken, e);
-		}
 	}
 
 	public static class StartPlanetScript extends ScriptJavaImpl {

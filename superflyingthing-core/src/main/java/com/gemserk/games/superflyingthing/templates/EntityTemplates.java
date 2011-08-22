@@ -60,6 +60,7 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
+import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.RemoveWhenGrabbedScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
@@ -71,6 +72,7 @@ import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
+import com.gemserk.games.superflyingthing.scripts.Scripts.StarAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
@@ -242,7 +244,7 @@ public class EntityTemplates {
 			direction.set(1f, 0f).rotate(angle);
 
 			ShipController controller = parameters.get("controller");
-			Script script = parameters.get("script", new ShipScript());
+			// Script script = parameters.get("script", new ShipScript(), new GrabGrabbableScript());
 
 			Body body = bodyBuilder //
 					.fixture(bodyBuilder.fixtureDefBuilder() //
@@ -264,7 +266,7 @@ public class EntityTemplates {
 			e.addComponent(new MovementComponent(direction.x, direction.y, maxLinearSpeed, maxAngularVelocity));
 			e.addComponent(new AttachableComponent());
 			e.addComponent(new ControllerComponent(controller));
-			e.addComponent(new ScriptComponent(script));
+			e.addComponent(new ScriptComponent(new ShipScript(), new GrabGrabbableScript()));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new ContainerComponent());
 			e.addComponent(new HealthComponent(new Container(100f, 100f)));
@@ -519,7 +521,7 @@ public class EntityTemplates {
 		e.addComponent(new RenderableComponent(3));
 		e.addComponent(new GrabbableComponent());
 		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
-		e.addComponent(new ScriptComponent(new StarScript(eventManager), new RemoveWhenGrabbedScript()));
+		e.addComponent(new ScriptComponent(new StarScript(eventManager), new RemoveWhenGrabbedScript(), new StarAnimationScript()));
 
 		e.refresh();
 		return e;
