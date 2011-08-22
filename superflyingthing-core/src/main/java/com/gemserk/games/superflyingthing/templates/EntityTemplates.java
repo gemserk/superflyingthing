@@ -71,6 +71,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
+import com.gemserk.games.superflyingthing.scripts.UpdateLibgdxCameraScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -181,7 +182,7 @@ public class EntityTemplates {
 			entity.addComponent(new Components.CameraComponent(camera, libgdxCamera));
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new ScriptComponent(new CameraScript(eventManager), //
-					new UpdateCameraFromSpatialScript()));
+					new UpdateCameraFromSpatialScript(), new UpdateLibgdxCameraScript()));
 
 		}
 	};

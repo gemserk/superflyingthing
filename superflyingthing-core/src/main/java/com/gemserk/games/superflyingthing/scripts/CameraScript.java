@@ -3,18 +3,16 @@ package com.gemserk.games.superflyingthing.scripts;
 import com.artemis.Entity;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.animation4j.interpolator.FloatInterpolator;
+import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class CameraScript extends ScriptJavaImpl {
@@ -62,18 +60,8 @@ public class CameraScript extends ScriptJavaImpl {
 	@Override
 	public void update(com.artemis.World world, Entity e) {
 		updatePosition(world, e);
-		updateLibgdxCamera(e);
 	}
 
-	private void updateLibgdxCamera(Entity e) {
-		CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(e);
-		Camera camera = cameraComponent.getCamera();
-		Libgdx2dCamera libgdxCamera = cameraComponent.getLibgdx2dCamera();
-		libgdxCamera.move(camera.getX(), camera.getY());
-		libgdxCamera.zoom(camera.getZoom());
-		libgdxCamera.rotate(camera.getAngle());
-	}
-	
 	private void updatePosition(com.artemis.World world, Entity e) {
 		TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
 		Entity target = targetComponent.target;
@@ -84,8 +72,8 @@ public class CameraScript extends ScriptJavaImpl {
 			timeTransition.update(GlobalTime.getDelta());
 
 			if (!timeTransition.isFinished()) {
-				float x = FloatInterpolator.interpolate(transitionOrigin.x, transitionTarget.x, timeTransition.get());
-				float y = FloatInterpolator.interpolate(transitionOrigin.y, transitionTarget.y, timeTransition.get());
+				float x = FloatInterpolator.interpolate(transitionOrigin.x, transitionTarget.x, timeTransition.get(), InterpolationFunctions.easeInOut());
+				float y = FloatInterpolator.interpolate(transitionOrigin.y, transitionTarget.y, timeTransition.get(), InterpolationFunctions.easeInOut());
 				spatial.setPosition(x, y);
 			} else {
 				if (movingToTarget) {
