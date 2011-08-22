@@ -23,7 +23,9 @@ public class Replay {
 
 	}
 
-	public ArrayList<ReplayEntry> replayEntries = new ArrayList<ReplayEntry>();
+	private ArrayList<ReplayEntry> replayEntries = new ArrayList<ReplayEntry>();
+	public int duration;
+	public boolean main;
 
 	public ReplayEntry getEntry(int i) {
 		return replayEntries.get(i);
@@ -32,5 +34,11 @@ public class Replay {
 	public int getEntriesCount() {
 		return replayEntries.size();
 	}
+	
+	public void add(ReplayEntry replayEntry) {
+		duration = Math.max(replayEntry.time, duration);
+		replayEntries.add(replayEntry);
+	}
+	
 
 }

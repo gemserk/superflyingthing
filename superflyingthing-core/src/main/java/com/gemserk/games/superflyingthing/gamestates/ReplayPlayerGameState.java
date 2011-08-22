@@ -51,12 +51,14 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
+import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.ReplayList;
@@ -209,21 +211,18 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		for (int i = 0; i < replays.size(); i++) {
 
 			// could be a flag on the replay itself instead checking the last one.
-			boolean mainReplay = i == replays.size() - 1;
+			Replay replay = replays.get(i);
 
 			parameters.clear();
 			Entity replayShip = entityFactory.instantiate(entityTemplates.getReplayShipTemplate(), parameters //
-					.put("mainReplay", mainReplay) //
+					.put("replay", replay) //
 					);
 
 			parameters.clear();
 			entityFactory.instantiate(entityTemplates.getReplayPlayerTemplate(), parameters //
-					.put("replay", replays.get(i)) //
+					.put("replay", replay) //
 					.put("target", replayShip) //
 					);
-
-			// if (i == replays.size() - 1)
-			// replayShip.addComponent(new TagComponent(Groups.MainReplayShip));
 
 		}
 
@@ -238,7 +237,21 @@ public class ReplayPlayerGameState extends GameStateImpl {
 						Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
 						targetComponent.setTarget(mainReplayShip);
 
+						ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
+						Replay replay = replayComponent.replay;
+
 						// also starts a timer to invoke game over game state
+						entityFactory.instantiate(entityTemplates.getTimerTemplate(), new ParametersWrapper() //
+								.put("time", (float) replay.duration * 0.001f) //
+								.put("eventId", Events.gameOver));
+					}
+
+					@Handles(ids = Events.gameOver)
+					public void gameOver(Event event) {
+						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+						mainCamera.delete();
+						// TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
+						// targetComponent.setTarget(null);
 					}
 
 				})) //

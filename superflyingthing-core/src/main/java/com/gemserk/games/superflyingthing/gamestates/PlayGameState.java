@@ -58,6 +58,7 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.Shape;
@@ -67,7 +68,7 @@ import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
+import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
 import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
@@ -334,7 +335,7 @@ public class PlayGameState extends GameStateImpl {
 				parameters.clear();
 				entityFactory.instantiate(entityTemplates.getTimerTemplate(), parameters //
 						.put("time", 2.5f) //
-						.put("eventId", "gameOver") //
+						.put("eventId", Events.gameOver) //
 						);
 			}
 
@@ -356,9 +357,9 @@ public class PlayGameState extends GameStateImpl {
 					return;
 				}
 
-				ReplayComponent replayComponent = replayRecorder.getComponent(ReplayComponent.class);
+				ReplayListComponent replayListComponent = replayRecorder.getComponent(ReplayListComponent.class);
 				
-				game.getGameData().put("replayList", replayComponent.getReplayList());
+				game.getGameData().put("replayList", replayListComponent.getReplayList());
 				game.getGameData().put("level", level);
 
 				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
@@ -454,7 +455,7 @@ public class PlayGameState extends GameStateImpl {
 
 		entityBuilder //
 				.component(new TagComponent(Groups.ReplayRecorder)) //
-				.component(new ReplayComponent(replayList)) //
+				.component(new ReplayListComponent(replayList)) //
 				.component(new ScriptComponent(new ReplayRecorderScript())) //
 				.build();
 

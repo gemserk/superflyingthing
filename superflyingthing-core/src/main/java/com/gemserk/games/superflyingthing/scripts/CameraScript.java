@@ -60,7 +60,7 @@ public class CameraScript extends ScriptJavaImpl {
 	private void updatePosition(com.artemis.World world, Entity e) {
 		TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
 		Entity target = targetComponent.target;
-
+		
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 
 		if (target == null) {

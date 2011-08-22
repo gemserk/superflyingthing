@@ -300,7 +300,7 @@ public class Components {
 
 	}
 
-	public static class ReplayComponent extends Component {
+	public static class ReplayListComponent extends Component {
 
 		private final ReplayList replayList;
 		
@@ -308,8 +308,18 @@ public class Components {
 			return replayList;
 		}
 
-		public ReplayComponent(ReplayList replayList) {
+		public ReplayListComponent(ReplayList replayList) {
 			this.replayList = replayList;
+		}
+
+	}
+	
+	public static class ReplayComponent extends Component {
+
+		public final Replay replay;
+
+		public ReplayComponent(Replay replay) {
+			this.replay = replay;
 		}
 
 	}

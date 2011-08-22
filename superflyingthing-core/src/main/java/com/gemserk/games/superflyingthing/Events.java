@@ -24,6 +24,8 @@ public class Events {
 	 */
 	public static final String gameFinished = "gameFinished";
 	
+	public static final String gameOver = "gameOver";
+	
 	
 	/**
 	 * Sent when the ship was released from the planet.

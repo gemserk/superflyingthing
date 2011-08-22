@@ -56,6 +56,7 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
+import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
@@ -333,9 +334,9 @@ public class EntityTemplates {
 		public void apply(Entity e) {
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
-			// Replay replay = parameters.get("replay");
+			Replay replay = parameters.get("replay");
 
-			Boolean mainReplay = parameters.get("mainReplay");
+			boolean mainReplay = replay.main;
 
 			Color color = mainReplay ? Color.WHITE : new Color(0.5f, 0.5f, 0.5f, 1f);
 
@@ -344,12 +345,12 @@ public class EntityTemplates {
 			if (mainReplay)
 				e.addComponent(new TagComponent(Groups.MainReplayShip));
 
+			e.addComponent(new ReplayComponent(replay));
 			e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f)));
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), color));
 			e.addComponent(new RenderableComponent(0));
 			e.addComponent(new ScriptComponent( //
-					// new ReplayPlayerScript(replay, eventManager, e), //
 					new ShipAnimationScript() //
 			));
 

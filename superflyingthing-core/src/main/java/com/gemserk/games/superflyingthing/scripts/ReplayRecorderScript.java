@@ -9,7 +9,7 @@ import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
-import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
+import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
 import com.gemserk.games.superflyingthing.components.ReplayList;
@@ -33,9 +33,11 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 	@Handles(ids = { Events.destinationPlanetReached, Events.shipDeath })
 	public void stopReplayRecording(Event event) {
-		ReplayComponent replayComponent = ComponentWrapper.getReplayComponent(owner);
-		ReplayList replayList = replayComponent.getReplayList();
+		ReplayListComponent replayListComponent = ComponentWrapper.getReplayComponent(owner);
+		ReplayList replayList = replayListComponent.getReplayList();
 		replayList.add(currentReplay);
+		
+		currentReplay.main = event.getId().equals(Events.destinationPlanetReached);
 
 		// stops the ship recording
 		recording = false;
@@ -78,7 +80,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 		Spatial recordingShipSpatial = spatialComponent.getSpatial();
 
-		currentReplay.replayEntries.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
+		currentReplay.add(new ReplayEntry(replayTime, recordingShipSpatial.getX(), recordingShipSpatial.getY(), (int) recordingShipSpatial.getAngle()));
 	}
 
 }
