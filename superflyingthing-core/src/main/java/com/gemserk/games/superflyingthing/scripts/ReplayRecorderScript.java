@@ -13,6 +13,7 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
+import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
@@ -25,6 +26,7 @@ import com.gemserk.games.superflyingthing.templates.Groups;
 public class ReplayRecorderScript extends ScriptJavaImpl {
 
 	private final EventManager eventListenerManager;
+	private final Parameters parameters = new ParametersWrapper();
 
 	private boolean recording;
 	private int replayTime;
@@ -40,11 +42,13 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 	// TODO: remove them, should not be here.
 	private final EntityFactory entityFactory;
 	private final EntityTemplate shipReplayTemplate;
+	private final EntityTemplate replayPlayerTemplate;
 
-	public ReplayRecorderScript(EventManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate) {
+	public ReplayRecorderScript(EventManager eventListenerManager, EntityFactory entityFactory, EntityTemplate shipReplayTemplate, EntityTemplate replayPlayerTemplate) {
 		this.eventListenerManager = eventListenerManager;
 		this.entityFactory = entityFactory;
 		this.shipReplayTemplate = shipReplayTemplate;
+		this.replayPlayerTemplate = replayPlayerTemplate;
 	}
 
 	@Override
@@ -92,7 +96,12 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		// reproduce each replay to test....
 		ArrayList<Replay> replays = replayList.getReplays();
 		for (int i = 0; i < replays.size(); i++) {
-			entityFactory.instantiate(shipReplayTemplate, new ParametersWrapper().put("replay", replays.get(i)));
+			Entity replayShip = entityFactory.instantiate(shipReplayTemplate);
+			parameters.clear();
+			entityFactory.instantiate(replayPlayerTemplate, parameters //
+					.put("replay", replays.get(i)) //
+					.put("target", replayShip) //
+					);
 		}
 	}
 

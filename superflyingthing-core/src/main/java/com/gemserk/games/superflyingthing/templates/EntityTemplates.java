@@ -58,7 +58,7 @@ import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterC
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
-import com.gemserk.games.superflyingthing.scripts.Behaviors;
+import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
@@ -93,7 +93,7 @@ public class EntityTemplates {
 	private final EventManager eventManager;
 
 	public EntityTemplate userMessageTemplate;
-	
+
 	public EntityTemplate getAttachedShipTemplate() {
 		return attachedShipTemplate;
 	}
@@ -137,9 +137,13 @@ public class EntityTemplates {
 	public EntityTemplate getParticleEmitterSpawnerTemplate() {
 		return particleEmitterSpawnerTemplate;
 	}
-	
+
 	public EntityTemplate getTimerTemplate() {
 		return timerTemplate;
+	}
+
+	public EntityTemplate getReplayPlayerTemplate() {
+		return replayPlayerTemplate;
 	}
 
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory, EventManager eventManager) {
@@ -324,7 +328,7 @@ public class EntityTemplates {
 		public void apply(Entity e) {
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
-			Replay replay = parameters.get("replay");
+			// Replay replay = parameters.get("replay");
 
 			e.setGroup(Groups.ReplayShipGroup);
 
@@ -333,11 +337,24 @@ public class EntityTemplates {
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), new Color(0.5f, 0.5f, 0.5f, 1f)));
 			e.addComponent(new RenderableComponent(0));
 			e.addComponent(new ScriptComponent( //
-					new ReplayPlayerScript(replay, eventManager), //
-					new Behaviors.UpdateSpriteFromAnimationScript() //
+					// new ReplayPlayerScript(replay, eventManager, e), //
+					new ShipAnimationScript() //
 			));
 
 		}
+	};
+
+	private EntityTemplate replayPlayerTemplate = new EntityTemplateImpl() {
+
+		@Override
+		public void apply(Entity e) {
+			Replay replay = parameters.get("replay");
+			Entity target = parameters.get("target");
+			e.setGroup(Groups.ReplayShipGroup);
+			e.addComponent(new ScriptComponent(new ReplayPlayerScript(replay, eventManager, target)));
+
+		}
+
 	};
 
 	private EntityTemplate laserBulletTemplate = new EntityTemplateImpl() {
@@ -709,18 +726,18 @@ public class EntityTemplates {
 			entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, getParticleEmitterTemplate())));
 		}
 	};
-	
+
 	private EntityTemplate timerTemplate = new EntityTemplateImpl() {
-		
+
 		{
 			parameters.put("time", new Float(0f));
 		}
-		
+
 		@Override
 		public void apply(Entity entity) {
 			Float time = parameters.get("time");
 			String eventId = parameters.get("eventId");
-			
+
 			entity.addComponent(new TimerComponent(time));
 			entity.addComponent(new ScriptComponent(new TimerScript(eventManager, eventId)));
 		}

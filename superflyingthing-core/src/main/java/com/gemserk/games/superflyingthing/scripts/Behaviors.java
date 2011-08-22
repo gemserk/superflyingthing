@@ -192,7 +192,7 @@ public class Behaviors {
 
 	}
 
-	public static class UpdateSpriteFromAnimationScript extends ScriptJavaImpl {
+	public static class ShipAnimationScript extends ScriptJavaImpl {
 
 		@Override
 		public void update(World world, Entity e) {

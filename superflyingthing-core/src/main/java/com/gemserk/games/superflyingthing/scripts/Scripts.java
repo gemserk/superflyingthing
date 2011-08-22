@@ -42,7 +42,7 @@ public class Scripts {
 		Script fixMovementBehavior = new Behaviors.FixMovementScript();
 		Script fixDirectionFromControllerBehavior = new Behaviors.FixDirectionFromControllerScript();
 		Script collisionHandlerBehavior = new Behaviors.CollisionHandlerScript();
-		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
+		Script updateSpriteFromAnimation = new Behaviors.ShipAnimationScript();
 
 		Script performDamageFromCollidingEntityScript = new Behaviors.PerformDamageFromCollidingEntityScript();
 
@@ -60,7 +60,7 @@ public class Scripts {
 	public static class AttachedShipScript extends ScriptJavaImpl {
 
 		Script fixMovementBehavior = new Behaviors.FixMovementScript();
-		Script updateSpriteFromAnimation = new Behaviors.UpdateSpriteFromAnimationScript();
+		Script updateSpriteFromAnimation = new Behaviors.ShipAnimationScript();
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {

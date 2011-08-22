@@ -15,7 +15,7 @@ import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
 
 /**
- * Plays a replay by interpolating values of the recorded replay.
+ * Applies all the replay information to an entity, applied to the ship to reproduce a ship replay.
  * 
  * @author acoppes
  * 
@@ -23,6 +23,7 @@ import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
 public class ReplayPlayerScript extends ScriptJavaImpl {
 
 	private final EventManager eventManager;
+	private final Entity target;
 
 	private final Replay replay;
 	private float time;
@@ -34,9 +35,10 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 
 	private boolean finished;
 
-	public ReplayPlayerScript(Replay replay, EventManager eventManager) {
+	public ReplayPlayerScript(Replay replay, EventManager eventManager, Entity target) {
 		this.replay = replay;
 		this.eventManager = eventManager;
+		this.target = target;
 	}
 
 	@Override
@@ -49,7 +51,7 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 
 	public void update(com.artemis.World world, Entity e) {
 
-		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(e);
+		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(target);
 		Spatial spatial = spatialComponent.getSpatial();
 
 		if (finished) {
@@ -57,6 +59,7 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 
 			eventManager.registerEvent(Events.explosion, spatial);
 
+			target.delete();
 			e.delete();
 
 			return;
