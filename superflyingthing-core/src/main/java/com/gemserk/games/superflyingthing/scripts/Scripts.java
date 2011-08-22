@@ -74,8 +74,6 @@ public class Scripts {
 
 		private final EventManager eventManager;
 
-		Script removeWhenGrabbedBehavior;
-
 		float rotationSpeed = 300f;
 		float angle = 0f;
 
@@ -84,13 +82,7 @@ public class Scripts {
 		}
 
 		@Override
-		public void init(com.artemis.World world, Entity e) {
-			removeWhenGrabbedBehavior = new Behaviors.RemoveWhenGrabbedScript();
-		}
-
-		@Override
 		public void update(com.artemis.World world, Entity e) {
-			removeWhenGrabbedBehavior.update(world, e);
 			updateGrabbable(e);
 			updateAnimation(world, e);
 		}
@@ -120,7 +112,6 @@ public class Scripts {
 			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
 			if (!grabbableComponent.grabbed)
 				return;
-
 			Gdx.app.log("SuperFlyingThing", "Registering event for item taken");
 			eventManager.registerEvent(Events.itemTaken, e);
 		}

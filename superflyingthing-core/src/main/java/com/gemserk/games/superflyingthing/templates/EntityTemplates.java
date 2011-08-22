@@ -60,6 +60,7 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
+import com.gemserk.games.superflyingthing.scripts.Behaviors.RemoveWhenGrabbedScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
@@ -518,7 +519,7 @@ public class EntityTemplates {
 		e.addComponent(new RenderableComponent(3));
 		e.addComponent(new GrabbableComponent());
 		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
-		e.addComponent(new ScriptComponent(new StarScript(eventManager)));
+		e.addComponent(new ScriptComponent(new StarScript(eventManager), new RemoveWhenGrabbedScript()));
 
 		e.refresh();
 		return e;
