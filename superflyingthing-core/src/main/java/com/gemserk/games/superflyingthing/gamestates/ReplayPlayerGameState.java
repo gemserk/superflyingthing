@@ -165,7 +165,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		worldWrapper = new WorldWrapper(world);
 		parameters = new ParametersWrapper();
 		// add render and all stuff...
-		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
@@ -249,9 +248,14 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					@Handles(ids = Events.gameOver)
 					public void gameOver(Event event) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-						mainCamera.delete();
-						// TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
-						// targetComponent.setTarget(null);
+						// mainCamera.delete();
+						TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
+						targetComponent.setTarget(null);
+
+						game.transition(game.getGameOverScreen()).leaveTime(0) //
+								.enterTime(0) //
+								.disposeCurrent(true) //
+								.start();
 					}
 
 				})) //

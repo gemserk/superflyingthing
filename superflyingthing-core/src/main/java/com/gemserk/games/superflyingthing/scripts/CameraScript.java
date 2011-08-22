@@ -36,7 +36,7 @@ public class CameraScript extends ScriptJavaImpl {
 		this.owner = e;
 	}
 
-	@Handles(ids=Events.moveCameraToEntity)
+	@Handles(ids = Events.moveCameraToEntity)
 	public void moveCameraToPlanet(Event event) {
 		Spatial spatial = ComponentWrapper.getSpatial(owner);
 		transitionOrigin.set(spatial.getPosition());
@@ -60,7 +60,7 @@ public class CameraScript extends ScriptJavaImpl {
 	private void updatePosition(com.artemis.World world, Entity e) {
 		TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
 		Entity target = targetComponent.target;
-		
+
 		Spatial spatial = ComponentWrapper.getSpatial(e);
 
 		if (target == null) {
@@ -80,6 +80,13 @@ public class CameraScript extends ScriptJavaImpl {
 
 			return;
 		} else {
+			
+			// entity was removed from the world...
+			if (world.getEntity(target.getId()) != target) {
+				targetComponent.setTarget(null);
+				return;
+			}
+			
 			Spatial targetSpatial = ComponentWrapper.getSpatial(target);
 			spatial.set(targetSpatial);
 		}
