@@ -336,6 +336,9 @@ public class EntityTemplates {
 
 		@Override
 		public void apply(Entity e) {
+			float width = 0.8f;
+			float height = 0.8f;
+
 			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
 
 			Replay replay = parameters.get("replay");
@@ -349,14 +352,31 @@ public class EntityTemplates {
 			if (mainReplay)
 				e.addComponent(new TagComponent(Groups.MainReplayShip));
 
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.restitution(0f) //
+							.categoryBits(CategoryBits.ShipCategoryBits) //
+							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
+							.boxShape(width * 0.25f, height * 0.1f))//
+					.mass(50f) //
+					.position(0f, 0f) //
+					.type(BodyType.DynamicBody) //
+					.userData(e) //
+					.build();
+
 			e.addComponent(new ReplayComponent(replay));
-			e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, 0.8f, 0.8f, 0f)));
+
+			// e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, width, height, 0f)));
+			e.addComponent(new PhysicsComponent(body));
+			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), color));
 			e.addComponent(new RenderableComponent(0));
+
 			e.addComponent(new ScriptComponent( //
-					new ShipAnimationScript() //
-			));
+					new ShipAnimationScript(), //
+					new GrabGrabbableScript()));
 
 		}
 	};
