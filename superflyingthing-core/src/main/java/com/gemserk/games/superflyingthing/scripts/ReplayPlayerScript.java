@@ -57,7 +57,8 @@ public class ReplayPlayerScript extends ScriptJavaImpl {
 		if (finished) {
 			// removes entity if replay is finished.
 
-			eventManager.registerEvent(Events.explosion, spatial);
+			if (!replay.main)
+				eventManager.registerEvent(Events.explosion, spatial);
 
 			target.delete();
 			e.delete();
