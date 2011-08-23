@@ -237,9 +237,9 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 						// also starts a timer to invoke game over game state
 						entityFactory.instantiate(entityTemplates.getTimerTemplate(), new ParametersWrapper() //
-								.put("time", (float) replay.duration * 0.001f) //
+								.put("time", (float) (replay.duration - 100) * 0.001f) //
 								.put("eventId", Events.gameOver));
-						
+
 						eventManager.registerEvent(Events.gameStarted, e);
 					}
 
@@ -303,6 +303,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	}
 
 	public void nextScreen() {
+		game.getGameData().put("worldWrapper", worldWrapper);
 		game.transition(game.getGameOverScreen()).leaveTime(0) //
 				.enterTime(0) //
 				.disposeCurrent(true) //
@@ -345,7 +346,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		worldWrapper.dispose();
+		// worldWrapper.dispose();
 		spriteBatch.dispose();
 	}
 

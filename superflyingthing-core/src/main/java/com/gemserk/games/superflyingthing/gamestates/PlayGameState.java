@@ -382,22 +382,23 @@ public class PlayGameState extends GameStateImpl {
 				// game.transition(game.getGameOverScreen(), 0, 300, false);
 
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
-				if (replayRecorder == null) {
 
-					game.getGameData().put("worldWrapper", worldWrapper);
-					game.transition(game.getGameOverScreen()).leaveTime(0) //
-							.enterTime(300) //
-							.disposeCurrent() //
-							.start();
-
-					return;
-				}
+				// if (replayRecorder == null) {
+				//
+				// game.getGameData().put("worldWrapper", worldWrapper);
+				// game.transition(game.getGameOverScreen()).leaveTime(0) //
+				// .enterTime(300) //
+				// .disposeCurrent() //
+				// .start();
+				//
+				// return;
+				// }
 
 				ReplayListComponent replayListComponent = replayRecorder.getComponent(ReplayListComponent.class);
 
 				game.getGameData().put("replayList", replayListComponent.getReplayList());
 				game.getGameData().put("level", level);
-				game.getGameData().put("worldWrapper", worldWrapper);
+				// game.getGameData().put("worldWrapper", worldWrapper);
 
 				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
 						.enterTime(300) //
@@ -576,10 +577,10 @@ public class PlayGameState extends GameStateImpl {
 			while (obstacleX < level.w - 17f) {
 				Obstacle obstacle1 = new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
 				Obstacle obstacle2 = new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-				
+
 				obstacle1.id = "obstacle-" + UUID.randomUUID();
 				obstacle2.id = "obstacle-" + UUID.randomUUID();
-				
+
 				level.obstacles.add(obstacle1);
 				level.obstacles.add(obstacle2);
 				obstacleX += 8f;
@@ -591,7 +592,7 @@ public class PlayGameState extends GameStateImpl {
 				item.y = MathUtils.random(1f, level.h - 1f);
 				level.items.add(item);
 			}
-			
+
 			Levels.generateRandomClouds(level, 6);
 
 			return level;
@@ -708,7 +709,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		// worldWrapper.dispose();
+		worldWrapper.dispose();
 		spriteBatch.dispose();
 		// physicsWorld.dispose();
 	}

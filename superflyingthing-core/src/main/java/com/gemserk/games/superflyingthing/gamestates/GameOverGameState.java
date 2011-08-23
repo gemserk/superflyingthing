@@ -205,8 +205,8 @@ public class GameOverGameState extends GameStateImpl {
 	@Override
 	public void update() {
 
-		if (worldWrapper != null)
-			worldWrapper.update(getDeltaInMs());
+		// if (worldWrapper != null)
+		// worldWrapper.update(getDeltaInMs());
 
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
@@ -224,10 +224,10 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		
+
 		if (worldWrapper != null)
 			worldWrapper.dispose();
-		
+
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}
