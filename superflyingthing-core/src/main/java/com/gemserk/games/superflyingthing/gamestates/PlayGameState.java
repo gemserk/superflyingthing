@@ -10,11 +10,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.Fixture;
-import com.badlogic.gdx.physics.box2d.QueryCallback;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -41,12 +37,10 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -72,9 +66,7 @@ import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.Item;
-import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
-import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
@@ -277,7 +269,7 @@ public class PlayGameState extends GameStateImpl {
 
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			level = loadRandomLevelForRandomMode(true);
+			level = loadRandomLevelForRandomMode();
 
 			entityBuilder //
 					.component(new TagComponent(Groups.NormalGameModeLogic)) //
@@ -287,7 +279,7 @@ public class PlayGameState extends GameStateImpl {
 
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			level = loadRandomLevelForRandomMode(false);
+			level = loadRandomLevelForRandomMode();
 
 			entityBuilder //
 					.component(new TagComponent(Groups.NormalGameModeLogic)) //
@@ -526,153 +518,14 @@ public class PlayGameState extends GameStateImpl {
 
 	}
 
-	static class LevelLoader {
-
-		private final Parameters parameters = new ParametersWrapper();
-		private final EntityTemplates entityTemplates;
-		private final World physicsWorld;
-		private final EntityFactory entityFactory;
-		private final Libgdx2dCamera worldCamera;
-
-		boolean insideObstacle;
-
-		public LevelLoader(EntityTemplates entityTemplates, EntityFactory entityFactory, World physicsWorld, Libgdx2dCamera worldCamera) {
-			this.entityTemplates = entityTemplates;
-			this.entityFactory = entityFactory;
-			this.physicsWorld = physicsWorld;
-			this.worldCamera = worldCamera;
-		}
-
-		private void createWorldLimits(float worldWidth, float worldHeight) {
-			createWorldLimits(worldWidth, worldHeight, 0.2f);
-		}
-
-		private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
-			float centerX = worldWidth * 0.5f;
-			float centerY = worldHeight * 0.5f;
-			float limitWidth = 0.1f;
-			entityTemplates.boxObstacle(centerX, -offset, worldWidth + 1, limitWidth, 0f);
-			entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
-			entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight + 1, 0f);
-			entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
-		}
-
-		void loadLevel(Level level, boolean shipInvulnerable) {
-			float worldWidth = level.w;
-			float worldHeight = level.h;
-
-			float cameraZoom = Gdx.graphics.getWidth() * level.zoom / 800f;
-
-			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
-
-			final ShipController controller = new ShipController();
-
-			entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
-
-			for (int i = 0; i < level.destinationPlanets.size(); i++) {
-				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f);
-			}
-
-			parameters.clear();
-			entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
-					.put("camera", camera) //
-					.put("libgdxCamera", worldCamera) //
-					.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
-					);
-
-			for (int i = 0; i < level.obstacles.size(); i++) {
-				Obstacle o = level.obstacles.get(i);
-				if (o.bodyType == BodyType.StaticBody)
-					entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-				else {
-					entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-				}
-			}
-
-			int j = 0;
-			while (j < level.items.size()) {
-				// for (int i = 0; i < level.items.size(); i++) {
-				Level.Item item = level.items.get(j);
-
-				float x = item.x;
-				float y = item.y;
-				float w = 0.2f;
-				float h = 0.2f;
-
-				insideObstacle = false;
-
-				physicsWorld.QueryAABB(new QueryCallback() {
-					@Override
-					public boolean reportFixture(Fixture fixture) {
-						insideObstacle = true;
-						return false;
-					}
-				}, x - w, y - h, x + w, y + h);
-
-				if (insideObstacle) {
-					level.items.remove(j);
-					continue;
-				}
-
-				entityTemplates.star(item.x, item.y);
-
-				j++;
-			}
-
-			for (int i = 0; i < level.laserTurrets.size(); i++) {
-				LaserTurret laserTurret = level.laserTurrets.get(i);
-
-				parameters.clear();
-
-				entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
-						.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
-						.put("angle", laserTurret.angle) //
-						.put("fireRate", laserTurret.fireRate) //
-						.put("bulletDuration", laserTurret.bulletDuration) //
-						.put("currentReloadTime", laserTurret.currentReloadTime) //
-						);
-			}
-
-			for (int i = 0; i < level.portals.size(); i++) {
-				Portal portal = level.portals.get(i);
-
-				parameters.clear();
-
-				entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
-						.put("id", portal.id) //
-						.put("targetPortalId", portal.targetPortalId) //
-						.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
-						);
-			}
-
-			for (int i = 0; i < level.fogClouds.size(); i++)
-				entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
-
-			createWorldLimits(worldWidth, worldHeight);
-
-			// default Player controller (with no script)
-			
-			entityFactory.instantiate(new EntityTemplateImpl() {
-				@Override
-				public void apply(Entity entity) {
-					entity.addComponent(new TagComponent(Groups.PlayerController));
-					entity.addComponent(new ControllerComponent(controller));
-				}
-			});
-
-		}
-
-	}
-
-	void loadLevel(Level level, boolean shipInvulnerable) {
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(level, shipInvulnerable);
+	void loadLevel(Level level) {
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(level);
 	}
 
 	Level loadLevelForChallengeMode() {
 		if (Levels.hasLevel(GameInformation.level)) {
 			Level level = Levels.level(GameInformation.level);
-			loadLevel(level, false);
+			loadLevel(level);
 
 			gameData.totalItems = level.items.size();
 			if (gameData.totalItems > 0)
@@ -683,14 +536,12 @@ public class PlayGameState extends GameStateImpl {
 		return null;
 	}
 
-	Level loadRandomLevelForRandomMode(boolean invulnerable) {
-
+	Level loadRandomLevelForRandomMode() {
 		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator();
 
 		Level level = randomLevelGenerator.generateRandomLevel();
-		Levels.generateRandomClouds(level, 6);
 
-		loadLevel(level, invulnerable);
+		loadLevel(level);
 
 		// int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);
 
@@ -737,6 +588,8 @@ public class PlayGameState extends GameStateImpl {
 				item.y = MathUtils.random(1f, level.h - 1f);
 				level.items.add(item);
 			}
+			
+			Levels.generateRandomClouds(level, 6);
 
 			return level;
 		}
