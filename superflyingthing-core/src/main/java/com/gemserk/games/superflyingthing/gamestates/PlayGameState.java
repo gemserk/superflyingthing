@@ -70,6 +70,7 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayListCompon
 import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
+import com.gemserk.games.superflyingthing.levels.Level.Item;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
@@ -499,6 +500,8 @@ public class PlayGameState extends GameStateImpl {
 		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
 	}
 
+	boolean insideObstacle;
+
 	void loadLevel(Level level, boolean shipInvulnerable) {
 		float worldWidth = level.w;
 		float worldHeight = level.h;
@@ -532,9 +535,34 @@ public class PlayGameState extends GameStateImpl {
 			}
 		}
 
-		for (int i = 0; i < level.items.size(); i++) {
-			Level.Item item = level.items.get(i);
+		int j = 0;
+		while (j < level.items.size()) {
+			// for (int i = 0; i < level.items.size(); i++) {
+			Level.Item item = level.items.get(j);
+
+			float x = item.x;
+			float y = item.y;
+			float w = 0.2f;
+			float h = 0.2f;
+
+			insideObstacle = false;
+
+			physicsWorld.QueryAABB(new QueryCallback() {
+				@Override
+				public boolean reportFixture(Fixture fixture) {
+					insideObstacle = true;
+					return false;
+				}
+			}, x - w, y - h, x + w, y + h);
+
+			if (insideObstacle) {
+				level.items.remove(j);
+				continue;
+			}
+
 			entityTemplates.star(item.x, item.y);
+
+			j++;
 		}
 
 		for (int i = 0; i < level.laserTurrets.size(); i++) {
@@ -600,14 +628,13 @@ public class PlayGameState extends GameStateImpl {
 		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator();
 
 		Level level = randomLevelGenerator.generateRandomLevel();
-		
 		Levels.generateRandomClouds(level, 6);
-		
+
 		loadLevel(level, invulnerable);
 
-		int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);
+		// int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);
 
-		gameData.totalItems = starsCount;
+		gameData.totalItems = level.items.size();
 		if (gameData.totalItems > 0)
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
@@ -615,8 +642,6 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	class RandomLevelGenerator {
-
-		boolean insideObstacle;
 
 		private final Shape[] shapes = new Shape[] { //
 		new Shape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }), //
@@ -646,39 +671,16 @@ public class PlayGameState extends GameStateImpl {
 				obstacleX += 8f;
 			}
 
+			for (int i = 0; i < 10; i++) {
+				Item item = new Item();
+				item.x = MathUtils.random(10f, level.w - 10f);
+				item.y = MathUtils.random(1f, level.h - 1f);
+				level.items.add(item);
+			}
+
 			return level;
 		}
 
-		private int generateStars(float worldWidth, float worldHeight, int maxStars) {
-			// I need the bodies already loaded to call the query callback to know if I can create a new star in the position or not...
-			// don't know another solution for now.
-			int itemsCount = 0;
-
-			for (int i = 0; i < maxStars; i++) {
-				float x = MathUtils.random(10f, worldWidth - 10f);
-				float y = MathUtils.random(2f, worldHeight - 2f);
-				float w = 0.2f;
-				float h = 0.2f;
-
-				insideObstacle = false;
-
-				physicsWorld.QueryAABB(new QueryCallback() {
-					@Override
-					public boolean reportFixture(Fixture fixture) {
-						insideObstacle = true;
-						return false;
-					}
-				}, x - w, y - h, x + w, y + h);
-
-				if (insideObstacle)
-					continue;
-
-				entityTemplates.star(x, y);
-
-				itemsCount++;
-			}
-			return itemsCount;
-		}
 	}
 
 	private void createGameController(ShipController controller) {
