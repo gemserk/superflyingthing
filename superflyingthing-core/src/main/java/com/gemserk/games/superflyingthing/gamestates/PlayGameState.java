@@ -616,10 +616,6 @@ public class PlayGameState extends GameStateImpl {
 			for (int i = 0; i < level.fogClouds.size(); i++)
 				entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
 
-			entityBuilder.component(new ControllerComponent(controller)) //
-					.component(new TagComponent("")) //
-					.build();
-
 			createWorldLimits(worldWidth, worldHeight);
 
 			// default Player controller (with no script)
