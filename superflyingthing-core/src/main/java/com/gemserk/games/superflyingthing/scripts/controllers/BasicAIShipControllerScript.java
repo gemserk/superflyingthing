@@ -14,6 +14,7 @@ import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.templates.Groups;
@@ -21,7 +22,7 @@ import com.gemserk.games.superflyingthing.templates.Groups;
 public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCastCallback {
 
 	private final World physicsWorld;
-	private final ShipController shipController;
+	private ShipController controller;
 
 	boolean collides = false;
 	float randomDirection = 1f;
@@ -31,13 +32,19 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 
 	boolean wayToDestinationPlanet = false;
 	
-	public BasicAIShipControllerScript(World physicsWorld, ShipController shipController) {
+	public BasicAIShipControllerScript(World physicsWorld) {
 		this.physicsWorld = physicsWorld;
-		this.shipController = shipController;
 	}
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
+		
+		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+		if (playerController == null)
+			return;
+		ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(playerController);
+		controller = controllerComponent.getController();
+		
 		updateShipInPlanetBehavior(world, e);
 		updateShipBehavior(world, e);
 	}
@@ -47,7 +54,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 		Entity ship = world.getTagManager().getEntity(Groups.ship);
 		if (ship == null)
 			return;
-
+		
 		MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
 
 		Spatial spatial = ComponentWrapper.getSpatial(ship);
@@ -59,7 +66,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 			float angle = direction.angle();
 			float desiredAngle = target.tmp().sub(position).nor().angle();
 
-			shipController.setMovementDirection((float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f);
+			controller.setMovementDirection((float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f);
 
 			return;
 		}
@@ -86,7 +93,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 
 		target.set(position).add(direction.tmp().nor().mul(3f));
 
-		shipController.setMovementDirection(0f);
+		controller.setMovementDirection(0f);
 
 		collides = false;
 		physicsWorld.rayCast(this, position, target);
@@ -101,7 +108,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 		physicsWorld.rayCast(this, position, target);
 
 		if (!collides) {
-			shipController.setMovementDirection(1f * randomDirection);
+			controller.setMovementDirection(1f * randomDirection);
 			return;
 		}
 
@@ -112,11 +119,11 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 		physicsWorld.rayCast(this, position, target);
 
 		if (!collides) {
-			shipController.setMovementDirection(-1f * randomDirection);
+			controller.setMovementDirection(-1f * randomDirection);
 			return;
 		}
 
-		shipController.setMovementDirection(1f * randomDirection);
+		controller.setMovementDirection(1f * randomDirection);
 	}
 
 	@Override
@@ -139,7 +146,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 
 	private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
 		Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
-		shipController.setShouldReleaseShip(false);
+		controller.setShouldReleaseShip(false);
 
 		AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(startPlanet);
 		if (attachmentComponent == null)
@@ -153,7 +160,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 		MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
 		Vector2 direction = movementComponent.getDirection();
 		if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
-			shipController.setShouldReleaseShip(true);
+			controller.setShouldReleaseShip(true);
 
 		wayToDestinationPlanet = false;
 		randomDirection = MathUtils.randomBoolean() ? 1f : -1f;

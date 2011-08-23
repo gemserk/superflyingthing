@@ -7,9 +7,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -38,9 +36,7 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
-import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -51,17 +47,10 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
-import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
-import com.gemserk.games.superflyingthing.levels.Level;
-import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
-import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
-import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
-import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.BasicAIShipControllerScript;
@@ -94,8 +83,6 @@ public class BackgroundGameState extends GameStateImpl {
 	private Parameters parameters;
 
 	GameData gameData;
-
-	private JointBuilder jointBuilder;
 
 	private EventManager eventManager;
 
@@ -133,8 +120,6 @@ public class BackgroundGameState extends GameStateImpl {
 		eventManager = new EventManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
-
-		jointBuilder = new JointBuilder(physicsWorld);
 
 		guiContainer = new Container();
 
@@ -201,7 +186,16 @@ public class BackgroundGameState extends GameStateImpl {
 		if (previewLevelNumber == null)
 			previewLevelNumber = MathUtils.random(0, 7);
 
-		loadLevel(entityTemplates, Levels.level(previewLevelNumber));
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(Levels.level(previewLevelNumber));
+
+		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld))).build();
+
+		entityBuilder //
+				.component(new GameDataComponent()) //
+				.component(new ScriptComponent(new Scripts.GameScript(eventManager, //
+						entityTemplates, entityFactory, gameData, false))) //
+				.build();
+
 		// loadLevel(entityTemplates, Levels.level(13));
 
 		BitmapFont font = resourceManager.getResourceValue("VersionFont");
@@ -266,105 +260,6 @@ public class BackgroundGameState extends GameStateImpl {
 		restartTimeTransition = new TimeTransition();
 		restartTimeTransition.start(4f);
 		// timer.reset();
-	}
-
-	private void createWorldLimits(float worldWidth, float worldHeight) {
-		createWorldLimits(worldWidth, worldHeight, 0.2f);
-	}
-
-	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
-		float centerX = worldWidth * 0.5f;
-		float centerY = worldHeight * 0.5f;
-		float limitWidth = 0.1f;
-		entityTemplates.boxObstacle(centerX, -offset, worldWidth, limitWidth, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth, limitWidth, 0f);
-		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight, 0f);
-		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight, 0f);
-	}
-
-	void loadLevel(EntityTemplates templates, Level level) {
-		float worldWidth = level.w;
-		float worldHeight = level.h;
-
-		float cameraZoom = Gdx.graphics.getWidth() * 12f / 800f;
-
-		final Camera camera = new CameraRestrictedImpl(worldWidth * 0.5f, worldHeight * 0.5f, //
-				cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
-
-		final ShipController controller = new ShipController();
-
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
-
-		for (int i = 0; i < level.destinationPlanets.size(); i++) {
-			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f);
-		}
-
-		parameters.clear();
-		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
-				.put("camera", camera) //
-				.put("libgdxCamera", worldCamera) //
-				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)));
-
-		for (int i = 0; i < level.obstacles.size(); i++) {
-			Obstacle o = level.obstacles.get(i);
-			if (o.bodyType == BodyType.StaticBody)
-				entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-			else {
-				entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-			}
-		}
-
-		for (int i = 0; i < level.items.size(); i++) {
-			Level.Item item = level.items.get(i);
-			entityTemplates.star(item.x, item.y);
-		}
-
-		for (int i = 0; i < level.laserTurrets.size(); i++) {
-			LaserTurret laserTurret = level.laserTurrets.get(i);
-
-			parameters.clear();
-
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
-					.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
-					.put("angle", laserTurret.angle) //
-					.put("fireRate", laserTurret.fireRate) //
-					.put("bulletDuration", laserTurret.bulletDuration) //
-					.put("currentReloadTime", laserTurret.currentReloadTime) //
-					);
-		}
-
-		for (int i = 0; i < level.portals.size(); i++) {
-			Portal portal = level.portals.get(i);
-			parameters.clear();
-			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
-					.put("id", portal.id) //
-					.put("targetPortalId", portal.targetPortalId) //
-					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)));
-		}
-
-		for (int i = 0; i < level.fogClouds.size(); i++) {
-			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
-		}
-
-		gameData.totalItems = level.items.size();
-
-		createWorldLimits(worldWidth, worldHeight);
-
-		// default Player controller (with no script)
-		entityBuilder //
-				.component(new TagComponent(Groups.PlayerController)) //
-				.component(new ControllerComponent(controller)) //
-				.build();
-
-		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
-
-		entityBuilder //
-				.component(new GameDataComponent()) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, //
-						entityTemplates, entityFactory, gameData, false))) //
-				.build();
-
 	}
 
 	@Override
