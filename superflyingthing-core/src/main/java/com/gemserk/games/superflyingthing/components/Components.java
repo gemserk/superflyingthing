@@ -214,8 +214,7 @@ public class Components {
 		public Entity startPlanet;
 		public Entity camera;
 
-		public GameDataComponent(Entity ship, Entity startPlanet, Entity camera) {
-			this.ship = ship;
+		public GameDataComponent(Entity startPlanet, Entity camera) {
 			this.startPlanet = startPlanet;
 			this.camera = camera;
 		}

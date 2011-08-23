@@ -34,6 +34,7 @@ import com.gemserk.games.superflyingthing.components.Components.MovementComponen
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetScript;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class Scripts {
 
@@ -91,7 +92,7 @@ public class Scripts {
 			eventManager.registerEvent(Events.itemTaken, e);
 		}
 	}
-	
+
 	public static class StarAnimationScript extends ScriptJavaImpl {
 
 		float rotationSpeed = 150f;
@@ -101,12 +102,12 @@ public class Scripts {
 		public void update(com.artemis.World world, Entity e) {
 			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
 			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			
+
 			angle += rotationSpeed * GlobalTime.getDelta();
-			
+
 			Animation animation = animationComponent.getCurrentAnimation();
 			int frameIndex = getAnimationForAngle(angle - 5f);
-			
+
 			Sprite frame = animation.getFrame(frameIndex);
 			spriteComponent.setSprite(frame);
 		}
@@ -251,7 +252,6 @@ public class Scripts {
 		private final EntityFactory entityFactory;
 		private final EventManager eventManager;
 
-		private ShipController controller;
 		private GameData gameData;
 		private boolean invulnerable;
 
@@ -265,10 +265,9 @@ public class Scripts {
 		private Entity owner;
 
 		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
-				ShipController controller, boolean invulnerable) {
+				boolean invulnerable) {
 
 			this.eventManager = eventListenerManager;
-			this.controller = controller;
 			this.gameData = gameData;
 			this.invulnerable = invulnerable;
 			this.entityFactory = entityFactory;
@@ -363,7 +362,7 @@ public class Scripts {
 			attachableComponent.setOwner(gameDataComponent.startPlanet);
 
 			gameDataComponent.attachedShip = attachedShip;
-			
+
 			eventManager.registerEvent(Events.shipSpawned, gameDataComponent.attachedShip);
 		}
 
@@ -383,8 +382,16 @@ public class Scripts {
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
 
+			Entity contollerEntity = world.getTagManager().getEntity(Groups.PlayerController);
+			if (contollerEntity == null) {
+				Gdx.app.log("SuperFlyingThing", "Failed to get controller for released ship");
+				return;
+			}
+
+			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(contollerEntity);
+
 			parameters.put("spatial", spatial);
-			parameters.put("controller", controller);
+			parameters.put("controller", controllerComponent.getController());
 			parameters.put("maxLinearSpeed", movementComponent.getMaxLinearSpeed());
 			parameters.put("maxAngularVelocity", movementComponent.getMaxAngularVelocity());
 

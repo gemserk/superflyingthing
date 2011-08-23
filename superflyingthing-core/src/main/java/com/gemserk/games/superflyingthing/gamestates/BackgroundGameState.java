@@ -54,6 +54,7 @@ import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
+import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -346,13 +347,19 @@ public class BackgroundGameState extends GameStateImpl {
 		gameData.totalItems = level.items.size();
 
 		createWorldLimits(worldWidth, worldHeight);
+		
+		// default Player controller (with no script)
+		entityBuilder //
+				.component(new TagComponent(Groups.PlayerController)) //
+				.component(new ControllerComponent(controller)) //
+				.build();
 
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
 
 		entityBuilder //
-				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+				.component(new GameDataComponent(startPlanet, cameraEntity)) //
 				.component(new ScriptComponent(new Scripts.GameScript(eventManager, //
-						entityTemplates, entityFactory, gameData, controller, false))) //
+						entityTemplates, entityFactory, gameData, false))) //
 				.build();
 
 	}

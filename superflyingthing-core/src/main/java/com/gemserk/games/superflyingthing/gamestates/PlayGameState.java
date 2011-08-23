@@ -632,8 +632,8 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
+					.component(new GameDataComponent(startPlanet, cameraEntity)) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, shipInvulnerable))) //
 					.build();
 
 		}
