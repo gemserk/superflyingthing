@@ -72,6 +72,7 @@ import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
+import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
@@ -619,7 +620,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity destinationPlanet(float x, float y, float radius, Script script) {
+	public Entity destinationPlanet(float x, float y, float radius) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
 
@@ -645,7 +646,7 @@ public class EntityTemplates {
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new AttachmentComponent());
-		e.addComponent(new ScriptComponent(script));
+		e.addComponent(new ScriptComponent(new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, getPlanetFillAnimationTemplate())));
 		e.addComponent(new ContainerComponent());
 
 		e.refresh();
