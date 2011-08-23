@@ -70,7 +70,6 @@ import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
@@ -331,7 +330,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+		entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);

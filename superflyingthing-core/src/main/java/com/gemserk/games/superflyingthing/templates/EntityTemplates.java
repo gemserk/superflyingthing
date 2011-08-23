@@ -31,6 +31,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
+import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
@@ -74,6 +75,7 @@ import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
+import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateLibgdxCameraScript;
@@ -167,6 +169,7 @@ public class EntityTemplates {
 		this.eventManager = eventManager;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.mesh2dBuilder = new Mesh2dBuilder();
+		this.jointBuilder = new JointBuilder(physicsWorld);
 	}
 
 	private EntityTemplate cameraTemplate = new EntityTemplateImpl() {
@@ -581,7 +584,7 @@ public class EntityTemplates {
 
 	};
 
-	public Entity startPlanet(float x, float y, float radius, ShipController controller, Script script) {
+	public Entity startPlanet(float x, float y, float radius, ShipController controller) {
 
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 
@@ -604,7 +607,7 @@ public class EntityTemplates {
 		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		e.addComponent(new RenderableComponent(-2));
 		e.addComponent(new ControllerComponent(controller));
-		e.addComponent(new ScriptComponent(script));
+		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder, eventManager)));
 		e.addComponent(new ContainerComponent());
 
 		e.refresh();
@@ -790,5 +793,6 @@ public class EntityTemplates {
 			entity.addComponent(new RenderableComponent(layer));
 		}
 	};
+	private JointBuilder jointBuilder;
 
 }

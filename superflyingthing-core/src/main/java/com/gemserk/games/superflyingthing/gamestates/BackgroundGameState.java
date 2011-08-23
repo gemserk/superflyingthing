@@ -66,7 +66,6 @@ import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.BasicAIShipControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
@@ -296,7 +295,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);

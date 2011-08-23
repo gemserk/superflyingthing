@@ -124,7 +124,7 @@ public class Scripts {
 
 	public static class StartPlanetScript extends ScriptJavaImpl {
 
-		private final EventManager eventListenerManager;
+		private final EventManager eventManager;
 		private final World physicsWorld;
 
 		Script attachEntityBehavior;
@@ -132,22 +132,22 @@ public class Scripts {
 
 		boolean enabled = true;
 
-		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventManager eventListenerManager) {
+		public StartPlanetScript(World physicsWorld, JointBuilder jointBuilder, EventManager eventManager) {
 			this.physicsWorld = physicsWorld;
-			this.eventListenerManager = eventListenerManager;
+			this.eventManager = eventManager;
 			attachEntityBehavior = new Behaviors.AttachEntityScript(jointBuilder);
 			calculateInputDirectionBehavior = new Behaviors.AttachedEntityDirectionScript();
 		}
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
-			eventListenerManager.register(Events.disablePlanetReleaseShip, new EventListener() {
+			eventManager.register(Events.disablePlanetReleaseShip, new EventListener() {
 				@Override
 				public void onEvent(Event event) {
 					disablePlanetReleaseShip(event);
 				}
 			});
-			eventListenerManager.register(Events.enablePlanetReleaseShip, new EventListener() {
+			eventManager.register(Events.enablePlanetReleaseShip, new EventListener() {
 				@Override
 				public void onEvent(Event event) {
 					enablePlanetReleaseShip(event);

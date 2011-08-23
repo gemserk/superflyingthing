@@ -83,7 +83,6 @@ import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
@@ -530,7 +529,14 @@ public class PlayGameState extends GameStateImpl {
 
 	class LevelLoader {
 
+		// private final Parameters parameters = new ParametersWrapper();
+		// private final EntityTemplates entityTemplates;
+
 		boolean insideObstacle;
+
+		// public LevelLoader(EntityTemplates entityTemplates) {
+		// this.entityTemplates = entityTemplates;
+		// }
 
 		private void createWorldLimits(float worldWidth, float worldHeight) {
 			createWorldLimits(worldWidth, worldHeight, 0.2f);
@@ -556,7 +562,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final ShipController controller = new ShipController();
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
 
 			for (int i = 0; i < level.destinationPlanets.size(); i++) {
 				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
