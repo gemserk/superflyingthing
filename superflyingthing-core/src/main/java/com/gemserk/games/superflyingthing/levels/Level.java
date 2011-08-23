@@ -9,6 +9,8 @@ import com.gemserk.componentsengine.utils.Parameters;
 public class Level {
 
 	public static class Obstacle {
+		
+		public String id;
 
 		public float x, y;
 		public float angle;

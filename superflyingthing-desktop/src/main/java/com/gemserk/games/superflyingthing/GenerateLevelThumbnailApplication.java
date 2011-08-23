@@ -118,7 +118,7 @@ public class GenerateLevelThumbnailApplication {
 						for (int i = 0; i < level.obstacles.size(); i++) {
 							Obstacle o = level.obstacles.get(i);
 							if (o.bodyType == BodyType.StaticBody)
-								templates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+								templates.obstacle(o.id, o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 						}
 
 						// worldCamera.move(level.w * 0.5f, level.h * 0.5f);

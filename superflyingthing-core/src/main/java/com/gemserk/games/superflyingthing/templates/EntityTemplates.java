@@ -654,7 +654,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity obstacle(Vector2[] vertices, float x, float y, float angle) {
+	public Entity obstacle(String id, Vector2[] vertices, float x, float y, float angle) {
 		Entity e = entityBuilder.build();
 
 		Texture obstacleTexture = resourceManager.getResourceValue("ObstacleTexture");
@@ -692,7 +692,8 @@ public class EntityTemplates {
 				.angle(angle) //
 				.userData(e) //
 				.build();
-
+		
+		e.addComponent(new LabelComponent(id));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
@@ -703,7 +704,7 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity movingObstacle(Vector2[] vertices, final Vector2[] points, int startPoint, float x, float y, float angle) {
+	public Entity movingObstacle(String id, Vector2[] vertices, final Vector2[] points, int startPoint, float x, float y, float angle) {
 		Entity e = entityBuilder.build();
 
 		Triangulator triangulator = ShapeUtils.triangulate(vertices);
@@ -750,12 +751,12 @@ public class EntityTemplates {
 		return e;
 	}
 
-	public Entity boxObstacle(float x, float y, float w, float h, float angle) {
-		return obstacle(new Vector2[] { //
-				new Vector2(w * 0.5f, h * 0.5f),//
-						new Vector2(w * 0.5f, -h * 0.5f), //
-						new Vector2(-w * 0.5f, -h * 0.5f),//
-						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
+	public Entity boxObstacle(String id, float x, float y, float w, float h, float angle) {
+		return obstacle(id, new Vector2[] { //
+								new Vector2(w * 0.5f, h * 0.5f),//
+										new Vector2(w * 0.5f, -h * 0.5f), //
+										new Vector2(-w * 0.5f, -h * 0.5f),//
+										new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
 	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {

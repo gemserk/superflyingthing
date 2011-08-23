@@ -20,6 +20,7 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
+import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -36,14 +37,18 @@ public class LevelLoader {
 	private final EntityFactory entityFactory;
 	private final Libgdx2dCamera worldCamera;
 
+	// used if we want to avoid item removal check
+	private final boolean shouldRemoveCollidingItems;
+
 	// used to check if items are inside obstacles to remove them from the level.
 	private boolean insideObstacle;
 
-	public LevelLoader(EntityTemplates entityTemplates, EntityFactory entityFactory, World physicsWorld, Libgdx2dCamera worldCamera) {
+	public LevelLoader(EntityTemplates entityTemplates, EntityFactory entityFactory, World physicsWorld, Libgdx2dCamera worldCamera, boolean shouldRemoveCollidingItems) {
 		this.entityTemplates = entityTemplates;
 		this.entityFactory = entityFactory;
 		this.physicsWorld = physicsWorld;
 		this.worldCamera = worldCamera;
+		this.shouldRemoveCollidingItems = shouldRemoveCollidingItems;
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
@@ -54,10 +59,10 @@ public class LevelLoader {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
 		float limitWidth = 0.1f;
-		entityTemplates.boxObstacle(centerX, -offset, worldWidth + 1, limitWidth, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
-		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight + 1, 0f);
-		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
+		entityTemplates.boxObstacle("worldLimit1", centerX, -offset, worldWidth + 1, limitWidth, 0f);
+		entityTemplates.boxObstacle("worldLimit2", centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
+		entityTemplates.boxObstacle("worldLimit3", -offset, centerY, limitWidth, worldHeight + 1, 0f);
+		entityTemplates.boxObstacle("worldLimit4", worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
 	}
 
 	public void loadLevel(Level level) {
@@ -87,38 +92,46 @@ public class LevelLoader {
 		for (int i = 0; i < level.obstacles.size(); i++) {
 			Obstacle o = level.obstacles.get(i);
 			if (o.bodyType == BodyType.StaticBody)
-				entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				entityTemplates.obstacle(o.id, o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 			else {
-				entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				entityTemplates.movingObstacle(o.id, o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
 			}
 		}
 
 		int j = 0;
 		while (j < level.items.size()) {
-			Level.Item item = level.items.get(j);
+			final Level.Item item = level.items.get(j);
 
 			float x = item.x;
 			float y = item.y;
 			float w = 0.3f;
 			float h = 0.3f;
 
-			insideObstacle = false;
+			if (shouldRemoveCollidingItems) {
+				insideObstacle = false;
 
-			physicsWorld.QueryAABB(new QueryCallback() {
-				@Override
-				public boolean reportFixture(Fixture fixture) {
+				physicsWorld.QueryAABB(new QueryCallback() {
+					@Override
+					public boolean reportFixture(Fixture fixture) {
 
-					System.out.println(fixture.getBody().getType());
+						Entity entity = (Entity) fixture.getBody().getUserData();
+						if (entity != null) {
+							LabelComponent labelComponent = entity.getComponent(LabelComponent.class);
+							if (labelComponent != null) {
+								Gdx.app.log("SuperFlyingThing", "Removing item " + item.id + " because it is colliding with " + labelComponent.label);
+							}
+						}
 
-					insideObstacle = true;
-					return false;
+						insideObstacle = true;
+						return false;
+					}
+				}, x - w * 0.5f, y - h * 0.5f, x + w * 0.5f, y + h * 0.5f);
+
+				if (insideObstacle) {
+					// Gdx.app.log("SuperFlyingThing", "Removing item " + item.id + " because is colliding with obstacle");
+					level.items.remove(j);
+					continue;
 				}
-			}, x - w * 0.5f, y - h * 0.5f, x + w * 0.5f, y + h * 0.5f);
-
-			if (insideObstacle) {
-				Gdx.app.log("SuperFlyingThing", "Removing item " + item.id + " because is colliding with obstacle");
-				level.items.remove(j);
-				continue;
 			}
 
 			entityTemplates.star(item.id, item.x, item.y);

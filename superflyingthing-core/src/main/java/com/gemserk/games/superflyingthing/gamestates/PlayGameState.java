@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import java.text.MessageFormat;
+import java.util.UUID;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
@@ -518,14 +519,10 @@ public class PlayGameState extends GameStateImpl {
 
 	}
 
-	void loadLevel(Level level) {
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(level);
-	}
-
 	Level loadLevelForChallengeMode() {
 		if (Levels.hasLevel(GameInformation.level)) {
 			Level level = Levels.level(GameInformation.level);
-			loadLevel(level);
+			new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
 			gameData.totalItems = level.items.size();
 			if (gameData.totalItems > 0)
@@ -541,7 +538,7 @@ public class PlayGameState extends GameStateImpl {
 
 		Level level = randomLevelGenerator.generateRandomLevel();
 
-		loadLevel(level);
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, true).loadLevel(level);
 
 		// int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);
 
@@ -569,7 +566,7 @@ public class PlayGameState extends GameStateImpl {
 			Level level = new Level();
 
 			level.w = MathUtils.random(30f, 250f);
-			level.h = MathUtils.random(10f, 30f);
+			level.h = MathUtils.random(5f, 15f);
 
 			level.startPlanet = new StartPlanet(5f, level.h * 0.5f);
 			level.destinationPlanets.add(new DestinationPlanet(level.w - 5f, level.h * 0.5f));
@@ -577,8 +574,14 @@ public class PlayGameState extends GameStateImpl {
 			float obstacleX = 12f;
 
 			while (obstacleX < level.w - 17f) {
-				level.obstacles.add(new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f)));
-				level.obstacles.add(new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f)));
+				Obstacle obstacle1 = new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
+				Obstacle obstacle2 = new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
+				
+				obstacle1.id = "obstacle-" + UUID.randomUUID();
+				obstacle2.id = "obstacle-" + UUID.randomUUID();
+				
+				level.obstacles.add(obstacle1);
+				level.obstacles.add(obstacle2);
 				obstacleX += 8f;
 			}
 

@@ -186,7 +186,7 @@ public class BackgroundGameState extends GameStateImpl {
 		if (previewLevelNumber == null)
 			previewLevelNumber = MathUtils.random(0, 7);
 
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(Levels.level(previewLevelNumber));
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(previewLevelNumber));
 
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld))).build();
 

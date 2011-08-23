@@ -199,7 +199,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		// loadLevel(level, true);
 
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(level);
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
 		ArrayList<Replay> replays = replayList.getReplays();
 

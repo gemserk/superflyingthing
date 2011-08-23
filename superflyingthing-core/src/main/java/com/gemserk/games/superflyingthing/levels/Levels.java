@@ -88,6 +88,8 @@ public class Levels {
 			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
 				Obstacle obstacle = new Obstacle(vertices);
 
+				obstacle.id = svgPath.getId();
+				
 				Vector2 center = new Vector2();
 				calculateCenter(center, vertices);
 				obstacle.x = center.x;
