@@ -56,6 +56,7 @@ import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
+import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
@@ -384,12 +385,18 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
 					);
 		}
-		
+
 		for (int i = 0; i < level.fogClouds.size(); i++) {
 			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
 		}
 
 		createWorldLimits(worldWidth, worldHeight);
+
+		entityBuilder //
+				.component(new TagComponent(Groups.PlayerController)) //
+				.component(new ControllerComponent(controller)) //
+				.build();
+
 	}
 
 	void loadLevelForChallengeMode() {

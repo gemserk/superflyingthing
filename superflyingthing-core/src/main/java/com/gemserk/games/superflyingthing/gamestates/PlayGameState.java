@@ -279,6 +279,25 @@ public class PlayGameState extends GameStateImpl {
 
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
+		// creates controller the first time if no controller was created before...
+		entityBuilder //
+				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					@Handles(ids = Events.gameStarted)
+					public void createControllerWhenGameStarts(Event event) {
+						Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+						if (playerController != null) {
+							ControllerComponent controllerComponent = playerController.getComponent(ControllerComponent.class);
+							// mark current controller to be deleted
+							playerController.delete();
+							// creates a new controller using new preferences
+							createGameController(controllerComponent.getController());
+						}
+					}
+
+				})) //
+				.build();
+
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
 				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
@@ -486,127 +505,143 @@ public class PlayGameState extends GameStateImpl {
 
 	}
 
-	private void createWorldLimits(float worldWidth, float worldHeight) {
-		createWorldLimits(worldWidth, worldHeight, 0.2f);
-	}
+	class LevelLoader {
 
-	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
-		float centerX = worldWidth * 0.5f;
-		float centerY = worldHeight * 0.5f;
-		float limitWidth = 0.1f;
-		entityTemplates.boxObstacle(centerX, -offset, worldWidth + 1, limitWidth, 0f);
-		entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
-		entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight + 1, 0f);
-		entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
-	}
+		boolean insideObstacle;
 
-	boolean insideObstacle;
+		private void createWorldLimits(float worldWidth, float worldHeight) {
+			createWorldLimits(worldWidth, worldHeight, 0.2f);
+		}
+
+		private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
+			float centerX = worldWidth * 0.5f;
+			float centerY = worldHeight * 0.5f;
+			float limitWidth = 0.1f;
+			entityTemplates.boxObstacle(centerX, -offset, worldWidth + 1, limitWidth, 0f);
+			entityTemplates.boxObstacle(centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
+			entityTemplates.boxObstacle(-offset, centerY, limitWidth, worldHeight + 1, 0f);
+			entityTemplates.boxObstacle(worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
+		}
+
+		void loadLevel(Level level, boolean shipInvulnerable) {
+			float worldWidth = level.w;
+			float worldHeight = level.h;
+
+			float cameraZoom = Gdx.graphics.getWidth() * level.zoom / 800f;
+
+			final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
+
+			final ShipController controller = new ShipController();
+
+			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
+
+			for (int i = 0; i < level.destinationPlanets.size(); i++) {
+				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
+				entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
+			}
+
+			parameters.clear();
+			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
+					.put("camera", camera) //
+					.put("libgdxCamera", worldCamera) //
+					.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
+					);
+
+			for (int i = 0; i < level.obstacles.size(); i++) {
+				Obstacle o = level.obstacles.get(i);
+				if (o.bodyType == BodyType.StaticBody)
+					entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				else {
+					entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+				}
+			}
+
+			int j = 0;
+			while (j < level.items.size()) {
+				// for (int i = 0; i < level.items.size(); i++) {
+				Level.Item item = level.items.get(j);
+
+				float x = item.x;
+				float y = item.y;
+				float w = 0.2f;
+				float h = 0.2f;
+
+				insideObstacle = false;
+
+				physicsWorld.QueryAABB(new QueryCallback() {
+					@Override
+					public boolean reportFixture(Fixture fixture) {
+						insideObstacle = true;
+						return false;
+					}
+				}, x - w, y - h, x + w, y + h);
+
+				if (insideObstacle) {
+					level.items.remove(j);
+					continue;
+				}
+
+				entityTemplates.star(item.x, item.y);
+
+				j++;
+			}
+
+			for (int i = 0; i < level.laserTurrets.size(); i++) {
+				LaserTurret laserTurret = level.laserTurrets.get(i);
+
+				parameters.clear();
+
+				entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
+						.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
+						.put("angle", laserTurret.angle) //
+						.put("fireRate", laserTurret.fireRate) //
+						.put("bulletDuration", laserTurret.bulletDuration) //
+						.put("currentReloadTime", laserTurret.currentReloadTime) //
+						.put("script", new LaserGunScript(entityFactory)) //
+						);
+			}
+
+			for (int i = 0; i < level.portals.size(); i++) {
+				Portal portal = level.portals.get(i);
+
+				parameters.clear();
+
+				entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
+						.put("id", portal.id) //
+						.put("targetPortalId", portal.targetPortalId) //
+						.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
+						);
+			}
+
+			for (int i = 0; i < level.fogClouds.size(); i++)
+				entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
+
+			entityBuilder.component(new ControllerComponent(controller)) //
+					.component(new TagComponent("")) //
+					.build();
+
+			createWorldLimits(worldWidth, worldHeight);
+
+			// default Player controller (with no script)
+			entityBuilder //
+					.component(new TagComponent(Groups.PlayerController)) //
+					.component(new ControllerComponent(controller)) //
+					.build();
+
+			// play game state custom
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
+					.build();
+
+		}
+
+	}
 
 	void loadLevel(Level level, boolean shipInvulnerable) {
-		float worldWidth = level.w;
-		float worldHeight = level.h;
-
-		float cameraZoom = Gdx.graphics.getWidth() * level.zoom / 800f;
-
-		final Camera camera = new CameraRestrictedImpl(0f, 0f, cameraZoom, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), new Rectangle(0f, 0f, worldWidth, worldHeight));
-
-		final ShipController controller = new ShipController();
-
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller, new StartPlanetScript(physicsWorld, jointBuilder, eventManager));
-
-		for (int i = 0; i < level.destinationPlanets.size(); i++) {
-			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f, new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.getPlanetFillAnimationTemplate()));
-		}
-
-		parameters.clear();
-		Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
-				.put("camera", camera) //
-				.put("libgdxCamera", worldCamera) //
-				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
-				);
-
-		for (int i = 0; i < level.obstacles.size(); i++) {
-			Obstacle o = level.obstacles.get(i);
-			if (o.bodyType == BodyType.StaticBody)
-				entityTemplates.obstacle(o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-			else {
-				entityTemplates.movingObstacle(o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-			}
-		}
-
-		int j = 0;
-		while (j < level.items.size()) {
-			// for (int i = 0; i < level.items.size(); i++) {
-			Level.Item item = level.items.get(j);
-
-			float x = item.x;
-			float y = item.y;
-			float w = 0.2f;
-			float h = 0.2f;
-
-			insideObstacle = false;
-
-			physicsWorld.QueryAABB(new QueryCallback() {
-				@Override
-				public boolean reportFixture(Fixture fixture) {
-					insideObstacle = true;
-					return false;
-				}
-			}, x - w, y - h, x + w, y + h);
-
-			if (insideObstacle) {
-				level.items.remove(j);
-				continue;
-			}
-
-			entityTemplates.star(item.x, item.y);
-
-			j++;
-		}
-
-		for (int i = 0; i < level.laserTurrets.size(); i++) {
-			LaserTurret laserTurret = level.laserTurrets.get(i);
-
-			parameters.clear();
-
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
-					.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
-					.put("angle", laserTurret.angle) //
-					.put("fireRate", laserTurret.fireRate) //
-					.put("bulletDuration", laserTurret.bulletDuration) //
-					.put("currentReloadTime", laserTurret.currentReloadTime) //
-					.put("script", new LaserGunScript(entityFactory)) //
-					);
-		}
-
-		for (int i = 0; i < level.portals.size(); i++) {
-			Portal portal = level.portals.get(i);
-
-			parameters.clear();
-
-			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
-					.put("id", portal.id) //
-					.put("targetPortalId", portal.targetPortalId) //
-					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
-					);
-		}
-
-		for (int i = 0; i < level.fogClouds.size(); i++) {
-			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
-		}
-
-		createWorldLimits(worldWidth, worldHeight);
-
-		createGameController(controller);
-
-		entityBuilder //
-				.component(new TagComponent(Groups.NormalGameModeLogic)) //
-				.component(new GameDataComponent(null, startPlanet, cameraEntity)) //
-				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
-				.build();
-
-		// generateRandomClouds(worldWidth, worldHeight, 6);
+		new LevelLoader().loadLevel(level, shipInvulnerable);
 	}
 
 	Level loadLevelForChallengeMode() {
