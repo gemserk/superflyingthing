@@ -79,7 +79,6 @@ import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
-import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
@@ -625,7 +624,6 @@ public class PlayGameState extends GameStateImpl {
 						.put("fireRate", laserTurret.fireRate) //
 						.put("bulletDuration", laserTurret.bulletDuration) //
 						.put("currentReloadTime", laserTurret.currentReloadTime) //
-						.put("script", new LaserGunScript(entityFactory)) //
 						);
 			}
 

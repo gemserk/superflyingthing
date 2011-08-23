@@ -452,7 +452,6 @@ public class EntityTemplates {
 
 			Vector2 position = parameters.get("position");
 			Float angle = parameters.get("angle");
-			Script script = parameters.get("script", new LaserGunScript(entityFactory));
 
 			Integer fireRate = parameters.get("fireRate");
 			Integer bulletDuration = parameters.get("bulletDuration");
@@ -463,7 +462,7 @@ public class EntityTemplates {
 			Entity owner = parameters.get("owner");
 
 			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
-			entity.addComponent(new ScriptComponent(script));
+			entity.addComponent(new ScriptComponent(new LaserGunScript(entityFactory)));
 			entity.addComponent(new AnimationComponent(new Animation[] { idleAnimation }));
 			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), color));
 			entity.addComponent(new RenderableComponent(4));

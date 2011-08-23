@@ -63,7 +63,6 @@ import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
-import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.BasicAIShipControllerScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -326,7 +325,13 @@ public class BackgroundGameState extends GameStateImpl {
 
 			parameters.clear();
 
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters.put("position", new Vector2(laserTurret.x, laserTurret.y)).put("angle", laserTurret.angle).put("fireRate", laserTurret.fireRate).put("bulletDuration", laserTurret.bulletDuration).put("currentReloadTime", laserTurret.currentReloadTime).put("script", new LaserGunScript(entityFactory)));
+			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
+					.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
+					.put("angle", laserTurret.angle) //
+					.put("fireRate", laserTurret.fireRate) //
+					.put("bulletDuration", laserTurret.bulletDuration) //
+					.put("currentReloadTime", laserTurret.currentReloadTime) //
+					);
 		}
 
 		for (int i = 0; i < level.portals.size(); i++) {
@@ -337,7 +342,7 @@ public class BackgroundGameState extends GameStateImpl {
 					.put("targetPortalId", portal.targetPortalId) //
 					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)));
 		}
-		
+
 		for (int i = 0; i < level.fogClouds.size(); i++) {
 			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
 		}
@@ -345,7 +350,7 @@ public class BackgroundGameState extends GameStateImpl {
 		gameData.totalItems = level.items.size();
 
 		createWorldLimits(worldWidth, worldHeight);
-		
+
 		// default Player controller (with no script)
 		entityBuilder //
 				.component(new TagComponent(Groups.PlayerController)) //

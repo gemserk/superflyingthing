@@ -68,7 +68,6 @@ import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
-import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
@@ -368,7 +367,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					.put("fireRate", laserTurret.fireRate) //
 					.put("bulletDuration", laserTurret.bulletDuration) //
 					.put("currentReloadTime", laserTurret.currentReloadTime) //
-					.put("script", new LaserGunScript(entityFactory)) //
 					);
 		}
 
