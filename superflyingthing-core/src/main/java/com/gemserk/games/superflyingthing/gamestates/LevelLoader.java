@@ -95,30 +95,33 @@ public class LevelLoader {
 
 		int j = 0;
 		while (j < level.items.size()) {
-			// for (int i = 0; i < level.items.size(); i++) {
 			Level.Item item = level.items.get(j);
 
 			float x = item.x;
 			float y = item.y;
-			float w = 0.2f;
-			float h = 0.2f;
+			float w = 0.3f;
+			float h = 0.3f;
 
 			insideObstacle = false;
 
 			physicsWorld.QueryAABB(new QueryCallback() {
 				@Override
 				public boolean reportFixture(Fixture fixture) {
+
+					System.out.println(fixture.getBody().getType());
+
 					insideObstacle = true;
 					return false;
 				}
-			}, x - w, y - h, x + w, y + h);
+			}, x - w * 0.5f, y - h * 0.5f, x + w * 0.5f, y + h * 0.5f);
 
 			if (insideObstacle) {
+				Gdx.app.log("SuperFlyingThing", "Removing item " + item.id + " because is colliding with obstacle");
 				level.items.remove(j);
 				continue;
 			}
 
-			entityTemplates.star(item.x, item.y);
+			entityTemplates.star(item.id, item.x, item.y);
 
 			j++;
 		}

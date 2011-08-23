@@ -40,6 +40,7 @@ public class Level {
 	public static class Item {
 
 		public float x, y;
+		public String id;
 
 	}
 

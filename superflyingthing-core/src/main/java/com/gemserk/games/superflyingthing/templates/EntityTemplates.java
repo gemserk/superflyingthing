@@ -55,6 +55,7 @@ import com.gemserk.games.superflyingthing.components.Components.AttachmentCompon
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
+import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
@@ -224,7 +225,7 @@ public class EntityTemplates {
 		private final Vector2 direction = new Vector2();
 
 		{
-			parameters.put("maxLinearSpeed", new Float(3.5f));
+			parameters.put("maxLinearSpeed", new Float(4.5f));
 			parameters.put("maxAngularVelocity", new Float(360f));
 		}
 
@@ -276,7 +277,7 @@ public class EntityTemplates {
 	private EntityTemplate attachedShipTemplate = new EntityTemplateImpl() {
 
 		{
-			parameters.put("maxLinearSpeed", new Float(3.5f));
+			parameters.put("maxLinearSpeed", new Float(4.5f));
 			parameters.put("maxAngularVelocity", new Float(360f));
 		}
 
@@ -515,7 +516,7 @@ public class EntityTemplates {
 
 	};
 
-	public Entity star(float x, float y) {
+	public Entity star(String id, float x, float y) {
 		Entity e = entityBuilder.build();
 
 		float radius = 0.3f;
@@ -533,6 +534,7 @@ public class EntityTemplates {
 				.userData(e) //
 				.build();
 
+		e.addComponent(new LabelComponent(id));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 

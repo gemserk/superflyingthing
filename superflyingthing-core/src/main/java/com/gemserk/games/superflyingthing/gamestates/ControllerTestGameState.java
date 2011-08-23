@@ -243,10 +243,10 @@ public class ControllerTestGameState extends GameStateImpl {
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 
-		entityTemplates.star(-3f, 3f);
-		entityTemplates.star(-3f, -3f);
-		entityTemplates.star(3f, 3f);
-		entityTemplates.star(3f, -3f);
+		entityTemplates.star("star1", -3f, 3f);
+		entityTemplates.star("star2", -3f, -3f);
+		entityTemplates.star("star3", 3f, 3f);
+		entityTemplates.star("star4", 3f, -3f);
 
 		parameters.clear();
 		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), //

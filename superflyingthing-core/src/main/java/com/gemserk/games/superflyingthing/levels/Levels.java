@@ -118,6 +118,7 @@ public class Levels {
 				Item i = new Item();
 				i.x = x;
 				i.y = y;
+				i.id = svgImage.getId();
 				level.items.add(i);
 			};
 		}.process(document);

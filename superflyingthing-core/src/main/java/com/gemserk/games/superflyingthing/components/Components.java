@@ -15,6 +15,16 @@ import com.gemserk.games.superflyingthing.ShipController;
 
 public class Components {
 
+	public static class LabelComponent extends Component {
+
+		public final String label;
+
+		public LabelComponent(String label) {
+			this.label = label;
+		}
+
+	}
+
 	public static class ControllerComponent extends Component {
 
 		private final ShipController shipControllerImpl;
@@ -262,7 +272,7 @@ public class Components {
 		public WeaponComponent(int fireRate, int bulletDuration, int currentReloadTime, EntityTemplate bulletTemplate) {
 			this((float) fireRate * 0.001f, (float) bulletDuration * 0.001f, (float) currentReloadTime * 0.001f, bulletTemplate);
 		}
-		
+
 		public WeaponComponent(float fireRate, float bulletDuration, float currentReloadTime, EntityTemplate bulletTemplate) {
 			this.fireRate = fireRate;
 			this.bulletDuration = bulletDuration;
@@ -295,7 +305,7 @@ public class Components {
 	public static class ReplayListComponent extends Component {
 
 		private final ReplayList replayList;
-		
+
 		public ReplayList getReplayList() {
 			return replayList;
 		}
@@ -305,7 +315,7 @@ public class Components {
 		}
 
 	}
-	
+
 	public static class ReplayComponent extends Component {
 
 		public final Replay replay;
