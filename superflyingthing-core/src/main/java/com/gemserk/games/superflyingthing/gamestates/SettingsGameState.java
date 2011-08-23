@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Vector2;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
@@ -17,10 +18,13 @@ import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
+import com.gemserk.commons.artemis.templates.EntityFactory;
+import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -29,6 +33,8 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.Parameters;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
@@ -282,15 +288,34 @@ public class SettingsGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.init();
+		
+		EntityFactory entityFactory = new EntityFactoryImpl(world);
+		Parameters parameters = new ParametersWrapper();
 
-		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), null, null);
+		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
 
-		Sprite sprite = resourceManager.getResourceValue("BackgroundSprite");
-		entityTemplates.staticSprite(sprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f, -999, 0f, 0f, Color.WHITE);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		.put("color", Color.WHITE) //
+		.put("layer", (-999)) //
+		.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f)) //
+		.put("center", new Vector2(0f, 0f)) //
+		.put("spriteId", "BackgroundSprite") //
+		);
 
-		sprite = resourceManager.getResourceValue("FogSprite");
-		entityTemplates.staticSprite(new Sprite(sprite), Gdx.graphics.getWidth() * 0.57f, Gdx.graphics.getHeight() * 0.23f, 160f, 160f, 86f, -400, 0.5f, 0.5f, Color.GREEN);
-		entityTemplates.staticSprite(new Sprite(sprite), Gdx.graphics.getWidth() * 0.24f, Gdx.graphics.getHeight() * 0.68f, 120f, 120f, 189f, -400, 0.5f, 0.5f, Color.RED);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		.put("color", Color.GREEN) //
+		.put("layer", (-400)) //
+		.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.57f), (Gdx.graphics.getHeight() * 0.23f), 160f, 160f, 86f)) //
+		.put("center", new Vector2(0.5f, 0.5f)) //
+		.put("spriteId", "FogSprite") //
+		);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		.put("color", Color.RED) //
+		.put("layer", (-400)) //
+		.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.24f), (Gdx.graphics.getHeight() * 0.68f), 120f, 120f, 189f)) //
+		.put("center", new Vector2(0.5f, 0.5f)) //
+		.put("spriteId", "FogSprite") //
+		);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {

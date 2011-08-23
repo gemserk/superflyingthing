@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -170,7 +169,7 @@ public class BackgroundGameState extends GameStateImpl {
 		worldWrapper.addUpdateSystem(new TagSystem());
 		worldWrapper.addUpdateSystem(new ContainerSystem());
 		worldWrapper.addUpdateSystem(new OwnerSystem());
-		
+
 		// testing event listener auto registration using reflection
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
 
@@ -189,8 +188,13 @@ public class BackgroundGameState extends GameStateImpl {
 
 		gameData = new GameData();
 
-		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+				.put("color", Color.WHITE) //
+				.put("layer", (-999)) //
+				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
+				.put("center", new Vector2(0, 0)) //
+				.put("spriteId", "BackgroundSprite") //
+				);
 
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// Changed to randomize between levels 0 to 7.
@@ -254,7 +258,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 				})) //
 				.build();
-		
+
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
 
@@ -353,7 +357,6 @@ public class BackgroundGameState extends GameStateImpl {
 	}
 
 	private void generateRandomClouds(float width, float height, int count) {
-		Sprite sprite = resourceManager.getResourceValue("FogSprite");
 
 		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK };
 
@@ -370,7 +373,13 @@ public class BackgroundGameState extends GameStateImpl {
 			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
 			color.a = 0.3f;
 
-			entityTemplates.staticSprite(new Sprite(sprite), x, y, w, h, angle, -200, 0.5f, 0.5f, color);
+			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+					.put("color", color) //
+					.put("layer", (-200)) //
+					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
+					.put("center", new Vector2(0.5f, 0.5f)) //
+					.put("spriteId", "FogSprite") //
+					);
 		}
 	}
 

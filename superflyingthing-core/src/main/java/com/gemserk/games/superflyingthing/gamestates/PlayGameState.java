@@ -21,7 +21,10 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -42,6 +45,7 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -49,6 +53,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
@@ -259,8 +264,13 @@ public class PlayGameState extends GameStateImpl {
 			container.add(tiltvalue);
 		}
 
-		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+				.put("color", Color.WHITE) //
+				.put("layer", (-999)) //
+				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
+				.put("center", new Vector2(0, 0)) //
+				.put("spriteId", "BackgroundSprite") //
+				);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
@@ -486,8 +496,23 @@ public class PlayGameState extends GameStateImpl {
 		createWorldLimits(worldWidth, worldHeight, 0.2f);
 	}
 
+	private EntityTemplate staticSpriteTemplate = new EntityTemplateImpl() {
+		@Override
+		public void apply(Entity entity) {
+			Color color = parameters.get("color", Color.WHITE);
+			Integer layer = parameters.get("layer");
+			Spatial spatial = parameters.get("spatial");
+			String spriteId = parameters.get("spriteId");
+			Vector2 center = parameters.get("center");
+			Sprite sprite = resourceManager.getResourceValue(spriteId);
+			entity.addComponent(new SpatialComponent(spatial));
+			entity.addComponent(new SpriteComponent(sprite, new Vector2(center), color));
+			entity.addComponent(new RenderableComponent(layer));
+		}
+	};
+
 	private void generateRandomClouds(float width, float height, int count) {
-		Sprite sprite = resourceManager.getResourceValue("FogSprite");
+		// Sprite sprite = resourceManager.getResourceValue("FogSprite");
 
 		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK, Colors.magenta };
 
@@ -502,9 +527,18 @@ public class PlayGameState extends GameStateImpl {
 			float angle = MathUtils.random(0, 359f);
 
 			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
-			color.a = 0.3f;
+			color.a = 0.5f;
 
-			entityTemplates.staticSprite(new Sprite(sprite), x, y, w, h, angle, -200, 0.5f, 0.5f, color);
+			parameters.clear();
+			entityFactory.instantiate(staticSpriteTemplate, parameters //
+					.put("color", color) //
+					.put("layer", -200) //
+					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
+					.put("spriteId", "FogSprite") //
+					.put("center", new Vector2(0.5f, 0.5f)) //
+					);
+
+			// entityTemplates.staticSprite(new Sprite(sprite), x, y, w, h, angle, -200, 0.5f, 0.5f, color);
 		}
 	}
 

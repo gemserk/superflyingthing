@@ -202,8 +202,13 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
 
-		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+				.put("color", Color.WHITE) //
+				.put("layer", (-999)) //
+				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
+				.put("center", new Vector2(0, 0)) //
+				.put("spriteId", "BackgroundSprite") //
+				);
 
 		// loadLevelForChallengeMode();
 
@@ -290,17 +295,15 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
 
 		// create gui label..
-		
+
 		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
-		
+
 		guiContainer.add(GuiControls.label("Playing replay, touch to continue...") //
 				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.1f) //
 				.center(0.5f, 0f) //
 				.color(Colors.yellow) //
 				.font(levelFont) //
 				.build());
-		
-		
 
 	}
 
@@ -326,7 +329,13 @@ public class ReplayPlayerGameState extends GameStateImpl {
 			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
 			color.a = 0.3f;
 
-			entityTemplates.staticSprite(new Sprite(sprite), x, y, w, h, angle, -200, 0.5f, 0.5f, color);
+			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+					.put("color", color) //
+					.put("layer", (-200)) //
+					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
+					.put("center", new Vector2(0.5f, 0.5f)) //
+					.put("spriteId", "FogSprite") //
+					);
 		}
 	}
 

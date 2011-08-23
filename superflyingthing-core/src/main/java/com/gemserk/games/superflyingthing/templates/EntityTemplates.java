@@ -155,6 +155,10 @@ public class EntityTemplates {
 		return replayPlayerTemplate;
 	}
 
+	public EntityTemplate getStaticSpriteTemplate() {
+		return staticSpriteTemplate;
+	}
+
 	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory, EventManager eventManager) {
 		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
@@ -163,14 +167,6 @@ public class EntityTemplates {
 		this.eventManager = eventManager;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.mesh2dBuilder = new Mesh2dBuilder();
-	}
-
-	public Entity staticSprite(Sprite sprite, float x, float y, float width, float height, float angle, int layer, float centerx, float centery, Color color) {
-		return entityBuilder //
-				.component(new SpatialComponent(new SpatialImpl(x, y, width, height, angle))) //
-				.component(new SpriteComponent(sprite, new Vector2(centerx, centery), new Color(color))) //
-				.component(new RenderableComponent(layer)) //
-				.build();
 	}
 
 	private EntityTemplate cameraTemplate = new EntityTemplateImpl() {
@@ -777,6 +773,21 @@ public class EntityTemplates {
 
 			entity.addComponent(new TimerComponent(time));
 			entity.addComponent(new ScriptComponent(new TimerScript(eventManager, eventId)));
+		}
+	};
+
+	private EntityTemplate staticSpriteTemplate = new EntityTemplateImpl() {
+		@Override
+		public void apply(Entity entity) {
+			Color color = parameters.get("color", Color.WHITE);
+			Integer layer = parameters.get("layer");
+			Spatial spatial = parameters.get("spatial");
+			String spriteId = parameters.get("spriteId");
+			Vector2 center = parameters.get("center");
+			Sprite sprite = resourceManager.getResourceValue(spriteId);
+			entity.addComponent(new SpatialComponent(spatial));
+			entity.addComponent(new SpriteComponent(sprite, new Vector2(center), color));
+			entity.addComponent(new RenderableComponent(layer));
 		}
 	};
 

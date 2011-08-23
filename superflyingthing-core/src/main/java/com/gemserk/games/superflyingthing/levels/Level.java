@@ -118,7 +118,7 @@ public class Level {
 	public StartPlanet startPlanet;
 
 	public ArrayList<DestinationPlanet> destinationPlanets = new ArrayList<Level.DestinationPlanet>();
-
+	
 	public String name;
 
 }

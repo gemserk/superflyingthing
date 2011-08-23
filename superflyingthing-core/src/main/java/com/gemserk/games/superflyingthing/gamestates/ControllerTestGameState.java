@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
@@ -50,7 +49,6 @@ import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
-import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -165,7 +163,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		// renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
 		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), backgroundEnabled);
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
-		
+
 		// used by the controllers to draw stuff, could be removed later
 		renderLayers.add(Layers.Controllers, new RenderLayerSpriteBatchImpl(200, 10000, guiCamera));
 
@@ -202,8 +200,13 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		gameData = new GameData();
 
-		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
-		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
+		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+				.put("color", Color.WHITE) //
+				.put("layer", (-999)) //
+				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
+				.put("center", new Vector2(0, 0)) //
+				.put("spriteId", "BackgroundSprite") //
+				);
 
 		entityBuilder //
 				.component(new TagComponent("EventManager")) //
