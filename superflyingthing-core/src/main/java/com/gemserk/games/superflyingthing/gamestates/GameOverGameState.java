@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
@@ -29,8 +30,7 @@ public class GameOverGameState extends GameStateImpl {
 	private Sprite whiteRectangle;
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-
-	// private Screen previousScreen;
+	private WorldWrapper worldWrapper;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -57,13 +57,7 @@ public class GameOverGameState extends GameStateImpl {
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
-		// previousScreen = game.getGameData().get("previousScreen");
-
-		// container.add(GuiControls.label("YOUR SCORE HERE") //
-		// .position(centerX, height * 0.9f) //
-		// .color(Color.GREEN) //
-		// .font(titleFont)//
-		// .build());
+		worldWrapper = game.getGameData().get("worldWrapper");
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			container.add(GuiControls.textButton() //
@@ -137,12 +131,7 @@ public class GameOverGameState extends GameStateImpl {
 					.disposeCurrent() //
 					.leaveTime(250) //
 					.enterTime(250) //
-					.leaveTransitionHandler(new TransitionHandler() {
-						@Override
-						public void onEnd() {
-							game.getPlayScreen().dispose();
-						}
-					}).start();
+					.start();
 
 		} else {
 			GameInformation.level++;
@@ -164,12 +153,7 @@ public class GameOverGameState extends GameStateImpl {
 				.leaveTime(250) //
 				.enterTime(250) //
 				.disposeCurrent() //
-				.leaveTransitionHandler(new TransitionHandler() {
-					@Override
-					public void onEnd() {
-						game.getPlayScreen().dispose();
-					}
-				}).start();
+				.start();
 
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
@@ -209,8 +193,8 @@ public class GameOverGameState extends GameStateImpl {
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		if (GameInformation.worldWrapper != null)
-			GameInformation.worldWrapper.render();
+		if (worldWrapper != null)
+			worldWrapper.render();
 
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
@@ -221,8 +205,8 @@ public class GameOverGameState extends GameStateImpl {
 	@Override
 	public void update() {
 
-		if (GameInformation.worldWrapper != null)
-			GameInformation.worldWrapper.update(getDeltaInMs());
+		if (worldWrapper != null)
+			worldWrapper.update(getDeltaInMs());
 
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
@@ -240,6 +224,10 @@ public class GameOverGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
+		
+		if (worldWrapper != null)
+			worldWrapper.dispose();
+		
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}

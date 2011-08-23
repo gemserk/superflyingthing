@@ -179,8 +179,8 @@ public class PlayGameState extends GameStateImpl {
 
 		renderLayers = new RenderLayers();
 
-		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
-		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera, spriteBatch), game.getGamePreferences().isSecondBackgroundEnabled());
+		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera), game.getGamePreferences().isFirstBackgroundEnabled());
+		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera), game.getGamePreferences().isSecondBackgroundEnabled());
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
@@ -262,7 +262,7 @@ public class PlayGameState extends GameStateImpl {
 
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
-		
+
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
@@ -348,7 +348,7 @@ public class PlayGameState extends GameStateImpl {
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
 				if (replayRecorder == null) {
 
-//					game.getGameData().put("previousScreen", game.getPlayScreen());
+					game.getGameData().put("worldWrapper", worldWrapper);
 					game.transition(game.getGameOverScreen()).leaveTime(0) //
 							.enterTime(300) //
 							.disposeCurrent(false) //
@@ -358,14 +358,20 @@ public class PlayGameState extends GameStateImpl {
 				}
 
 				ReplayListComponent replayListComponent = replayRecorder.getComponent(ReplayListComponent.class);
-				
+
 				game.getGameData().put("replayList", replayListComponent.getReplayList());
 				game.getGameData().put("level", level);
+				game.getGameData().put("worldWrapper", worldWrapper);
 
-				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
+				game.transition(game.getGameOverScreen()).leaveTime(0) //
 						.enterTime(300) //
-						.disposeCurrent(false) //
+						.disposeCurrent(true) //
 						.start();
+
+				// game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
+				// .enterTime(300) //
+				// .disposeCurrent(false) //
+				// .start();
 
 			}
 
@@ -604,7 +610,7 @@ public class PlayGameState extends GameStateImpl {
 			gameData.totalItems = level.items.size();
 			if (gameData.totalItems > 0)
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-			
+
 			return level;
 		}
 		return null;
@@ -622,7 +628,7 @@ public class PlayGameState extends GameStateImpl {
 		gameData.totalItems = starsCount;
 		if (gameData.totalItems > 0)
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-		
+
 		return level;
 	}
 
@@ -802,9 +808,9 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		worldWrapper.dispose();
+		// worldWrapper.dispose();
 		spriteBatch.dispose();
-		physicsWorld.dispose();
+		// physicsWorld.dispose();
 	}
 
 }
