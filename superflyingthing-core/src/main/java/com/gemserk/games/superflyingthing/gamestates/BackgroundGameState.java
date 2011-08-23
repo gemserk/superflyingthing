@@ -357,7 +357,7 @@ public class BackgroundGameState extends GameStateImpl {
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld, controller))).build();
 
 		entityBuilder //
-				.component(new GameDataComponent(startPlanet)) //
+				.component(new GameDataComponent()) //
 				.component(new ScriptComponent(new Scripts.GameScript(eventManager, //
 						entityTemplates, entityFactory, gameData, false))) //
 				.build();

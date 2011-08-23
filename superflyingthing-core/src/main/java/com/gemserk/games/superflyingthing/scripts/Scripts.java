@@ -336,7 +336,10 @@ public class Scripts {
 			eventManager.registerEvent(Events.shipDeath, spatial);
 			eventManager.registerEvent(Events.explosion, spatial);
 			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
-			eventManager.registerEvent(Events.moveCameraToEntity, gameDataComponent.startPlanet);
+
+			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+			if (startPlanet != null)
+				eventManager.registerEvent(Events.moveCameraToEntity, startPlanet);
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
@@ -347,19 +350,23 @@ public class Scripts {
 
 			if (gameDataComponent.ship != null)
 				return;
+			
+			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+			if (startPlanet == null)
+				return;
 
-			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.startPlanet);
+			Spatial spatial = ComponentWrapper.getSpatial(startPlanet);
 
 			parameters.put("position", spatial.getPosition().tmp().add(0f, 2f));
 
 			Entity attachedShip = entityFactory.instantiate(attachedShipTemplate, parameters);
 
-			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(gameDataComponent.startPlanet);
+			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(startPlanet);
 			attachmentComponent.setEntity(attachedShip);
 			attachmentComponent.setJoint(null);
 
 			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(attachedShip);
-			attachableComponent.setOwner(gameDataComponent.startPlanet);
+			attachableComponent.setOwner(startPlanet);
 
 			gameDataComponent.attachedShip = attachedShip;
 

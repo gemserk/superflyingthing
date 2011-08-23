@@ -632,7 +632,7 @@ public class PlayGameState extends GameStateImpl {
 
 			entityBuilder //
 					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent(startPlanet)) //
+					.component(new GameDataComponent()) //
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, shipInvulnerable))) //
 					.build();
 
