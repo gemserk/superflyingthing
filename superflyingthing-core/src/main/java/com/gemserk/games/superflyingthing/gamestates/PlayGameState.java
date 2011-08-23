@@ -193,7 +193,6 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper = new WorldWrapper(world);
 		parameters = new ParametersWrapper();
 		// add render and all stuff...
-		GameInformation.worldWrapper = worldWrapper;
 
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
