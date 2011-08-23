@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.gemserk.componentsengine.utils.Parameters;
 
 public class Level {
 
@@ -117,7 +118,9 @@ public class Level {
 
 	public StartPlanet startPlanet;
 
-	public ArrayList<DestinationPlanet> destinationPlanets = new ArrayList<Level.DestinationPlanet>();
+	public ArrayList<DestinationPlanet> destinationPlanets = new ArrayList<DestinationPlanet>();
+	
+	public ArrayList<Parameters> fogClouds = new ArrayList<Parameters>();
 	
 	public String name;
 

@@ -7,10 +7,15 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.svg.inkscape.DocumentParser;
 import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.Item;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
@@ -166,6 +171,10 @@ public class Levels {
 			};
 		}.process(document);
 
+		// generate random clouds once and for ever....
+
+		generateRandomClouds(level, 4);
+
 		cachedLevels[levelNumber] = level;
 
 		return level;
@@ -194,5 +203,32 @@ public class Levels {
 
 	public static int levelsCount() {
 		return levels.length;
+	}
+
+	public static void generateRandomClouds(Level level, int count) {
+
+		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK, Colors.magenta };
+
+		for (int i = 0; i < count; i++) {
+
+			float x = MathUtils.random(0, level.w);
+			float y = MathUtils.random(0, level.h);
+
+			float w = MathUtils.random(50, 80f);
+			float h = w;
+
+			float angle = MathUtils.random(0, 359f);
+
+			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
+			color.a = 0.5f;
+
+			level.fogClouds.add(new ParametersWrapper() //
+					.put("color", color) //
+					.put("layer", -200) //
+					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
+					.put("spriteId", "FogSprite") //
+					.put("center", new Vector2(0.5f, 0.5f)));
+			
+		}
 	}
 }

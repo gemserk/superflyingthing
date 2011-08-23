@@ -8,7 +8,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -21,10 +20,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
@@ -45,7 +41,6 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -53,7 +48,6 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
@@ -62,7 +56,6 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
@@ -496,52 +489,6 @@ public class PlayGameState extends GameStateImpl {
 		createWorldLimits(worldWidth, worldHeight, 0.2f);
 	}
 
-	private EntityTemplate staticSpriteTemplate = new EntityTemplateImpl() {
-		@Override
-		public void apply(Entity entity) {
-			Color color = parameters.get("color", Color.WHITE);
-			Integer layer = parameters.get("layer");
-			Spatial spatial = parameters.get("spatial");
-			String spriteId = parameters.get("spriteId");
-			Vector2 center = parameters.get("center");
-			Sprite sprite = resourceManager.getResourceValue(spriteId);
-			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(new SpriteComponent(sprite, new Vector2(center), color));
-			entity.addComponent(new RenderableComponent(layer));
-		}
-	};
-
-	private void generateRandomClouds(float width, float height, int count) {
-		// Sprite sprite = resourceManager.getResourceValue("FogSprite");
-
-		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK, Colors.magenta };
-
-		for (int i = 0; i < count; i++) {
-
-			float x = MathUtils.random(0, width);
-			float y = MathUtils.random(0, height);
-
-			float w = MathUtils.random(50, 80f);
-			float h = w;
-
-			float angle = MathUtils.random(0, 359f);
-
-			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
-			color.a = 0.5f;
-
-			parameters.clear();
-			entityFactory.instantiate(staticSpriteTemplate, parameters //
-					.put("color", color) //
-					.put("layer", -200) //
-					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
-					.put("spriteId", "FogSprite") //
-					.put("center", new Vector2(0.5f, 0.5f)) //
-					);
-
-			// entityTemplates.staticSprite(new Sprite(sprite), x, y, w, h, angle, -200, 0.5f, 0.5f, color);
-		}
-	}
-
 	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
@@ -617,6 +564,10 @@ public class PlayGameState extends GameStateImpl {
 					);
 		}
 
+		for (int i = 0; i < level.fogClouds.size(); i++) {
+			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
+		}
+
 		createWorldLimits(worldWidth, worldHeight);
 
 		createGameController(controller);
@@ -627,7 +578,7 @@ public class PlayGameState extends GameStateImpl {
 				.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, controller, shipInvulnerable))) //
 				.build();
 
-		generateRandomClouds(worldWidth, worldHeight, 6);
+		// generateRandomClouds(worldWidth, worldHeight, 6);
 	}
 
 	Level loadLevelForChallengeMode() {
@@ -649,6 +600,9 @@ public class PlayGameState extends GameStateImpl {
 		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator();
 
 		Level level = randomLevelGenerator.generateRandomLevel();
+		
+		Levels.generateRandomClouds(level, 6);
+		
 		loadLevel(level, invulnerable);
 
 		int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);

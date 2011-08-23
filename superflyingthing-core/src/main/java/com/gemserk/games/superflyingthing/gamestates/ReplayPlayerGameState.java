@@ -8,7 +8,6 @@ import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -311,34 +310,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		createWorldLimits(worldWidth, worldHeight, 0.2f);
 	}
 
-	private void generateRandomClouds(float width, float height, int count) {
-		Sprite sprite = resourceManager.getResourceValue("FogSprite");
-
-		Color[] colors = new Color[] { Colors.yellow, Color.RED, Color.GREEN, Color.BLUE, Color.BLACK, Colors.magenta };
-
-		for (int i = 0; i < count; i++) {
-
-			float x = MathUtils.random(0, width);
-			float y = MathUtils.random(0, height);
-
-			float w = MathUtils.random(50, 80f);
-			float h = w;
-
-			float angle = MathUtils.random(0, 359f);
-
-			Color color = new Color(colors[MathUtils.random(0, colors.length - 1)]);
-			color.a = 0.3f;
-
-			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-					.put("color", color) //
-					.put("layer", (-200)) //
-					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
-					.put("center", new Vector2(0.5f, 0.5f)) //
-					.put("spriteId", "FogSprite") //
-					);
-		}
-	}
-
 	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
@@ -413,10 +384,12 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
 					);
 		}
+		
+		for (int i = 0; i < level.fogClouds.size(); i++) {
+			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
+		}
 
 		createWorldLimits(worldWidth, worldHeight);
-
-		generateRandomClouds(worldWidth, worldHeight, 6);
 	}
 
 	void loadLevelForChallengeMode() {
