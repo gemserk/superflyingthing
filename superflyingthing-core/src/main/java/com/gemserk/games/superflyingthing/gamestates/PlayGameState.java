@@ -268,12 +268,35 @@ public class PlayGameState extends GameStateImpl {
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
+
+			// play game state custom
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent()) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
+					.build();
+
 			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			level = loadRandomLevelForRandomMode(true);
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent()) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, true))) //
+					.build();
+
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			level = loadRandomLevelForRandomMode(false);
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent()) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
+					.build();
+
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
@@ -622,14 +645,6 @@ public class PlayGameState extends GameStateImpl {
 			entityBuilder //
 					.component(new TagComponent(Groups.PlayerController)) //
 					.component(new ControllerComponent(controller)) //
-					.build();
-
-			// play game state custom
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, shipInvulnerable))) //
 					.build();
 
 		}
