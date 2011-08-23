@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -46,8 +47,6 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
-import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
-import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
@@ -92,7 +91,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	boolean resetPressed;
 	Container container;
 	private Libgdx2dCamera guiCamera;
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	// private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	EntityTemplates entityTemplates;
 
@@ -110,6 +109,20 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	EntityTemplate userMessageTemplate;
 
 	private RenderLayers renderLayers;
+
+	private InputAdapter inputProcessor = new InputAdapter() {
+
+		public boolean keyUp(int keycode) {
+			nextScreen();
+			return super.keyUp(keycode);
+		};
+
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			nextScreen();
+			return false;
+		};
+
+	};
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -251,10 +264,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 						TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
 						targetComponent.setTarget(null);
 
-						game.transition(game.getGameOverScreen()).leaveTime(0) //
-								.enterTime(0) //
-								.disposeCurrent(true) //
-								.start();
+						nextScreen();
 					}
 
 				})) //
@@ -264,13 +274,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 				.component(new TagComponent("EventManager")) //
 				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
 				.build();
-
-		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
-		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
-			{
-				monitorPointerDown("continue", 0);
-			}
-		};
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -406,6 +409,13 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		}
 	}
 
+	public void nextScreen() {
+		game.transition(game.getGameOverScreen()).leaveTime(0) //
+				.enterTime(0) //
+				.disposeCurrent(true) //
+				.start();
+	}
+
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -426,7 +436,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 			return;
 		}
 
-		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
 		container.update();
 
@@ -443,18 +452,20 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
 		game.getBackgroundGameScreen().dispose();
+		Gdx.input.setInputProcessor(inputProcessor);
 	}
 
 	@Override
 	public void pause() {
 		super.pause();
+		if (Gdx.input.getInputProcessor() == inputProcessor)
+			Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
 	public void dispose() {
 		worldWrapper.dispose();
 		spriteBatch.dispose();
-		physicsWorld.dispose();
 	}
 
 }

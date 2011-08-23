@@ -350,7 +350,7 @@ public class PlayGameState extends GameStateImpl {
 					game.getGameData().put("worldWrapper", worldWrapper);
 					game.transition(game.getGameOverScreen()).leaveTime(0) //
 							.enterTime(300) //
-							.disposeCurrent(false) //
+							.disposeCurrent() //
 							.start();
 
 					return;
@@ -362,15 +362,10 @@ public class PlayGameState extends GameStateImpl {
 				game.getGameData().put("level", level);
 				game.getGameData().put("worldWrapper", worldWrapper);
 
-				game.transition(game.getGameOverScreen()).leaveTime(0) //
+				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
 						.enterTime(300) //
-						.disposeCurrent(true) //
+						.disposeCurrent() //
 						.start();
-
-				// game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
-				// .enterTime(300) //
-				// .disposeCurrent(false) //
-				// .start();
 
 			}
 
