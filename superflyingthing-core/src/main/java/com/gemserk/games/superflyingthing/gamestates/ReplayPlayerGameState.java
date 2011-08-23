@@ -227,7 +227,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					@Override
 					public void init(com.artemis.World world, Entity e) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-						TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
+						TargetComponent targetComponent = ComponentWrapper.getTargetComponent(mainCamera);
 
 						Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
 						targetComponent.setTarget(mainReplayShip);
@@ -239,13 +239,24 @@ public class ReplayPlayerGameState extends GameStateImpl {
 						entityFactory.instantiate(entityTemplates.getTimerTemplate(), new ParametersWrapper() //
 								.put("time", (float) replay.duration * 0.001f) //
 								.put("eventId", Events.gameOver));
+						
+						eventManager.registerEvent(Events.gameStarted, e);
+					}
+
+					@Handles(ids = Events.gameStarted)
+					public void resetCameraZoomWhenGameStarted(Event event) {
+						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+						CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
+
+						Camera camera = cameraComponent.getCamera();
+						camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
 					}
 
 					@Handles(ids = Events.gameOver)
 					public void gameOver(Event event) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
 						// mainCamera.delete();
-						TargetComponent targetComponent = mainCamera.getComponent(TargetComponent.class);
+						TargetComponent targetComponent = ComponentWrapper.getTargetComponent(mainCamera);
 						targetComponent.setTarget(null);
 
 						nextScreen();

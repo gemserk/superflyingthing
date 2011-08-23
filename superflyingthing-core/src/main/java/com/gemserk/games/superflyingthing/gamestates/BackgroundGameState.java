@@ -16,7 +16,6 @@ import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.Handles;
@@ -217,17 +216,20 @@ public class BackgroundGameState extends GameStateImpl {
 
 			@Override
 			public void init(com.artemis.World world, Entity e) {
-				eventManager.register(Events.destinationPlanetReached, new EventListener() {
-					@Override
-					public void onEvent(Event event) {
-						destinationPlanetReached(event);
-					}
-				});
+				eventManager.registerEvent(Events.gameStarted, e);
 			}
 
-			// @EventListener(Events.destinationPlanetReached)
+			@Handles(ids = Events.destinationPlanetReached)
 			public void destinationPlanetReached(Event e) {
 				gameFinished();
+			}
+
+			@Handles(ids = Events.gameStarted)
+			public void resetCameraZoomWhenGameStarted(Event event) {
+				Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+				CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
+				Camera camera = cameraComponent.getCamera();
+				camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
 			}
 
 		})).build();
@@ -239,9 +241,7 @@ public class BackgroundGameState extends GameStateImpl {
 					public void update(com.artemis.World world, Entity e) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
 						CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
-
 						Camera camera = cameraComponent.getCamera();
-
 						secondBackgroundLayerCamera.move(camera.getX(), camera.getY());
 						secondBackgroundLayerCamera.zoom(camera.getZoom() * 0.25f);
 						secondBackgroundLayerCamera.rotate(camera.getAngle());
