@@ -348,6 +348,7 @@ public class PlayGameState extends GameStateImpl {
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
 				if (replayRecorder == null) {
 
+//					game.getGameData().put("previousScreen", game.getPlayScreen());
 					game.transition(game.getGameOverScreen()).leaveTime(0) //
 							.enterTime(300) //
 							.disposeCurrent(false) //

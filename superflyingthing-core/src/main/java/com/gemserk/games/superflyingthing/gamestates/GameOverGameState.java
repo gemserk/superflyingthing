@@ -30,6 +30,8 @@ public class GameOverGameState extends GameStateImpl {
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
+	// private Screen previousScreen;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -54,6 +56,8 @@ public class GameOverGameState extends GameStateImpl {
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
+
+		// previousScreen = game.getGameData().get("previousScreen");
 
 		// container.add(GuiControls.label("YOUR SCORE HERE") //
 		// .position(centerX, height * 0.9f) //
@@ -196,18 +200,6 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	@Override
-	public void show() {
-		super.show();
-		game.getPlayScreen().show();
-	}
-
-	@Override
-	public void hide() {
-		super.hide();
-		game.getPlayScreen().hide();
-	}
-
-	@Override
 	public void resume() {
 		game.getAdWhirlViewHandler().show();
 		Gdx.input.setCatchBackKey(true);
@@ -217,7 +209,8 @@ public class GameOverGameState extends GameStateImpl {
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
-		game.getPlayScreen().render();
+		if (GameInformation.worldWrapper != null)
+			GameInformation.worldWrapper.render();
 
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
