@@ -41,6 +41,7 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -525,16 +526,22 @@ public class PlayGameState extends GameStateImpl {
 
 	}
 
-	class LevelLoader {
+	static class LevelLoader {
 
-		// private final Parameters parameters = new ParametersWrapper();
-		// private final EntityTemplates entityTemplates;
+		private final Parameters parameters = new ParametersWrapper();
+		private final EntityTemplates entityTemplates;
+		private final World physicsWorld;
+		private final EntityFactory entityFactory;
+		private final Libgdx2dCamera worldCamera;
 
 		boolean insideObstacle;
 
-		// public LevelLoader(EntityTemplates entityTemplates) {
-		// this.entityTemplates = entityTemplates;
-		// }
+		public LevelLoader(EntityTemplates entityTemplates, EntityFactory entityFactory, World physicsWorld, Libgdx2dCamera worldCamera) {
+			this.entityTemplates = entityTemplates;
+			this.entityFactory = entityFactory;
+			this.physicsWorld = physicsWorld;
+			this.worldCamera = worldCamera;
+		}
 
 		private void createWorldLimits(float worldWidth, float worldHeight) {
 			createWorldLimits(worldWidth, worldHeight, 0.2f);
@@ -560,7 +567,7 @@ public class PlayGameState extends GameStateImpl {
 
 			final ShipController controller = new ShipController();
 
-			Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
+			entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
 
 			for (int i = 0; i < level.destinationPlanets.size(); i++) {
 				DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
@@ -568,7 +575,7 @@ public class PlayGameState extends GameStateImpl {
 			}
 
 			parameters.clear();
-			Entity cameraEntity = entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
+			entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
 					.put("camera", camera) //
 					.put("libgdxCamera", worldCamera) //
 					.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
@@ -645,17 +652,21 @@ public class PlayGameState extends GameStateImpl {
 			createWorldLimits(worldWidth, worldHeight);
 
 			// default Player controller (with no script)
-			entityBuilder //
-					.component(new TagComponent(Groups.PlayerController)) //
-					.component(new ControllerComponent(controller)) //
-					.build();
+			
+			entityFactory.instantiate(new EntityTemplateImpl() {
+				@Override
+				public void apply(Entity entity) {
+					entity.addComponent(new TagComponent(Groups.PlayerController));
+					entity.addComponent(new ControllerComponent(controller));
+				}
+			});
 
 		}
 
 	}
 
 	void loadLevel(Level level, boolean shipInvulnerable) {
-		new LevelLoader().loadLevel(level, shipInvulnerable);
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera).loadLevel(level, shipInvulnerable);
 	}
 
 	Level loadLevelForChallengeMode() {
