@@ -31,13 +31,13 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 		this.owner = e;
 	}
 
-	@Handles(ids = { Events.destinationPlanetReached, Events.shipDeath })
+	@Handles(ids = { Events.gameOver, Events.shipDeath })
 	public void stopReplayRecording(Event event) {
 		ReplayListComponent replayListComponent = ComponentWrapper.getReplayComponent(owner);
 		ReplayList replayList = replayListComponent.getReplayList();
 		replayList.add(currentReplay);
 		
-		currentReplay.main = event.getId().equals(Events.destinationPlanetReached);
+		currentReplay.main = event.getId().equals(Events.gameOver);
 
 		// stops the ship recording
 		recording = false;
