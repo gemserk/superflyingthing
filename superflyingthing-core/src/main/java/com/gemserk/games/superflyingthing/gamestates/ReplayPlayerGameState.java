@@ -7,6 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
@@ -37,7 +38,6 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
-import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -47,6 +47,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
@@ -67,7 +68,6 @@ import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.Portal;
 import com.gemserk.games.superflyingthing.levels.Levels;
-import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
@@ -76,7 +76,6 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
-import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class ReplayPlayerGameState extends GameStateImpl {
@@ -89,7 +88,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
 	boolean resetPressed;
-	Container container;
+	Container guiContainer;
 	private Libgdx2dCamera guiCamera;
 	// private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
@@ -105,8 +104,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	private JointBuilder jointBuilder;
 
 	private EventManager eventManager;
-
-	EntityTemplate userMessageTemplate;
 
 	private RenderLayers renderLayers;
 
@@ -197,15 +194,13 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		container = new Container();
+		guiContainer = new Container();
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
 
 		// creates and registers all the controller templates
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
-
-		userMessageTemplate = new UserMessageTemplate(container, resourceManager);
 
 		Sprite backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");
 		entityTemplates.staticSprite(backgroundSprite, 0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0, -999, 0, 0, Color.WHITE);
@@ -293,6 +288,19 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+
+		// create gui label..
+		
+		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
+		
+		guiContainer.add(GuiControls.label("Playing replay, touch to continue...") //
+				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.1f) //
+				.center(0.5f, 0f) //
+				.color(Colors.yellow) //
+				.font(levelFont) //
+				.build());
+		
+		
 
 	}
 
@@ -419,29 +427,17 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-
 		worldWrapper.render();
-
 		guiCamera.apply(spriteBatch);
 		spriteBatch.begin();
-		container.draw(spriteBatch);
+		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update() {
-		GamePreferences gamePreferences = game.getGamePreferences();
-		if (gamePreferences.isTutorialEnabled()) {
-			game.transition(game.getInstructionsScreen(), 0, 300, false);
-			return;
-		}
-
 		Synchronizers.synchronize(getDelta());
-		container.update();
-
-		// if (inputDevicesMonitor.getButton("pause").isReleased())
-		// game.transition(game.getPauseScreen(), 200, 300, false);
-
+		guiContainer.update();
 		worldWrapper.update(getDeltaInMs());
 	}
 
