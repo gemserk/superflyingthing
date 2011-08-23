@@ -28,6 +28,7 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class Behaviors {
 
@@ -295,7 +296,10 @@ public class Behaviors {
 			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
 			if (gameDataComponent == null)
 				return;
-			TargetComponent targetComponent = ComponentWrapper.getTargetComponent(gameDataComponent.camera);
+			Entity camera = world.getTagManager().getEntity(Groups.MainCamera);
+			if (camera == null)
+				return;
+			TargetComponent targetComponent = ComponentWrapper.getTargetComponent(camera);
 
 			Entity ship = gameDataComponent.ship;
 			if (ship == null) {
