@@ -71,7 +71,11 @@ public class MainMenuGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						game.transition(game.getSelectPlayModeScreen(), 250, 250);
+						game.transition(game.getSelectPlayModeScreen()) //
+						.leaveTime(250) //
+						.enterTime(250) //
+						.disposeCurrent() //
+						.start();
 					}
 				})//
 				.build();
@@ -122,7 +126,11 @@ public class MainMenuGameState extends GameStateImpl {
 
 	private void settings() {
 		game.getGameData().put("previousScreen", game.getMainMenuScreen());
-		game.transition(game.getSettingsScreen(), 250, 250, true);
+		game.transition(game.getSettingsScreen()) //
+		.leaveTime(250) //
+		.enterTime(250) //
+		.disposeCurrent(true) //
+		.start();
 	}
 
 	@Override

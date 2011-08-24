@@ -142,24 +142,40 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 	private void challenge() {
 		GameInformation.gameMode = GameInformation.ChallengeGameMode;
-		game.transition(game.getLevelSelectionScreen(), 250, 250, true);
+		game.transition(game.getLevelSelectionScreen()) //
+		.leaveTime(250) //
+		.enterTime(250) //
+		.disposeCurrent(true) //
+		.start();
 		Analytics.traker.trackPageView("/challenge/selected", "/challenge/selected", null);
 	}
 
 	private void random() {
 		GameInformation.gameMode = GameInformation.RandomGameMode;
-		game.transition(game.getPlayScreen(), 250, 250, true);
+		game.transition(game.getPlayScreen()) //
+		.leaveTime(250) //
+		.enterTime(250) //
+		.disposeCurrent(true) //
+		.start();
 		Analytics.traker.trackPageView("/random/selected", "/random/selected", null);
 	}
 
 	private void practice() {
 		GameInformation.gameMode = GameInformation.PracticeGameMode;
-		game.transition(game.getPlayScreen(), 250, 250, true);
+		game.transition(game.getPlayScreen()) //
+		.leaveTime(250) //
+		.enterTime(250) //
+		.disposeCurrent(true) //
+		.start();
 		Analytics.traker.trackPageView("/practice/selected", "/practice/selected", null);
 	}
 
 	private void back() {
-		game.transition(game.getMainMenuScreen(), 250, 250, true);
+		game.transition(game.getMainMenuScreen()) //
+		.leaveTime(250) //
+		.enterTime(250) //
+		.disposeCurrent(true) //
+		.start();
 	}
 
 	@Override
@@ -179,7 +195,11 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
-			game.transition(game.getMainMenuScreen(), 500, 500);
+			game.transition(game.getMainMenuScreen()) //
+			.leaveTime(500) //
+			.enterTime(500) //
+			.disposeCurrent() //
+			.start();
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().update();
 	}

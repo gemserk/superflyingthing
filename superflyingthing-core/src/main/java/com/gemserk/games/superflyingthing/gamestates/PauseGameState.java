@@ -141,13 +141,21 @@ public class PauseGameState extends GameStateImpl {
 
 	private void instructions() {
 		game.getGamePreferences().setTutorialEnabled(true);
-		game.transition(game.getInstructionsScreen(), 500, 0);
+		game.transition(game.getInstructionsScreen()) //
+		.leaveTime(500) //
+		.enterTime(0) //
+		.disposeCurrent() //
+		.start();
 	}
 
 	private void settings() {
 		// sets previous screen....
 		game.getGameData().put("previousScreen", game.getPauseScreen());
-		game.transition(game.getSettingsScreen(), 250, 250, false);
+		game.transition(game.getSettingsScreen()) //
+		.leaveTime(250) //
+		.enterTime(250) //
+		.disposeCurrent(false) //
+		.start();
 	}
 
 	private void restartLevel() {
@@ -198,7 +206,11 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	private void resumeLevel() {
-		game.transition(game.getPlayScreen(), 500, 250);
+		game.transition(game.getPlayScreen()) //
+		.leaveTime(500) //
+		.enterTime(250) //
+		.disposeCurrent() //
+		.start();
 	}
 
 	@Override

@@ -394,21 +394,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public TransitionBuilder transition(Screen screen) {
 		return new TransitionBuilder(this, screen);
 	}
-
-	public void transition(final Screen screen, int leaveTime, int enterTime) {
-		transition(screen) //
-				.leaveTime(leaveTime) //
-				.enterTime(enterTime) //
-				.disposeCurrent() //
-				.start();
-	}
-
-	public void transition(final Screen screen, int leaveTime, int enterTime, final boolean shouldDisposeCurrentScreen) {
-		transition(screen) //
-				.leaveTime(leaveTime) //
-				.enterTime(enterTime) //
-				.disposeCurrent(shouldDisposeCurrentScreen) //
-				.start();
+	
+	public TransitionBuilder transition(String screen) {
+		return transition(screenManager.get(screen));
 	}
 
 	@Override

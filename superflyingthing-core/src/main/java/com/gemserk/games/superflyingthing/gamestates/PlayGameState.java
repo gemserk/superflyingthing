@@ -603,7 +603,11 @@ public class PlayGameState extends GameStateImpl {
 	public void update() {
 		GamePreferences gamePreferences = game.getGamePreferences();
 		if (gamePreferences.isTutorialEnabled()) {
-			game.transition(game.getInstructionsScreen(), 0, 300, false);
+			game.transition(game.getInstructionsScreen()) //
+			.leaveTime(0) //
+			.enterTime(300) //
+			.disposeCurrent(false) //
+			.start();
 			return;
 		}
 
@@ -612,7 +616,11 @@ public class PlayGameState extends GameStateImpl {
 		container.update();
 
 		if (inputDevicesMonitor.getButton("pause").isReleased())
-			game.transition(game.getPauseScreen(), 200, 300, false);
+			game.transition(game.getPauseScreen()) //
+			.leaveTime(200) //
+			.enterTime(300) //
+			.disposeCurrent(false) //
+			.start();
 
 		worldWrapper.update(getDeltaInMs());
 		if (tiltValueEnabled) {

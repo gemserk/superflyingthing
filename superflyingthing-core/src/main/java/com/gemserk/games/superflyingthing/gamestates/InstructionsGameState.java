@@ -78,14 +78,22 @@ public class InstructionsGameState extends GameStateImpl {
 			@Override
 			public boolean keyUp(int keycode) {
 				game.getGamePreferences().setTutorialEnabled(false);
-				game.transition(game.getPlayScreen(), 0, 0, true);
+				game.transition(game.getPlayScreen()) //
+				.leaveTime(0) //
+				.enterTime(0) //
+				.disposeCurrent(true) //
+				.start();
 				return true;
 			}
 
 			@Override
 			public boolean touchUp(int x, int y, int pointer, int button) {
 				game.getGamePreferences().setTutorialEnabled(false);
-				game.transition(game.getPlayScreen(), 0, 0, true);
+				game.transition(game.getPlayScreen()) //
+				.leaveTime(0) //
+				.enterTime(0) //
+				.disposeCurrent(true) //
+				.start();
 				return true;
 			}
 		};
