@@ -1,7 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import java.text.MessageFormat;
-import java.util.UUID;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
@@ -55,7 +54,6 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
@@ -65,11 +63,8 @@ import com.gemserk.games.superflyingthing.components.Components.GameDataComponen
 import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
 import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
-import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
-import com.gemserk.games.superflyingthing.levels.Level.Item;
-import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
-import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
 import com.gemserk.games.superflyingthing.levels.Levels;
+import com.gemserk.games.superflyingthing.levels.RandomLevelGenerator;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
@@ -548,56 +543,6 @@ public class PlayGameState extends GameStateImpl {
 			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 		return level;
-	}
-
-	class RandomLevelGenerator {
-
-		private final Shape[] shapes = new Shape[] { //
-		new Shape(new Vector2[] { new Vector2(3f, 1.5f), new Vector2(1f, 4f), new Vector2(-2.5f, 1f), new Vector2(-1.5f, -2.5f), new Vector2(1f, -1.5f), }), //
-				new Shape(new Vector2[] { new Vector2(1.5f, 0f), new Vector2(0.5f, 2f), new Vector2(-1.5f, 1f), new Vector2(-0.5f, -2.5f) }), //
-				new Shape(new Vector2[] { new Vector2(2f, 1f), new Vector2(-3f, 1.2f), new Vector2(-2.5f, -0.8f), new Vector2(2.5f, -2f) }), //
-		};
-
-		private Shape getRandomShape() {
-			return shapes[MathUtils.random(shapes.length - 1)];
-		}
-
-		Level generateRandomLevel() {
-
-			Level level = new Level();
-
-			level.w = MathUtils.random(30f, 250f);
-			level.h = MathUtils.random(5f, 15f);
-
-			level.startPlanet = new StartPlanet(5f, level.h * 0.5f);
-			level.destinationPlanets.add(new DestinationPlanet(level.w - 5f, level.h * 0.5f));
-
-			float obstacleX = 12f;
-
-			while (obstacleX < level.w - 17f) {
-				Obstacle obstacle1 = new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-				Obstacle obstacle2 = new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-
-				obstacle1.id = "obstacle-" + UUID.randomUUID();
-				obstacle2.id = "obstacle-" + UUID.randomUUID();
-
-				level.obstacles.add(obstacle1);
-				level.obstacles.add(obstacle2);
-				obstacleX += 8f;
-			}
-
-			for (int i = 0; i < 10; i++) {
-				Item item = new Item();
-				item.x = MathUtils.random(10f, level.w - 10f);
-				item.y = MathUtils.random(1f, level.h - 1f);
-				level.items.add(item);
-			}
-
-			Levels.generateRandomClouds(level, 6);
-
-			return level;
-		}
-
 	}
 
 	private void createGameController(ShipController controller) {

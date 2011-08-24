@@ -46,6 +46,8 @@ public class Levels {
 
 	private static Level[] cachedLevels = new Level[levels.length];
 
+	private static Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
+
 	public static Level level(int levelNumber) {
 
 		if (cachedLevels[levelNumber] != null) {
@@ -89,7 +91,7 @@ public class Levels {
 				Obstacle obstacle = new Obstacle(vertices);
 
 				obstacle.id = svgPath.getId();
-				
+
 				Vector2 center = new Vector2();
 				calculateCenter(center, vertices);
 				obstacle.x = center.x;
@@ -176,6 +178,8 @@ public class Levels {
 
 		// generate random clouds once and for ever....
 
+		level.startPlanet.color = planetColors[MathUtils.random(planetColors.length - 1)];
+
 		generateRandomClouds(level, 4);
 
 		cachedLevels[levelNumber] = level;
@@ -231,7 +235,7 @@ public class Levels {
 					.put("spatial", new SpatialImpl(x, y, w, h, angle)) //
 					.put("spriteId", "FogSprite") //
 					.put("center", new Vector2(0.5f, 0.5f)));
-			
+
 		}
 	}
 }

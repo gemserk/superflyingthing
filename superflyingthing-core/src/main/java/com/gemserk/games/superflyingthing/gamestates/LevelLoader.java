@@ -75,7 +75,13 @@ public class LevelLoader {
 
 		final ShipController controller = new ShipController();
 
-		entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
+		parameters.clear();
+
+		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
+		entityFactory.instantiate(entityTemplates.getPlanetFillAnimationTemplate(), parameters //
+				.put("owner", startPlanet) //
+				.put("color", level.startPlanet.color) //
+				);
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -550,11 +549,9 @@ public class EntityTemplates {
 
 	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateImpl() {
 
-		private Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
-
 		{
 			parameters.put("animation", "PlanetFillAnimation");
-			// parameters.put("color", Colors.yellow);
+			parameters.put("color", Colors.darkBlue);
 		}
 
 		@Override
@@ -563,13 +560,6 @@ public class EntityTemplates {
 
 			String animationId = parameters.get("animation");
 			Color color = parameters.get("color");
-
-			if (color == null)
-				color = planetColors[MathUtils.random(planetColors.length - 1)];
-			// color = new Color(MathUtils.random(0.3f, 1f), //
-			// MathUtils.random(0.3f, 1f), //
-			// MathUtils.random(0.3f, 1f), //
-			// 1f);
 
 			Animation planetFillAnimation = resourceManager.getResourceValue(animationId);
 			Sprite sprite = planetFillAnimation.getCurrentFrame();
@@ -590,7 +580,7 @@ public class EntityTemplates {
 
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 
-		Entity e = entityBuilder.build();
+		Entity entity = entityBuilder.build();
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //
 						.circleShape(radius * 0.1f) //
@@ -599,26 +589,22 @@ public class EntityTemplates {
 				.position(x, y) //
 				.mass(1f) //
 				.type(BodyType.StaticBody) //
-				.userData(e) //
+				.userData(entity) //
 				.build();
 
-		e.addComponent(new TagComponent(Groups.startPlanet));
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-		e.addComponent(new AttachmentComponent());
-		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
-		e.addComponent(new RenderableComponent(-2));
-		e.addComponent(new ControllerComponent(controller));
-		e.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder, eventManager)));
-		e.addComponent(new ContainerComponent());
+		entity.addComponent(new TagComponent(Groups.startPlanet));
+		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
+		entity.addComponent(new AttachmentComponent());
+		entity.addComponent(new SpriteComponent(sprite, Color.WHITE));
+		entity.addComponent(new RenderableComponent(-2));
+		entity.addComponent(new ControllerComponent(controller));
+		entity.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder, eventManager)));
+		entity.addComponent(new ContainerComponent());
 
-		e.refresh();
+		entity.refresh();
 
-		parameters.clear();
-		parameters.put("owner", e);
-		entityFactory.instantiate(getPlanetFillAnimationTemplate(), parameters);
-
-		return e;
+		return entity;
 	}
 
 	public Entity destinationPlanet(float x, float y, float radius) {
@@ -692,7 +678,7 @@ public class EntityTemplates {
 				.angle(angle) //
 				.userData(e) //
 				.build();
-		
+
 		e.addComponent(new LabelComponent(id));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
@@ -753,10 +739,10 @@ public class EntityTemplates {
 
 	public Entity boxObstacle(String id, float x, float y, float w, float h, float angle) {
 		return obstacle(id, new Vector2[] { //
-								new Vector2(w * 0.5f, h * 0.5f),//
-										new Vector2(w * 0.5f, -h * 0.5f), //
-										new Vector2(-w * 0.5f, -h * 0.5f),//
-										new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
+				new Vector2(w * 0.5f, h * 0.5f),//
+						new Vector2(w * 0.5f, -h * 0.5f), //
+						new Vector2(-w * 0.5f, -h * 0.5f),//
+						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
 	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {

@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.levels;
 
 import java.util.ArrayList;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -49,6 +50,7 @@ public class Level {
 	public static class StartPlanet {
 
 		public float x, y;
+		public Color color;
 
 		public StartPlanet(float x, float y) {
 			this.x = x;
