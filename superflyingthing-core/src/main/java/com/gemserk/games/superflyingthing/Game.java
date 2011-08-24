@@ -23,6 +23,7 @@ import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
+import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
@@ -85,8 +86,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
 
-	private Map<String, Screen> screens;
-
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
@@ -103,56 +102,84 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private Rectangle adsMaxArea;
 
+//	private Map<String, Screen> screens;
+
+	class ScreenManager {
+
+		private Map<String, Screen> screens;
+		
+		public ScreenManager() {
+			screens = new HashMap<String, Screen>();
+		}
+
+		/**
+		 * Adds a new screen for the specified game state.
+		 * 
+		 * @param id
+		 *            The Screen identifier.
+		 */
+		public void add(String id, GameState gameState) {
+			screens.put(id, new ScreenImpl(gameState));
+		}
+
+		public Screen get(String id) {
+			return screens.get(id);
+		}
+
+	}
+	
+	private ScreenManager screenManager;
+
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
 
 	public Screen getPlayScreen() {
-		return screens.get(Screens.Play);
+		return screenManager.get(Screens.Play);
 	}
 
 	public Screen getSplashScreen() {
-		return screens.get(Screens.Splash);
+		return screenManager.get(Screens.Splash);
 	}
 
 	public Screen getMainMenuScreen() {
-		return screens.get(Screens.MainMenu);
+		return screenManager.get(Screens.MainMenu);
 	}
 
 	public Screen getSelectPlayModeScreen() {
-		return screens.get(Screens.SelectPlayMode);
+		return screenManager.get(Screens.SelectPlayMode);
 	}
 
 	public Screen getLevelSelectionScreen() {
-		return screens.get(Screens.LevelSelection);
+		return screenManager.get(Screens.LevelSelection);
 	}
 
 	public Screen getPauseScreen() {
-		return screens.get(Screens.Pause);
+		return screenManager.get(Screens.Pause);
 	}
 
 	public Screen getGameOverScreen() {
-		return screens.get(Screens.GameOver);
+		return screenManager.get(Screens.GameOver);
 	}
 
 	public Screen getInstructionsScreen() {
-		return screens.get(Screens.Instructions);
+		return screenManager.get(Screens.Instructions);
 	}
 
 	public Screen getBackgroundGameScreen() {
-		return screens.get(Screens.BackgroundGame);
+		return screenManager.get(Screens.BackgroundGame);
 	}
 
 	public Screen getSettingsScreen() {
-		return screens.get(Screens.Settings);
+		return screenManager.get(Screens.Settings);
 	}
 
 	public Screen getControllersTestScreen() {
-		return screens.get(Screens.ControllersTest);
+		return screenManager.get(Screens.ControllersTest);
 	}
 
 	public Screen getReplayPlayerScreen() {
-		return screens.get(Screens.ReplayPlayer);
+		return screenManager.get(Screens.ReplayPlayer);
 	}
 
 	public GamePreferences getGamePreferences() {
@@ -249,20 +276,20 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
 		replayPlayerGameState.setResourceManager(resourceManager);
 
-		screens = new HashMap<String, Screen>();
+		screenManager = new ScreenManager();
 
-		screens.put(Screens.Play, new ScreenImpl(playGameState));
-		screens.put(Screens.Pause, new ScreenImpl(pauseGameState));
-		screens.put(Screens.MainMenu, new ScreenImpl(mainMenuGameState));
-		screens.put(Screens.SelectPlayMode, new ScreenImpl(selectPlayModeGameState));
-		screens.put(Screens.LevelSelection, new ScreenImpl(levelSelectionGameState));
-		screens.put(Screens.GameOver, new ScreenImpl(gameOverGameState));
-		screens.put(Screens.Instructions, new ScreenImpl(instructionsGameState));
-		screens.put(Screens.Splash, new ScreenImpl(new SplashGameState(this)));
-		screens.put(Screens.BackgroundGame, new ScreenImpl(backgroundGameState));
-		screens.put(Screens.Settings, new ScreenImpl(settingsGameState));
-		screens.put(Screens.ControllersTest, new ScreenImpl(controllerTestGameState));
-		screens.put(Screens.ReplayPlayer, new ScreenImpl(replayPlayerGameState));
+		screenManager.add(Screens.Play, playGameState);
+		screenManager.add(Screens.Pause, pauseGameState);
+		screenManager.add(Screens.MainMenu, mainMenuGameState);
+		screenManager.add(Screens.SelectPlayMode, selectPlayModeGameState);
+		screenManager.add(Screens.LevelSelection, levelSelectionGameState);
+		screenManager.add(Screens.GameOver, gameOverGameState);
+		screenManager.add(Screens.Instructions, instructionsGameState);
+		screenManager.add(Screens.Splash, new SplashGameState(this));
+		screenManager.add(Screens.BackgroundGame, backgroundGameState);
+		screenManager.add(Screens.Settings, settingsGameState);
+		screenManager.add(Screens.ControllersTest, controllerTestGameState);
+		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
