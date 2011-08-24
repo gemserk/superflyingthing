@@ -1,6 +1,8 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -72,28 +74,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public static boolean isShowBox2dDebug() {
 		return showBox2dDebug;
 	}
-	
+
 	public static void setShowFps(boolean showFps) {
 		Game.showFps = showFps;
 	}
-	
+
 	public static boolean isShowFps() {
 		return showFps;
 	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
 
-	private Screen splashScreen;
-	private Screen mainMenuScreen;
-	private Screen selectPlayModeScreen;
-	private Screen playScreen;
-	private Screen levelSelectionScreen;
-	private Screen pauseScreen;
-	private Screen gameOverScreen;
-	private Screen instructionsScreen;
-	private Screen backgroundGameScreen;
-	private Screen settingsScreen;
-	private Screen controllersTestScreen;
+	private Map<String, Screen> screens;
 
 	private ResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
@@ -110,58 +102,57 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private GamePreferences gamePreferences;
 
 	private Rectangle adsMaxArea;
-	private Screen replayPlayerScreen;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
 	}
 
 	public Screen getPlayScreen() {
-		return playScreen;
+		return screens.get(Screens.Play);
 	}
 
 	public Screen getSplashScreen() {
-		return splashScreen;
+		return screens.get(Screens.Splash);
 	}
 
 	public Screen getMainMenuScreen() {
-		return mainMenuScreen;
+		return screens.get(Screens.MainMenu);
 	}
 
 	public Screen getSelectPlayModeScreen() {
-		return selectPlayModeScreen;
+		return screens.get(Screens.SelectPlayMode);
 	}
 
 	public Screen getLevelSelectionScreen() {
-		return levelSelectionScreen;
+		return screens.get(Screens.LevelSelection);
 	}
 
 	public Screen getPauseScreen() {
-		return pauseScreen;
+		return screens.get(Screens.Pause);
 	}
 
 	public Screen getGameOverScreen() {
-		return gameOverScreen;
+		return screens.get(Screens.GameOver);
 	}
 
 	public Screen getInstructionsScreen() {
-		return instructionsScreen;
+		return screens.get(Screens.Instructions);
 	}
 
 	public Screen getBackgroundGameScreen() {
-		return backgroundGameScreen;
+		return screens.get(Screens.BackgroundGame);
 	}
 
 	public Screen getSettingsScreen() {
-		return settingsScreen;
+		return screens.get(Screens.Settings);
 	}
 
 	public Screen getControllersTestScreen() {
-		return controllersTestScreen;
+		return screens.get(Screens.ControllersTest);
 	}
-	
+
 	public Screen getReplayPlayerScreen() {
-		return replayPlayerScreen;
+		return screens.get(Screens.ReplayPlayer);
 	}
 
 	public GamePreferences getGamePreferences() {
@@ -182,7 +173,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public EventManager getEventManager() {
 		return eventManager;
 	}
-	
+
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}
@@ -205,17 +196,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
 		gamePreferences = new GamePreferences(preferences);
-		
+
 		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
-		if (playerProfile.getControllerType() == null)
-		{
+		if (playerProfile.getControllerType() == null) {
 			if (Gdx.app.getType() == ApplicationType.Android)
 				playerProfile.setControllerType(ControllerType.ClassicController);
 			else
 				playerProfile.setControllerType(ControllerType.KeyboardController);
 			gamePreferences.updatePlayerProfile(playerProfile);
 		}
-		
+
 		eventManager = new EventManagerImpl();
 
 		resourceManager = new ResourceManagerImpl<String>();
@@ -255,32 +245,34 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
 		controllerTestGameState.setResourceManager(resourceManager);
-		
+
 		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
 		replayPlayerGameState.setResourceManager(resourceManager);
 
-		playScreen = new ScreenImpl(playGameState);
-		pauseScreen = new ScreenImpl(pauseGameState);
-		mainMenuScreen = new ScreenImpl(mainMenuGameState);
-		selectPlayModeScreen = new ScreenImpl(selectPlayModeGameState);
-		levelSelectionScreen = new ScreenImpl(levelSelectionGameState);
-		gameOverScreen = new ScreenImpl(gameOverGameState);
-		instructionsScreen = new ScreenImpl(instructionsGameState);
-		splashScreen = new ScreenImpl(new SplashGameState(this));
-		backgroundGameScreen = new ScreenImpl(backgroundGameState);
-		settingsScreen = new ScreenImpl(settingsGameState);
-		controllersTestScreen = new ScreenImpl(controllerTestGameState);
-		replayPlayerScreen = new ScreenImpl(replayPlayerGameState);
-		
+		screens = new HashMap<String, Screen>();
+
+		screens.put(Screens.Play, new ScreenImpl(playGameState));
+		screens.put(Screens.Pause, new ScreenImpl(pauseGameState));
+		screens.put(Screens.MainMenu, new ScreenImpl(mainMenuGameState));
+		screens.put(Screens.SelectPlayMode, new ScreenImpl(selectPlayModeGameState));
+		screens.put(Screens.LevelSelection, new ScreenImpl(levelSelectionGameState));
+		screens.put(Screens.GameOver, new ScreenImpl(gameOverGameState));
+		screens.put(Screens.Instructions, new ScreenImpl(instructionsGameState));
+		screens.put(Screens.Splash, new ScreenImpl(new SplashGameState(this)));
+		screens.put(Screens.BackgroundGame, new ScreenImpl(backgroundGameState));
+		screens.put(Screens.Settings, new ScreenImpl(settingsGameState));
+		screens.put(Screens.ControllersTest, new ScreenImpl(controllerTestGameState));
+		screens.put(Screens.ReplayPlayer, new ScreenImpl(replayPlayerGameState));
+
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
-		
+
 		registrator.registerEventListeners(playGameState);
 		registrator.registerEventListeners(backgroundGameState);
 		registrator.registerEventListeners(settingsGameState);
 		registrator.registerEventListeners(replayPlayerGameState);
 		registrator.registerEventListeners(this);
-		
-		setScreen(splashScreen);
+
+		setScreen(getSplashScreen());
 
 		Analytics.traker.trackPageView("/start", "/start", null);
 
@@ -320,7 +312,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			this.enterTime = enterTime;
 			return this;
 		}
-		
+
 		public TransitionBuilder leaveTime(int leaveTime) {
 			return leaveTime((float) leaveTime * 0.001f);
 		}
@@ -394,9 +386,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	@Override
 	public void render() {
-		
+
 		GlobalTime.setDelta(Gdx.graphics.getDeltaTime());
-		
+
 		inputDevicesMonitor.update();
 
 		if (inputDevicesMonitor.getButton("toggleBox2dDebug").isReleased())
@@ -407,7 +399,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		if (inputDevicesMonitor.getButton("toggleDebug").isReleased())
 			Game.setDebugMode(!Game.isDebugMode());
-		
+
 		if (inputDevicesMonitor.getButton("toggleBackground").isReleased()) {
 			eventManager.registerEvent(Events.toggleFirstBackground, this);
 			eventManager.registerEvent(Events.toggleSecondBackground, this);
@@ -433,15 +425,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		if (Game.isDebugMode()) {
 			ImmediateModeRendererUtils.drawRectangle(adsMaxArea, Color.GREEN);
 		}
-		
+
 		eventManager.process();
 	}
-	
+
 	@Handles
 	public void toggleFirstBackground(Event e) {
 		boolean oldBackgroundState = gamePreferences.isFirstBackgroundEnabled();
 		String pageView = "/settings/background/" + (oldBackgroundState ? "hide" : "show");
-		Analytics.traker.trackPageView(pageView,pageView, null);
+		Analytics.traker.trackPageView(pageView, pageView, null);
 		gamePreferences.setFirstBackgroundEnabled(!oldBackgroundState);
 	}
 
