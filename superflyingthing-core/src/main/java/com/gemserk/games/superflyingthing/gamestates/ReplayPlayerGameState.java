@@ -48,6 +48,7 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
@@ -304,7 +305,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 	public void nextScreen() {
 		game.getGameData().put("worldWrapper", worldWrapper);
-		game.transition(game.getGameOverScreen()).leaveTime(0) //
+		game.transition(Screens.GameOver).leaveTime(0) //
 				.enterTime(0) //
 				.disposeCurrent(true) //
 				.start();

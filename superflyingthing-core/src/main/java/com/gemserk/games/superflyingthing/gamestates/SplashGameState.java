@@ -12,6 +12,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
@@ -33,7 +34,7 @@ public class SplashGameState extends GameStateImpl {
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
-	
+
 	private TimeTransition timeTransition;
 
 	public SplashGameState(Game game) {
@@ -101,7 +102,7 @@ public class SplashGameState extends GameStateImpl {
 		if (!timeTransition.isFinished())
 			return;
 
-		game.transition(game.getMainMenuScreen()) //
+		game.transition(Screens.MainMenu) //
 				.leaveTime(0.5f) //
 				.enterTime(0.5f) //
 				.disposeCurrent() //

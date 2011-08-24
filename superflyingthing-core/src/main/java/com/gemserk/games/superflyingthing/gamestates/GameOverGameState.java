@@ -19,6 +19,7 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.resources.ResourceManager;
 
@@ -127,7 +128,7 @@ public class GameOverGameState extends GameStateImpl {
 	private void nextLevel() {
 		if (!Levels.hasLevel(GameInformation.level + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			GameInformation.level = 0;
-			game.transition(game.getLevelSelectionScreen()) //
+			game.transition(Screens.LevelSelection) //
 					.disposeCurrent() //
 					.leaveTime(250) //
 					.enterTime(250) //
@@ -135,7 +136,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		} else {
 			GameInformation.level++;
-			game.transition(game.getPlayScreen()) //
+			game.transition(Screens.Play) //
 					.leaveTime(250) //
 					.enterTime(250) //
 					.disposeCurrent() //
@@ -149,7 +150,7 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	private void mainMenu() {
-		game.transition(game.getMainMenuScreen()) //
+		game.transition(Screens.MainMenu) //
 				.leaveTime(250) //
 				.enterTime(250) //
 				.disposeCurrent() //
@@ -166,7 +167,7 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	private void restartLevel() {
-		game.transition(game.getPlayScreen()) //
+		game.transition(Screens.Play) //
 				.leaveTime(250) //
 				.enterTime(250) //
 				.disposeCurrent() //

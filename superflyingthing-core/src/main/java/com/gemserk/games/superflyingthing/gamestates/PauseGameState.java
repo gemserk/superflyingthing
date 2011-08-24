@@ -18,6 +18,7 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.ResourceManager;
 
 public class PauseGameState extends GameStateImpl {
@@ -141,25 +142,25 @@ public class PauseGameState extends GameStateImpl {
 
 	private void instructions() {
 		game.getGamePreferences().setTutorialEnabled(true);
-		game.transition(game.getInstructionsScreen()) //
-		.leaveTime(500) //
-		.enterTime(0) //
-		.disposeCurrent() //
-		.start();
+		game.transition(Screens.Instructions) //
+				.leaveTime(500) //
+				.enterTime(0) //
+				.disposeCurrent() //
+				.start();
 	}
 
 	private void settings() {
 		// sets previous screen....
-		game.getGameData().put("previousScreen", game.getPauseScreen());
-		game.transition(game.getSettingsScreen()) //
-		.leaveTime(250) //
-		.enterTime(250) //
-		.disposeCurrent(false) //
-		.start();
+		game.getGameData().put("previousScreen", Screens.Pause);
+		game.transition(Screens.Settings) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent(false) //
+				.start();
 	}
 
 	private void restartLevel() {
-		game.transition(game.getPlayScreen()) //
+		game.transition(Screens.Play) //
 				.leaveTime(250) //
 				.enterTime(250) //
 				.disposeCurrent() //
@@ -183,7 +184,7 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	private void mainMenu() {
-		game.transition(game.getMainMenuScreen()) //
+		game.transition(Screens.MainMenu) //
 				.leaveTime(250) //
 				.enterTime(250) //
 				.leaveTransitionHandler(new TransitionHandler() {
@@ -206,11 +207,11 @@ public class PauseGameState extends GameStateImpl {
 	}
 
 	private void resumeLevel() {
-		game.transition(game.getPlayScreen()) //
-		.leaveTime(500) //
-		.enterTime(250) //
-		.disposeCurrent() //
-		.start();
+		game.transition(Screens.Play) //
+				.leaveTime(500) //
+				.enterTime(250) //
+				.disposeCurrent() //
+				.start();
 	}
 
 	@Override
@@ -235,9 +236,7 @@ public class PauseGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-
 		game.getPlayScreen().render();
-
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
 		container.draw(spriteBatch);

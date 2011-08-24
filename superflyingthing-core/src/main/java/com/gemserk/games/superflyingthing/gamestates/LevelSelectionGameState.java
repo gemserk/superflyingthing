@@ -22,6 +22,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.resources.ResourceManager;
@@ -192,7 +193,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	}
 
 	private void back() {
-		game.transition(game.getSelectPlayModeScreen()) //
+		game.transition(Screens.SelectPlayMode) //
 				.leaveTime(250) //
 				.enterTime(250) //
 				.disposeCurrent() //
@@ -202,7 +203,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 	private void play() {
 		GameInformation.level = selectedLevel;
-		game.transition(game.getPlayScreen()) //
+		game.transition(Screens.Play) //
 				.leaveTime(250) //
 				.enterTime(250) //
 				.disposeCurrent() //

@@ -54,6 +54,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
@@ -395,7 +396,7 @@ public class PlayGameState extends GameStateImpl {
 				game.getGameData().put("level", level);
 				// game.getGameData().put("worldWrapper", worldWrapper);
 
-				game.transition(game.getReplayPlayerScreen()).leaveTime(0) //
+				game.transition(Screens.ReplayPlayer).leaveTime(0) //
 						.enterTime(300) //
 						.disposeCurrent() //
 						.start();
@@ -601,26 +602,27 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
-		GamePreferences gamePreferences = game.getGamePreferences();
-		if (gamePreferences.isTutorialEnabled()) {
-			game.transition(game.getInstructionsScreen()) //
-			.leaveTime(0) //
-			.enterTime(300) //
-			.disposeCurrent(false) //
-			.start();
-			return;
-		}
+		
+		// GamePreferences gamePreferences = game.getGamePreferences();
+		// if (gamePreferences.isTutorialEnabled()) {
+		// game.transition(game.getInstructionsScreen()) //
+		// .leaveTime(0) //
+		// .enterTime(300) //
+		// .disposeCurrent(false) //
+		// .start();
+		// return;
+		// }
 
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
 		container.update();
 
 		if (inputDevicesMonitor.getButton("pause").isReleased())
-			game.transition(game.getPauseScreen()) //
-			.leaveTime(200) //
-			.enterTime(300) //
-			.disposeCurrent(false) //
-			.start();
+			game.transition(Screens.Pause) //
+					.leaveTime(200) //
+					.enterTime(300) //
+					.disposeCurrent(false) //
+					.start();
 
 		worldWrapper.update(getDeltaInMs());
 		if (tiltValueEnabled) {

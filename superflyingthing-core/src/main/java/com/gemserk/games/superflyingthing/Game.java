@@ -102,12 +102,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private Rectangle adsMaxArea;
 
-//	private Map<String, Screen> screens;
+	// private Map<String, Screen> screens;
 
 	class ScreenManager {
 
 		private Map<String, Screen> screens;
-		
+
 		public ScreenManager() {
 			screens = new HashMap<String, Screen>();
 		}
@@ -127,7 +127,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-	
+
 	private ScreenManager screenManager;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
@@ -367,6 +367,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			this.game = game;
 			this.screen = screen;
 			this.leaveTransitionHandler = new TransitionHandler();
+			this.leaveTime = 0.25f;
+			this.enterTime = 0.25f;
 		}
 
 		public void start() {
@@ -391,12 +393,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	}
 
-	public TransitionBuilder transition(Screen screen) {
-		return new TransitionBuilder(this, screen);
-	}
-	
 	public TransitionBuilder transition(String screen) {
-		return transition(screenManager.get(screen));
+		return new TransitionBuilder(this, screenManager.get(screen));
 	}
 
 	@Override

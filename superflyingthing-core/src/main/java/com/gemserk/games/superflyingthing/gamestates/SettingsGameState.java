@@ -21,7 +21,6 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -39,6 +38,7 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
@@ -343,7 +343,7 @@ public class SettingsGameState extends GameStateImpl {
 
 		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
 
-		game.transition(game.getControllersTestScreen()) //
+		game.transition(Screens.ControllersTest) //
 				.enterTime(250) //
 				.leaveTime(250) //
 				.start();
@@ -375,7 +375,7 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	private void back() {
-		Screen previousScreen = game.getGameData().get("previousScreen");
+		String previousScreen = game.getGameData().get("previousScreen");
 		game.transition(previousScreen) //
 				.enterTime(250) //
 				.leaveTime(250) //

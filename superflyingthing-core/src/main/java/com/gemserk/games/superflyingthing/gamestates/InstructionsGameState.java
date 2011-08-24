@@ -13,6 +13,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.resources.ResourceManager;
@@ -78,22 +79,14 @@ public class InstructionsGameState extends GameStateImpl {
 			@Override
 			public boolean keyUp(int keycode) {
 				game.getGamePreferences().setTutorialEnabled(false);
-				game.transition(game.getPlayScreen()) //
-				.leaveTime(0) //
-				.enterTime(0) //
-				.disposeCurrent(true) //
-				.start();
+				play();
 				return true;
 			}
 
 			@Override
 			public boolean touchUp(int x, int y, int pointer, int button) {
 				game.getGamePreferences().setTutorialEnabled(false);
-				game.transition(game.getPlayScreen()) //
-				.leaveTime(0) //
-				.enterTime(0) //
-				.disposeCurrent(true) //
-				.start();
+				play();
 				return true;
 			}
 		};
@@ -101,7 +94,6 @@ public class InstructionsGameState extends GameStateImpl {
 		Analytics.traker.trackPageView("/instructions", "/instructions", null);
 
 	}
-	
 
 	private String getInstructions(ControllerType controllerType) {
 
@@ -141,6 +133,14 @@ public class InstructionsGameState extends GameStateImpl {
 		return "";
 	}
 
+	private void play() {
+		game.transition(Screens.Play) //
+				.leaveTime(0) //
+				.enterTime(0) //
+				.disposeCurrent(true) //
+				.start();
+	}
+
 	@Override
 	public void show() {
 		super.show();
@@ -163,7 +163,8 @@ public class InstructionsGameState extends GameStateImpl {
 
 	@Override
 	public void pause() {
-		Gdx.input.setInputProcessor(null);
+		if (Gdx.input.getInputProcessor() == inputProcessor)
+			Gdx.input.setInputProcessor(null);
 	}
 
 	@Override

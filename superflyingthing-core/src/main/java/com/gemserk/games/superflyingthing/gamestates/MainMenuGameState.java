@@ -15,6 +15,7 @@ import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
@@ -71,11 +72,9 @@ public class MainMenuGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						game.transition(game.getSelectPlayModeScreen()) //
-						.leaveTime(250) //
-						.enterTime(250) //
-						.disposeCurrent() //
-						.start();
+						game.transition(Screens.SelectPlayMode) //
+								.disposeCurrent() //
+								.start();
 					}
 				})//
 				.build();
@@ -125,12 +124,10 @@ public class MainMenuGameState extends GameStateImpl {
 	}
 
 	private void settings() {
-		game.getGameData().put("previousScreen", game.getMainMenuScreen());
-		game.transition(game.getSettingsScreen()) //
-		.leaveTime(250) //
-		.enterTime(250) //
-		.disposeCurrent(true) //
-		.start();
+		game.getGameData().put("previousScreen", Screens.MainMenu);
+		game.transition(Screens.Settings) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override

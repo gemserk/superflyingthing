@@ -46,6 +46,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
@@ -80,11 +81,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		private void checkStarsCollected(com.artemis.World world, Entity e) {
 			if (starsCollected < 4)
 				return;
-			game.transition(game.getSettingsScreen()) //
-					.enterTime(250) //
-					.leaveTime(250) //
-					.disposeCurrent() //
-					.start();
+			settings();
 		}
 
 		private void checkShipOutsideBounds(com.artemis.World world, Entity e) {
@@ -263,6 +260,13 @@ public class ControllerTestGameState extends GameStateImpl {
 		};
 	}
 
+	private void settings() {
+		game.transition(Screens.Settings).enterTime(250) //
+				.leaveTime(250) //
+				.disposeCurrent() //
+				.start();
+	}
+
 	@Override
 	public void resume() {
 		super.resume();
@@ -288,12 +292,8 @@ public class ControllerTestGameState extends GameStateImpl {
 		container.update();
 		inputDevicesMonitor.update();
 
-		if (inputDevicesMonitor.getButton("back").isReleased()) {
-			game.transition(game.getSettingsScreen()).enterTime(250) //
-					.leaveTime(250) //
-					.disposeCurrent() //
-					.start();
-		}
+		if (inputDevicesMonitor.getButton("back").isReleased())
+			settings();
 	}
 
 	@Override

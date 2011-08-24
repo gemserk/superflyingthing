@@ -18,6 +18,7 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.ResourceManager;
 
 public class SelectPlayModeGameState extends GameStateImpl {
@@ -142,40 +143,40 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 	private void challenge() {
 		GameInformation.gameMode = GameInformation.ChallengeGameMode;
-		game.transition(game.getLevelSelectionScreen()) //
-		.leaveTime(250) //
-		.enterTime(250) //
-		.disposeCurrent(true) //
-		.start();
+		game.transition(Screens.LevelSelection) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent(true) //
+				.start();
 		Analytics.traker.trackPageView("/challenge/selected", "/challenge/selected", null);
 	}
 
 	private void random() {
 		GameInformation.gameMode = GameInformation.RandomGameMode;
-		game.transition(game.getPlayScreen()) //
-		.leaveTime(250) //
-		.enterTime(250) //
-		.disposeCurrent(true) //
-		.start();
+		game.transition(Screens.Play) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent(true) //
+				.start();
 		Analytics.traker.trackPageView("/random/selected", "/random/selected", null);
 	}
 
 	private void practice() {
 		GameInformation.gameMode = GameInformation.PracticeGameMode;
-		game.transition(game.getPlayScreen()) //
-		.leaveTime(250) //
-		.enterTime(250) //
-		.disposeCurrent(true) //
-		.start();
+		game.transition(Screens.Play) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent(true) //
+				.start();
 		Analytics.traker.trackPageView("/practice/selected", "/practice/selected", null);
 	}
 
 	private void back() {
-		game.transition(game.getMainMenuScreen()) //
-		.leaveTime(250) //
-		.enterTime(250) //
-		.disposeCurrent(true) //
-		.start();
+		game.transition(Screens.MainMenu) //
+				.leaveTime(250) //
+				.enterTime(250) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	@Override
@@ -195,11 +196,11 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		inputDevicesMonitor.update();
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
-			game.transition(game.getMainMenuScreen()) //
-			.leaveTime(500) //
-			.enterTime(500) //
-			.disposeCurrent() //
-			.start();
+			game.transition(Screens.MainMenu) //
+					.leaveTime(500) //
+					.enterTime(500) //
+					.disposeCurrent() //
+					.start();
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().update();
 	}
