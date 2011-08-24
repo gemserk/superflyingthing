@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -36,6 +37,20 @@ public class SplashGameState extends GameStateImpl {
 	private Color blurColor = new Color();
 
 	private TimeTransition timeTransition;
+
+	private InputAdapter inputProcessor = new InputAdapter() {
+		@Override
+		public boolean keyUp(int keycode) {
+			mainMenu();
+			return super.keyUp(keycode);
+		}
+
+		@Override
+		public boolean touchUp(int x, int y, int pointer, int button) {
+			mainMenu();
+			return super.touchUp(x, y, pointer, button);
+		}
+	};
 
 	public SplashGameState(Game game) {
 		this.game = game;
@@ -75,6 +90,12 @@ public class SplashGameState extends GameStateImpl {
 		timeTransition.start(2f);
 	}
 
+	private void mainMenu() {
+		game.transition(Screens.MainMenu) //
+				.disposeCurrent() //
+				.start();
+	}
+
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
@@ -94,25 +115,25 @@ public class SplashGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 
-		if (Gdx.input.justTouched())
-			timeTransition.update(10000f);
-
 		timeTransition.update(getDelta());
 
 		if (!timeTransition.isFinished())
 			return;
 
-		game.transition(Screens.MainMenu) //
-				.leaveTime(0.5f) //
-				.enterTime(0.5f) //
-				.disposeCurrent() //
-				.start();
+		mainMenu();
 	}
 
 	@Override
 	public void resume() {
 		game.getAdWhirlViewHandler().hide();
 		Gdx.input.setCatchBackKey(true);
+		Gdx.input.setInputProcessor(inputProcessor);
+	}
+
+	@Override
+	public void pause() {
+		if (Gdx.input.getInputProcessor() == inputProcessor)
+			Gdx.input.setInputProcessor(null);
 	}
 
 	@Override
