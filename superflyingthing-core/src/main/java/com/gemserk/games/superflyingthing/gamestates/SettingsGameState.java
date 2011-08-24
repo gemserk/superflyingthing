@@ -344,8 +344,6 @@ public class SettingsGameState extends GameStateImpl {
 		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
 
 		game.transition(Screens.ControllersTest) //
-				.enterTime(250) //
-				.leaveTime(250) //
 				.start();
 	}
 
@@ -377,8 +375,6 @@ public class SettingsGameState extends GameStateImpl {
 	private void back() {
 		String previousScreen = game.getGameData().get("previousScreen");
 		game.transition(previousScreen) //
-				.enterTime(250) //
-				.leaveTime(250) //
 				.disposeCurrent() //
 				.start();
 	}

@@ -305,7 +305,8 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 	public void nextScreen() {
 		game.getGameData().put("worldWrapper", worldWrapper);
-		game.transition(Screens.GameOver).leaveTime(0) //
+		game.transition(Screens.GameOver) //
+				.leaveTime(0) //
 				.enterTime(0) //
 				.disposeCurrent(true) //
 				.start();

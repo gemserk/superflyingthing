@@ -261,8 +261,7 @@ public class ControllerTestGameState extends GameStateImpl {
 	}
 
 	private void settings() {
-		game.transition(Screens.Settings).enterTime(250) //
-				.leaveTime(250) //
+		game.transition(Screens.Settings)
 				.disposeCurrent() //
 				.start();
 	}

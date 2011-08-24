@@ -153,16 +153,12 @@ public class PauseGameState extends GameStateImpl {
 		// sets previous screen....
 		game.getGameData().put("previousScreen", Screens.Pause);
 		game.transition(Screens.Settings) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent(false) //
 				.start();
 	}
 
 	private void restartLevel() {
 		game.transition(Screens.Play) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent() //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
@@ -185,8 +181,6 @@ public class PauseGameState extends GameStateImpl {
 
 	private void mainMenu() {
 		game.transition(Screens.MainMenu) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
 					public void onEnd() {
@@ -208,8 +202,6 @@ public class PauseGameState extends GameStateImpl {
 
 	private void resumeLevel() {
 		game.transition(Screens.Play) //
-				.leaveTime(500) //
-				.enterTime(250) //
 				.disposeCurrent() //
 				.start();
 	}

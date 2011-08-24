@@ -396,7 +396,8 @@ public class PlayGameState extends GameStateImpl {
 				game.getGameData().put("level", level);
 				// game.getGameData().put("worldWrapper", worldWrapper);
 
-				game.transition(Screens.ReplayPlayer).leaveTime(0) //
+				game.transition(Screens.ReplayPlayer) //
+						.leaveTime(0) //
 						.enterTime(300) //
 						.disposeCurrent() //
 						.start();
@@ -602,7 +603,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
-		
+
 		// GamePreferences gamePreferences = game.getGamePreferences();
 		// if (gamePreferences.isTutorialEnabled()) {
 		// game.transition(game.getInstructionsScreen()) //
@@ -619,8 +620,6 @@ public class PlayGameState extends GameStateImpl {
 
 		if (inputDevicesMonitor.getButton("pause").isReleased())
 			game.transition(Screens.Pause) //
-					.leaveTime(200) //
-					.enterTime(300) //
 					.disposeCurrent(false) //
 					.start();
 

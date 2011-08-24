@@ -144,8 +144,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private void challenge() {
 		GameInformation.gameMode = GameInformation.ChallengeGameMode;
 		game.transition(Screens.LevelSelection) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent(true) //
 				.start();
 		Analytics.traker.trackPageView("/challenge/selected", "/challenge/selected", null);
@@ -154,8 +152,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private void random() {
 		GameInformation.gameMode = GameInformation.RandomGameMode;
 		game.transition(Screens.Play) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent(true) //
 				.start();
 		Analytics.traker.trackPageView("/random/selected", "/random/selected", null);
@@ -164,8 +160,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private void practice() {
 		GameInformation.gameMode = GameInformation.PracticeGameMode;
 		game.transition(Screens.Play) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent(true) //
 				.start();
 		Analytics.traker.trackPageView("/practice/selected", "/practice/selected", null);
@@ -173,8 +167,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 
 	private void back() {
 		game.transition(Screens.MainMenu) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent(true) //
 				.start();
 	}
@@ -197,8 +189,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		container.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			game.transition(Screens.MainMenu) //
-					.leaveTime(500) //
-					.enterTime(500) //
 					.disposeCurrent() //
 					.start();
 		game.getBackgroundGameScreen().setDelta(getDelta());

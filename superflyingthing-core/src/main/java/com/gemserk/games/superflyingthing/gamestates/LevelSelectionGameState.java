@@ -194,8 +194,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 	private void back() {
 		game.transition(Screens.SelectPlayMode) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent() //
 				.start();
 		game.getGameData().put("previewLevel", null);
@@ -204,8 +202,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 	private void play() {
 		GameInformation.level = selectedLevel;
 		game.transition(Screens.Play) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent() //
 				.start();
 		game.getGameData().put("previewLevel", null);

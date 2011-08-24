@@ -130,15 +130,11 @@ public class GameOverGameState extends GameStateImpl {
 			GameInformation.level = 0;
 			game.transition(Screens.LevelSelection) //
 					.disposeCurrent() //
-					.leaveTime(250) //
-					.enterTime(250) //
 					.start();
 
 		} else {
 			GameInformation.level++;
 			game.transition(Screens.Play) //
-					.leaveTime(250) //
-					.enterTime(250) //
 					.disposeCurrent() //
 					.leaveTransitionHandler(new TransitionHandler() {
 						@Override
@@ -151,8 +147,6 @@ public class GameOverGameState extends GameStateImpl {
 
 	private void mainMenu() {
 		game.transition(Screens.MainMenu) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent() //
 				.start();
 
@@ -168,8 +162,6 @@ public class GameOverGameState extends GameStateImpl {
 
 	private void restartLevel() {
 		game.transition(Screens.Play) //
-				.leaveTime(250) //
-				.enterTime(250) //
 				.disposeCurrent() //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
