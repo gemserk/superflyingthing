@@ -260,8 +260,12 @@ public class SettingsGameState extends GameStateImpl {
 			game.getEventManager().registerEvent(Events.toggleSecondBackground, this);
 		}
 		
-		if (saveReplays != game.getGamePreferences().isSaveReplays()) 
+		if (saveReplays != game.getGamePreferences().isSaveReplays()) {
 			game.getGamePreferences().setSaveReplays(saveReplays);
+			
+			String pageView = "/settings/savereplays/" + (saveReplays ? "enabled" : "disabled");
+			Analytics.traker.trackPageView(pageView, pageView, null);
+		}
 
 		back();
 	}
