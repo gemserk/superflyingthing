@@ -49,15 +49,15 @@ public class Levels {
 	private static Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
 
 	public static Level level(int levelNumber) {
-		
+
 		levelNumber -= 1;
 
 		if (cachedLevels[levelNumber] != null) {
-			Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from cache...");
+			Gdx.app.log("SuperFlyingThing", "Loading level " + (levelNumber + 1) + " from cache...");
 			return cachedLevels[levelNumber];
 		}
 
-		Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from file...");
+		Gdx.app.log("SuperFlyingThing", "Loading level " + (levelNumber + 1) + " from file...");
 
 		InputStream svg = Gdx.files.internal(levels[levelNumber]).read();
 		Document document = new DocumentParser().parse(svg);

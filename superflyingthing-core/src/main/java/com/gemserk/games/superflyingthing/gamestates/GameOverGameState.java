@@ -81,7 +81,7 @@ public class GameOverGameState extends GameStateImpl {
 					.build());
 
 		String nextLevelText = "Next Level";
-		if (!Levels.hasLevel(levelNumber) && GameInformation.gameMode == GameInformation.ChallengeGameMode)
+		if (!Levels.hasLevel(levelNumber + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			nextLevelText = "Select Level";
 
 		container.add(GuiControls.textButton() //
