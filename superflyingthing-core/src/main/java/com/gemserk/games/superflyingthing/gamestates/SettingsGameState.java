@@ -271,7 +271,7 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	private void back() {
-		String previousScreen = game.getGameData().get("previousScreen");
+		String previousScreen = getParameters().get("previousScreen");
 		game.transition(previousScreen) //
 				.disposeCurrent() //
 				.start();

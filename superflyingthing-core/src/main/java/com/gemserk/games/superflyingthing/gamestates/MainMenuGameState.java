@@ -124,9 +124,9 @@ public class MainMenuGameState extends GameStateImpl {
 	}
 
 	private void settings() {
-		game.getGameData().put("previousScreen", Screens.MainMenu);
 		game.transition(Screens.Settings) //
 				.disposeCurrent(true) //
+				.parameter("previousScreen", Screens.MainMenu)//
 				.start();
 	}
 

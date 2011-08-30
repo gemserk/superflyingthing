@@ -151,9 +151,9 @@ public class PauseGameState extends GameStateImpl {
 
 	private void settings() {
 		// sets previous screen....
-		game.getGameData().put("previousScreen", Screens.Pause);
 		game.transition(Screens.Settings) //
 				.disposeCurrent(false) //
+				.parameter("previousScreen", Screens.Pause)//
 				.start();
 	}
 
