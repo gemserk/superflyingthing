@@ -51,14 +51,14 @@ public class GameOverGameState extends GameStateImpl {
 
 		container = new Container();
 
-		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
+		// BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
-		worldWrapper = game.getGameData().get("worldWrapper");
+		worldWrapper = getParameters().get("worldWrapper");
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			container.add(GuiControls.textButton() //

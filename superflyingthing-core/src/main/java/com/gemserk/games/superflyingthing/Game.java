@@ -94,9 +94,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private EventManager eventManager;
 
-	/**
-	 * Used to store global information about the game and to send data between GameStates and Screens.
-	 */
 	private Parameters gameData;
 
 	private GamePreferences gamePreferences;
@@ -180,8 +177,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getReplayPlayerScreen() {
 		return screenManager.get(Screens.ReplayPlayer);
 	}
-	
-	public Screen getScreen(String id) { 
+
+	public Screen getScreen(String id) {
 		return screenManager.get(id);
 	}
 
@@ -189,6 +186,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return gamePreferences;
 	}
 
+	/**
+	 * Used to store global information about the game like version number and others.
+	 */
 	public Parameters getGameData() {
 		return gameData;
 	}
@@ -271,7 +271,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		SettingsGameState settingsGameState = new SettingsGameState(this);
 		settingsGameState.setResourceManager(resourceManager);
-		
+
 		ControllerSettingsGameState controllerSettingsGameState = new ControllerSettingsGameState(this);
 		controllerSettingsGameState.setResourceManager(resourceManager);
 
@@ -280,7 +280,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
 		replayPlayerGameState.setResourceManager(resourceManager);
-		
+
 		screenManager = new ScreenManager();
 
 		screenManager.add(Screens.Play, playGameState);
@@ -368,7 +368,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			this.leaveTransitionHandler = transitionHandler;
 			return this;
 		}
-		
+
 		public TransitionBuilder parameter(String key, Object value) {
 			screen.getParameters().put(key, value);
 			return this;

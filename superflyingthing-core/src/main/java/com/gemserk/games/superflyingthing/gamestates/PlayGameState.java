@@ -380,9 +380,8 @@ public class PlayGameState extends GameStateImpl {
 				if (!game.getGamePreferences().isShowReplay()) {
 
 					shouldDisposeWorldWrapper = false;
-					game.getGameData().put("worldWrapper", worldWrapper);
-					game.transition(Screens.GameOver)
-					// .disposeCurrent() //
+					game.transition(Screens.GameOver) //
+							.parameter("worldWrapper", worldWrapper) //
 							.start();
 
 					return;
@@ -390,13 +389,11 @@ public class PlayGameState extends GameStateImpl {
 
 				ReplayListComponent replayListComponent = replayRecorder.getComponent(ReplayListComponent.class);
 
-				game.getGameData().put("replayList", replayListComponent.getReplayList());
-				game.getGameData().put("level", level);
-				// game.getGameData().put("worldWrapper", worldWrapper);
-
 				game.transition(Screens.ReplayPlayer) //
 						.leaveTime(0) //
 						.enterTime(300) //
+						.parameter("replayList", replayListComponent.getReplayList()) //
+						.parameter("level", level) //
 						.disposeCurrent() //
 						.start();
 

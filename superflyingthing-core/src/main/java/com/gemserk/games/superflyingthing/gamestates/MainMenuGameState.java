@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
@@ -120,7 +121,9 @@ public class MainMenuGameState extends GameStateImpl {
 		whiteRectangleSprite.setSize(width, height);
 		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
 
-		game.getBackgroundGameScreen().init();
+		Screen backgroundGameScreen = game.getBackgroundGameScreen();
+		backgroundGameScreen.getParameters().put("previewLevel", null);
+		backgroundGameScreen.init();
 	}
 
 	private void settings() {

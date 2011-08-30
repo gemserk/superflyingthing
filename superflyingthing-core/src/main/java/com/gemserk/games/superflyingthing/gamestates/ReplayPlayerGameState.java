@@ -195,8 +195,8 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		// loadLevelForChallengeMode();
 
-		Level level = game.getGameData().get("level");
-		ReplayList replayList = game.getGameData().get("replayList");
+		Level level = getParameters().get("level");
+		ReplayList replayList = getParameters().get("replayList");
 
 		// loadLevel(level, true);
 
@@ -304,11 +304,11 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	}
 
 	public void nextScreen() {
-		game.getGameData().put("worldWrapper", worldWrapper);
 		game.transition(Screens.GameOver) //
 				.leaveTime(0) //
 				.enterTime(0) //
 				.disposeCurrent(true) //
+				.parameter("worldWrapper", worldWrapper) //
 				.start();
 	}
 
