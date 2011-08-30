@@ -261,7 +261,7 @@ public class ControllerTestGameState extends GameStateImpl {
 	}
 
 	private void settings() {
-		game.transition(Screens.Settings)
+		game.transition(Screens.ControllersSettings)
 				.disposeCurrent() //
 				.start();
 	}

@@ -37,6 +37,7 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
+import com.gemserk.games.superflyingthing.gamestates.ControllerSettingsGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
@@ -181,6 +182,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Screen getReplayPlayerScreen() {
 		return screenManager.get(Screens.ReplayPlayer);
 	}
+	
+	public Screen getScreen(String id) { 
+		return screenManager.get(id);
+	}
 
 	public GamePreferences getGamePreferences() {
 		return gamePreferences;
@@ -269,13 +274,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		SettingsGameState settingsGameState = new SettingsGameState(this);
 		settingsGameState.setResourceManager(resourceManager);
 		settingsGameState.setGamePreferences(gamePreferences);
+		
+		ControllerSettingsGameState controllerSettingsGameState = new ControllerSettingsGameState(this);
+		controllerSettingsGameState.setResourceManager(resourceManager);
 
 		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
 		controllerTestGameState.setResourceManager(resourceManager);
 
 		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
 		replayPlayerGameState.setResourceManager(resourceManager);
-
+		
 		screenManager = new ScreenManager();
 
 		screenManager.add(Screens.Play, playGameState);
@@ -288,6 +296,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.Splash, new SplashGameState(this));
 		screenManager.add(Screens.BackgroundGame, backgroundGameState);
 		screenManager.add(Screens.Settings, settingsGameState);
+		screenManager.add(Screens.ControllersSettings, controllerSettingsGameState);
 		screenManager.add(Screens.ControllersTest, controllerTestGameState);
 		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
 

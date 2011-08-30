@@ -35,17 +35,15 @@ import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
-import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
-public class SettingsControllerGameState extends GameStateImpl {
+public class ControllerSettingsGameState extends GameStateImpl {
 
 	class MultipleButtonControlWithUnderline extends Container {
 
@@ -115,22 +113,15 @@ public class SettingsControllerGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private GamePreferences gamePreferences;
-
 	private Container container;
 	private RenderLayers renderLayers;
 	private WorldWrapper worldWrapper;
-	private boolean toggleBackground;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
 
-	public void setGamePreferences(GamePreferences gamePreferences) {
-		this.gamePreferences = gamePreferences;
-	}
-
-	public SettingsControllerGameState(Game game) {
+	public ControllerSettingsGameState(Game game) {
 		this.game = game;
 	}
 
@@ -140,8 +131,6 @@ public class SettingsControllerGameState extends GameStateImpl {
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
 
-		toggleBackground = false;
-
 		spriteBatch = new SpriteBatch();
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
@@ -149,7 +138,7 @@ public class SettingsControllerGameState extends GameStateImpl {
 
 		container = new Container();
 
-		ControllerType currentControllerType = gamePreferences.getCurrentPlayerProfile().getControllerType();
+		ControllerType currentControllerType = game.getGamePreferences().getCurrentPlayerProfile().getControllerType();
 		ControllerType[] availableControllers = getAvailableControllers();
 
 		game.getGameData().put("testControllerType", currentControllerType);
@@ -196,45 +185,10 @@ public class SettingsControllerGameState extends GameStateImpl {
 		}
 
 		container.add(GuiControls.textButton() //
-				.text("Toggle background") //
-				.font(buttonFont) //
-				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.75f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						toggleBackground();
-					}
-				}) //
-				.build());
-
-		container.add(GuiControls.textButton() //
-				.text("Toggle FPS") //
-				.font(buttonFont) //
-				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.63f) //
-				.boundsOffset(20f, 20f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						boolean oldShowFps = Game.isShowFps();
-						String pageView = "/settings/fps/" + (oldShowFps ? "hide" : "show");
-						Analytics.traker.trackPageView(pageView,pageView, null);
-						Game.setShowFps(!oldShowFps);
-					}
-				}) //
-				.build());
-
-		container.add(GuiControls.textButton() //
 				.text("Test") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.51f) //
+				.position(width * 0.975f, height * 0.63f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -249,7 +203,7 @@ public class SettingsControllerGameState extends GameStateImpl {
 				.text("Save") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.39f) //
+				.position(width * 0.975f, height * 0.51f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -264,7 +218,7 @@ public class SettingsControllerGameState extends GameStateImpl {
 				.text("Cancel") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.27f) //
+				.position(width * 0.975f, height * 0.39f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -288,34 +242,34 @@ public class SettingsControllerGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.init();
-		
+
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		Parameters parameters = new ParametersWrapper();
 
 		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
 
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-		.put("color", Color.WHITE) //
-		.put("layer", (-999)) //
-		.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f)) //
-		.put("center", new Vector2(0f, 0f)) //
-		.put("spriteId", "BackgroundSprite") //
-		);
+				.put("color", Color.WHITE) //
+				.put("layer", (-999)) //
+				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f)) //
+				.put("center", new Vector2(0f, 0f)) //
+				.put("spriteId", "BackgroundSprite") //
+				);
 
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-		.put("color", Color.GREEN) //
-		.put("layer", (-400)) //
-		.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.57f), (Gdx.graphics.getHeight() * 0.23f), 160f, 160f, 86f)) //
-		.put("center", new Vector2(0.5f, 0.5f)) //
-		.put("spriteId", "FogSprite") //
-		);
+				.put("color", Color.GREEN) //
+				.put("layer", (-400)) //
+				.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.57f), (Gdx.graphics.getHeight() * 0.23f), 160f, 160f, 86f)) //
+				.put("center", new Vector2(0.5f, 0.5f)) //
+				.put("spriteId", "FogSprite") //
+				);
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-		.put("color", Color.RED) //
-		.put("layer", (-400)) //
-		.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.24f), (Gdx.graphics.getHeight() * 0.68f), 120f, 120f, 189f)) //
-		.put("center", new Vector2(0.5f, 0.5f)) //
-		.put("spriteId", "FogSprite") //
-		);
+				.put("color", Color.RED) //
+				.put("layer", (-400)) //
+				.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.24f), (Gdx.graphics.getHeight() * 0.68f), 120f, 120f, 189f)) //
+				.put("center", new Vector2(0.5f, 0.5f)) //
+				.put("spriteId", "FogSprite") //
+				);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -340,41 +294,26 @@ public class SettingsControllerGameState extends GameStateImpl {
 		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
 		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
 		Analytics.traker.trackPageView(pageView, pageView, null);
-
 		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
-
 		game.transition(Screens.ControllersTest) //
 				.start();
 	}
 
-	private void toggleBackground() {
-		toggleBackground = !toggleBackground;
-		renderLayers.toggle(Layers.FirstBackground);
-		renderLayers.toggle(Layers.SecondBackground);
-	}
-
 	private void save() {
 		// save control type to the player profile preferences.
-		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
+		PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
 		playerProfile.setControllerType(controllerType);
-		gamePreferences.updatePlayerProfile(playerProfile);
+		game.getGamePreferences().updatePlayerProfile(playerProfile);
+
 		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/save";
 		Analytics.traker.trackPageView(pageView, pageView, null);
-
-		// save background
-
-		if (toggleBackground) {
-			game.getEventManager().registerEvent(Events.toggleFirstBackground, this);
-			game.getEventManager().registerEvent(Events.toggleSecondBackground, this);
-		}
 
 		back();
 	}
 
 	private void back() {
-		String previousScreen = game.getGameData().get("previousScreen");
-		game.transition(previousScreen) //
+		game.transition(Screens.Settings) //
 				.disposeCurrent() //
 				.start();
 	}

@@ -35,9 +35,8 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
-import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
-import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
@@ -126,12 +125,11 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-
 		container.add(GuiControls.textButton() //
-				.text("Controllers") //
+				.text("Controls") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.51f) //
+				.position(width * 0.025f, height * 0.39f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -142,6 +140,7 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
+		
 		container.add(GuiControls.textButton() //
 				.text("Save") //
 				.font(buttonFont) //
@@ -225,15 +224,7 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	private void controllers() {
-		// goes to controllers screen
-		// ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
-		// String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
-		// Analytics.traker.trackPageView(pageView, pageView, null);
-		//
-		// game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
-		//
-		// game.transition(Screens.ControllersTest) //
-		// .start();
+		game.transition(Screens.ControllersSettings).start();
 	}
 
 	private void toggleBackground() {
@@ -243,14 +234,6 @@ public class SettingsGameState extends GameStateImpl {
 	}
 
 	private void save() {
-		// save control type to the player profile preferences.
-		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
-		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
-		playerProfile.setControllerType(controllerType);
-		gamePreferences.updatePlayerProfile(playerProfile);
-		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/save";
-		Analytics.traker.trackPageView(pageView, pageView, null);
-
 		// save background
 
 		if (toggleBackground) {
