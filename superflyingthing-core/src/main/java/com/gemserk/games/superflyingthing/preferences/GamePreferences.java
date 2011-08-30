@@ -19,6 +19,17 @@ public class GamePreferences {
 		preferences.flush();
 		Gdx.app.log("SuperFlyingThing", "Saving preference tutorialEnabled: " + tutorialEnabled);
 	}
+	
+	public boolean isSaveReplays() {
+		return preferences.getBoolean("saveReplays", true);
+	}
+	
+	public void setSaveReplays(boolean saveReplays) {
+		preferences.putBoolean("saveReplays", saveReplays);
+		preferences.flush();
+		Gdx.app.log("SuperFlyingThing", "Saving preference saveReplays: " + saveReplays);
+	}
+
 
 	public GamePreferences(Preferences preferences) {
 		this.preferences = preferences;

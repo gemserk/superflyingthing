@@ -27,6 +27,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -36,7 +37,6 @@ import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
@@ -47,19 +47,15 @@ public class SettingsGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private GamePreferences gamePreferences;
-
 	private Container container;
 	private RenderLayers renderLayers;
 	private WorldWrapper worldWrapper;
+	
 	private boolean toggleBackground;
+	private boolean saveReplays;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
-	}
-
-	public void setGamePreferences(GamePreferences gamePreferences) {
-		this.gamePreferences = gamePreferences;
 	}
 
 	public SettingsGameState(Game game) {
@@ -73,6 +69,7 @@ public class SettingsGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		toggleBackground = false;
+		saveReplays = game.getGamePreferences().isSaveReplays();
 
 		spriteBatch = new SpriteBatch();
 
@@ -126,10 +123,26 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
-				.text("Change Controller") //
+				.id("SaveReplays") //
+				.text(saveReplays ? "Save Replays: On" : "Save Replays: Off") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
 				.position(width * 0.025f, height * 0.51f) //
+				.boundsOffset(20f, 20f) //
+				.notOverColor(Color.WHITE) //
+				.overColor(Color.GREEN) //
+				.handler(new ButtonHandler() {
+					@Override
+					public void onReleased(Control control) {
+						toggleSaveReplay();
+					}
+				}) //
+				.build());
+		container.add(GuiControls.textButton() //
+				.text("Change Controller") //
+				.font(buttonFont) //
+				.center(0f, 0.5f) //
+				.position(width * 0.025f, height * 0.39f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -232,6 +245,12 @@ public class SettingsGameState extends GameStateImpl {
 		renderLayers.toggle(Layers.FirstBackground);
 		renderLayers.toggle(Layers.SecondBackground);
 	}
+	
+	private void toggleSaveReplay() {
+		saveReplays = !saveReplays;
+		TextButton saveReplaysButton = container.findControl("SaveReplays");
+		saveReplaysButton.setText(saveReplays ? "Save Replays: On" : "Save Replays: Off");
+	}
 
 	private void save() {
 		// save background
@@ -240,6 +259,9 @@ public class SettingsGameState extends GameStateImpl {
 			game.getEventManager().registerEvent(Events.toggleFirstBackground, this);
 			game.getEventManager().registerEvent(Events.toggleSecondBackground, this);
 		}
+		
+		if (saveReplays != game.getGamePreferences().isSaveReplays()) 
+			game.getGamePreferences().setSaveReplays(saveReplays);
 
 		back();
 	}
