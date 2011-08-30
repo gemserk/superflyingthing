@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import com.artemis.World;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -23,10 +24,12 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -35,13 +38,77 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
-public class SettingsGameState extends GameStateImpl {
+public class SettingsControllerGameState extends GameStateImpl {
+
+	class MultipleButtonControlWithUnderline extends Container {
+
+		private final Color selectedColor = Colors.yellow;
+		private final Color notOverColor = Color.WHITE;
+		private final Color overColor = Color.GREEN;
+		private final Sprite underlineSprite;
+
+		public MultipleButtonControlWithUnderline(Sprite underlineSprite) {
+			this.underlineSprite = underlineSprite;
+		}
+
+		public void add(Control control) {
+			if (control instanceof TextButton) {
+
+				final TextButton textButton = (TextButton) control;
+				final ButtonHandler buttonHandler = textButton.getButtonHandler();
+
+				textButton.setNotOverColor(notOverColor);
+				textButton.setOverColor(overColor);
+
+				textButton.setButtonHandler(new ButtonHandler() {
+					@Override
+					public void onPressed(Control control) {
+						buttonHandler.onPressed(control);
+					}
+
+					@Override
+					public void onReleased(Control control) {
+						select(textButton);
+						buttonHandler.onReleased(control);
+					}
+
+				});
+
+				super.add(textButton);
+			}
+		}
+
+		private void select(final TextButton textButton) {
+			for (int i = 0; i < getControls().size(); i++) {
+				Control otherControl = getControls().get(i);
+				if (otherControl == textButton)
+					continue;
+
+				if (!(otherControl instanceof TextButton))
+					continue;
+
+				TextButton otherTextButton = (TextButton) otherControl;
+				otherTextButton.setNotOverColor(notOverColor);
+			}
+
+			textButton.setNotOverColor(selectedColor);
+			SpriteUtils.centerOn(underlineSprite, textButton.getX(), textButton.getY() - 15f, 0f, 0.5f);
+		}
+
+		@Override
+		public void draw(SpriteBatch spriteBatch) {
+			super.draw(spriteBatch);
+			underlineSprite.draw(spriteBatch);
+		}
+
+	}
 
 	private final Game game;
 	private SpriteBatch spriteBatch;
@@ -63,7 +130,7 @@ public class SettingsGameState extends GameStateImpl {
 		this.gamePreferences = gamePreferences;
 	}
 
-	public SettingsGameState(Game game) {
+	public SettingsControllerGameState(Game game) {
 		this.game = game;
 	}
 
@@ -82,21 +149,57 @@ public class SettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
+		ControllerType currentControllerType = gamePreferences.getCurrentPlayerProfile().getControllerType();
+		ControllerType[] availableControllers = getAvailableControllers();
+
+		game.getGameData().put("testControllerType", currentControllerType);
+
 		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
 
+		float x = width * 0.025f;
+		float y = height * 0.75f;
+
 		Sprite underlineSprite = resourceManager.getResourceValue("WhiteRectangle");
 		underlineSprite.setSize(Gdx.graphics.getWidth() * 0.35f, 3f);
 		underlineSprite.setColor(Colors.yellow);
 
+		MultipleButtonControlWithUnderline multipleButtonControlWithUnderline = new MultipleButtonControlWithUnderline(underlineSprite);
+		container.add(multipleButtonControlWithUnderline);
+
+		for (int i = 0; i < availableControllers.length; i++) {
+			final ControllerType controllerType = availableControllers[i];
+			TextButton controllerTextButton = GuiControls.textButton() //
+					.text(controllerType.name()) //
+					.font(buttonFont) //
+					.center(0f, 0.5f) //
+					.position(x, y) //
+					.boundsOffset(20f, 20f) //
+					.notOverColor(Color.WHITE) //
+					.overColor(Color.GREEN) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							game.getGameData().put("testControllerType", controllerType);
+						}
+					}) //
+					.build();
+			multipleButtonControlWithUnderline.add(controllerTextButton);
+
+			if (currentControllerType == controllerType)
+				multipleButtonControlWithUnderline.select(controllerTextButton);
+
+			y -= height * 0.12f;
+		}
+
 		container.add(GuiControls.textButton() //
 				.text("Toggle background") //
 				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.75f) //
+				.center(1f, 0.5f) //
+				.position(width * 0.975f, height * 0.75f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -111,8 +214,8 @@ public class SettingsGameState extends GameStateImpl {
 		container.add(GuiControls.textButton() //
 				.text("Toggle FPS") //
 				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.63f) //
+				.center(1f, 0.5f) //
+				.position(width * 0.975f, height * 0.63f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -121,24 +224,24 @@ public class SettingsGameState extends GameStateImpl {
 					public void onReleased(Control control) {
 						boolean oldShowFps = Game.isShowFps();
 						String pageView = "/settings/fps/" + (oldShowFps ? "hide" : "show");
-						Analytics.traker.trackPageView(pageView, pageView, null);
+						Analytics.traker.trackPageView(pageView,pageView, null);
 						Game.setShowFps(!oldShowFps);
 					}
 				}) //
 				.build());
 
 		container.add(GuiControls.textButton() //
-				.text("Controllers") //
+				.text("Test") //
 				.font(buttonFont) //
-				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.51f) //
+				.center(1f, 0.5f) //
+				.position(width * 0.975f, height * 0.51f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						controllers();
+						controllerTestBed();
 					}
 				}) //
 				.build());
@@ -146,7 +249,7 @@ public class SettingsGameState extends GameStateImpl {
 				.text("Save") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.51f) //
+				.position(width * 0.975f, height * 0.39f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -161,7 +264,7 @@ public class SettingsGameState extends GameStateImpl {
 				.text("Cancel") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.39f) //
+				.position(width * 0.975f, height * 0.27f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -185,34 +288,34 @@ public class SettingsGameState extends GameStateImpl {
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.init();
-
+		
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		Parameters parameters = new ParametersWrapper();
 
 		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
 
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-				.put("color", Color.WHITE) //
-				.put("layer", (-999)) //
-				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f)) //
-				.put("center", new Vector2(0f, 0f)) //
-				.put("spriteId", "BackgroundSprite") //
-				);
+		.put("color", Color.WHITE) //
+		.put("layer", (-999)) //
+		.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f)) //
+		.put("center", new Vector2(0f, 0f)) //
+		.put("spriteId", "BackgroundSprite") //
+		);
 
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-				.put("color", Color.GREEN) //
-				.put("layer", (-400)) //
-				.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.57f), (Gdx.graphics.getHeight() * 0.23f), 160f, 160f, 86f)) //
-				.put("center", new Vector2(0.5f, 0.5f)) //
-				.put("spriteId", "FogSprite") //
-				);
+		.put("color", Color.GREEN) //
+		.put("layer", (-400)) //
+		.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.57f), (Gdx.graphics.getHeight() * 0.23f), 160f, 160f, 86f)) //
+		.put("center", new Vector2(0.5f, 0.5f)) //
+		.put("spriteId", "FogSprite") //
+		);
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
-				.put("color", Color.RED) //
-				.put("layer", (-400)) //
-				.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.24f), (Gdx.graphics.getHeight() * 0.68f), 120f, 120f, 189f)) //
-				.put("center", new Vector2(0.5f, 0.5f)) //
-				.put("spriteId", "FogSprite") //
-				);
+		.put("color", Color.RED) //
+		.put("layer", (-400)) //
+		.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.24f), (Gdx.graphics.getHeight() * 0.68f), 120f, 120f, 189f)) //
+		.put("center", new Vector2(0.5f, 0.5f)) //
+		.put("spriteId", "FogSprite") //
+		);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -224,16 +327,24 @@ public class SettingsGameState extends GameStateImpl {
 		Analytics.traker.trackPageView("/settings/start", "/settings/start", null);
 	}
 
-	private void controllers() {
-		// goes to controllers screen
-		// ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
-		// String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
-		// Analytics.traker.trackPageView(pageView, pageView, null);
-		//
-		// game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
-		//
-		// game.transition(Screens.ControllersTest) //
-		// .start();
+	private ControllerType[] getAvailableControllers() {
+		if (Gdx.app.getType() == ApplicationType.Android)
+			return new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
+					ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
+		else
+			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
+					ControllerType.AxisController, ControllerType.AnalogController, ControllerType.TargetController };
+	}
+
+	private void controllerTestBed() {
+		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
+		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
+		Analytics.traker.trackPageView(pageView, pageView, null);
+
+		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
+
+		game.transition(Screens.ControllersTest) //
+				.start();
 	}
 
 	private void toggleBackground() {
