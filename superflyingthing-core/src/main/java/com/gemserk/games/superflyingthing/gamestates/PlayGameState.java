@@ -39,7 +39,6 @@ import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
-import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
@@ -90,7 +89,6 @@ public class PlayGameState extends GameStateImpl {
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	ResourceManager<String> resourceManager;
-	boolean resetPressed;
 	Container container;
 	private Libgdx2dCamera guiCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
@@ -106,7 +104,6 @@ public class PlayGameState extends GameStateImpl {
 
 	GameData gameData;
 	private Text itemsTakenLabel;
-	private JointBuilder jointBuilder;
 	private Text timerLabel;
 
 	private EventManager eventManager;
@@ -118,6 +115,8 @@ public class PlayGameState extends GameStateImpl {
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
+	
+	private boolean shouldDisposeWorldWrapper;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -145,14 +144,13 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		resetPressed = false;
+		shouldDisposeWorldWrapper = true;
+		
 		spriteBatch = new SpriteBatch();
 
 		eventManager = new EventManagerImpl();
 
 		physicsWorld = new World(new Vector2(), false);
-
-		jointBuilder = new JointBuilder(physicsWorld);
 
 		worldCamera = new Libgdx2dCameraTransformImpl();
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -379,16 +377,16 @@ public class PlayGameState extends GameStateImpl {
 
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
 
-				// if (replayRecorder == null) {
-				//
-				// game.getGameData().put("worldWrapper", worldWrapper);
-				// game.transition(game.getGameOverScreen()).leaveTime(0) //
-				// .enterTime(300) //
-				// .disposeCurrent() //
-				// .start();
-				//
-				// return;
-				// }
+				if (replayRecorder == null || !game.getGamePreferences().isSaveReplays()) {
+
+					shouldDisposeWorldWrapper = false;
+					game.getGameData().put("worldWrapper", worldWrapper);
+					game.transition(Screens.GameOver)
+					// .disposeCurrent() //
+							.start();
+
+					return;
+				}
 
 				ReplayListComponent replayListComponent = replayRecorder.getComponent(ReplayListComponent.class);
 
@@ -486,13 +484,14 @@ public class PlayGameState extends GameStateImpl {
 		// }
 		// })).build();
 
-		ReplayList replayList = new ReplayList();
-
-		entityBuilder //
-				.component(new TagComponent(Groups.ReplayRecorder)) //
-				.component(new ReplayListComponent(replayList)) //
-				.component(new ScriptComponent(new ReplayRecorderScript())) //
-				.build();
+		// replays counln't be enabled during the game.
+		if (game.getGamePreferences().isSaveReplays()) {
+			entityBuilder //
+					.component(new TagComponent(Groups.ReplayRecorder)) //
+					.component(new ReplayListComponent(new ReplayList())) //
+					.component(new ScriptComponent(new ReplayRecorderScript())) //
+					.build();
+		}
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -663,9 +662,9 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void dispose() {
-		worldWrapper.dispose();
+		if (shouldDisposeWorldWrapper)
+			worldWrapper.dispose();
 		spriteBatch.dispose();
-		// physicsWorld.dispose();
 	}
 
 }
