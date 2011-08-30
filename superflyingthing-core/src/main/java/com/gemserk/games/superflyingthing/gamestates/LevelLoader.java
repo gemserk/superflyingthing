@@ -52,7 +52,7 @@ public class LevelLoader {
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight) {
-		createWorldLimits(worldWidth, worldHeight, 0.2f);
+		createWorldLimits(worldWidth, worldHeight, 0f);
 	}
 
 	private void createWorldLimits(float worldWidth, float worldHeight, float offset) {
