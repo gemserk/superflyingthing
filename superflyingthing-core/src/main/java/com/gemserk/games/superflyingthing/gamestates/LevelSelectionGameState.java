@@ -118,10 +118,10 @@ public class LevelSelectionGameState extends GameStateImpl {
 							// there is no point in forcing the player to play all the levels, at least for now.
 							// if (!playerProfile.hasPlayedLevel(levelIndex))
 							// return;
-							if (selectedLevel != null && levelIndex == selectedLevel)
+							if (selectedLevel != null && levelIndex + 1 == selectedLevel)
 								play();
 							else {
-								select(levelIndex);
+								select(levelIndex + 1);
 								selectionRectangle.setX(control.getX());
 								selectionRectangle.setY(control.getY());
 							}
@@ -200,8 +200,9 @@ public class LevelSelectionGameState extends GameStateImpl {
 	}
 
 	private void play() {
-		GameInformation.level = selectedLevel;
+		// GameInformation.level = selectedLevel;
 		game.transition(Screens.Play) //
+				.parameter("level", selectedLevel) //
 				.disposeCurrent() //
 				.start();
 	}
@@ -211,7 +212,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 			return;
 
 		selectedLevel = level;
-		Gdx.app.log("SuperFlyingThing", "Level " + (level + 1) + " selected");
+		Gdx.app.log("SuperFlyingThing", "Level " + selectedLevel + " selected");
 
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
 		backgroundGameScreen.getParameters().put("previewLevel", level);

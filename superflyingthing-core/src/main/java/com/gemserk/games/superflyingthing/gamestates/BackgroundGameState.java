@@ -183,7 +183,7 @@ public class BackgroundGameState extends GameStateImpl {
 		Integer previewLevelNumber = getParameters().get("previewLevel");
 
 		if (previewLevelNumber == null)
-			previewLevelNumber = MathUtils.random(0, 7);
+			previewLevelNumber = MathUtils.random(1, 8);
 
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(previewLevelNumber));
 

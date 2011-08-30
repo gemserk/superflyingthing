@@ -115,8 +115,13 @@ public class PlayGameState extends GameStateImpl {
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
-
+	
 	private boolean shouldDisposeWorldWrapper;
+	
+	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
+	private RenderLayers renderLayers;
+	private Level level;
+	private int levelNumber;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -250,6 +255,8 @@ public class PlayGameState extends GameStateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
+		
+		levelNumber = getParameters().get("level");
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
@@ -262,7 +269,7 @@ public class PlayGameState extends GameStateImpl {
 					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
 					.build();
 
-			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/start", "/challenge/" + (GameInformation.level + 1) + "/start", null);
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/start", "/challenge/" + levelNumber + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			level = loadRandomLevelForRandomMode();
 
@@ -333,10 +340,10 @@ public class PlayGameState extends GameStateImpl {
 			public void gameStarted(Event e) {
 				if (GameInformation.gameMode != GameInformation.ChallengeGameMode)
 					return;
-				Level level = Levels.level(GameInformation.level);
+				Level level = Levels.level(levelNumber);
 				parameters.clear();
 				parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-				parameters.put("text", "Level " + (GameInformation.level + 1) + ": " + level.name);
+				parameters.put("text", "Level " + levelNumber + ": " + level.name);
 				entityFactory.instantiate(userMessageTemplate, parameters);
 			}
 
@@ -346,7 +353,7 @@ public class PlayGameState extends GameStateImpl {
 				PlayGameState.this.gameFinished();
 				incrementTimer = false;
 				if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-					playerProfile.setLevelInformationForLevel(GameInformation.level + 1, new LevelInformation(seconds(gameData.time), gameData.currentItems));
+					playerProfile.setLevelInformationForLevel(levelNumber, new LevelInformation(seconds(gameData.time), gameData.currentItems));
 					game.getGamePreferences().updatePlayerProfile(playerProfile);
 				}
 
@@ -511,8 +518,8 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	Level loadLevelForChallengeMode() {
-		if (Levels.hasLevel(GameInformation.level)) {
-			Level level = Levels.level(GameInformation.level);
+		if (Levels.hasLevel(levelNumber)) {
+			Level level = Levels.level(levelNumber);
 			new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
 			gameData.totalItems = level.items.size();
@@ -562,7 +569,7 @@ public class PlayGameState extends GameStateImpl {
 		// container.add(message);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/finish", "/challenge/" + (GameInformation.level + 1) + "/finish", null);
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/finish", "/challenge/" + levelNumber + "/finish", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/finish", "/practice/finish", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
@@ -570,10 +577,6 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 	}
-
-	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
-	private RenderLayers renderLayers;
-	private Level level;
 
 	private String getRandomEndMessage() {
 		return endMessages[MathUtils.random(endMessages.length - 1)];
@@ -597,24 +600,17 @@ public class PlayGameState extends GameStateImpl {
 	@Override
 	public void update() {
 
-		// GamePreferences gamePreferences = game.getGamePreferences();
-		// if (gamePreferences.isTutorialEnabled()) {
-		// game.transition(game.getInstructionsScreen()) //
-		// .leaveTime(0) //
-		// .enterTime(300) //
-		// .disposeCurrent(false) //
-		// .start();
-		// return;
-		// }
-
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
 		container.update();
 
-		if (inputDevicesMonitor.getButton("pause").isReleased())
+		if (inputDevicesMonitor.getButton("pause").isReleased()) {
 			game.transition(Screens.Pause) //
 					.disposeCurrent(false) //
+					.parameter("level", levelNumber) //
 					.start();
+			Gdx.app.log("SuperFlyingThing", "Pausing level " + levelNumber);
+		}
 
 		worldWrapper.update(getDeltaInMs());
 		if (tiltValueEnabled) {

@@ -29,6 +29,7 @@ public class PauseGameState extends GameStateImpl {
 	private Sprite whiteRectangle;
 	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	private int levelNumber;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -43,6 +44,8 @@ public class PauseGameState extends GameStateImpl {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
+		
+		levelNumber = getParameters().get("level");
 
 		spriteBatch = new SpriteBatch();
 
@@ -160,18 +163,21 @@ public class PauseGameState extends GameStateImpl {
 	private void restartLevel() {
 		game.transition(Screens.Play) //
 				.disposeCurrent() //
+				.parameter("level", levelNumber) //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
 					public void onEnd() {
 						game.getPlayScreen().restart();
 					}
 				}).start();
+		
+		Gdx.app.log("SuperFlyingThing", "Restarting level " + levelNumber);
 
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level not finished", GameInformation.gameData.deaths);
-			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level not finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/restart", "/challenge/" + (GameInformation.level + 1) + "/restart", null);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level not finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/restart", "/challenge/" + levelNumber + "/restart", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/restart", "/practice/restart", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
@@ -181,6 +187,7 @@ public class PauseGameState extends GameStateImpl {
 
 	private void mainMenu() {
 		game.transition(Screens.MainMenu) //
+				.disposeCurrent() //
 				.leaveTransitionHandler(new TransitionHandler() {
 					@Override
 					public void onEnd() {
@@ -190,9 +197,9 @@ public class PauseGameState extends GameStateImpl {
 
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level not finished", GameInformation.gameData.deaths);
-			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level not finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level not finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/exit", "/challenge/" + levelNumber + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {

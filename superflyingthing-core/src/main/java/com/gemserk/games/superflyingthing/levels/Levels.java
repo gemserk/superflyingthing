@@ -49,6 +49,8 @@ public class Levels {
 	private static Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
 
 	public static Level level(int levelNumber) {
+		
+		levelNumber -= 1;
 
 		if (cachedLevels[levelNumber] != null) {
 			Gdx.app.log("SuperFlyingThing", "Loading level " + levelNumber + " from cache...");
@@ -205,6 +207,7 @@ public class Levels {
 	}
 
 	public static boolean hasLevel(int level) {
+		level--;
 		return level < levels.length;
 	}
 
