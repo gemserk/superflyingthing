@@ -117,6 +117,8 @@ public class ControllerSettingsGameState extends GameStateImpl {
 	private RenderLayers renderLayers;
 	private WorldWrapper worldWrapper;
 
+	private ControllerType selectedControllerType;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -138,10 +140,10 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
-		ControllerType currentControllerType = game.getGamePreferences().getCurrentPlayerProfile().getControllerType();
+		selectedControllerType = game.getGamePreferences().getCurrentPlayerProfile().getControllerType();
 		ControllerType[] availableControllers = getAvailableControllers();
 
-		game.getGameData().put("testControllerType", currentControllerType);
+		// getParameters().put("testControllerType", currentControllerType);
 
 		container.add(GuiControls.label("Settings") //
 				.position(centerX, height * 0.9f) //
@@ -172,13 +174,14 @@ public class ControllerSettingsGameState extends GameStateImpl {
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased(Control control) {
-							game.getGameData().put("testControllerType", controllerType);
+							selectedControllerType = controllerType;
+							// game.getGameData().put("testControllerType", controllerType);
 						}
 					}) //
 					.build();
 			multipleButtonControlWithUnderline.add(controllerTextButton);
 
-			if (currentControllerType == controllerType)
+			if (selectedControllerType == controllerType)
 				multipleButtonControlWithUnderline.select(controllerTextButton);
 
 			y -= height * 0.12f;
@@ -291,22 +294,24 @@ public class ControllerSettingsGameState extends GameStateImpl {
 	}
 
 	private void controllerTestBed() {
-		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
-		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/test";
+		// ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
+		String pageView = "/settings/control/" + selectedControllerType.name().toLowerCase() + "/test";
 		Analytics.traker.trackPageView(pageView, pageView, null);
-		game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
+		// game.getGameData().put("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled());
 		game.transition(Screens.ControllersTest) //
+				.parameter("controllerTest/backgroundEnabled", renderLayers.get(Layers.FirstBackground).isEnabled()) //
+				.parameter("testControllerType", selectedControllerType) //
 				.start();
 	}
 
 	private void save() {
 		// save control type to the player profile preferences.
 		PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
-		ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
-		playerProfile.setControllerType(controllerType);
+		// ControllerType controllerType = (ControllerType) game.getGameData().get("testControllerType");
+		playerProfile.setControllerType(selectedControllerType);
 		game.getGamePreferences().updatePlayerProfile(playerProfile);
 
-		String pageView = "/settings/control/" + controllerType.name().toLowerCase() + "/save";
+		String pageView = "/settings/control/" + selectedControllerType.name().toLowerCase() + "/save";
 		Analytics.traker.trackPageView(pageView, pageView, null);
 
 		back();

@@ -103,8 +103,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private Rectangle adsMaxArea;
 
-	// private Map<String, Screen> screens;
-
 	class ScreenManager {
 
 		private Map<String, Screen> screens;
@@ -368,6 +366,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		public TransitionBuilder leaveTransitionHandler(TransitionHandler transitionHandler) {
 			this.leaveTransitionHandler = transitionHandler;
+			return this;
+		}
+		
+		public TransitionBuilder parameter(String key, Object value) {
+			screen.getParameters().put(key, value);
 			return this;
 		}
 

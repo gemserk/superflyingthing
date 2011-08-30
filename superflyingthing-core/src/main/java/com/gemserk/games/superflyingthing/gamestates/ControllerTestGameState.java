@@ -155,7 +155,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		RenderLayers renderLayers = new RenderLayers();
 
-		Boolean backgroundEnabled = game.getGameData().get("controllerTest/backgroundEnabled");
+		Boolean backgroundEnabled = getParameters().get("controllerTest/backgroundEnabled");
 
 		// renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), game.getGamePreferences().isFirstBackgroundEnabled());
 		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -100, backgroundLayerCamera, spriteBatch), backgroundEnabled);
@@ -236,7 +236,7 @@ public class ControllerTestGameState extends GameStateImpl {
 				);
 
 		parameters.clear();
-		ControllerType testControllerType = game.getGameData().get("testControllerType");
+		ControllerType testControllerType = getParameters().get("testControllerType");
 		entityFactory.instantiate(controllerTemplates.getControllerTemplate(testControllerType), //
 				parameters.put("controller", controller));
 

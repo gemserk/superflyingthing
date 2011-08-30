@@ -180,7 +180,7 @@ public class BackgroundGameState extends GameStateImpl {
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// Changed to randomize between levels 0 to 7.
 
-		Integer previewLevelNumber = game.getGameData().get("previewLevel");
+		Integer previewLevelNumber = getParameters().get("previewLevel");
 
 		if (previewLevelNumber == null)
 			previewLevelNumber = MathUtils.random(0, 7);
