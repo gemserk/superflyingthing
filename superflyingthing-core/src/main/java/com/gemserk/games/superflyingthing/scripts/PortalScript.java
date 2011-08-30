@@ -5,7 +5,8 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.commons.gdx.box2d.Contact;
+import com.gemserk.commons.gdx.box2d.Contacts;
+import com.gemserk.commons.gdx.box2d.Contacts.Contact;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
@@ -27,7 +28,7 @@ public class PortalScript extends ScriptJavaImpl {
 		PortalComponent portalComponent = e.getComponent(portalComponentClass);
 
 		Physics physics = ComponentWrapper.getPhysics(e);
-		Contact contact = physics.getContact();
+		Contacts contacts = physics.getContact();
 
 		Spatial portalSpatial = ComponentWrapper.getSpatial(e);
 		portalSpatial.setAngle(portalSpatial.getAngle() + rotationSpeed * GlobalTime.getDelta());
@@ -36,10 +37,9 @@ public class PortalScript extends ScriptJavaImpl {
 		if (portal == null)
 			return;
 
-		for (int i = 0; i < contact.getContactCount(); i++) {
-			if (!contact.isInContact(i))
-				continue;
-			Entity e2 = (Entity) contact.getUserData(i);
+		for (int i = 0; i < contacts.getContactCount(); i++) {
+			Contact contact = contacts.getContact(i);
+			Entity e2 = (Entity) contact.getOtherFixture().getBody().getUserData();
 			if (e2 == null)
 				continue;
 

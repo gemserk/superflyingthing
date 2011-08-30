@@ -12,7 +12,8 @@ import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.commons.gdx.box2d.Contact;
+import com.gemserk.commons.gdx.box2d.Contacts;
+import com.gemserk.commons.gdx.box2d.Contacts.Contact;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
@@ -232,11 +233,10 @@ public class Behaviors {
 			Physics physics = ComponentWrapper.getPhysics(e1);
 			if (physics == null)
 				return;
-			Contact contact = physics.getContact();
-			for (int i = 0; i < contact.getContactCount(); i++) {
-				if (!contact.isInContact(i))
-					continue;
-				Entity e2 = (Entity) contact.getUserData(i);
+			Contacts contacts = physics.getContact();
+			for (int i = 0; i < contacts.getContactCount(); i++) {
+				Contact contact = contacts.getContact(i);
+				Entity e2 = (Entity) contact.getOtherFixture().getBody().getUserData();
 				updateAttachToAttachable(e1, e2);
 				return;
 			}
@@ -264,11 +264,10 @@ public class Behaviors {
 			Physics physics = ComponentWrapper.getPhysics(e1);
 			if (physics == null)
 				return;
-			Contact contact = physics.getContact();
-			for (int i = 0; i < contact.getContactCount(); i++) {
-				if (!contact.isInContact(i))
-					continue;
-				Entity e2 = (Entity) contact.getUserData(i);
+			Contacts contacts = physics.getContact();
+			for (int i = 0; i < contacts.getContactCount(); i++) {
+				Contact contact = contacts.getContact(i);
+				Entity e2 = (Entity) contact.getOtherFixture().getBody().getUserData();
 				updateGrabGrabbable(e1, e2);
 				return;
 			}
@@ -324,11 +323,10 @@ public class Behaviors {
 			Physics physics = ComponentWrapper.getPhysics(e);
 			if (physics == null)
 				return;
-			Contact contact = physics.getContact();
-			for (int i = 0; i < contact.getContactCount(); i++) {
-				if (!contact.isInContact(i))
-					continue;
-				Entity otherEntity = (Entity) contact.getUserData(i);
+			Contacts contacts = physics.getContact();
+			for (int i = 0; i < contacts.getContactCount(); i++) {
+				Contact contact = contacts.getContact(i);
+				Entity otherEntity = (Entity) contact.getOtherFixture().getBody().getUserData();
 				if (otherEntity == null)
 					continue;
 
@@ -339,7 +337,7 @@ public class Behaviors {
 				Spatial spatial = ComponentWrapper.getSpatial(e);
 
 				aux.set(1f, 0f).rotate(spatial.getAngle());
-				float dot = aux.dot(contact.getNormal(i));
+				float dot = aux.dot(contact.getNormal());
 				if (dot < 0)
 					dot = -dot;
 
