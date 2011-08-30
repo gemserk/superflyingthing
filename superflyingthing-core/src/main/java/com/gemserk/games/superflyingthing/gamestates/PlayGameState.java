@@ -121,7 +121,7 @@ public class PlayGameState extends GameStateImpl {
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
 	private RenderLayers renderLayers;
 	private Level level;
-	private int levelNumber;
+	private Integer levelNumber;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;

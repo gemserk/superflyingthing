@@ -33,7 +33,7 @@ public class GameOverGameState extends GameStateImpl {
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private WorldWrapper worldWrapper;
 
-	private int levelNumber;
+	private Integer levelNumber;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
