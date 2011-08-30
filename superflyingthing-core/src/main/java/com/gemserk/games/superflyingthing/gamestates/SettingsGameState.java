@@ -126,10 +126,10 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
-				.text("Controls") //
+				.text("Change Controller") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.39f) //
+				.position(width * 0.025f, height * 0.51f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
