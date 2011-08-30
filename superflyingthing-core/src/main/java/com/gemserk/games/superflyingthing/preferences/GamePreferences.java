@@ -20,14 +20,14 @@ public class GamePreferences {
 		Gdx.app.log("SuperFlyingThing", "Saving preference tutorialEnabled: " + tutorialEnabled);
 	}
 	
-	public boolean isSaveReplays() {
-		return preferences.getBoolean("saveReplays", true);
+	public boolean isShowReplay() {
+		return preferences.getBoolean("showReplay", true);
 	}
 	
-	public void setSaveReplays(boolean saveReplays) {
-		preferences.putBoolean("saveReplays", saveReplays);
+	public void setShowReplay(boolean showReplay) {
+		preferences.putBoolean("showReplay", showReplay);
 		preferences.flush();
-		Gdx.app.log("SuperFlyingThing", "Saving preference saveReplays: " + saveReplays);
+		Gdx.app.log("SuperFlyingThing", "Saving preference showReplay: " + showReplay);
 	}
 
 

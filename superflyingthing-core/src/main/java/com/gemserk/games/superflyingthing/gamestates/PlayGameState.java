@@ -115,7 +115,7 @@ public class PlayGameState extends GameStateImpl {
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
-	
+
 	private boolean shouldDisposeWorldWrapper;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
@@ -145,7 +145,7 @@ public class PlayGameState extends GameStateImpl {
 	@Override
 	public void init() {
 		shouldDisposeWorldWrapper = true;
-		
+
 		spriteBatch = new SpriteBatch();
 
 		eventManager = new EventManagerImpl();
@@ -377,7 +377,7 @@ public class PlayGameState extends GameStateImpl {
 
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
 
-				if (replayRecorder == null || !game.getGamePreferences().isSaveReplays()) {
+				if (!game.getGamePreferences().isShowReplay()) {
 
 					shouldDisposeWorldWrapper = false;
 					game.getGameData().put("worldWrapper", worldWrapper);
@@ -484,14 +484,11 @@ public class PlayGameState extends GameStateImpl {
 		// }
 		// })).build();
 
-		// replays counln't be enabled during the game.
-		if (game.getGamePreferences().isSaveReplays()) {
-			entityBuilder //
-					.component(new TagComponent(Groups.ReplayRecorder)) //
-					.component(new ReplayListComponent(new ReplayList())) //
-					.component(new ScriptComponent(new ReplayRecorderScript())) //
-					.build();
-		}
+		entityBuilder //
+				.component(new TagComponent(Groups.ReplayRecorder)) //
+				.component(new ReplayListComponent(new ReplayList())) //
+				.component(new ScriptComponent(new ReplayRecorderScript())) //
+				.build();
 
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {

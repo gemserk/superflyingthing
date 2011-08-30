@@ -52,7 +52,7 @@ public class SettingsGameState extends GameStateImpl {
 	private WorldWrapper worldWrapper;
 	
 	private boolean toggleBackground;
-	private boolean saveReplays;
+	private boolean showReplay;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -69,7 +69,7 @@ public class SettingsGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		toggleBackground = false;
-		saveReplays = game.getGamePreferences().isSaveReplays();
+		showReplay = game.getGamePreferences().isShowReplay();
 
 		spriteBatch = new SpriteBatch();
 
@@ -123,8 +123,8 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 		container.add(GuiControls.textButton() //
-				.id("SaveReplays") //
-				.text(saveReplays ? "Save Replays: On" : "Save Replays: Off") //
+				.id("ShowReplay") //
+				.text(showReplay ? "Show Replay: On" : "Show Replay: Off") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
 				.position(width * 0.025f, height * 0.51f) //
@@ -247,9 +247,9 @@ public class SettingsGameState extends GameStateImpl {
 	}
 	
 	private void toggleSaveReplay() {
-		saveReplays = !saveReplays;
-		TextButton saveReplaysButton = container.findControl("SaveReplays");
-		saveReplaysButton.setText(saveReplays ? "Save Replays: On" : "Save Replays: Off");
+		showReplay = !showReplay;
+		TextButton saveReplaysButton = container.findControl("ShowReplay");
+		saveReplaysButton.setText(showReplay ? "Show Replay: On" : "Show Replay: Off");
 	}
 
 	private void save() {
@@ -260,10 +260,10 @@ public class SettingsGameState extends GameStateImpl {
 			game.getEventManager().registerEvent(Events.toggleSecondBackground, this);
 		}
 		
-		if (saveReplays != game.getGamePreferences().isSaveReplays()) {
-			game.getGamePreferences().setSaveReplays(saveReplays);
+		if (showReplay != game.getGamePreferences().isShowReplay()) {
+			game.getGamePreferences().setShowReplay(showReplay);
 			
-			String pageView = "/settings/savereplays/" + (saveReplays ? "enabled" : "disabled");
+			String pageView = "/settings/showreplay/" + (showReplay ? "enabled" : "disabled");
 			Analytics.traker.trackPageView(pageView, pageView, null);
 		}
 
