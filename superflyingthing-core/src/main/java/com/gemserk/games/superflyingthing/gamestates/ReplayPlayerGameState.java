@@ -295,7 +295,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
 
 		guiContainer.add(GuiControls.label("Playing replay, touch to continue...") //
-				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.1f) //
+				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
 				.center(0.5f, 0f) //
 				.color(Colors.yellow) //
 				.font(levelFont) //
