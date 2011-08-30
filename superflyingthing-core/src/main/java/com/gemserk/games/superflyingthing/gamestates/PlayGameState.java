@@ -383,6 +383,8 @@ public class PlayGameState extends GameStateImpl {
 				// game.transition(game.getGameOverScreen(), 0, 300, false);
 
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
+				
+				game.getGameOverScreen().getParameters().put("level", levelNumber);
 
 				if (!game.getGamePreferences().isShowReplay()) {
 

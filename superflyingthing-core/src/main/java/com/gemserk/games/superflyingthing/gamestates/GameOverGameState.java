@@ -33,6 +33,8 @@ public class GameOverGameState extends GameStateImpl {
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private WorldWrapper worldWrapper;
 
+	private int levelNumber;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -50,6 +52,8 @@ public class GameOverGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		container = new Container();
+
+		levelNumber = getParameters().get("level");
 
 		// BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
@@ -77,7 +81,7 @@ public class GameOverGameState extends GameStateImpl {
 					.build());
 
 		String nextLevelText = "Next Level";
-		if (!Levels.hasLevel(GameInformation.level + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode)
+		if (!Levels.hasLevel(levelNumber) && GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			nextLevelText = "Select Level";
 
 		container.add(GuiControls.textButton() //
@@ -120,22 +124,23 @@ public class GameOverGameState extends GameStateImpl {
 		};
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "deaths", "Level finished", GameInformation.gameData.deaths);
-			Analytics.traker.trackEvent("/challenge/" + (GameInformation.level + 1), "stars", "Level finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level finished", GameInformation.gameData.currentItems);
 		}
 	}
 
 	private void nextLevel() {
-		if (!Levels.hasLevel(GameInformation.level + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			GameInformation.level = 0;
+		if (!Levels.hasLevel(levelNumber + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			// GameInformation.level = 0;
 			game.transition(Screens.LevelSelection) //
 					.disposeCurrent() //
 					.start();
 
 		} else {
-			GameInformation.level++;
+			// GameInformation.level++;
 			game.transition(Screens.Play) //
 					.disposeCurrent() //
+					.parameter("level", levelNumber + 1) //
 					.leaveTransitionHandler(new TransitionHandler() {
 						@Override
 						public void onEnd() {
@@ -152,7 +157,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/exit", "/challenge/" + (GameInformation.level + 1) + "/exit", null);
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/exit", "/challenge/" + levelNumber + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
@@ -172,7 +177,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		// I hate this code here...
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackPageView("/challenge/" + (GameInformation.level + 1) + "/tryagain", "/challenge/" + (GameInformation.level + 1) + "/tryagain", null);
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/tryagain", "/challenge/" + levelNumber + "/tryagain", null);
 		}
 	}
 
