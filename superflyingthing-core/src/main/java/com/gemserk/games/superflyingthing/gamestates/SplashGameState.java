@@ -18,6 +18,7 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.resources.GameResources;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.resources.progress.TaskQueue;
@@ -36,7 +37,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	private Sprite lwjglLogo;
 	private Sprite libgdxLogo;
 	private Sprite gemserkLogoBlur;
-	
+
 	private Color blurColor = new Color();
 
 	public SplashGameState(Game game) {
@@ -80,28 +81,32 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		TaskQueue taskQueue = super.getTaskQueue();
 
 		taskQueue.add(new SimulateLoadingTimeRunnable(0));
-		taskQueue.add(new Runnable() {
-			@Override
-			public void run() {
-				CustomResourceManager<String> resourceManager = game.getResourceManager();
-				ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
-				for (int i = 0; i < registeredResources.size(); i++) {
-					String resourceId = registeredResources.get(i);
-					resourceManager.get(resourceId).get();
-					// it would be nicer to have load/unload in the resource API, so I could call load() here, not reload()
-				}
 
-			}
-		}, "Loading assets");
-		taskQueue.add(new Runnable() {
-			@Override
-			public void run() {
-				int levelsCount = Levels.levelsCount();
-				for (int i = 1; i <= levelsCount; i++) {
-					Levels.level(i);
+		CustomResourceManager<String> resourceManager = game.getResourceManager();
+		ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
+		for (int i = 0; i < registeredResources.size(); i++) {
+			String resourceId = registeredResources.get(i);
+			final Resource resource = resourceManager.get(resourceId);
+			taskQueue.add(new Runnable() {
+				@Override
+				public void run() {
+					// it would be nicer to have load/unload in the resource API, so I could call load() here, not reload()
+					resource.get();
 				}
-			}
-		}, "Loading levels");
+			}, "Loading assets");
+		}
+
+		int levelsCount = Levels.levelsCount();
+		for (int i = 1; i <= levelsCount; i++) {
+			final int levelIndex = i;
+			taskQueue.add(new Runnable() {
+				@Override
+				public void run() {
+					Levels.level(levelIndex);
+				}
+			}, "Loading levels");
+		}
+
 		taskQueue.add(new Runnable() {
 			@Override
 			public void run() {
