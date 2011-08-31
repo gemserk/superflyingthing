@@ -82,14 +82,15 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 		taskQueue.add(new SimulateLoadingTimeRunnable(0));
 
-		CustomResourceManager<String> resourceManager = game.getResourceManager();
+		final CustomResourceManager<String> resourceManager = game.getResourceManager();
 		ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
 		for (int i = 0; i < registeredResources.size(); i++) {
-			String resourceId = registeredResources.get(i);
-			final Resource resource = resourceManager.get(resourceId);
+			final String resourceId = registeredResources.get(i);
 			taskQueue.add(new Runnable() {
 				@Override
 				public void run() {
+					Gdx.app.log("SuperFlyingThing", "Loading resource: " + resourceId);
+					Resource resource = resourceManager.get(resourceId);
 					// it would be nicer to have load/unload in the resource API, so I could call load() here, not reload()
 					resource.get();
 				}
