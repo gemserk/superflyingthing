@@ -125,7 +125,7 @@ public class PlayGameState extends GameStateImpl {
 	private Level level;
 	private Integer levelNumber;
 	private Libgdx2dCamera secondBackgroundLayerCamera;
-	
+
 	private boolean loading;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
@@ -157,13 +157,13 @@ public class PlayGameState extends GameStateImpl {
 
 		// loadLevel();
 		// createWorld();
-		
+
 		loading = true;
 
 		TaskQueue taskQueue = new TaskQueue();
 
 		taskQueue.add(new SimulateLoadingTimeRunnable(0));
-		
+
 		taskQueue.add(new Runnable() {
 			@Override
 			public void run() {
@@ -202,7 +202,7 @@ public class PlayGameState extends GameStateImpl {
 				.parameter("taskQueue", taskQueue) //
 				.start();
 	}
-	
+
 	private void createALotOfStuff() {
 		shouldDisposeWorldWrapper = true;
 
@@ -310,8 +310,8 @@ public class PlayGameState extends GameStateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
-
-		levelNumber = getParameters().get("level");
+		
+		levelNumber = getParameters().get("level", 1);
 	}
 
 	private void createWorld() {

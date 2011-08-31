@@ -53,7 +53,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		container = new Container();
 
-		levelNumber = getParameters().get("level");
+		levelNumber = getParameters().get("level", 0);
 
 		// BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
@@ -81,7 +81,7 @@ public class GameOverGameState extends GameStateImpl {
 					.build());
 
 		String nextLevelText = "Next Level";
-		if (!Levels.hasLevel(levelNumber + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode)
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode && !Levels.hasLevel(levelNumber + 1))
 			nextLevelText = "Select Level";
 
 		container.add(GuiControls.textButton() //
@@ -130,7 +130,7 @@ public class GameOverGameState extends GameStateImpl {
 	}
 
 	private void nextLevel() {
-		if (!Levels.hasLevel(levelNumber + 1) && GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode && !Levels.hasLevel(levelNumber + 1)) {
 			// GameInformation.level = 0;
 			game.transition(Screens.LevelSelection) //
 					.disposeCurrent() //
