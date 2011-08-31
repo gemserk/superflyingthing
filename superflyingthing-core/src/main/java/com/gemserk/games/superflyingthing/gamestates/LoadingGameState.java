@@ -37,17 +37,15 @@ public class LoadingGameState extends com.gemserk.commons.gdx.screens.LoadingGam
 		font.setColor(1f, 1f, 0f, 1f);
 		
 		taskQueue.add(new SimulateLoadingTimeRunnable(0));
-		taskQueue.add(new SimulateLoadingTimeRunnable(250));
 		taskQueue.add(new Runnable() {
 			@Override
 			public void run() {
-				// game.getResourceManager()
 				CustomResourceManager<String> resourceManager = game.getResourceManager();
 				ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
 				for (int i = 0; i < registeredResources.size(); i++) {
 					String resourceId = registeredResources.get(i);
 					resourceManager.get(resourceId).reload();
-					// it would be nicer to have load/unload in the resource API.
+					// it would be nicer to have load/unload in the resource API, so I could call load() here, not reload()
 				}
 				
 			}
@@ -61,7 +59,6 @@ public class LoadingGameState extends com.gemserk.commons.gdx.screens.LoadingGam
 				}
 			}
 		}, "Loading levels");
-		taskQueue.add(new SimulateLoadingTimeRunnable(250));
 		
 		taskQueue.add(new Runnable() {
 			@Override
@@ -80,7 +77,10 @@ public class LoadingGameState extends com.gemserk.commons.gdx.screens.LoadingGam
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		float percentage = getTaskQueue().getProgress().getPercentage();
-		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, "Loading " + (int) (percentage) + "%...", Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
+		String currentTaskName = getTaskQueue().getCurrentTaskName();
+		if ("".equals(currentTaskName))
+			currentTaskName = "Loading ";
+		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, currentTaskName + " - " + (int) (percentage) + "%...", Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
 		spriteBatch.end();
 	}
 

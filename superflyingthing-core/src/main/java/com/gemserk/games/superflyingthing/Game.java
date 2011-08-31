@@ -305,12 +305,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.ControllersSettings, controllerSettingsGameState);
 		screenManager.add(Screens.ControllersTest, controllerTestGameState);
 		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
-
 		screenManager.add(Screens.Play, playGameState);
-		// screenManager.add(Screens.Play, screenManager.screen(new LoadingGameState2(playGameState)));
-
 		screenManager.add(Screens.BackgroundGame, backgroundGameState);
-		// screenManager.add(Screens.BackgroundGame, screenManager.screen(new LoadingGameState2(backgroundGameState)));
 
 		screenManager.add(Screens.Loading, new LoadingGameState(this));
 
