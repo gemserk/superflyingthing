@@ -28,8 +28,8 @@ public class LoadingGameState extends com.gemserk.commons.gdx.gamestates.Loading
 
 	@Override
 	public void init() {
-		
-		TaskQueue taskQueue = new TaskQueue();
+		super.init();
+		TaskQueue taskQueue = getTaskQueue();
 		
 		gl = Gdx.graphics.getGL10();
 		spriteBatch = new SpriteBatch();
@@ -59,7 +59,6 @@ public class LoadingGameState extends com.gemserk.commons.gdx.gamestates.Loading
 				}
 			}
 		}, "Loading levels");
-		
 		taskQueue.add(new Runnable() {
 			@Override
 			public void run() {
@@ -69,14 +68,10 @@ public class LoadingGameState extends com.gemserk.commons.gdx.gamestates.Loading
 					.start();
 			}
 		});
-		
-		getParameters().put("taskQueue", taskQueue);
-		super.init();
 	}
 
 	@Override
 	public void render() {
-		super.render();
 		gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		spriteBatch.begin();
 		float percentage = getTaskQueue().getProgress().getPercentage();
@@ -85,6 +80,7 @@ public class LoadingGameState extends com.gemserk.commons.gdx.gamestates.Loading
 			currentTaskName = "Loading ";
 		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, currentTaskName + " - " + (int) (percentage) + "%...", Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.5f);
 		spriteBatch.end();
+		super.render();
 	}
 
 	@Override
