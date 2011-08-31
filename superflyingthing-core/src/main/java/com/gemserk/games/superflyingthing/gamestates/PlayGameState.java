@@ -256,7 +256,7 @@ public class PlayGameState extends GameStateImpl {
 				.put("spriteId", "BackgroundSprite") //
 				);
 		
-		levelNumber = getParameters().get("level");
+		levelNumber = getParameters().get("level", 1);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
