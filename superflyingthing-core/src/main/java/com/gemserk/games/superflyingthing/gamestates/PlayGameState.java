@@ -152,34 +152,9 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-
-		// TaskQueue taskQueue = getParameters().get("taskQueue");
-		//
-		// taskQueue.add(new Runnable() {
-		// @Override
-		// public void run() {
-		// createALotOfStuff();
-		// }
-		// });
-		//
-		// taskQueue.add(new Runnable() {
-		// @Override
-		// public void run() {
-		// loadLevel();
-		// }
-		// });
-		//
-		// taskQueue.add(new Runnable() {
-		// @Override
-		// public void run() {
-		// createWorld();
-		// }
-		// });
-
 		createALotOfStuff();
 		loadLevel();
 		createWorld();
-
 	}
 
 	private void createALotOfStuff() {

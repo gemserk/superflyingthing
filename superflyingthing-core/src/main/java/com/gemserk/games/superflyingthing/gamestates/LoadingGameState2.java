@@ -8,7 +8,7 @@ import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
-public class LoadingGameState2 extends com.gemserk.commons.gdx.screens.LoadingGameState2 {
+public class LoadingGameState2 extends com.gemserk.commons.gdx.gamestates.LoadingGameState2 {
 
 	private GL10 gl;
 	private SpriteBatch spriteBatch;

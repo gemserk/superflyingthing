@@ -199,7 +199,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Parameters getGameData() {
 		return gameData;
 	}
-	
+
 	public CustomResourceManager<String> getResourceManager() {
 		return resourceManager;
 	}
@@ -423,7 +423,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	@Override
 	public void render() {
-
 		GlobalTime.setDelta(Gdx.graphics.getDeltaTime());
 
 		inputDevicesMonitor.update();

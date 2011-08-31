@@ -14,7 +14,7 @@ import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.resources.progress.TaskQueue;
 import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
-public class LoadingGameState extends com.gemserk.commons.gdx.screens.LoadingGameState {
+public class LoadingGameState extends com.gemserk.commons.gdx.gamestates.LoadingGameState {
 
 	private GL10 gl;
 	private SpriteBatch spriteBatch;
@@ -63,7 +63,10 @@ public class LoadingGameState extends com.gemserk.commons.gdx.screens.LoadingGam
 		taskQueue.add(new Runnable() {
 			@Override
 			public void run() {
-				game.transition(Screens.MainMenu).start();
+				game.transition(Screens.MainMenu)
+					.leaveTime(0) //
+					.enterTime(250) //
+					.start();
 			}
 		});
 		

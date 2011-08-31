@@ -27,11 +27,8 @@ public class SplashGameState extends GameStateImpl {
 	private ResourceManager<String> resourceManager;
 
 	private Sprite gemserkLogo;
-
 	private Sprite lwjglLogo;
-
 	private Sprite libgdxLogo;
-
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
