@@ -79,6 +79,8 @@ import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.progress.TaskQueue;
+import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
 public class PlayGameState extends GameStateImpl {
 
@@ -115,13 +117,16 @@ public class PlayGameState extends GameStateImpl {
 	private Text tiltvalue;
 	private final boolean tiltValueEnabled = false;
 	int tilttime = 0;
-	
+
 	private boolean shouldDisposeWorldWrapper;
-	
+
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
 	private RenderLayers renderLayers;
 	private Level level;
 	private Integer levelNumber;
+	private Libgdx2dCamera secondBackgroundLayerCamera;
+	
+	private boolean loading;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -149,6 +154,56 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
+
+		// loadLevel();
+		// createWorld();
+		
+		loading = true;
+
+		TaskQueue taskQueue = new TaskQueue();
+
+		taskQueue.add(new SimulateLoadingTimeRunnable(0));
+		
+		taskQueue.add(new Runnable() {
+			@Override
+			public void run() {
+				createALotOfStuff();
+			}
+		});
+
+		taskQueue.add(new Runnable() {
+			@Override
+			public void run() {
+				loadLevel();
+			}
+		});
+
+		taskQueue.add(new Runnable() {
+			@Override
+			public void run() {
+				createWorld();
+			}
+		});
+
+		taskQueue.add(new Runnable() {
+			@Override
+			public void run() {
+				game.transition(Screens.Play) //
+						.disposeCurrent() //
+						.start();
+				loading = false;
+			}
+		});
+
+		game.transition(Screens.Loading) //
+				.leaveTime(0) //
+				.enterTime(0) //
+				.disposeCurrent(false) //
+				.parameter("taskQueue", taskQueue) //
+				.start();
+	}
+	
+	private void createALotOfStuff() {
 		shouldDisposeWorldWrapper = true;
 
 		spriteBatch = new SpriteBatch();
@@ -163,7 +218,7 @@ public class PlayGameState extends GameStateImpl {
 		guiCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		final Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		renderLayers = new RenderLayers();
@@ -255,43 +310,11 @@ public class PlayGameState extends GameStateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
-		
+
 		levelNumber = getParameters().get("level");
+	}
 
-		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			level = loadLevelForChallengeMode();
-
-			// play game state custom
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
-					.build();
-
-			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/start", "/challenge/" + levelNumber + "/start", null);
-		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			level = loadRandomLevelForRandomMode();
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, true))) //
-					.build();
-
-			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
-		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			level = loadRandomLevelForRandomMode();
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
-					.build();
-
-			Analytics.traker.trackPageView("/random/start", "/random/start", null);
-		}
-
+	private void createWorld() {
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
 		// creates controller the first time if no controller was created before...
@@ -383,7 +406,7 @@ public class PlayGameState extends GameStateImpl {
 				// game.transition(game.getGameOverScreen(), 0, 300, false);
 
 				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
-				
+
 				game.getGameOverScreen().getParameters().put("level", levelNumber);
 
 				if (!game.getGamePreferences().isShowReplay()) {
@@ -516,7 +539,42 @@ public class PlayGameState extends GameStateImpl {
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+	}
 
+	private void loadLevel() {
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			level = loadLevelForChallengeMode();
+
+			// play game state custom
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent()) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
+					.build();
+
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/start", "/challenge/" + levelNumber + "/start", null);
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			level = loadRandomLevelForRandomMode();
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent()) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, true))) //
+					.build();
+
+			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			level = loadRandomLevelForRandomMode();
+
+			entityBuilder //
+					.component(new TagComponent(Groups.NormalGameModeLogic)) //
+					.component(new GameDataComponent()) //
+					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
+					.build();
+
+			Analytics.traker.trackPageView("/random/start", "/random/start", null);
+		}
 	}
 
 	Level loadLevelForChallengeMode() {
@@ -586,6 +644,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void render() {
+		if (loading)
+			return;
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
@@ -601,6 +661,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
+		if (loading)
+			return;
 
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
@@ -627,6 +689,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void resume() {
+		if (loading)
+			return;
 		// automatically handled in Game class and if no previous screen, then don't handle it (or system.exit())
 		game.getAdWhirlViewHandler().hide();
 		super.resume();
