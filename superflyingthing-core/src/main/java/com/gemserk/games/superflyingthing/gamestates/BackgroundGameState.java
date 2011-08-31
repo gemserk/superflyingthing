@@ -89,6 +89,9 @@ public class BackgroundGameState extends GameStateImpl {
 
 	private TimeTransition restartTimeTransition;
 	private RenderLayers renderLayers;
+	private Integer previewLevelNumber;
+	private Libgdx2dCamera backgroundLayerCamera;
+	private Libgdx2dCamera secondBackgroundLayerCamera;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -112,6 +115,36 @@ public class BackgroundGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
+
+//		TaskQueue taskQueue = getParameters().get("taskQueue");
+//
+//		taskQueue.add(new Runnable() {
+//			@Override
+//			public void run() {
+//				createALotOfStuff();
+//			}
+//		});
+//
+//		taskQueue.add(new Runnable() {
+//			@Override
+//			public void run() {
+//				loadLevel();
+//			}
+//		});
+//
+//		taskQueue.add(new Runnable() {
+//			@Override
+//			public void run() {
+//				createWorld();
+//			}
+//		});
+
+		createALotOfStuff();
+		loadLevel();
+		createWorld();
+	}
+
+	void createALotOfStuff() {
 		restartTimeTransition = null;
 
 		spriteBatch = new SpriteBatch();
@@ -127,8 +160,8 @@ public class BackgroundGameState extends GameStateImpl {
 
 		guiCamera = new Libgdx2dCameraTransformImpl();
 
-		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		final Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		renderLayers = new RenderLayers();
@@ -180,13 +213,13 @@ public class BackgroundGameState extends GameStateImpl {
 		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
 		// Changed to randomize between levels 0 to 7.
 
-		Integer previewLevelNumber = getParameters().get("previewLevel");
+		previewLevelNumber = getParameters().get("previewLevel");
 
 		if (previewLevelNumber == null)
 			previewLevelNumber = MathUtils.random(1, 8);
+	}
 
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(previewLevelNumber));
-
+	void createWorld() {
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld))).build();
 
 		entityBuilder //
@@ -252,7 +285,10 @@ public class BackgroundGameState extends GameStateImpl {
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+	}
 
+	void loadLevel() {
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(previewLevelNumber));
 	}
 
 	private void gameFinished() {

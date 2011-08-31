@@ -79,8 +79,6 @@ import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.progress.TaskQueue;
-import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
 public class PlayGameState extends GameStateImpl {
 
@@ -126,7 +124,7 @@ public class PlayGameState extends GameStateImpl {
 	private Integer levelNumber;
 	private Libgdx2dCamera secondBackgroundLayerCamera;
 
-	private boolean loading;
+	// private boolean loading;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -155,52 +153,33 @@ public class PlayGameState extends GameStateImpl {
 	@Override
 	public void init() {
 
+		// TaskQueue taskQueue = getParameters().get("taskQueue");
+		//
+		// taskQueue.add(new Runnable() {
+		// @Override
+		// public void run() {
+		// createALotOfStuff();
+		// }
+		// });
+		//
+		// taskQueue.add(new Runnable() {
+		// @Override
+		// public void run() {
 		// loadLevel();
+		// }
+		// });
+		//
+		// taskQueue.add(new Runnable() {
+		// @Override
+		// public void run() {
 		// createWorld();
+		// }
+		// });
 
-		loading = true;
+		createALotOfStuff();
+		loadLevel();
+		createWorld();
 
-		TaskQueue taskQueue = new TaskQueue();
-
-		taskQueue.add(new SimulateLoadingTimeRunnable(0));
-
-		taskQueue.add(new Runnable() {
-			@Override
-			public void run() {
-				createALotOfStuff();
-			}
-		});
-
-		taskQueue.add(new Runnable() {
-			@Override
-			public void run() {
-				loadLevel();
-			}
-		});
-
-		taskQueue.add(new Runnable() {
-			@Override
-			public void run() {
-				createWorld();
-			}
-		});
-
-		taskQueue.add(new Runnable() {
-			@Override
-			public void run() {
-				game.transition(Screens.Play) //
-						.disposeCurrent() //
-						.start();
-				loading = false;
-			}
-		});
-
-		game.transition(Screens.Loading) //
-				.leaveTime(0) //
-				.enterTime(0) //
-				.disposeCurrent(false) //
-				.parameter("taskQueue", taskQueue) //
-				.start();
 	}
 
 	private void createALotOfStuff() {
@@ -310,7 +289,7 @@ public class PlayGameState extends GameStateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
-		
+
 		levelNumber = getParameters().get("level", 1);
 	}
 
@@ -644,8 +623,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void render() {
-		if (loading)
-			return;
+		// if (loading)
+		// return;
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
@@ -661,8 +640,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
-		if (loading)
-			return;
+		// if (loading)
+		// return;
 
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
@@ -689,8 +668,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void resume() {
-		if (loading)
-			return;
+		// if (loading)
+		// return;
 		// automatically handled in Game class and if no previous screen, then don't handle it (or system.exit())
 		game.getAdWhirlViewHandler().hide();
 		super.resume();
@@ -713,8 +692,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void pause() {
-		if (loading)
-			return;
+		// if (loading)
+		// return;
 		super.pause();
 	}
 

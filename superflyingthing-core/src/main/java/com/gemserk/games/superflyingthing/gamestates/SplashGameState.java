@@ -91,8 +91,10 @@ public class SplashGameState extends GameStateImpl {
 	}
 
 	private void mainMenu() {
-		game.transition(Screens.MainMenu) //
+		game.transition(Screens.Loading) //
 				.disposeCurrent() //
+				.leaveTime(250) //
+				.enterTime(0) //
 				.start();
 	}
 

@@ -56,8 +56,6 @@ import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
-import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -88,7 +86,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
 
-	private ResourceManager<String> resourceManager;
+	private CustomResourceManager<String> resourceManager;
 	private BitmapFont fpsFont;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
@@ -116,7 +114,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		 *            The Screen identifier.
 		 */
 		public void add(String id, GameState gameState) {
-			screens.put(id, new ScreenImpl(gameState));
+			screens.put(id, screen(gameState));
+		}
+
+		public void add(String id, Screen screen) {
+			screens.put(id, screen);
+		}
+
+		public Screen screen(GameState gameState) {
+			return new ScreenImpl(gameState);
 		}
 
 		public Screen get(String id) {
@@ -193,6 +199,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Parameters getGameData() {
 		return gameData;
 	}
+	
+	public CustomResourceManager<String> getResourceManager() {
+		return resourceManager;
+	}
 
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
@@ -239,7 +249,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		eventManager = new EventManagerImpl();
 
-		resourceManager = new ResourceManagerImpl<String>();
+		resourceManager = new CustomResourceManager<String>();
 		GameResources.load(resourceManager);
 
 		fpsFont = resourceManager.getResourceValue("FpsFont");
@@ -284,7 +294,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		screenManager = new ScreenManager();
 
-		screenManager.add(Screens.Play, playGameState);
 		screenManager.add(Screens.Pause, pauseGameState);
 		screenManager.add(Screens.MainMenu, mainMenuGameState);
 		screenManager.add(Screens.SelectPlayMode, selectPlayModeGameState);
@@ -292,13 +301,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.GameOver, gameOverGameState);
 		screenManager.add(Screens.Instructions, instructionsGameState);
 		screenManager.add(Screens.Splash, new SplashGameState(this));
-		screenManager.add(Screens.BackgroundGame, backgroundGameState);
 		screenManager.add(Screens.Settings, settingsGameState);
 		screenManager.add(Screens.ControllersSettings, controllerSettingsGameState);
 		screenManager.add(Screens.ControllersTest, controllerTestGameState);
 		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
-		
-		screenManager.add(Screens.Loading, new LoadingGameState());
+
+		screenManager.add(Screens.Play, playGameState);
+		// screenManager.add(Screens.Play, screenManager.screen(new LoadingGameState2(playGameState)));
+
+		screenManager.add(Screens.BackgroundGame, backgroundGameState);
+		// screenManager.add(Screens.BackgroundGame, screenManager.screen(new LoadingGameState2(backgroundGameState)));
+
+		screenManager.add(Screens.Loading, new LoadingGameState(this));
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
