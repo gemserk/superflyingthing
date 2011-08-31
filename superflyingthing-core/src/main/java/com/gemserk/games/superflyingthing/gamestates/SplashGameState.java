@@ -4,13 +4,11 @@ import java.util.ArrayList;
 
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.InputAdapter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.gemserk.animation4j.transitions.TimeTransition;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
@@ -29,7 +27,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 	private final Game game;
 
-	private GL10 gl;
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 
@@ -39,24 +36,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	private Sprite lwjglLogo;
 	private Sprite libgdxLogo;
 	private Sprite gemserkLogoBlur;
-
 	private Color blurColor = new Color();
-
-	private TimeTransition timeTransition;
-
-	private InputAdapter inputProcessor = new InputAdapter() {
-		@Override
-		public boolean keyUp(int keycode) {
-			mainMenu();
-			return super.keyUp(keycode);
-		}
-
-		@Override
-		public boolean touchUp(int x, int y, int pointer, int button) {
-			mainMenu();
-			return super.touchUp(x, y, pointer, button);
-		}
-	};
 
 	public SplashGameState(Game game) {
 		this.game = game;
@@ -71,7 +51,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		int centerX = width / 2;
 		int centerY = height / 2;
 
-		gl = Gdx.graphics.getGL10();
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(1f, 1f, 0f, 1f);
@@ -96,9 +75,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		SpriteUtils.centerOn(libgdxLogo, width * 0.15f, libgdxLogo.getHeight() * 0.5f);
 
 		Synchronizers.transition(blurColor, Transitions.transitionBuilder(new Color(0f, 0f, 1f, 0f)).end(new Color(0f, 0f, 1f, 1f)).time(1f));
-
-		timeTransition = new TimeTransition();
-		timeTransition.start(2f);
 
 		TaskQueue taskQueue = super.getTaskQueue();
 
@@ -128,20 +104,15 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		taskQueue.add(new Runnable() {
 			@Override
 			public void run() {
-				game.transition(Screens.MainMenu) //
-						.leaveTime(250) //
-						.enterTime(250) //
-						.start();
+				mainMenu();
 			}
 		});
 	}
 
 	private void mainMenu() {
-		// game.transition(Screens.MainMenu) //
-		// .disposeCurrent() //
-		// .leaveTime(250) //
-		// .enterTime(250) //
-		// .start();
+		game.transition(Screens.MainMenu) //
+				.disposeCurrent() //
+				.start();
 	}
 
 	@Override
@@ -161,7 +132,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		String currentTaskName = getTaskQueue().getCurrentTaskName();
 		if ("".equals(currentTaskName))
 			currentTaskName = "Loading ";
-		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, currentTaskName + " - " + (int) (percentage) + "%...", // 
+		SpriteBatchUtils.drawMultilineTextCentered(spriteBatch, font, currentTaskName + " - " + (int) (percentage) + "%...", //
 				Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.25f);
 
 		spriteBatch.end();
@@ -172,31 +143,21 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-
-		timeTransition.update(getDelta());
-
-		if (!timeTransition.isFinished())
-			return;
-
-		mainMenu();
 	}
 
 	@Override
 	public void resume() {
 		game.getAdWhirlViewHandler().hide();
-		Gdx.input.setCatchBackKey(true);
-		Gdx.input.setInputProcessor(inputProcessor);
+		Gdx.input.setCatchBackKey(false);
 	}
 
 	@Override
 	public void pause() {
-		if (Gdx.input.getInputProcessor() == inputProcessor)
-			Gdx.input.setInputProcessor(null);
+
 	}
 
 	@Override
 	public void dispose() {
-		resourceManager.unloadAll();
 		spriteBatch.dispose();
 		spriteBatch = null;
 	}
