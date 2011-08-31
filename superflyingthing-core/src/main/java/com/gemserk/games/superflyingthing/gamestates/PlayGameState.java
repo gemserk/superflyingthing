@@ -713,6 +713,8 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void pause() {
+		if (loading)
+			return;
 		super.pause();
 	}
 
