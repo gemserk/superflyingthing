@@ -42,7 +42,6 @@ import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
-import com.gemserk.games.superflyingthing.gamestates.LoadingGameState;
 import com.gemserk.games.superflyingthing.gamestates.MainMenuGameState;
 import com.gemserk.games.superflyingthing.gamestates.PauseGameState;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
@@ -307,8 +306,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
 		screenManager.add(Screens.Play, playGameState);
 		screenManager.add(Screens.BackgroundGame, backgroundGameState);
-
-		screenManager.add(Screens.Loading, new LoadingGameState(this));
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
