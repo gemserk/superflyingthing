@@ -36,6 +36,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	private Sprite lwjglLogo;
 	private Sprite libgdxLogo;
 	private Sprite gemserkLogoBlur;
+	
 	private Color blurColor = new Color();
 
 	public SplashGameState(Game game) {
@@ -86,7 +87,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 				ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
 				for (int i = 0; i < registeredResources.size(); i++) {
 					String resourceId = registeredResources.get(i);
-					resourceManager.get(resourceId).reload();
+					resourceManager.get(resourceId).get();
 					// it would be nicer to have load/unload in the resource API, so I could call load() here, not reload()
 				}
 

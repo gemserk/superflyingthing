@@ -55,6 +55,7 @@ import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
+import com.gemserk.resources.Resource;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -86,7 +87,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private final AdWhirlViewHandler adWhirlViewHandler;
 
 	private CustomResourceManager<String> resourceManager;
-	private BitmapFont fpsFont;
+	private Resource<BitmapFont> fpsFontResource;
 	private SpriteBatch spriteBatch;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
@@ -97,6 +98,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private GamePreferences gamePreferences;
 
 	private Rectangle adsMaxArea;
+	
+	private ScreenManager screenManager;
 
 	class ScreenManager {
 
@@ -129,8 +132,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-
-	private ScreenManager screenManager;
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
@@ -251,7 +252,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		resourceManager = new CustomResourceManager<String>();
 		GameResources.load(resourceManager);
 
-		fpsFont = resourceManager.getResourceValue("FpsFont");
+		fpsFontResource = resourceManager.get("FpsFont");
 		spriteBatch = new SpriteBatch();
 
 		PlayGameState playGameState = new PlayGameState(this);
@@ -442,9 +443,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		spriteBatch.begin();
 		if (showFps)
-			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
+			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFontResource.get(), "FPS: " + Gdx.graphics.getFramesPerSecond(), Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		if (Game.isDebugMode())
-			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFont, "Debug", Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
+			SpriteBatchUtils.drawMultilineText(spriteBatch, fpsFontResource.get(), "Debug", Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.90f, 0f, 0.5f);
 		spriteBatch.end();
 
 		if (inputDevicesMonitor.getButton("grabScreenshot").isReleased()) {
