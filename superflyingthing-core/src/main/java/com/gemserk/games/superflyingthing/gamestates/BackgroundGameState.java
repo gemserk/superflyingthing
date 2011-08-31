@@ -115,9 +115,12 @@ public class BackgroundGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
+		long startNanoTime = System.nanoTime();
+		Gdx.app.log("SuperFlyingThing", "BackgroundGameState start loading");
 		createALotOfStuff();
 		loadLevel();
 		createWorld();
+		Gdx.app.log("SuperFlyingThing", "BackgroundGameState finished loading - " + (System.nanoTime() - startNanoTime) / 1000000 + " ms");
 	}
 
 	void createALotOfStuff() {
