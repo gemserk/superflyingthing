@@ -612,7 +612,7 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-
+	
 	@Override
 	public void update() {
 		// if (loading)
@@ -663,13 +663,6 @@ public class PlayGameState extends GameStateImpl {
 			// creates a new controller using new preferences
 			createGameController(controllerComponent.getController());
 		}
-	}
-
-	@Override
-	public void pause() {
-		// if (loading)
-		// return;
-		super.pause();
 	}
 
 	@Override

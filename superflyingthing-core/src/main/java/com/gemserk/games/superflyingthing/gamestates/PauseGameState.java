@@ -15,6 +15,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
@@ -27,9 +28,9 @@ public class PauseGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 	private Sprite whiteRectangle;
-	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private Integer levelNumber;
+	private Container container;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -44,28 +45,30 @@ public class PauseGameState extends GameStateImpl {
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
-		
+
 		levelNumber = getParameters().get("level");
 
 		spriteBatch = new SpriteBatch();
-
+		
 		container = new Container();
+
+		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangle.setSize(width, height);
-		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
+		whiteRectangle.setColor(0f, 0f, 0f, 0.5f);
 
-		container.add(GuiControls.label("Game Paused") //
-				.position(centerX, height * 0.9f) //
+		panel.add(GuiControls.label("Game Paused") //
+				.position(centerX, height * 0.60f) //
 				.color(Color.GREEN) //
 				.font(titleFont)//
 				.build());
 
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.73f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0.48f) //
 				.text("Resume") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -78,8 +81,8 @@ public class PauseGameState extends GameStateImpl {
 					}
 				})//
 				.build());
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.61f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0.36f) //
 				.text("Instructions") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -92,8 +95,8 @@ public class PauseGameState extends GameStateImpl {
 					}
 				})//
 				.build());
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.49f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0.24f) //
 				.text("Settings") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -106,8 +109,8 @@ public class PauseGameState extends GameStateImpl {
 					}
 				})//
 				.build());
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.37f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0.12f) //
 				.text("Restart") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -120,8 +123,8 @@ public class PauseGameState extends GameStateImpl {
 					}
 				})//
 				.build());
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.25f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0f) //
 				.text("Main Menu") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -134,6 +137,8 @@ public class PauseGameState extends GameStateImpl {
 					}
 				})//
 				.build());
+		
+		container.add(panel);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -170,7 +175,7 @@ public class PauseGameState extends GameStateImpl {
 						game.getPlayScreen().restart();
 					}
 				}).start();
-		
+
 		Gdx.app.log("SuperFlyingThing", "Restarting level " + levelNumber);
 
 		// I hate this code here...

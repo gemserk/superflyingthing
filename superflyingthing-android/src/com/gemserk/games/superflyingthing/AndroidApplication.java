@@ -63,14 +63,16 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 			}
 		}, config);
 		
-		int diWidth = 800;
-		int diHeight = 50;
+		int diWidth = 320;
+		int diHeight = 52;
 		
 		float density = getResources().getDisplayMetrics().density;
 
 		adView.setAdWhirlInterface(this);
 		adView.setMaxWidth((int) (diWidth * density));
 		adView.setMaxHeight((int) (diHeight * density));
+		
+		log("SuperFlyingThing", "Device max Ads area: (" + (int) (diWidth * density) + ", " + (int) (diHeight * density) + ")");
 
 		RelativeLayout.LayoutParams adParams = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 		adParams.addRule(RelativeLayout.ALIGN_PARENT_BOTTOM);

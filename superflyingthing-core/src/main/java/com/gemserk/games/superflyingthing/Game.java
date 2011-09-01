@@ -98,7 +98,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private GamePreferences gamePreferences;
 
 	private Rectangle adsMaxArea;
-	
+
 	private ScreenManager screenManager;
 
 	class ScreenManager {
@@ -207,6 +207,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
+	
+	public Rectangle getAdsMaxArea() {
+		return adsMaxArea;
+	}
 
 	/**
 	 * Used to communicate between gamestates.
@@ -306,7 +310,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.ControllersTest, controllerTestGameState);
 		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
 		screenManager.add(Screens.Play, playGameState);
-		
+
 		screenManager.add(Screens.BackgroundGame, backgroundGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
@@ -332,7 +336,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			}
 		};
 
-		adsMaxArea = new Rectangle(1f, 1f, Gdx.graphics.getWidth() - 2f, Gdx.graphics.getHeight() * 0.105f - 2f);
+		float adsWidth = Gdx.graphics.getWidth() * 480f / 800f;
+		float adsHeight = Gdx.graphics.getHeight() * 78f / 480f;
+
+		adsMaxArea = new Rectangle(Gdx.graphics.getWidth() * 0.5f - adsWidth * 0.5f, 1f, adsWidth - 2f,  adsHeight - 2f);
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
