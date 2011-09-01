@@ -266,6 +266,15 @@ public class PlayGameState extends GameStateImpl {
 				);
 
 		levelNumber = getParameters().get("level", 1);
+
+		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
+		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
+			{
+				monitorKeys("pause", Keys.BACK, Keys.ESCAPE);
+				monitorKeys("switchControls", Keys.MENU, Keys.R);
+				monitorKeys("showCustomizeControls", Keys.NUM_5);
+			}
+		};
 	}
 
 	private void createWorld() {
@@ -410,14 +419,6 @@ public class PlayGameState extends GameStateImpl {
 			}
 
 		})).build();
-
-		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
-		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
-			{
-				monitorKeys("pause", Keys.BACK, Keys.ESCAPE);
-				monitorKeys("switchControls", Keys.MENU, Keys.R);
-			}
-		};
 
 		// entityBuilder //
 		// .component(new TagComponent(Groups.ControllerSwitcher)) //
@@ -628,6 +629,10 @@ public class PlayGameState extends GameStateImpl {
 					.parameter("level", levelNumber) //
 					.start();
 			Gdx.app.log("SuperFlyingThing", "Pausing level " + levelNumber);
+		}
+		
+		if (inputDevicesMonitor.getButton("showCustomizeControls").isReleased()) {
+			game.getEventManager().registerEvent(Events.showCustomizeControls, world);
 		}
 
 		worldWrapper.update(getDeltaInMs());

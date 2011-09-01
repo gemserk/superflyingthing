@@ -4,6 +4,7 @@ import org.lwjgl.opengl.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -13,6 +14,9 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventListener;
+import com.gemserk.games.superflyingthing.DebugComponents.MovementComponentDebugWindow;
 
 public class DesktopApplication {
 
@@ -35,10 +39,12 @@ public class DesktopApplication {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
-//		 config.width = 320;
-//		 config.height = 240;
+		
+		// config.width = 320;
+		// config.height = 240;
 		// config.width = 1024;
 		// config.height = 768;
+		
 		config.fullscreen = false;
 		config.title = "Super Flying Thing";
 		config.useGL20 = false;
@@ -54,7 +60,20 @@ public class DesktopApplication {
 				if (remoteInput != null)
 					Gdx.input = new RemoteInput(8190);
 				super.create();
+				
+				getEventManager().register(Events.showCustomizeControls, new EventListener() {
+					@Override
+					public void onEvent(Event event) {
+						World world = (World) event.getSource();
+//						MovementComponentDebugWindow movementComponentDebugWindow = DebugComponents.getMovementComponentDebugWindow();
+						MovementComponentDebugWindow movementComponentDebugWindow = new MovementComponentDebugWindow();
+						movementComponentDebugWindow.setWorld(world);
+					}
+				});
 			}
+			
+			
+			
 		}, config);
 	}
 

@@ -9,15 +9,14 @@ import com.gemserk.games.superflyingthing.ShipController;
 
 public class KeyboardControllerScript extends ScriptJavaImpl {
 
-	// TODO: add some controller explanation
-
 	private final ShipController controller;
 
 	private int releaseShipKey = Keys.SPACE;
 	private int rotateLeftKey = Keys.LEFT;
 	private int rotateRightKey = Keys.RIGHT;
 
-	// private int updateCount = 0;
+	public float minValue = 0.05f;
+	public float speed = 5f;
 
 	public KeyboardControllerScript(ShipController controller) {
 		this.controller = controller;
@@ -41,16 +40,8 @@ public class KeyboardControllerScript extends ScriptJavaImpl {
 		else if (Gdx.input.isKeyPressed(rotateRightKey))
 			direction = -1f;
 
-		// if (direction != 0) {
-		// updateCount++;
-		// } else {
-		// if (updateCount != 0)
-		// Gdx.app.log("SuperFlyingThing", "updateCount: " + updateCount);
-		// updateCount = 0;
-		// }
-
 		float movementDirection = controller.getMovementDirection();
-		movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.05f, (GlobalTime.getDelta()), 5f);
+		movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, minValue, GlobalTime.getDelta(), speed);
 		controller.setMovementDirection(movementDirection);
 	}
 

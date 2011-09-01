@@ -48,5 +48,7 @@ public class Events {
 	 * Used to send the event to all game states to toggle second background rendering.
 	 */
 	public static final String toggleSecondBackground = "toggleSecondBackground";
+	
+	public static final String showCustomizeControls = "showCustomizeControls";
 
 }
