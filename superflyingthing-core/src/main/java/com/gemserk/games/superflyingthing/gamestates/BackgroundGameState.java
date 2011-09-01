@@ -92,6 +92,8 @@ public class BackgroundGameState extends GameStateImpl {
 	private Libgdx2dCamera backgroundLayerCamera;
 	private Libgdx2dCamera secondBackgroundLayerCamera;
 
+	private Integer previewLevelNumber;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
@@ -117,24 +119,27 @@ public class BackgroundGameState extends GameStateImpl {
 		long startNanoTime = System.nanoTime();
 		Gdx.app.log("SuperFlyingThing", "BackgroundGameState start loading");
 
-		Integer previewLevelNumber = getParameters().get("previewLevel");
+		if (previewLevelNumber != null)
+			reloadLevel(previewLevelNumber);
+		else
+			reloadLevel(MathUtils.random(1, 8));
 
-		if (previewLevelNumber == null)
-			previewLevelNumber = MathUtils.random(1, 8);
-		
-		reloadLevel(previewLevelNumber);
-		
 		Gdx.app.log("SuperFlyingThing", "BackgroundGameState finished loading - " + (System.nanoTime() - startNanoTime) / 1000000 + " ms");
 	}
-	
-	@Handles(ids=Events.previewLevel)
+
+	@Handles(ids = Events.previewLevel)
 	public void previewLevel(Event event) {
 		dispose();
-		Integer previewLevelNumber = (Integer) event.getSource();
+		previewLevelNumber = (Integer) event.getSource();
 		reloadLevel(previewLevelNumber);
 	}
 
-	void reloadLevel(Integer levelNumber) {
+	@Handles(ids = Events.previewRandomLevel)
+	public void previewRandomLevel(Event event) {
+		previewLevelNumber = null;
+	}
+
+	void reloadLevel(int levelNumber) {
 		restartTimeTransition = null;
 
 		spriteBatch = new SpriteBatch();
@@ -199,14 +204,14 @@ public class BackgroundGameState extends GameStateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
-		
+
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(levelNumber));
-		
+
 		createWorld(levelNumber);
 
 	}
 
-	void createWorld(Integer levelNumber) {
+	void createWorld(int levelNumber) {
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld))).build();
 
 		entityBuilder //
@@ -219,7 +224,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		BitmapFont font = resourceManager.getResourceValue("VersionFont");
 
-		guiContainer.add(GuiControls.label("Preview level " + (levelNumber + 1) + "...") //
+		guiContainer.add(GuiControls.label("Preview level " + levelNumber + "...") //
 				.position(Gdx.graphics.getWidth() * 0.025f, Gdx.graphics.getHeight() * 0.2f) //
 				.center(0f, 0.5f) //
 				.color(1f, 1f, 1f, 1f) //
@@ -275,10 +280,8 @@ public class BackgroundGameState extends GameStateImpl {
 	}
 
 	private void gameFinished() {
-		// game.getBackgroundGameScreen().restart();
 		restartTimeTransition = new TimeTransition();
 		restartTimeTransition.start(4f);
-		// timer.reset();
 	}
 
 	@Override

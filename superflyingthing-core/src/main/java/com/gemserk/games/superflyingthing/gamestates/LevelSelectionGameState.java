@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -215,12 +214,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		selectedLevel = level;
 		Gdx.app.log("SuperFlyingThing", "Level " + selectedLevel + " selected");
 
-		Screen backgroundGameScreen = game.getBackgroundGameScreen();
-
 		game.getEventManager().registerEvent(Events.previewLevel, level);
-
-		// backgroundGameScreen.getParameters().put("previewLevel", level);
-		// backgroundGameScreen.restart();
 
 		TextButton playButton = container.findControl("PlayButton");
 		playButton.setOverColor(Color.GREEN);

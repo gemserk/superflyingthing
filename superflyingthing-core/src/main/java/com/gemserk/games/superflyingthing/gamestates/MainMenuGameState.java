@@ -15,6 +15,7 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.TextButton;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.ResourceManager;
@@ -122,8 +123,8 @@ public class MainMenuGameState extends GameStateImpl {
 		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
 
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
-		backgroundGameScreen.getParameters().put("previewLevel", null);
 		backgroundGameScreen.init();
+		game.getEventManager().registerEvent(Events.previewRandomLevel, this);
 	}
 
 	private void settings() {
