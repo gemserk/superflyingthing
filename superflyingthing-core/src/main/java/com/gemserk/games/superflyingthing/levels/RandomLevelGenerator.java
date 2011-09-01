@@ -34,8 +34,8 @@ public class RandomLevelGenerator {
 
 		Level level = new Level();
 
-		level.w = MathUtils.random(30f, 250f);
-		level.h = MathUtils.random(5f, 15f);
+		level.w = MathUtils.random(40f, 200f);
+		level.h = MathUtils.random(8f, 16f);
 
 		level.startPlanet = new StartPlanet(5f, level.h * 0.5f);
 		level.destinationPlanets.add(new DestinationPlanet(level.w - 5f, level.h * 0.5f));
