@@ -182,10 +182,15 @@ public class PauseGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level not finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level not finished",GameInformation.gameData.averageFPS );
 			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/restart", "/challenge/" + levelNumber + "/restart", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			Analytics.traker.trackEvent("/practice", "fps", "Level not finished",GameInformation.gameData.averageFPS );
 			Analytics.traker.trackPageView("/practice/restart", "/practice/restart", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			Analytics.traker.trackEvent("/random", "deaths", "Level not finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/random", "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/random", "fps", "Level not finished",GameInformation.gameData.averageFPS );
 			Analytics.traker.trackPageView("/random/restart", "/random/restart", null);
 		}
 	}
@@ -204,10 +209,15 @@ public class PauseGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level not finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level not finished",GameInformation.gameData.averageFPS );
 			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/exit", "/challenge/" + levelNumber + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			Analytics.traker.trackEvent("/practice", "fps", "Level not finished",GameInformation.gameData.averageFPS );
 			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			Analytics.traker.trackEvent("/random", "deaths", "Level not finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/random", "stars", "Level not finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/random", "fps", "Level not finished",GameInformation.gameData.averageFPS );
 			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
 		}
 	}
