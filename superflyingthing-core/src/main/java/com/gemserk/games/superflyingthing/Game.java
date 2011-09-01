@@ -306,6 +306,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.ControllersTest, controllerTestGameState);
 		screenManager.add(Screens.ReplayPlayer, replayPlayerGameState);
 		screenManager.add(Screens.Play, playGameState);
+		
 		screenManager.add(Screens.BackgroundGame, backgroundGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);

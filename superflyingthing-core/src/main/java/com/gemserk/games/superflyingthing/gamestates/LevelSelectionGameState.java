@@ -22,6 +22,7 @@ import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Colors;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.levels.Levels;
@@ -215,8 +216,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 		Gdx.app.log("SuperFlyingThing", "Level " + selectedLevel + " selected");
 
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
-		backgroundGameScreen.getParameters().put("previewLevel", level);
-		backgroundGameScreen.restart();
+
+		game.getEventManager().registerEvent(Events.previewLevel, level);
+
+		// backgroundGameScreen.getParameters().put("previewLevel", level);
+		// backgroundGameScreen.restart();
 
 		TextButton playButton = container.findControl("PlayButton");
 		playButton.setOverColor(Color.GREEN);

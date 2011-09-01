@@ -89,7 +89,6 @@ public class BackgroundGameState extends GameStateImpl {
 
 	private TimeTransition restartTimeTransition;
 	private RenderLayers renderLayers;
-	private Integer previewLevelNumber;
 	private Libgdx2dCamera backgroundLayerCamera;
 	private Libgdx2dCamera secondBackgroundLayerCamera;
 
@@ -117,13 +116,25 @@ public class BackgroundGameState extends GameStateImpl {
 	public void init() {
 		long startNanoTime = System.nanoTime();
 		Gdx.app.log("SuperFlyingThing", "BackgroundGameState start loading");
-		createALotOfStuff();
-		loadLevel();
-		createWorld();
+
+		Integer previewLevelNumber = getParameters().get("previewLevel");
+
+		if (previewLevelNumber == null)
+			previewLevelNumber = MathUtils.random(1, 8);
+		
+		reloadLevel(previewLevelNumber);
+		
 		Gdx.app.log("SuperFlyingThing", "BackgroundGameState finished loading - " + (System.nanoTime() - startNanoTime) / 1000000 + " ms");
 	}
+	
+	@Handles(ids=Events.previewLevel)
+	public void previewLevel(Event event) {
+		dispose();
+		Integer previewLevelNumber = (Integer) event.getSource();
+		reloadLevel(previewLevelNumber);
+	}
 
-	void createALotOfStuff() {
+	void reloadLevel(Integer levelNumber) {
 		restartTimeTransition = null;
 
 		spriteBatch = new SpriteBatch();
@@ -188,17 +199,14 @@ public class BackgroundGameState extends GameStateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
+		
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(levelNumber));
+		
+		createWorld(levelNumber);
 
-		// loadLevel(entityTemplates, Levels.level(MathUtils.random(0, Levels.levelsCount() - 1)));
-		// Changed to randomize between levels 0 to 7.
-
-		previewLevelNumber = getParameters().get("previewLevel");
-
-		if (previewLevelNumber == null)
-			previewLevelNumber = MathUtils.random(1, 8);
 	}
 
-	void createWorld() {
+	void createWorld(Integer levelNumber) {
 		entityBuilder.component(new ScriptComponent(new BasicAIShipControllerScript(physicsWorld))).build();
 
 		entityBuilder //
@@ -211,7 +219,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		BitmapFont font = resourceManager.getResourceValue("VersionFont");
 
-		guiContainer.add(GuiControls.label("Preview level " + (previewLevelNumber + 1) + "...") //
+		guiContainer.add(GuiControls.label("Preview level " + (levelNumber + 1) + "...") //
 				.position(Gdx.graphics.getWidth() * 0.025f, Gdx.graphics.getHeight() * 0.2f) //
 				.center(0f, 0.5f) //
 				.color(1f, 1f, 1f, 1f) //
@@ -264,10 +272,6 @@ public class BackgroundGameState extends GameStateImpl {
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
-	}
-
-	void loadLevel() {
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(previewLevelNumber));
 	}
 
 	private void gameFinished() {

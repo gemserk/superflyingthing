@@ -49,4 +49,6 @@ public class Events {
 	 */
 	public static final String toggleSecondBackground = "toggleSecondBackground";
 
+	public static final String previewLevel = "previewLevel";
+	
 }
