@@ -126,6 +126,11 @@ public class GameOverGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level finished",GameInformation.gameData.averageFPS );
+		} else if(GameInformation.gameMode == GameInformation.RandomGameMode){
+			Analytics.traker.trackEvent("/random", "deaths", "Level finished", GameInformation.gameData.deaths);
+			Analytics.traker.trackEvent("/random", "stars", "Level finished", GameInformation.gameData.currentItems);
+			Analytics.traker.trackEvent("/random", "fps", "Level finished",GameInformation.gameData.averageFPS );
 		}
 	}
 
