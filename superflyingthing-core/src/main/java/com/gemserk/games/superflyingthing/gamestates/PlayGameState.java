@@ -592,15 +592,6 @@ public class PlayGameState extends GameStateImpl {
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackPageView("/random/finish", "/random/finish", null);
 		}
-		
-		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", Gdx.app.getType().toString(),averageFPS.getFPS() );
-		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			Analytics.traker.trackEvent("/practice/", "fps", Gdx.app.getType().toString(),averageFPS.getFPS() );
-		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			Analytics.traker.trackEvent("/random/", "fps", Gdx.app.getType().toString(),averageFPS.getFPS() );
-		}
-
 	}
 
 	private String getRandomEndMessage() {
