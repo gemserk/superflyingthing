@@ -269,9 +269,10 @@ public class ControllerTestGameState extends GameStateImpl {
 	}
 
 	private void settings() {
-		game.transition(Screens.ControllersSettings).disposeCurrent() //
-				.start();
 		inputEnabled = false;
+		game.transition(Screens.ControllersSettings) //
+				.disposeCurrent() //
+				.start();
 	}
 
 	@Override
@@ -300,7 +301,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		if (inputEnabled) {
 			inputDevicesMonitor.update();
-			if (inputDevicesMonitor.getButton("back").isReleased()) 
+			if (inputDevicesMonitor.getButton("back").isReleased())
 				settings();
 		}
 	}

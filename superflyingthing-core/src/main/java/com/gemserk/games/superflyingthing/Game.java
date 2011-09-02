@@ -344,7 +344,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
 
-	public static class TransitionBuilder {
+	public class TransitionBuilder {
 
 		private final Screen screen;
 		private final Game game;
@@ -402,6 +402,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		public void start() {
+			
+			if (transitioning) {
+				Gdx.app.log("SuperFlyingThing", "can't start a new transition if already in a transition");
+				return;
+			}
+			
 			final Screen currentScreen = game.getScreen();
 			game.setScreen(new TransitionScreen(new ScreenTransition( //
 					new FadeOutTransition(currentScreen, leaveTime, leaveTransitionHandler), //
@@ -411,6 +417,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 							game.setScreen(screen, true);
 							if (shouldDisposeCurrentScreen)
 								currentScreen.dispose();
+							transitioning = false;
 						};
 					}))) {
 				@Override
@@ -419,9 +426,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 					Gdx.input.setCatchBackKey(true);
 				}
 			});
+			transitioning = true;
 		}
 
 	}
+	
+	private boolean transitioning;
 
 	public TransitionBuilder transition(String screen) {
 		return new TransitionBuilder(this, screenManager.get(screen));
