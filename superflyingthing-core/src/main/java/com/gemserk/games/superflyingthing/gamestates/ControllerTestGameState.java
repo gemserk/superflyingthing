@@ -61,6 +61,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	private class ControllerTestModeScript extends ScriptJavaImpl {
 		private int starsCollected = 0;
+		boolean settingsCalled = false;
 
 		@Override
 		public void init(com.artemis.World world, Entity e) {
@@ -81,7 +82,10 @@ public class ControllerTestGameState extends GameStateImpl {
 		private void checkStarsCollected(com.artemis.World world, Entity e) {
 			if (starsCollected < 4)
 				return;
+			if (settingsCalled)
+				return;
 			settings();
+			settingsCalled = true;
 		}
 
 		private void checkShipOutsideBounds(com.artemis.World world, Entity e) {
@@ -129,6 +133,8 @@ public class ControllerTestGameState extends GameStateImpl {
 	private Libgdx2dCamera guiCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private ControllerTemplates controllerTemplates;
+
+	private boolean inputEnabled = false;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -258,12 +264,14 @@ public class ControllerTestGameState extends GameStateImpl {
 				monitorKeys("back", Keys.BACK, Keys.ESCAPE);
 			}
 		};
+
+		inputEnabled = true;
 	}
 
 	private void settings() {
-		game.transition(Screens.ControllersSettings)
-				.disposeCurrent() //
+		game.transition(Screens.ControllersSettings).disposeCurrent() //
 				.start();
+		inputEnabled = false;
 	}
 
 	@Override
@@ -289,10 +297,12 @@ public class ControllerTestGameState extends GameStateImpl {
 		Synchronizers.synchronize(getDelta());
 		worldWrapper.update(getDeltaInMs());
 		container.update();
-		inputDevicesMonitor.update();
 
-		if (inputDevicesMonitor.getButton("back").isReleased())
-			settings();
+		if (inputEnabled) {
+			inputDevicesMonitor.update();
+			if (inputDevicesMonitor.getButton("back").isReleased()) 
+				settings();
+		}
 	}
 
 	@Override
