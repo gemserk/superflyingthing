@@ -16,6 +16,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
@@ -29,7 +30,7 @@ public class GameOverGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 	private Sprite whiteRectangle;
-	Container container;
+	private Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private WorldWrapper worldWrapper;
 
@@ -52,6 +53,8 @@ public class GameOverGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		container = new Container();
+		
+		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		levelNumber = getParameters().get("level", 0);
 
@@ -65,8 +68,8 @@ public class GameOverGameState extends GameStateImpl {
 		worldWrapper = getParameters().get("worldWrapper");
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
-			container.add(GuiControls.textButton() //
-					.position(centerX, height * 0.7f) //
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0.4f) //
 					.text("Try Again") //
 					.font(buttonFont) //
 					.overColor(Color.GREEN) //
@@ -84,8 +87,8 @@ public class GameOverGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode && !Levels.hasLevel(levelNumber + 1))
 			nextLevelText = "Select Level";
 
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.5f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0.2f) //
 				.text(nextLevelText) //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -99,8 +102,8 @@ public class GameOverGameState extends GameStateImpl {
 				})//
 				.build());
 
-		container.add(GuiControls.textButton() //
-				.position(centerX, height * 0.3f) //
+		panel.add(GuiControls.textButton() //
+				.position(centerX, height * 0f) //
 				.text("Main Menu") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -113,6 +116,8 @@ public class GameOverGameState extends GameStateImpl {
 					}
 				})//
 				.build());
+		
+		container.add(panel);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
