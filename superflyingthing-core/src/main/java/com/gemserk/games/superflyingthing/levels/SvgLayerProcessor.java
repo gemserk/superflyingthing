@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.levels;
 
+import java.util.Stack;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
@@ -20,11 +22,16 @@ import com.gemserk.vecmath.Vector3f;
 public class SvgLayerProcessor {
 
 	private SvgDocument svgDocument;
-
 	private String layer;
+
+	private Stack<Matrix3f> transformStack;
 
 	public SvgLayerProcessor(String layer) {
 		this.layer = layer;
+		this.transformStack = new Stack<Matrix3f>();
+		Matrix3f identity = new Matrix3f();
+		identity.setIdentity();
+		transformStack.push(identity);
 	}
 
 	public void process(Document document) {
@@ -37,18 +44,31 @@ public class SvgLayerProcessor {
 			}
 		});
 		svgParser.addHandler(new SvgInkscapeGroupHandler() {
-
+			
 			@Override
 			protected void handle(SvgParser svgParser, SvgInkscapeGroup svgInkscapeGroup, Element element) {
-
-				if (isInkscapeLayer(svgInkscapeGroup) && !isLayer(svgInkscapeGroup)) {
+				if (isNotLayer(svgInkscapeGroup)) {
 					svgParser.processChildren(false);
 					return;
 				}
 
+				Matrix3f transform = new Matrix3f(svgInkscapeGroup.getTransform());
+				transform.mul(transformStack.peek());
+				transformStack.push(transform);
 			}
 
-			private boolean isLayer(SvgInkscapeGroup svgInkscapeGroup) {
+			@Override
+			protected void postHandle(SvgParser svgParser, SvgInkscapeGroup svgInkscapeGroup, Element element) {
+				if (isNotLayer(svgInkscapeGroup))
+					return;
+				transformStack.pop();
+			}
+
+			private boolean isNotLayer(SvgInkscapeGroup svgInkscapeGroup) {
+				return isInkscapeLayer(svgInkscapeGroup) && !isExpectedLayer(svgInkscapeGroup);
+			}
+
+			private boolean isExpectedLayer(SvgInkscapeGroup svgInkscapeGroup) {
 				return svgInkscapeGroup.getLabel().equalsIgnoreCase(layer);
 			}
 
@@ -58,6 +78,8 @@ public class SvgLayerProcessor {
 
 		});
 		svgParser.addHandler(new SvgInkscapeImageHandler() {
+
+			Matrix3f transform = new Matrix3f();
 
 			private boolean isFlipped(Matrix3f matrix) {
 				return matrix.getM00() != matrix.getM11();
@@ -72,9 +94,15 @@ public class SvgLayerProcessor {
 				float width = svgImage.getWidth();
 				float height = svgImage.getHeight();
 
-				Matrix3f transform = svgImage.getTransform();
+				transform.set(svgImage.getTransform());
 
-				Vector3f position = new Vector3f(svgImage.getX() + width * 0.5f, svgImage.getY() + height * 0.5f, 0f);
+				// Matrix3f transform = svgImage.getTransform();
+
+				Matrix3f groupTransform = transformStack.peek();
+
+				transform.mul(groupTransform);
+
+				Vector3f position = new Vector3f(svgImage.getX() + width * 0.5f, svgImage.getY() + height * 0.5f, 1f);
 				transform.transform(position);
 
 				Vector3f direction = new Vector3f(1f, 0f, 0f);
@@ -85,7 +113,7 @@ public class SvgLayerProcessor {
 				float sx = 1f;
 				float sy = 1f;
 
-				if (isFlipped(transform)) 
+				if (isFlipped(transform))
 					sy = -1f;
 
 				// this stuff should be processed automatically using SVG specification with transformation of the document, etc.
@@ -97,13 +125,24 @@ public class SvgLayerProcessor {
 
 		});
 		svgParser.addHandler(new SvgInkscapePathHandler() {
+
+			Vector3f tmp = new Vector3f();
+
 			@Override
 			protected void handle(SvgParser svgParser, SvgInkscapePath svgPath, Element element) {
 				Vector2f[] points = svgPath.getPoints();
 				Vector2[] vertices = new Vector2[points.length];
 
+				Matrix3f transform = transformStack.peek();
+
 				for (int i = 0; i < points.length; i++) {
 					Vector2f point = points[i];
+
+					tmp.set(point.x, point.y, 1f);
+					transform.transform(tmp);
+
+					point.set(tmp.x, tmp.y);
+
 					// this coordinates transform, should be processed when parsed
 					vertices[i] = new Vector2(point.x, svgDocument.getHeight() - point.y);
 				}
@@ -112,17 +151,17 @@ public class SvgLayerProcessor {
 		});
 		svgParser.parse(document);
 	}
-	
+
 	protected void handleDocument(SvgDocument document, Element element) {
-		
+
 	}
-	
+
 	protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
-		
+
 	}
 
 	protected void handleImageObject(SvgInkscapeImage svgImage, Element element, float x, float y, float width, float height, float sx, float sy, float angle) {
-		
+
 	}
 
 }
