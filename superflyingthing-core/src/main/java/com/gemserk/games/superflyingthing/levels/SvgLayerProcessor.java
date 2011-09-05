@@ -12,7 +12,7 @@ import com.gemserk.commons.svg.inkscape.SvgInkscapeGroup;
 import com.gemserk.commons.svg.inkscape.SvgInkscapeGroupHandler;
 import com.gemserk.commons.svg.inkscape.SvgInkscapeImage;
 import com.gemserk.commons.svg.inkscape.SvgInkscapeImageHandler;
-import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
+import com.gemserk.commons.svg.inkscape.SvgPath;
 import com.gemserk.commons.svg.inkscape.SvgInkscapePathHandler;
 import com.gemserk.commons.svg.inkscape.SvgParser;
 import com.gemserk.vecmath.Matrix3f;
@@ -129,7 +129,7 @@ public class SvgLayerProcessor {
 			Vector3f tmp = new Vector3f();
 
 			@Override
-			protected void handle(SvgParser svgParser, SvgInkscapePath svgPath, Element element) {
+			protected void handle(SvgParser svgParser, SvgPath svgPath, Element element) {
 				Vector2f[] points = svgPath.getPoints();
 				Vector2[] vertices = new Vector2[points.length];
 
@@ -156,7 +156,7 @@ public class SvgLayerProcessor {
 
 	}
 
-	protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
+	protected void handlePathObject(SvgPath svgPath, Element element, Vector2[] vertices) {
 
 	}
 
