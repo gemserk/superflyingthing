@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.levels;
 
+import java.util.ArrayList;
 import java.util.UUID;
 
 import com.badlogic.gdx.graphics.Color;
@@ -34,27 +35,66 @@ public class RandomLevelGenerator {
 
 		Level level = new Level();
 
-		level.w = MathUtils.random(40f, 200f);
-		level.h = MathUtils.random(8f, 16f);
+		float minx = 10000f;
+		float maxx = -10000f;
 
-		level.startPlanet = new StartPlanet(5f, level.h * 0.5f);
-		level.destinationPlanets.add(new DestinationPlanet(level.w - 5f, level.h * 0.5f));
+		float miny = 10000f;
+		float maxy = -10000f;
+
+		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel();
+		for (int i = 0; i < obstacles.size(); i++) {
+			Shape obstacleShape = obstacles.get(i);
+
+			obstacleShape.x += 7.5f;
+			obstacleShape.y += 7.5f;
+
+			Obstacle obstacle = new Obstacle(obstacleShape.vertices, obstacleShape.x, obstacleShape.y, 0f);
+			obstacle.id = "obstacle-" + UUID.randomUUID();
+			level.obstacles.add(obstacle);
+
+			if (obstacleShape.bounds.x + obstacleShape.x < minx)
+				minx = obstacleShape.bounds.x + obstacleShape.x;
+
+			if (obstacleShape.bounds.x + obstacleShape.bounds.width + obstacleShape.x > maxx)
+				maxx = obstacleShape.bounds.x + obstacleShape.bounds.width + obstacleShape.x;
+
+			if (obstacleShape.bounds.y < miny)
+				miny = obstacleShape.bounds.y;
+
+			if (obstacleShape.bounds.y + obstacleShape.bounds.height > maxy)
+				maxy = obstacleShape.bounds.y + obstacleShape.bounds.height;
+
+		}
+
+		level.w = maxx - minx;
+		level.h = maxy - miny;
+
+		System.out.println("level size: " + level.w + "x" + level.h);
+
+		// level.w = MathUtils.random(40f, 200f);
+		// level.h = MathUtils.random(8f, 16f);
+
+		Shape startTile = obstacles.get(0);
+		Shape endTile = obstacles.get(obstacles.size() - 1);
+
+		level.startPlanet = new StartPlanet(startTile.x, startTile.y);
+		level.destinationPlanets.add(new DestinationPlanet(endTile.x, endTile.y));
 
 		level.startPlanet.color = getRandomColor();
 
 		float obstacleX = 12f;
 
-		while (obstacleX < level.w - 17f) {
-			Obstacle obstacle1 = new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-			Obstacle obstacle2 = new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-
-			obstacle1.id = "obstacle-" + UUID.randomUUID();
-			obstacle2.id = "obstacle-" + UUID.randomUUID();
-
-			level.obstacles.add(obstacle1);
-			level.obstacles.add(obstacle2);
-			obstacleX += 8f;
-		}
+		// while (obstacleX < level.w - 17f) {
+		// Obstacle obstacle1 = new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
+		// Obstacle obstacle2 = new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
+		//
+		// obstacle1.id = "obstacle-" + UUID.randomUUID();
+		// obstacle2.id = "obstacle-" + UUID.randomUUID();
+		//
+		// level.obstacles.add(obstacle1);
+		// level.obstacles.add(obstacle2);
+		// obstacleX += 8f;
+		// }
 
 		for (int i = 0; i < 10; i++) {
 			Item item = new Item();
