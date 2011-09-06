@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
+import java.util.Set;
 import java.util.Stack;
 
 import org.w3c.dom.Document;
@@ -49,25 +50,24 @@ public class RandomLevelTileBasedGenerator {
 
 		private final Random random = new Random();
 
-		// ArrayList<Restriction> restrictions = new ArrayList<Restriction>();
-		String startTile;
 		Map<String, Tile> tileMap;
-
-		// public void addRestriction(String a, String b) {
-		// restrictions.add(new Restriction(a, b));
-		// }
 
 		public ArrayList<String> generate() {
 			ArrayList<String> generatedTiles = new ArrayList<String>();
 
 			Stack<String> tiles = new Stack<String>();
+
+			String startTile = getStartTile();
+			if (startTile == null)
+				return generatedTiles;
+
 			tiles.add(startTile);
 
 			while (!tiles.isEmpty()) {
 				String tile = tiles.pop();
 				generatedTiles.add(tile);
 
-				ArrayList<Restriction> tileRestrictions = getRestrictionsForTile(tile);
+				ArrayList<Restriction> tileRestrictions = tileMap.get(tile).restrictions;
 				if (tileRestrictions.isEmpty())
 					continue;
 
@@ -80,9 +80,14 @@ public class RandomLevelTileBasedGenerator {
 			return generatedTiles;
 		}
 
-		private ArrayList<Restriction> getRestrictionsForTile(String tileId) {
-			Tile tile = tileMap.get(tileId);
-			return tile.restrictions;
+		private String getStartTile() {
+			Set<String> keySet = tileMap.keySet();
+			for (String key : keySet) {
+				Tile tile = tileMap.get(key);
+				if (tile.type == Tile.Type.Start)
+					return key;
+			}
+			return null;
 		}
 
 	}
@@ -143,12 +148,12 @@ public class RandomLevelTileBasedGenerator {
 			this.position.set(tile.position);
 			for (int i = 0; i < tile.paths.size(); i++)
 				paths.add(tile.paths.get(i).clone());
-			
+
 			for (int i = 0; i < tile.restrictions.size(); i++) {
 				Restriction restriction = tile.restrictions.get(i);
 				this.restrictions.add(new Restriction(restriction));
 			}
-			
+
 		}
 
 		public Tile translate(float tx, float ty) {
@@ -318,8 +323,7 @@ public class RandomLevelTileBasedGenerator {
 		Map<String, Tile> tileMap = tilesProcessor.tileMap;
 
 		Generator generator = new Generator();
-		
-		generator.startTile = "A";
+
 		generator.tileMap = tileMap;
 
 		ArrayList<String> generatedTiles = generator.generate();

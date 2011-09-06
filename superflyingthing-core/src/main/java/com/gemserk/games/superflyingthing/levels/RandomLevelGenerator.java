@@ -45,6 +45,8 @@ public class RandomLevelGenerator {
 	public Level generateRandomLevel() {
 
 		Level level = new Level();
+		
+		level.zoom = 24f;
 
 		float minx = 10000f;
 		float maxx = -10000f;
