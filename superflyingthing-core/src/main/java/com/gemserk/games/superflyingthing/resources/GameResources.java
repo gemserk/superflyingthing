@@ -83,6 +83,7 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("TickSprite", "TextureAtlas", "tick");
 		spriteAtlas("LevelButtonSprite", "TextureAtlas", "level-button");
 
+		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
 	}
 
 }

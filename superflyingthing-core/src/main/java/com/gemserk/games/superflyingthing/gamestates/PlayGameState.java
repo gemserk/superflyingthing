@@ -2,6 +2,8 @@ package com.gemserk.games.superflyingthing.gamestates;
 
 import java.text.MessageFormat;
 
+import org.w3c.dom.Document;
+
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -79,6 +81,7 @@ import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
@@ -549,7 +552,10 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	Level loadRandomLevelForRandomMode() {
-		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator();
+		
+		Resource<Document> resource = resourceManager.get("RandomLevelTilesDocument");
+		
+		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(resource.get());
 
 		Level level = randomLevelGenerator.generateRandomLevel();
 

@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.levels;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -10,9 +9,7 @@ import java.util.Stack;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
-import com.gemserk.commons.svg.inkscape.DocumentParser;
 import com.gemserk.commons.svg.inkscape.SvgDocument;
 import com.gemserk.commons.svg.inkscape.SvgDocumentHandler;
 import com.gemserk.commons.svg.inkscape.SvgInkscapeGroup;
@@ -281,17 +278,13 @@ public class RandomLevelTileBasedGenerator {
 
 	private ArrayList<RandomLevelTileBasedGenerator.Tile> levelTiles;
 	private RandomLevelTileBasedGenerator.Tile lastTile;
-
-	public ArrayList<Shape> generateLevel() {
+	
+	public ArrayList<Shape> generateLevel(Document document) {
 		lastTile = new Tile();
-
-		InputStream svgStream = Gdx.files.internal("data/levels/level-tiles-template.svg").read();
-		Document document = new DocumentParser().parse(svgStream);
 
 		RandomLevelTileBasedGenerator.TilesProcessor tilesProcessor = new TilesProcessor();
 		tilesProcessor.process(document);
 
-		// ArrayList<Tile> baseTiles = tilesProcessor.tiles;
 		levelTiles = new ArrayList<RandomLevelTileBasedGenerator.Tile>();
 
 		Map<String, RandomLevelTileBasedGenerator.Tile> tileMap = tilesProcessor.tileMap;

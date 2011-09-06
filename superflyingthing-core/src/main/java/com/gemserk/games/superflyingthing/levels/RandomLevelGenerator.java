@@ -3,6 +3,8 @@ package com.gemserk.games.superflyingthing.levels;
 import java.util.ArrayList;
 import java.util.UUID;
 
+import org.w3c.dom.Document;
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -23,12 +25,21 @@ public class RandomLevelGenerator {
 			new Shape(new Vector2[] { new Vector2(2f, 1f), new Vector2(-3f, 1.2f), new Vector2(-2.5f, -0.8f), new Vector2(2.5f, -2f) }), //
 	};
 
+	/**
+	 * The SVG with the tiles specification for the random tiles generation.
+	 */
+	private final Document document;
+
 	private Shape getRandomShape() {
 		return shapes[MathUtils.random(shapes.length - 1)];
 	}
 
 	private Color getRandomColor() {
 		return planetColors[MathUtils.random(planetColors.length - 1)];
+	}
+	
+	public RandomLevelGenerator(Document document) {
+		this.document = document;
 	}
 
 	public Level generateRandomLevel() {
@@ -41,7 +52,7 @@ public class RandomLevelGenerator {
 		float miny = 10000f;
 		float maxy = -10000f;
 
-		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel();
+		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel(document);
 		for (int i = 0; i < obstacles.size(); i++) {
 			Shape obstacleShape = obstacles.get(i);
 
