@@ -116,7 +116,7 @@ public class RandomLevelTileBasedGenerator {
 		}
 
 		@Override
-		public RandomLevelTileBasedGenerator.Path clone() {
+		public Path clone() {
 			return new Path(this);
 		}
 
@@ -124,7 +124,7 @@ public class RandomLevelTileBasedGenerator {
 
 	private static class Tile {
 
-		ArrayList<RandomLevelTileBasedGenerator.Path> paths = new ArrayList<RandomLevelTileBasedGenerator.Path>();
+		ArrayList<Path> paths = new ArrayList<Path>();
 		Vector2f size = new Vector2f();
 		Vector2f position = new Vector2f();
 
@@ -132,24 +132,24 @@ public class RandomLevelTileBasedGenerator {
 
 		}
 
-		public Tile(RandomLevelTileBasedGenerator.Tile tile) {
+		public Tile(Tile tile) {
 			this.size.set(tile.size);
 			this.position.set(tile.position);
 			for (int i = 0; i < tile.paths.size(); i++)
 				paths.add(tile.paths.get(i).clone());
 		}
 
-		public RandomLevelTileBasedGenerator.Tile translate(float tx, float ty) {
+		public Tile translate(float tx, float ty) {
 			this.position.set(tx, ty);
 			for (int i = 0; i < paths.size(); i++) {
-				RandomLevelTileBasedGenerator.Path path = paths.get(i);
+				Path path = paths.get(i);
 				path.move(tx, ty);
 			}
 			return this;
 		}
 
 		@Override
-		public RandomLevelTileBasedGenerator.Tile clone() {
+		public Tile clone() {
 			return new Tile(this);
 		}
 
@@ -157,8 +157,8 @@ public class RandomLevelTileBasedGenerator {
 
 	private static class TilesProcessor {
 
-		RandomLevelTileBasedGenerator.Tile currentTile;
-		Map<String, RandomLevelTileBasedGenerator.Tile> tileMap;
+		Tile currentTile;
+		Map<String, Tile> tileMap;
 
 		Matrix3f transform = new Matrix3f();
 		Matrix3f documentMatrix = new Matrix3f();
@@ -216,9 +216,9 @@ public class RandomLevelTileBasedGenerator {
 					center.scale(0.5f);
 
 					// center current tile paths
-					ArrayList<RandomLevelTileBasedGenerator.Path> paths = currentTile.paths;
+					ArrayList<Path> paths = currentTile.paths;
 					for (int j = 0; j < paths.size(); j++) {
-						RandomLevelTileBasedGenerator.Path path = paths.get(j);
+						Path path = paths.get(j);
 
 						ArrayList<Vector2f> points = path.points;
 						for (int k = 0; k < points.size(); k++) {
@@ -239,7 +239,7 @@ public class RandomLevelTileBasedGenerator {
 
 				@Override
 				protected void handle(SvgParser svgParser, SvgPath svgPath, Element element) {
-					RandomLevelTileBasedGenerator.Path path = new Path();
+					Path path = new Path();
 
 					Vector2f[] points = svgPath.getPoints();
 					for (int i = 0; i < points.length; i++) {
@@ -276,18 +276,18 @@ public class RandomLevelTileBasedGenerator {
 
 	}
 
-	private ArrayList<RandomLevelTileBasedGenerator.Tile> levelTiles;
-	private RandomLevelTileBasedGenerator.Tile lastTile;
+	private ArrayList<Tile> levelTiles;
+	private Tile lastTile;
 	
 	public ArrayList<Shape> generateLevel(Document document) {
 		lastTile = new Tile();
 
-		RandomLevelTileBasedGenerator.TilesProcessor tilesProcessor = new TilesProcessor();
+		TilesProcessor tilesProcessor = new TilesProcessor();
 		tilesProcessor.process(document);
 
-		levelTiles = new ArrayList<RandomLevelTileBasedGenerator.Tile>();
+		levelTiles = new ArrayList<Tile>();
 
-		Map<String, RandomLevelTileBasedGenerator.Tile> tileMap = tilesProcessor.tileMap;
+		Map<String, Tile> tileMap = tilesProcessor.tileMap;
 
 		RandomLevelTileBasedGenerator.Generator generator = new Generator() {
 			{
@@ -352,9 +352,9 @@ public class RandomLevelTileBasedGenerator {
 		ArrayList<Shape> shapes = new ArrayList<Shape>();
 
 		for (int i = 0; i < levelTiles.size(); i++) {
-			RandomLevelTileBasedGenerator.Tile tile = levelTiles.get(i);
+			Tile tile = levelTiles.get(i);
 			for (int j = 0; j < tile.paths.size(); j++) {
-				RandomLevelTileBasedGenerator.Path path = tile.paths.get(j);
+				Path path = tile.paths.get(j);
 				shapes.add(convertPathToShape(path));
 			}
 
@@ -363,18 +363,18 @@ public class RandomLevelTileBasedGenerator {
 		return shapes;
 	}
 
-	private void addRight(RandomLevelTileBasedGenerator.Tile tile) {
+	private void addRight(Tile tile) {
 		addTile(tile, lastTile.position.x + lastTile.size.x, lastTile.position.y);
 	}
 
-	private void addTile(RandomLevelTileBasedGenerator.Tile tile, float x, float y) {
-		RandomLevelTileBasedGenerator.Tile newTile = tile.clone();
+	private void addTile(Tile tile, float x, float y) {
+		Tile newTile = tile.clone();
 		newTile.translate(x, y);
 		levelTiles.add(newTile);
 		lastTile = newTile;
 	}
 
-	private Shape convertPathToShape(RandomLevelTileBasedGenerator.Path path) {
+	private Shape convertPathToShape(Path path) {
 		float x = path.transform.m02;
 		float y = path.transform.m12;
 
