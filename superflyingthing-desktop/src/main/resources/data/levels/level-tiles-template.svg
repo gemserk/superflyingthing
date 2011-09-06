@@ -77,7 +77,9 @@
  inkscape:label="Tiles">
 <g
  id="A"
- transform="scale(1.5,1.5)">
+ transform="scale(1.5,1.5)"
+ type="start"
+ restrictions="B,C,D,E,F1,G1">
 <path
  sodipodi:nodetypes="cccccccccccccccc"
  inkscape:connector-curvature="0"
@@ -87,7 +89,8 @@
 </g>
 <g
  id="B"
- transform="matrix(1.5,0,0,1.5,15,0)">
+ transform="matrix(1.5,0,0,1.5,15,0)"
+ restrictions="B,C,D,E,F1,G1">
 <path
  sodipodi:nodetypes="ccccccccc"
  inkscape:connector-curvature="0"
@@ -103,7 +106,8 @@
 </g>
 <g
  id="C"
- transform="matrix(1.5,0,0,1.5,30,0)">
+ transform="matrix(1.5,0,0,1.5,30,0)"
+ restrictions="B,C,D,E,F1,G1">
 <path
  sodipodi:nodetypes="ccccccccc"
  inkscape:connector-curvature="0"
@@ -124,7 +128,9 @@
 </g>
 <g
  id="E"
- transform="matrix(-1.5,0,0,-1.5,75,15)">
+ transform="matrix(-1.5,0,0,-1.5,75,15)"
+ type="end"
+ restrictions="">
 <path
  sodipodi:nodetypes="cccccccccccccccc"
  inkscape:connector-curvature="0"
@@ -134,7 +140,8 @@
 </g>
 <g
  id="D"
- transform="translate(45,0)">
+ transform="translate(45,0)"
+ restrictions="B,C,D,E,F1,G1">
 <path
  inkscape:connector-curvature="0"
  id="path3007"
@@ -154,7 +161,8 @@
 </g>
 <g
  id="F2"
- transform="translate(15,15)">
+ transform="translate(15,15)"
+ restrictions="B,C,D,E,F1,G1">
 <path
  inkscape:connector-curvature="0"
  id="path3130"
@@ -176,7 +184,8 @@
 </g>
 <g
  id="F1"
- transform="translate(0,15)">
+ transform="translate(0,15)"
+ restrictions="F2">
 <path
  sodipodi:nodetypes="ccccccccccc"
  inkscape:connector-curvature="0"
@@ -197,7 +206,8 @@
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
 </g>
 <g
- id="G1">
+ id="G1"
+ restrictions="G2">
 <path
  sodipodi:nodetypes="ccccccccccc"
  inkscape:connector-curvature="0"
@@ -212,7 +222,8 @@
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
 </g>
 <g
- id="G2">
+ id="G2"
+ restrictions="G3">
 <path
  sodipodi:nodetypes="ccccccccccccc"
  inkscape:connector-curvature="0"
@@ -227,7 +238,8 @@
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
 </g>
 <g
- id="G3">
+ id="G3"
+ restrictions="B,C,D,E,F1,G1">
 <path
  sodipodi:nodetypes="ccccccccccc"
  inkscape:connector-curvature="0"

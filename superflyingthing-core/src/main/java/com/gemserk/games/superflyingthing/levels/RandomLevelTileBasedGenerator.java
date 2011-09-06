@@ -25,31 +25,37 @@ import com.gemserk.vecmath.Vector2f;
 import com.gemserk.vecmath.Vector3f;
 
 public class RandomLevelTileBasedGenerator {
-	
-	private static class Generator {
 
-		private class Restriction {
+	private static class Restriction {
 
-			String a;
-			String b;
+		String a;
+		String b;
 
-			// assume right direction for now.
+		// assume right direction for now.
 
-			public Restriction(String a, String b) {
-				this.a = a;
-				this.b = b;
-			}
-
+		public Restriction(String a, String b) {
+			this.a = a;
+			this.b = b;
 		}
+
+		public Restriction(Restriction restriction) {
+			this.a = restriction.a;
+			this.b = restriction.b;
+		}
+
+	}
+
+	private static class Generator {
 
 		private final Random random = new Random();
 
-		ArrayList<Restriction> restrictions = new ArrayList<Restriction>();
+		// ArrayList<Restriction> restrictions = new ArrayList<Restriction>();
 		String startTile;
+		Map<String, Tile> tileMap;
 
-		public void addRestriction(String a, String b) {
-			restrictions.add(new Restriction(a, b));
-		}
+		// public void addRestriction(String a, String b) {
+		// restrictions.add(new Restriction(a, b));
+		// }
 
 		public ArrayList<String> generate() {
 			ArrayList<String> generatedTiles = new ArrayList<String>();
@@ -74,21 +80,13 @@ public class RandomLevelTileBasedGenerator {
 			return generatedTiles;
 		}
 
-		private ArrayList<Restriction> getRestrictionsForTile(String tile) {
-			ArrayList<Restriction> tileRestrictions = new ArrayList<Restriction>();
-
-			for (int i = 0; i < restrictions.size(); i++) {
-				Restriction restriction = restrictions.get(i);
-				if (restriction.a != tile)
-					continue;
-				tileRestrictions.add(restriction);
-			}
-
-			return tileRestrictions;
+		private ArrayList<Restriction> getRestrictionsForTile(String tileId) {
+			Tile tile = tileMap.get(tileId);
+			return tile.restrictions;
 		}
 
 	}
-	
+
 	private static class Path {
 
 		/**
@@ -124,9 +122,17 @@ public class RandomLevelTileBasedGenerator {
 
 	private static class Tile {
 
+		public enum Type {
+			Start, Normal, End
+		};
+
 		ArrayList<Path> paths = new ArrayList<Path>();
 		Vector2f size = new Vector2f();
 		Vector2f position = new Vector2f();
+
+		Type type = Type.Normal;
+
+		ArrayList<Restriction> restrictions = new ArrayList<Restriction>();
 
 		public Tile() {
 
@@ -137,6 +143,12 @@ public class RandomLevelTileBasedGenerator {
 			this.position.set(tile.position);
 			for (int i = 0; i < tile.paths.size(); i++)
 				paths.add(tile.paths.get(i).clone());
+			
+			for (int i = 0; i < tile.restrictions.size(); i++) {
+				Restriction restriction = tile.restrictions.get(i);
+				this.restrictions.add(new Restriction(restriction));
+			}
+			
 		}
 
 		public Tile translate(float tx, float ty) {
@@ -194,6 +206,22 @@ public class RandomLevelTileBasedGenerator {
 					if (SvgInkscapeUtils.isLayer(element))
 						return;
 					currentTile = new Tile();
+
+					String attribute = element.getAttribute("type");
+
+					if ("start".equals(attribute))
+						currentTile.type = Tile.Type.Start;
+
+					if ("end".equals(attribute))
+						currentTile.type = Tile.Type.End;
+
+					String restrictionsString = element.getAttribute("restrictions");
+					if (!"".equals(restrictionsString)) {
+						String[] restrictions = restrictionsString.split(",");
+						for (int i = 0; i < restrictions.length; i++) {
+							currentTile.restrictions.add(new Restriction(svgInkscapeGroup.getId(), restrictions[i]));
+						}
+					}
 
 					transform.set(documentMatrix);
 					transform.mul(svgInkscapeGroup.getTransform());
@@ -278,7 +306,7 @@ public class RandomLevelTileBasedGenerator {
 
 	private ArrayList<Tile> levelTiles;
 	private Tile lastTile;
-	
+
 	public ArrayList<Shape> generateLevel(Document document) {
 		lastTile = new Tile();
 
@@ -289,58 +317,10 @@ public class RandomLevelTileBasedGenerator {
 
 		Map<String, Tile> tileMap = tilesProcessor.tileMap;
 
-		RandomLevelTileBasedGenerator.Generator generator = new Generator() {
-			{
-				addRestriction("A", "B");
-				addRestriction("A", "C");
-				addRestriction("A", "D");
-				addRestriction("A", "E");
-				addRestriction("A", "F1");
-				addRestriction("A", "G1");
-
-				addRestriction("B", "B");
-				addRestriction("B", "C");
-				addRestriction("B", "D");
-				addRestriction("B", "E");
-				addRestriction("B", "F1");
-				addRestriction("B", "G1");
-
-				addRestriction("C", "B");
-				addRestriction("C", "C");
-				addRestriction("C", "D");
-				addRestriction("C", "E");
-				addRestriction("C", "F1");
-				addRestriction("C", "G1");
-
-				addRestriction("D", "B");
-				addRestriction("D", "C");
-				addRestriction("D", "D");
-				addRestriction("D", "E");
-				addRestriction("D", "F1");
-				addRestriction("D", "G1");
-
-				addRestriction("F1", "F2");
-
-				addRestriction("F2", "B");
-				addRestriction("F2", "C");
-				addRestriction("F2", "D");
-				addRestriction("F2", "E");
-				addRestriction("F2", "F1");
-				addRestriction("F2", "G1");
-
-				addRestriction("G1", "G2");
-				addRestriction("G2", "G3");
-
-				addRestriction("G3", "B");
-				addRestriction("G3", "C");
-				addRestriction("G3", "D");
-				addRestriction("G3", "E");
-				addRestriction("G3", "F1");
-				addRestriction("G3", "G1");
-
-				startTile = "A";
-			}
-		};
+		Generator generator = new Generator();
+		
+		generator.startTile = "A";
+		generator.tileMap = tileMap;
 
 		ArrayList<String> generatedTiles = generator.generate();
 
