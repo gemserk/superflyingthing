@@ -4,7 +4,6 @@ import org.lwjgl.opengl.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
@@ -17,6 +16,7 @@ import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.games.superflyingthing.DebugComponents.MovementComponentDebugWindow;
+import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 
 public class DesktopApplication {
 
@@ -66,11 +66,11 @@ public class DesktopApplication {
 				getEventManager().register(Events.showCustomizeControls, new EventListener() {
 					@Override
 					public void onEvent(Event event) {
-						World world = (World) event.getSource();
-						// MovementComponentDebugWindow movementComponentDebugWindow = DebugComponents.getMovementComponentDebugWindow();
+						PlayGameState playGameState = (PlayGameState) event.getSource();
+						MovementComponentDebugWindow movementComponentDebugWindow = DebugComponents.getMovementComponentDebugWindow();
 						// if (movementComponentDebugWindow == null)
-						MovementComponentDebugWindow movementComponentDebugWindow = new MovementComponentDebugWindow();
-						movementComponentDebugWindow.setWorld(world);
+						// MovementComponentDebugWindow movementComponentDebugWindow = new MovementComponentDebugWindow();
+						movementComponentDebugWindow.setWorld(playGameState);
 					}
 				});
 

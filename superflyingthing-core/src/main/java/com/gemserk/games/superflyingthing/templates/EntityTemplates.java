@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
@@ -84,6 +85,50 @@ import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
 
+	private class AttachedShipTemplate extends EntityTemplateImpl {
+		 
+		public AttachedShipTemplate() {
+			parameters.put("maxLinearSpeed", new Float(4.5f));
+			parameters.put("maxAngularVelocity", new Float(400f));
+		}
+
+		@Override
+		public void apply(Entity e) {
+			float width = 0.8f;
+			float height = 0.8f;
+
+			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
+
+			Vector2 position = parameters.get("position");
+
+			Float maxLinearSpeed = parameters.get("maxLinearSpeed");
+			Float maxAngularVelocity = parameters.get("maxAngularVelocity");
+
+			Gdx.app.log("SuperFlyingThing", "Building new attached ship with " + maxLinearSpeed + ", " + maxAngularVelocity);
+
+			Body body = bodyBuilder //
+					.fixture(bodyBuilder.fixtureDefBuilder() //
+							.restitution(0f) //
+							.categoryBits(CategoryBits.ShipCategoryBits) //
+							.maskBits((short) 0) //
+							.boxShape(width * 0.125f, height * 0.125f)) //
+					.mass(50f) //
+					.position(position.x, position.y) //
+					.type(BodyType.DynamicBody) //
+					.userData(e) //
+					.build();
+
+			e.addComponent(new TagComponent(Groups.ship));
+			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
+			e.addComponent(new RenderableComponent(1));
+			e.addComponent(new MovementComponent(1f, 0f, maxLinearSpeed, maxAngularVelocity));
+			e.addComponent(new AttachableComponent());
+			e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
+			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
+		}
+	}
 	public static class CategoryBits {
 
 		public static short AllCategoryBits = 0xFF;
@@ -273,48 +318,7 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate attachedShipTemplate = new EntityTemplateImpl() {
-
-		{
-			parameters.put("maxLinearSpeed", new Float(4.5f));
-			parameters.put("maxAngularVelocity", new Float(360f));
-		}
-
-		@Override
-		public void apply(Entity e) {
-			float width = 0.8f;
-			float height = 0.8f;
-
-			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
-
-			Vector2 position = parameters.get("position");
-
-			Float maxLinearSpeed = parameters.get("maxLinearSpeed");
-			Float maxAngularVelocity = parameters.get("maxAngularVelocity");
-
-			Body body = bodyBuilder //
-					.fixture(bodyBuilder.fixtureDefBuilder() //
-							.restitution(0f) //
-							.categoryBits(CategoryBits.ShipCategoryBits) //
-							.maskBits((short) 0) //
-							.boxShape(width * 0.125f, height * 0.125f)) //
-					.mass(50f) //
-					.position(position.x, position.y) //
-					.type(BodyType.DynamicBody) //
-					.userData(e) //
-					.build();
-
-			e.addComponent(new TagComponent(Groups.ship));
-			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
-			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(1f, 0f, maxLinearSpeed, maxAngularVelocity));
-			e.addComponent(new AttachableComponent());
-			e.addComponent(new ScriptComponent(new Scripts.AttachedShipScript()));
-			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
-		}
-	};
+	private EntityTemplate attachedShipTemplate = new AttachedShipTemplate();
 
 	private EntityTemplate deadShipTemplate = new EntityTemplateImpl() {
 

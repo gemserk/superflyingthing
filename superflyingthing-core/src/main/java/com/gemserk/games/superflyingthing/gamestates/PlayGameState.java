@@ -306,7 +306,7 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		entityBuilder //
-				.component(new TagComponent("EventManager")) //
+				.component(new TagComponent(Groups.EventManager)) //
 				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
 				.build();
 
@@ -328,7 +328,7 @@ public class PlayGameState extends GameStateImpl {
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
 
-			@Handles
+			@Handles(ids=Events.gameStarted)
 			public void gameStarted(Event e) {
 				if (GameInformation.gameMode != GameInformation.ChallengeGameMode)
 					return;
@@ -641,10 +641,6 @@ public class PlayGameState extends GameStateImpl {
 			Gdx.app.log("SuperFlyingThing", "Pausing level " + levelNumber);
 		}
 		
-		if (inputDevicesMonitor.getButton("showCustomizeControls").isReleased()) {
-			game.getEventManager().registerEvent(Events.showCustomizeControls, world);
-		}
-
 		worldWrapper.update(getDeltaInMs());
 		if (tiltValueEnabled) {
 			float pitch = Gdx.input.getPitch();
@@ -678,6 +674,9 @@ public class PlayGameState extends GameStateImpl {
 			// creates a new controller using new preferences
 			createGameController(controllerComponent.getController());
 		}
+		
+		if (Game.isDebugMode())
+			game.getEventManager().registerEvent(Events.showCustomizeControls, PlayGameState.this);
 	}
 
 	@Override

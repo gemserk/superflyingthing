@@ -17,5 +17,7 @@ public class Groups {
 	
 	// used for the controller itself, the entity with the controller script, etc
 	public static final String PlayerController = "PlayerController";
+	
+	public static final String EventManager = "EventManager";
 
 }

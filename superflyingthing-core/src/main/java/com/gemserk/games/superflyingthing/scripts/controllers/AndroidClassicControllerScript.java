@@ -11,8 +11,9 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 	// TODO: add some controller explanation
 
 	private final ShipController controller;
-
-	// private int updateCount = 0;
+	
+	public float minValue = 0.1f;
+	public float speed = 5f;
 
 	public AndroidClassicControllerScript(ShipController controller) {
 		this.controller = controller;
@@ -43,7 +44,7 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 			// updateCount++;
 
 			float movementDirection = controller.getMovementDirection();
-			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, 0.1f, (GlobalTime.getDelta()), 5f);
+			movementDirection = ControllerUtils.calculateDirectionWithVariableSensibility(movementDirection, direction, minValue, (GlobalTime.getDelta()), speed);
 			controller.setMovementDirection(movementDirection);
 
 			return;

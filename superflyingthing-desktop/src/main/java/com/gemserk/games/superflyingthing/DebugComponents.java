@@ -1,6 +1,9 @@
 package com.gemserk.games.superflyingthing;
 
 import java.awt.GridLayout;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.lang.reflect.Field;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -10,8 +13,13 @@ import javax.swing.event.ChangeListener;
 
 import com.artemis.Entity;
 import com.artemis.World;
-import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.scripts.Script;
+import com.badlogic.gdx.Gdx;
+import com.gemserk.commons.artemis.events.Event;
+import com.gemserk.commons.artemis.events.EventManager;
+import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
+import com.gemserk.commons.artemis.events.reflection.Handles;
+import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
 import com.gemserk.games.superflyingthing.templates.Groups;
 
@@ -19,7 +27,10 @@ public class DebugComponents {
 
 	public static class MovementComponentDebugWindow extends JFrame {
 
+		private PlayGameState playGameState;
 		private World world;
+
+		private JSlider maxLinearSpeedSlider;
 
 		public MovementComponentDebugWindow() {
 			setName("Ship Movement Component");
@@ -27,35 +38,152 @@ public class DebugComponents {
 			setVisible(true);
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			setLayout(new GridLayout(10, 1));
+			
+			addWindowListener(new WindowAdapter() {
+				@Override
+				public void windowClosed(WindowEvent e) {
+					super.windowClosed(e);
+					DebugComponents.movementComponentDebugWindow = null;
+				}
+				@Override
+				public void windowClosing(WindowEvent e) {
+					super.windowClosing(e);
+					DebugComponents.movementComponentDebugWindow = null;
+				}
+			});
+
+			configureWindow();
 		}
 
-		public void setWorld(World world) {
-			this.world = world;
+		public void setWorld(PlayGameState playGameState) {
+			this.playGameState = playGameState;
+			this.world = getWorld(playGameState);
+			
+			EventManager eventManager = getEventManager(playGameState);
 
-			Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
-			if (playerController == null)
+			Gdx.app.log("SuperFlyingThing", "Registering controller window to game EventManager");
+
+			new EventListenerReflectionRegistrator(eventManager).registerEventListeners(this);
+
+		}
+
+		private World getWorld(PlayGameState playGameState) {
+			try {
+				Field field = playGameState.getClass().getDeclaredField("world");
+				field.setAccessible(true);
+				return (World) field.get(playGameState);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+		
+		private EventManager getEventManager(PlayGameState playGameState) {
+			try {
+				Field field = playGameState.getClass().getDeclaredField("eventManager");
+				field.setAccessible(true);
+				return (EventManager) field.get(playGameState);
+			} catch (Exception e) {
+				e.printStackTrace();
+				throw new RuntimeException(e);
+			}
+		}
+
+		private void configureWindow() {
+			add(new JLabel("Ship - Maximum Linear Speed"));
+			
+			maxLinearSpeedSlider = new JSlider(0, 100, 50) {
+				{
+					addChangeListener(new ChangeListener() {
+						@Override
+						public void stateChanged(ChangeEvent e) {
+							// script.minValue = 0.01f * ((float) getValue());
+							setShipSpeed(0.1f * (float) getValue());
+						}
+					});
+					setMajorTickSpacing(100);
+					setMinorTickSpacing(10);
+					setPaintTicks(true);
+					setPaintLabels(true);
+				}
+			};
+
+			add(maxLinearSpeedSlider);
+
+			validate();
+		}
+
+		@Handles(ids = Events.shipSpawned)
+		public void setValuesToShipWhenSpawned(Event e) {
+			// Entity shipEntity = world.getTagManager().getEntity(Groups.ship);
+			Entity shipEntity = (Entity) e.getSource();
+			if (shipEntity == null)
+				return;
+			Gdx.app.log("SuperFlyingThing", "Set debug control values to new spawned ship");
+
+			float speed = 0.1f * (float) maxLinearSpeedSlider.getValue();
+
+			MovementComponent movementComponent = shipEntity.getComponent(MovementComponent.class);
+			movementComponent.setMaxLinearSpeed(speed);
+		}
+
+		// void configureController(World world) {
+		// Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+		// if (playerController == null)
+		// return;
+		//
+		// ScriptComponent scriptComponent = playerController.getComponent(ScriptComponent.class);
+		// Script[] scripts = scriptComponent.getScripts();
+		//
+		// for (int i = 0; i < scripts.length; i++) {
+		// Script script = scripts[i];
+		//
+		// if (script instanceof KeyboardControllerScript) {
+		// configureKeyboardController((KeyboardControllerScript) script);
+		// return;
+		// }
+		//
+		// }
+		// }
+
+		private void setShipSpeed(float speed) {
+
+			Entity shipEntity = world.getTagManager().getEntity(Groups.ship);
+			if (shipEntity == null)
 				return;
 
-			ScriptComponent scriptComponent = playerController.getComponent(ScriptComponent.class);
-			Script[] scripts = scriptComponent.getScripts();
+			speed = 0.1f * (float) maxLinearSpeedSlider.getValue();
 
-			for (int i = 0; i < scripts.length; i++) {
-				Script script = scripts[i];
+			// e.addComponent(new MovementComponent(1f, 0f, maxLinearSpeed, maxAngularVelocity));
 
-				if (script instanceof KeyboardControllerScript) {
-					confitureKeyboardController((KeyboardControllerScript) script);
-					return;
-				}
-
-			}
+			MovementComponent movementComponent = shipEntity.getComponent(MovementComponent.class);
+			movementComponent.setMaxLinearSpeed(speed);
 
 		}
 
-		private void confitureKeyboardController(final KeyboardControllerScript script) {
-			// removeAll();
+		private void configureKeyboardController(final KeyboardControllerScript script) {
+			removeAll();
+			setLayout(new GridLayout(10, 1));
 
+			add(new JSlider(0, 100, 50) {
+				{
+					addChangeListener(new ChangeListener() {
+						@Override
+						public void stateChanged(ChangeEvent e) {
+							// script.minValue = 0.01f * ((float) getValue());
+							setShipSpeed(0.1f * (float) getValue());
+						}
+					});
+					setMajorTickSpacing(100);
+					setMinorTickSpacing(10);
+					setPaintTicks(true);
+					setPaintLabels(true);
+				}
+			});
+
+			add(new JLabel("Keyboard Script values"));
 			add(new JLabel("Min value - 0 to 100"));
-			
+
 			JSlider minValueSlider = new JSlider(0, 100, (int) (script.minValue * 100)) {
 				{
 					addChangeListener(new ChangeListener() {
@@ -73,7 +201,7 @@ public class DebugComponents {
 			add(minValueSlider);
 
 			add(new JLabel("Speed - 0 to 100"));
-			
+
 			JSlider maxSpeedSlider = new JSlider(0, 100, (int) (script.speed * 10)) {
 				{
 					addChangeListener(new ChangeListener() {
