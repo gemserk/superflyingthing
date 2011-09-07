@@ -46,7 +46,7 @@ public class DesktopApplication {
 		// config.height = 320;
 		// config.width = 1024;
 		// config.height = 768;
-		
+
 		config.fullscreen = false;
 		config.title = "Super Flying Thing";
 		config.useGL20 = false;
@@ -62,20 +62,20 @@ public class DesktopApplication {
 				if (remoteInput != null)
 					Gdx.input = new RemoteInput(8190);
 				super.create();
-				
+
 				getEventManager().register(Events.showCustomizeControls, new EventListener() {
 					@Override
 					public void onEvent(Event event) {
 						World world = (World) event.getSource();
-//						MovementComponentDebugWindow movementComponentDebugWindow = DebugComponents.getMovementComponentDebugWindow();
+						// MovementComponentDebugWindow movementComponentDebugWindow = DebugComponents.getMovementComponentDebugWindow();
+						// if (movementComponentDebugWindow == null)
 						MovementComponentDebugWindow movementComponentDebugWindow = new MovementComponentDebugWindow();
 						movementComponentDebugWindow.setWorld(world);
 					}
 				});
+
 			}
-			
-			
-			
+
 		}, config);
 	}
 
