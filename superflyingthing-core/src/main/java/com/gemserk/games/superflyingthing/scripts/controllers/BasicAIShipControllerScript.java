@@ -2,7 +2,6 @@ package com.gemserk.games.superflyingthing.scripts.controllers;
 
 import com.artemis.Entity;
 import com.artemis.utils.ImmutableBag;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Fixture;
@@ -85,7 +84,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 			if (!collides) {
 				wayToDestinationPlanet = true;
 				target.set(destinationPlanetSpatial.getPosition());
-				Gdx.app.log("SuperFlyingThing", "Direct way to destination planet detected");
+//				Gdx.app.log("SuperFlyingThing", "Direct way to destination planet detected");
 				return;
 			}
 
