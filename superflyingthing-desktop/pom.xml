@@ -4,12 +4,12 @@
 	<parent>
 		<groupId>com.gemserk.games.superflyingthing</groupId>
 		<artifactId>superflyingthing</artifactId>
-		<version>0.0.4-SNAPSHOT</version>
+		<version>0.0.6-SNAPSHOT</version>
 	</parent>
 
 	<groupId>com.gemserk.games.superflyingthing</groupId>
 	<artifactId>superflyingthing-desktop</artifactId>
-	<version>0.0.4-SNAPSHOT</version>
+	<version>0.0.6-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
 	<name>Super Flying Thing Prototype - Desktop Version</name>

@@ -37,6 +37,7 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.gdx.AverageFPS;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.camera.Camera;
@@ -123,6 +124,7 @@ public class PlayGameState extends GameStateImpl {
 	private Level level;
 	private Integer levelNumber;
 	private Libgdx2dCamera secondBackgroundLayerCamera;
+	private AverageFPS averageFPS;
 
 	// private boolean loading;
 
@@ -152,6 +154,7 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
+		averageFPS = new AverageFPS();
 		createALotOfStuff();
 		loadLevel();
 		createWorld();
@@ -580,7 +583,7 @@ public class PlayGameState extends GameStateImpl {
 		parameters.put("text", getRandomEndMessage());
 
 		entityFactory.instantiate(userMessageTemplate, parameters);
-
+		gameData.averageFPS = averageFPS.getFPS();
 		// container.add(message);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
@@ -590,7 +593,6 @@ public class PlayGameState extends GameStateImpl {
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackPageView("/random/finish", "/random/finish", null);
 		}
-
 	}
 
 	private String getRandomEndMessage() {
@@ -613,17 +615,19 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-
+	
 	@Override
 	public void update() {
 		// if (loading)
 		// return;
+		averageFPS.update();
 
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
 		container.update();
 
 		if (inputDevicesMonitor.getButton("pause").isReleased()) {
+			gameData.averageFPS = averageFPS.getFPS();
 			game.transition(Screens.Pause) //
 					.disposeCurrent(false) //
 					.parameter("level", levelNumber) //
@@ -668,13 +672,6 @@ public class PlayGameState extends GameStateImpl {
 			// creates a new controller using new preferences
 			createGameController(controllerComponent.getController());
 		}
-	}
-
-	@Override
-	public void pause() {
-		// if (loading)
-		// return;
-		super.pause();
 	}
 
 	@Override

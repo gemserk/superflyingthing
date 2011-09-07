@@ -182,8 +182,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
 
 		// creates and registers all the controller templates
-		gameData = new GameData();
-		GameInformation.gameData = gameData;
 
 		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
 				.put("color", Color.WHITE) //

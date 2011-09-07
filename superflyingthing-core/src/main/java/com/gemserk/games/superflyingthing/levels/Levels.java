@@ -13,7 +13,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.svg.inkscape.DocumentParser;
-import com.gemserk.commons.svg.inkscape.SvgInkscapePath;
+import com.gemserk.commons.svg.inkscape.SvgPath;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
@@ -82,14 +82,14 @@ public class Levels {
 			};
 
 			@Override
-			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
+			protected void handlePathObject(SvgPath svgPath, Element element, Vector2[] vertices) {
 				registeredPaths.put(svgPath.getId(), vertices);
 			}
 		}.process(document);
 
 		new SvgLayerProcessor("Obstacles") {
 			@Override
-			protected void handlePathObject(SvgInkscapePath svgPath, Element element, Vector2[] vertices) {
+			protected void handlePathObject(SvgPath svgPath, Element element, Vector2[] vertices) {
 				Obstacle obstacle = new Obstacle(vertices);
 
 				obstacle.id = svgPath.getId();

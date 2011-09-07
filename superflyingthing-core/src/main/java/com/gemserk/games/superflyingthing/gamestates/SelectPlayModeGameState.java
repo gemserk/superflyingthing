@@ -15,6 +15,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
@@ -27,9 +28,9 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 
-	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private Sprite whiteRectangleSprite;
+	private Container container;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -51,17 +52,19 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		container = new Container();
+		
+		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
-		container.add(GuiControls.label("Select Game Mode") //
-				.position(centerX, height * 0.9f) //
+		panel.add(GuiControls.label("Select Game Mode") //
+				.position(centerX, height * 0.60f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
 
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Challenge") //
 				.font(buttonFont) //
-				.position(centerX, height * 0.7f) //
+				.position(centerX, height * 0.4f) //
 				.center(0.5f, 0.5f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -74,10 +77,10 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Random") //
 				.font(buttonFont) //
-				.position(centerX, height * 0.5f) //
+				.position(centerX, height * 0.2f) //
 				.center(0.5f, 0.5f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -90,10 +93,10 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Practice") //
 				.font(buttonFont) //
-				.position(centerX, height * 0.3f) //
+				.position(centerX, height * 0f) //
 				.center(0.5f, 0.5f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -105,6 +108,8 @@ public class SelectPlayModeGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
+		
+		container.add(panel);
 
 		if (Gdx.app.getType() != ApplicationType.Android)
 			container.add(GuiControls.textButton() //

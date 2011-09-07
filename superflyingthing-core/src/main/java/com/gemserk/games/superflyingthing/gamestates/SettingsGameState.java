@@ -27,6 +27,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -77,9 +78,11 @@ public class SettingsGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		container = new Container();
+		
+		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
-		container.add(GuiControls.label("Settings") //
-				.position(centerX, height * 0.9f) //
+		panel.add(GuiControls.label("Settings") //
+				.position(centerX, height * 0.6f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
@@ -88,11 +91,11 @@ public class SettingsGameState extends GameStateImpl {
 		underlineSprite.setSize(Gdx.graphics.getWidth() * 0.35f, 3f);
 		underlineSprite.setColor(Colors.yellow);
 
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Toggle background") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.75f) //
+				.position(width * 0.025f, height * 0.48f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -104,11 +107,11 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Toggle FPS") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.63f) //
+				.position(width * 0.025f, height * 0.36f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -122,12 +125,12 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.id("ShowReplay") //
 				.text(showReplay ? "Show Replay: On" : "Show Replay: Off") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.51f) //
+				.position(width * 0.025f, height * 0.24f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -138,11 +141,11 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Change Controller") //
 				.font(buttonFont) //
 				.center(0f, 0.5f) //
-				.position(width * 0.025f, height * 0.39f) //
+				.position(width * 0.025f, height * 0.12f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -154,11 +157,11 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 		
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Save") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.51f) //
+				.position(width * 0.975f, height * 0.24f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -169,11 +172,11 @@ public class SettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Cancel") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.39f) //
+				.position(width * 0.975f, height * 0.12f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -185,6 +188,8 @@ public class SettingsGameState extends GameStateImpl {
 				}) //
 				.build());
 
+		container.add(panel);
+		
 		renderLayers = new RenderLayers();
 
 		final Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();

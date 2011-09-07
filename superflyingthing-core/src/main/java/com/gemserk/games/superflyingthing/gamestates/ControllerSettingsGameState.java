@@ -29,6 +29,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -51,6 +52,8 @@ public class ControllerSettingsGameState extends GameStateImpl {
 		private final Color notOverColor = Color.WHITE;
 		private final Color overColor = Color.GREEN;
 		private final Sprite underlineSprite;
+		
+		private Control selectedControl;
 
 		public MultipleButtonControlWithUnderline(Sprite underlineSprite) {
 			this.underlineSprite = underlineSprite;
@@ -97,13 +100,25 @@ public class ControllerSettingsGameState extends GameStateImpl {
 			}
 
 			textButton.setNotOverColor(selectedColor);
-			SpriteUtils.centerOn(underlineSprite, textButton.getX(), textButton.getY() - 15f, 0f, 0.5f);
+			
+			selectedControl = textButton;
+			
 		}
 
 		@Override
 		public void draw(SpriteBatch spriteBatch) {
 			super.draw(spriteBatch);
 			underlineSprite.draw(spriteBatch);
+			
+			SpriteUtils.centerOn(underlineSprite, selectedControl.getX(), selectedControl.getY() - 15f, 0f, 0.5f);
+		}
+
+		@Override
+		public void setPosition(float x, float y) {
+			for (int i = 0; i < getControls().size(); i++) {
+				Control control = getControls().get(i);
+				control.setPosition(x + control.getX(), y + control.getY());
+			}
 		}
 
 	}
@@ -140,27 +155,28 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 		container = new Container();
 
+		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
+
 		selectedControllerType = game.getGamePreferences().getCurrentPlayerProfile().getControllerType();
 		ControllerType[] availableControllers = getAvailableControllers();
 
-		container.add(GuiControls.label("Settings") //
-				.position(centerX, height * 0.9f) //
+		panel.add(GuiControls.label("Settings") //
+				.position(centerX, height * 0.6f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
 
 		float x = width * 0.025f;
-		float y = height * 0.75f;
+		float y = height * 0f;
 
 		Sprite underlineSprite = resourceManager.getResourceValue("WhiteRectangle");
 		underlineSprite.setSize(Gdx.graphics.getWidth() * 0.35f, 3f);
 		underlineSprite.setColor(Colors.yellow);
 
 		MultipleButtonControlWithUnderline multipleButtonControlWithUnderline = new MultipleButtonControlWithUnderline(underlineSprite);
-		container.add(multipleButtonControlWithUnderline);
 
 		for (int i = 0; i < availableControllers.length; i++) {
-			final ControllerType controllerType = availableControllers[i];
+			final ControllerType controllerType = availableControllers[availableControllers.length - i - 1];
 			TextButton controllerTextButton = GuiControls.textButton() //
 					.text(controllerType.name()) //
 					.font(buttonFont) //
@@ -181,14 +197,16 @@ public class ControllerSettingsGameState extends GameStateImpl {
 			if (selectedControllerType == controllerType)
 				multipleButtonControlWithUnderline.select(controllerTextButton);
 
-			y -= height * 0.12f;
+			y += height * 0.12f;
 		}
 
-		container.add(GuiControls.textButton() //
+		panel.add(multipleButtonControlWithUnderline);
+
+		panel.add(GuiControls.textButton() //
 				.text("Test") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.63f) //
+				.position(width * 0.975f, height * 0.36f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -199,11 +217,11 @@ public class ControllerSettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Save") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.51f) //
+				.position(width * 0.975f, height * 0.24f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -214,11 +232,11 @@ public class ControllerSettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
-		container.add(GuiControls.textButton() //
+		panel.add(GuiControls.textButton() //
 				.text("Cancel") //
 				.font(buttonFont) //
 				.center(1f, 0.5f) //
-				.position(width * 0.975f, height * 0.39f) //
+				.position(width * 0.975f, height * 0.12f) //
 				.boundsOffset(20f, 20f) //
 				.notOverColor(Color.WHITE) //
 				.overColor(Color.GREEN) //
@@ -229,6 +247,8 @@ public class ControllerSettingsGameState extends GameStateImpl {
 					}
 				}) //
 				.build());
+
+		container.add(panel);
 
 		renderLayers = new RenderLayers();
 

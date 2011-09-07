@@ -14,7 +14,9 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.ResourceManager;
@@ -25,8 +27,8 @@ public class MainMenuGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 	private ResourceManager<String> resourceManager;
 
-	Container container;
 	private Sprite whiteRectangleSprite;
+	private Container container;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -49,22 +51,24 @@ public class MainMenuGameState extends GameStateImpl {
 		BitmapFont versionFont = resourceManager.getResourceValue("VersionFont");
 
 		container = new Container();
+		
+		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
-		container.add(GuiControls.label("Super Flying Thing") //
-				.position(centerX, height * 0.9f) //
+		panel.add(GuiControls.label("Super Flying Thing") //
+				.position(centerX, height * 0.60f) //
 				.color(Color.GREEN) //
 				.font(titleFont) //
 				.build());
 
 		String version = game.getGameData().get("version");
-		container.add(GuiControls.label("v" + version) //
-				.position(centerX, height * 0.85f) //
+		panel.add(GuiControls.label("v" + version) //
+				.position(centerX, height * 0.55f) //
 				.color(Color.WHITE) //
 				.font(versionFont) //
 				.build());
 
 		TextButton playButton = GuiControls.textButton() //
-				.position(centerX, height * 0.7f) //
+				.position(centerX, height * 0.4f) //
 				.text("Play") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -81,7 +85,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.build();
 
 		TextButton settingsButton = GuiControls.textButton() //
-				.position(centerX, height * 0.5f) //
+				.position(centerX, height * 0.2f) //
 				.text("Settings") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -96,7 +100,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.build();
 
 		TextButton exitButton = GuiControls.textButton() //
-				.position(centerX, height * 0.3f) //
+				.position(centerX, height * 0f) //
 				.text("Exit") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -111,10 +115,12 @@ public class MainMenuGameState extends GameStateImpl {
 				.build();
 
 		// container.add(text);
-		container.add(playButton);
-		container.add(settingsButton);
+		panel.add(playButton);
+		panel.add(settingsButton);
 		if (Gdx.app.getType() != ApplicationType.Applet)
-			container.add(exitButton);
+			panel.add(exitButton);
+		
+		container.add(panel);
 
 		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
 		whiteRectangleSprite.setPosition(0, 0);
@@ -122,8 +128,8 @@ public class MainMenuGameState extends GameStateImpl {
 		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
 
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
-		backgroundGameScreen.getParameters().put("previewLevel", null);
 		backgroundGameScreen.init();
+		game.getEventManager().registerEvent(Events.previewRandomLevel, this);
 	}
 
 	private void settings() {

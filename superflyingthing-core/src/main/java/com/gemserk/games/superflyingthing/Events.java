@@ -51,4 +51,7 @@ public class Events {
 	
 	public static final String showCustomizeControls = "showCustomizeControls";
 
+	public static final String previewLevel = "previewLevel";
+	public static final String previewRandomLevel = "previewRandomLevel";
+	
 }
