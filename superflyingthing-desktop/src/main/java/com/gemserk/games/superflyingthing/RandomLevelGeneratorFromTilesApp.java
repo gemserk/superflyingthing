@@ -79,9 +79,7 @@ public class RandomLevelGeneratorFromTilesApp {
 
 			Resource<Document> documentResource = resourceManager.get("RandomLevelTilesDocument");
 
-			shapes = new RandomLevelTileBasedGenerator().generateLevel(documentResource.get());
-
-			System.out.println("Generated level size: " + shapes.size());
+			shapes = new RandomLevelTileBasedGenerator().generateLevel(documentResource.get(), 10);
 
 		}
 

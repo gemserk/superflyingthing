@@ -67,7 +67,7 @@ public class RandomLevelTileBasedGenerator {
 
 		Map<String, Tile> tileMap;
 
-		public ArrayList<String> generate() {
+		public ArrayList<String> generate(int depth) {
 			ArrayList<String> generatedTiles = new ArrayList<String>();
 
 			Stack<String> tiles = new Stack<String>();
@@ -78,6 +78,8 @@ public class RandomLevelTileBasedGenerator {
 
 			tiles.add(startTile);
 
+			depth -= 1;
+
 			while (!tiles.isEmpty()) {
 				String tileId = tiles.pop();
 				generatedTiles.add(tileId);
@@ -87,8 +89,10 @@ public class RandomLevelTileBasedGenerator {
 				if (tile.rightTileLink.isNull())
 					continue;
 
-				Tile nextTile = getRandomTileWithLeftLink(tile.rightTileLink.getTileType());
+				Tile nextTile = getRandomTileWithLeftLink(tile.rightTileLink.getTileType(), depth == 0);
 				tiles.add(nextTile.id);
+
+				depth -= 1;
 			}
 
 			return generatedTiles;
@@ -104,14 +108,17 @@ public class RandomLevelTileBasedGenerator {
 			return null;
 		}
 
-		private Tile getRandomTileWithLeftLink(String leftLinkType) {
+		private Tile getRandomTileWithLeftLink(String leftLinkType, boolean end) {
 			ArrayList<Tile> tiles = new ArrayList<Tile>();
 
 			Set<String> keySet = tileMap.keySet();
 			for (String key : keySet) {
 				Tile tile = tileMap.get(key);
-				if (tile.matchLeft(leftLinkType))
+				if (tile.matchLeft(leftLinkType)) {
+					if (end && tile.type != Tile.Type.End)
+						continue;
 					tiles.add(tile);
+				}
 			}
 
 			if (tiles.isEmpty())
@@ -352,7 +359,7 @@ public class RandomLevelTileBasedGenerator {
 	private ArrayList<Tile> levelTiles;
 	private Tile lastTile;
 
-	public ArrayList<Shape> generateLevel(Document document) {
+	public ArrayList<Shape> generateLevel(Document document, int maxDepth) {
 		lastTile = new Tile("");
 
 		TilesProcessor tilesProcessor = new TilesProcessor();
@@ -366,7 +373,9 @@ public class RandomLevelTileBasedGenerator {
 
 		generator.tileMap = tileMap;
 
-		ArrayList<String> generatedTiles = generator.generate();
+		// System.out.println("max level depth "+ maxDepth);
+
+		ArrayList<String> generatedTiles = generator.generate(maxDepth);
 
 		for (int i = 0; i < generatedTiles.size(); i++) {
 			String tileId = generatedTiles.get(i);
