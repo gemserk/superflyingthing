@@ -46,7 +46,7 @@ public class RandomLevelGenerator {
 
 		Level level = new Level();
 		
-		level.zoom = 24f;
+		level.zoom = 64f;
 
 		float minx = 10000f;
 		float maxx = -10000f;
@@ -57,7 +57,7 @@ public class RandomLevelGenerator {
 		float startX = 5f;
 		float startY = 5f;
 
-		int maxLevelDepth = 10;
+		int maxLevelDepth = MathUtils.random(2, 7);
 		
 		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel(document, maxLevelDepth);
 		for (int i = 0; i < obstacles.size(); i++) {
@@ -92,8 +92,8 @@ public class RandomLevelGenerator {
 		Shape startTile = obstacles.get(0);
 		Shape endTile = obstacles.get(obstacles.size() - 1);
 
-		level.startPlanet = new StartPlanet(startTile.x, startTile.y);
-		level.destinationPlanets.add(new DestinationPlanet(endTile.x, endTile.y));
+		level.startPlanet = new StartPlanet(startTile.x - 1.5f, startTile.y);
+		level.destinationPlanets.add(new DestinationPlanet(endTile.x + 1.5f, endTile.y));
 
 		level.startPlanet.color = getRandomColor();
 

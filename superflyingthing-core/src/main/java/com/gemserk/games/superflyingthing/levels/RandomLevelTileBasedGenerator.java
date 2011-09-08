@@ -90,6 +90,10 @@ public class RandomLevelTileBasedGenerator {
 					continue;
 
 				Tile nextTile = getRandomTileWithLeftLink(tile.rightTileLink.getTileType(), depth == 0);
+				
+				if (nextTile == null)
+					continue;
+				
 				tiles.add(nextTile.id);
 
 				depth -= 1;
@@ -116,6 +120,8 @@ public class RandomLevelTileBasedGenerator {
 				Tile tile = tileMap.get(key);
 				if (tile.matchLeft(leftLinkType)) {
 					if (end && tile.type != Tile.Type.End)
+						continue;
+					if (!end && tile.type == Tile.Type.End)
 						continue;
 					tiles.add(tile);
 				}

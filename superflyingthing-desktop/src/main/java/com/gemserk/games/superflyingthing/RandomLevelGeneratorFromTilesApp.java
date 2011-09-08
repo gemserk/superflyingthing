@@ -10,6 +10,7 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.glutils.ImmediateModeRenderer10;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -79,7 +80,9 @@ public class RandomLevelGeneratorFromTilesApp {
 
 			Resource<Document> documentResource = resourceManager.get("RandomLevelTilesDocument");
 
-			shapes = new RandomLevelTileBasedGenerator().generateLevel(documentResource.get(), 10);
+			int maxLevelDepth = MathUtils.random(2, 7);
+			
+			shapes = new RandomLevelTileBasedGenerator().generateLevel(documentResource.get(), maxLevelDepth);
 
 		}
 

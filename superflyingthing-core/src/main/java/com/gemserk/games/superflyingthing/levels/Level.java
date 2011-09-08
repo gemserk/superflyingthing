@@ -111,7 +111,7 @@ public class Level {
 	}
 
 	public float w, h;
-	public float zoom = 48f;
+	public float zoom = 64f;
 
 	public ArrayList<Obstacle> obstacles = new ArrayList<Level.Obstacle>();
 
