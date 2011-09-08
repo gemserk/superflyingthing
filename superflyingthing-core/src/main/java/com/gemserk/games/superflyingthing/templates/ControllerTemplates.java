@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.gemserk.commons.artemis.components.RenderableComponent;
@@ -32,6 +33,7 @@ public class ControllerTemplates {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", Groups.PlayerController);
 			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
+//			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller, new RemoteInput(8190))));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
 		}
@@ -53,7 +55,7 @@ public class ControllerTemplates {
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", Groups.PlayerController);
-			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller)));
+			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller, Gdx.input)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
 		}

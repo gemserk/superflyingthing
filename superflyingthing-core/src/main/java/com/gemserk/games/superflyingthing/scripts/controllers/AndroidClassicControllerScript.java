@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.scripts.controllers;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -15,8 +16,11 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 	public float minValue = 0.4f;
 	public float speed = 2f;
 
-	public AndroidClassicControllerScript(ShipController controller) {
+	private final Input input;
+
+	public AndroidClassicControllerScript(ShipController controller, Input input) {
 		this.controller = controller;
+		this.input = input;
 	}
 
 	@Override
@@ -26,19 +30,19 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 	}
 
 	private void updateReleaseShip(com.artemis.World world, Entity e) {
-		controller.setShouldReleaseShip(Gdx.input.isTouched());
+		controller.setShouldReleaseShip(input.isTouched());
 	}
 
 	public void updateMovementDirection(com.artemis.World world, Entity e) {
 		for (int i = 0; i < 5; i++) {
-			if (!Gdx.input.isTouched(i))
+			if (!input.isTouched(i))
 				continue;
 
 			float direction = 0f;
 
-			if (Gdx.input.getX(i) < Gdx.graphics.getWidth() * 0.5f)
+			if (input.getX(i) < Gdx.graphics.getWidth() * 0.5f)
 				direction = 1f;
-			else if (Gdx.input.getX(i) > Gdx.graphics.getWidth() * 0.5f)
+			else if (input.getX(i) > Gdx.graphics.getWidth() * 0.5f)
 				direction = -1f;
 
 			// updateCount++;
