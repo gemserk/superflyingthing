@@ -29,18 +29,15 @@ public class RandomLevelTileBasedGenerator {
 
 	private static class Restriction {
 
-		String a;
 		String b;
 
 		// assume right direction for now.
 
-		public Restriction(String a, String b) {
-			this.a = a;
+		public Restriction(String b) {
 			this.b = b;
 		}
 
 		public Restriction(Restriction restriction) {
-			this.a = restriction.a;
 			this.b = restriction.b;
 		}
 
@@ -224,7 +221,7 @@ public class RandomLevelTileBasedGenerator {
 					if (!"".equals(restrictionsString)) {
 						String[] restrictions = restrictionsString.split(",");
 						for (int i = 0; i < restrictions.length; i++) {
-							currentTile.restrictions.add(new Restriction(svgInkscapeGroup.getId(), restrictions[i]));
+							currentTile.restrictions.add(new Restriction(restrictions[i]));
 						}
 					}
 
