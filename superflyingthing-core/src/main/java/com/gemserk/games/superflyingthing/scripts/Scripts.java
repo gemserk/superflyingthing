@@ -4,9 +4,11 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.components.AnimationComponent;
+import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
@@ -388,6 +390,8 @@ public class Scripts {
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
+			
+			PhysicsComponent attachedShipPhysicsComponent = ComponentWrapper.getPhysicsComponent(gameDataComponent.attachedShip);
 
 			Entity contollerEntity = world.getTagManager().getEntity(Groups.PlayerController);
 			if (contollerEntity == null) {
@@ -403,6 +407,11 @@ public class Scripts {
 			parameters.put("maxAngularVelocity", movementComponent.getMaxAngularVelocity());
 
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
+			
+			PhysicsComponent shipPhysicsComponent = ComponentWrapper.getPhysicsComponent(gameDataComponent.ship);
+			
+			Vector2 linearVelocity = attachedShipPhysicsComponent.getBody().getLinearVelocity();
+			shipPhysicsComponent.getBody().setLinearVelocity(linearVelocity);
 
 			world.deleteEntity(gameDataComponent.attachedShip);
 			gameDataComponent.attachedShip = null;
