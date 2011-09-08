@@ -12,8 +12,8 @@ public class AndroidClassicControllerScript extends ScriptJavaImpl {
 
 	private final ShipController controller;
 	
-	public float minValue = 0.1f;
-	public float speed = 5f;
+	public float minValue = 0.4f;
+	public float speed = 2f;
 
 	public AndroidClassicControllerScript(ShipController controller) {
 		this.controller = controller;

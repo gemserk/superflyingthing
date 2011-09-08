@@ -31,6 +31,7 @@ public class DebugComponents {
 		private World world;
 
 		private JSlider maxLinearSpeedSlider;
+		private JSlider maxAngularSpeedSlider;
 
 		public MovementComponentDebugWindow() {
 			setName("Ship Movement Component");
@@ -38,13 +39,14 @@ public class DebugComponents {
 			setVisible(true);
 			setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 			setLayout(new GridLayout(10, 1));
-			
+
 			addWindowListener(new WindowAdapter() {
 				@Override
 				public void windowClosed(WindowEvent e) {
 					super.windowClosed(e);
 					DebugComponents.movementComponentDebugWindow = null;
 				}
+
 				@Override
 				public void windowClosing(WindowEvent e) {
 					super.windowClosing(e);
@@ -58,7 +60,7 @@ public class DebugComponents {
 		public void setWorld(PlayGameState playGameState) {
 			this.playGameState = playGameState;
 			this.world = getWorld(playGameState);
-			
+
 			EventManager eventManager = getEventManager(playGameState);
 
 			Gdx.app.log("SuperFlyingThing", "Registering controller window to game EventManager");
@@ -77,7 +79,7 @@ public class DebugComponents {
 				throw new RuntimeException(e);
 			}
 		}
-		
+
 		private EventManager getEventManager(PlayGameState playGameState) {
 			try {
 				Field field = playGameState.getClass().getDeclaredField("eventManager");
@@ -90,15 +92,15 @@ public class DebugComponents {
 		}
 
 		private void configureWindow() {
+
 			add(new JLabel("Ship - Maximum Linear Speed"));
-			
-			maxLinearSpeedSlider = new JSlider(0, 100, 50) {
+			maxLinearSpeedSlider = new JSlider(0, 100, 40) {
 				{
 					addChangeListener(new ChangeListener() {
 						@Override
 						public void stateChanged(ChangeEvent e) {
 							// script.minValue = 0.01f * ((float) getValue());
-							setShipSpeed(0.1f * (float) getValue());
+							setShipLinearSpeed(0.1f * (float) getValue());
 						}
 					});
 					setMajorTickSpacing(100);
@@ -107,8 +109,24 @@ public class DebugComponents {
 					setPaintLabels(true);
 				}
 			};
-
 			add(maxLinearSpeedSlider);
+			
+			add(new JLabel("Ship - Maximum Angular Speed"));
+			maxAngularSpeedSlider = new JSlider(0, 720, 400) {
+				{
+					addChangeListener(new ChangeListener() {
+						@Override
+						public void stateChanged(ChangeEvent e) {
+							setShipAngularSpeed((float) getValue());
+						}
+					});
+					setMajorTickSpacing(100);
+					setMinorTickSpacing(10);
+					setPaintTicks(true);
+					setPaintLabels(true);
+				}
+			};
+			add(maxAngularSpeedSlider);
 
 			validate();
 		}
@@ -122,9 +140,11 @@ public class DebugComponents {
 			Gdx.app.log("SuperFlyingThing", "Set debug control values to new spawned ship");
 
 			float speed = 0.1f * (float) maxLinearSpeedSlider.getValue();
+			float angularSpeed = (float) maxAngularSpeedSlider.getValue();
 
 			MovementComponent movementComponent = shipEntity.getComponent(MovementComponent.class);
 			movementComponent.setMaxLinearSpeed(speed);
+			movementComponent.setMaxAngularVelocity(angularSpeed);
 		}
 
 		// void configureController(World world) {
@@ -146,18 +166,31 @@ public class DebugComponents {
 		// }
 		// }
 
-		private void setShipSpeed(float speed) {
+		private void setShipLinearSpeed(float speed) {
 
 			Entity shipEntity = world.getTagManager().getEntity(Groups.ship);
 			if (shipEntity == null)
 				return;
 
-			speed = 0.1f * (float) maxLinearSpeedSlider.getValue();
-
+			// speed = 0.1f * (float) maxLinearSpeedSlider.getValue();
 			// e.addComponent(new MovementComponent(1f, 0f, maxLinearSpeed, maxAngularVelocity));
 
 			MovementComponent movementComponent = shipEntity.getComponent(MovementComponent.class);
 			movementComponent.setMaxLinearSpeed(speed);
+
+		}
+		
+		private void setShipAngularSpeed(float speed) {
+
+			Entity shipEntity = world.getTagManager().getEntity(Groups.ship);
+			if (shipEntity == null)
+				return;
+
+			// speed = 0.1f * (float) maxLinearSpeedSlider.getValue();
+			// e.addComponent(new MovementComponent(1f, 0f, maxLinearSpeed, maxAngularVelocity));
+
+			MovementComponent movementComponent = shipEntity.getComponent(MovementComponent.class);
+			movementComponent.setMaxAngularVelocity(speed);
 
 		}
 
@@ -171,7 +204,7 @@ public class DebugComponents {
 						@Override
 						public void stateChanged(ChangeEvent e) {
 							// script.minValue = 0.01f * ((float) getValue());
-							setShipSpeed(0.1f * (float) getValue());
+							setShipLinearSpeed(0.1f * (float) getValue());
 						}
 					});
 					setMajorTickSpacing(100);

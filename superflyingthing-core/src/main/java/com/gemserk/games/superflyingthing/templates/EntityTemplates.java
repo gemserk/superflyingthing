@@ -88,7 +88,7 @@ public class EntityTemplates {
 	private class AttachedShipTemplate extends EntityTemplateImpl {
 		 
 		public AttachedShipTemplate() {
-			parameters.put("maxLinearSpeed", new Float(4.5f));
+			parameters.put("maxLinearSpeed", new Float(4f));
 			parameters.put("maxAngularVelocity", new Float(400f));
 		}
 
@@ -688,7 +688,7 @@ public class EntityTemplates {
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
 		e.addComponent(new ShapeComponent(mesh2dBuilder.build(), obstacleTexture));
 		e.addComponent(new RenderableComponent(-60));
-		e.addComponent(new Components.DamageComponent(3000f));
+		e.addComponent(new Components.DamageComponent(10000f));
 
 		e.refresh();
 		return e;

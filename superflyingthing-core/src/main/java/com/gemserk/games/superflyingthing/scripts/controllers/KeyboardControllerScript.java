@@ -15,8 +15,8 @@ public class KeyboardControllerScript extends ScriptJavaImpl {
 	private int rotateLeftKey = Keys.LEFT;
 	private int rotateRightKey = Keys.RIGHT;
 
-	public float minValue = 0.1f;
-	public float speed = 5f;
+	public float minValue = 0.4f;
+	public float speed = 2f;
 
 	public KeyboardControllerScript(ShipController controller) {
 		this.controller = controller;
