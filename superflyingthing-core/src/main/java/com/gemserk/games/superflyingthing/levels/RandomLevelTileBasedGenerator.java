@@ -87,7 +87,7 @@ public class RandomLevelTileBasedGenerator {
 				if (tile.rightTileLink.isNull())
 					continue;
 
-				Tile nextTile = getRandomTileWithLeftLink(tile.rightTileLink.tileType);
+				Tile nextTile = getRandomTileWithLeftLink(tile.rightTileLink.getTileType());
 				tiles.add(nextTile.id);
 			}
 
