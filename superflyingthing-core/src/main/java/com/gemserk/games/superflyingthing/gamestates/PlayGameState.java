@@ -329,11 +329,10 @@ public class PlayGameState extends GameStateImpl {
 				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
 
-			@Handles(ids=Events.gameStarted)
+			@Handles(ids = Events.gameStarted)
 			public void gameStarted(Event e) {
 				if (GameInformation.gameMode != GameInformation.ChallengeGameMode)
 					return;
-				Level level = Levels.level(levelNumber);
 				parameters.clear();
 				parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
 				parameters.put("text", "Level " + levelNumber + ": " + level.name);
@@ -541,7 +540,11 @@ public class PlayGameState extends GameStateImpl {
 
 	Level loadLevelForChallengeMode() {
 		if (Levels.hasLevel(levelNumber)) {
-			Level level = Levels.level(levelNumber);
+			// Level level = Levels.level(levelNumber);
+
+			Resource<Level> levelResource = resourceManager.get(Levels.levelId(levelNumber));
+			Level level = levelResource.get();
+
 			new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
 			gameData.totalItems = level.items.size();
@@ -554,9 +557,9 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	Level loadRandomLevelForRandomMode() {
-		
+
 		Resource<Document> resource = resourceManager.get("RandomLevelTilesDocument");
-		
+
 		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(resource.get());
 
 		Level level = randomLevelGenerator.generateRandomLevel();
@@ -622,7 +625,7 @@ public class PlayGameState extends GameStateImpl {
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
-	
+
 	@Override
 	public void update() {
 		// if (loading)
@@ -641,7 +644,7 @@ public class PlayGameState extends GameStateImpl {
 					.start();
 			Gdx.app.log("SuperFlyingThing", "Pausing level " + levelNumber);
 		}
-		
+
 		worldWrapper.update(getDeltaInMs());
 		if (tiltValueEnabled) {
 			float pitch = Gdx.input.getPitch();
@@ -675,7 +678,7 @@ public class PlayGameState extends GameStateImpl {
 			// creates a new controller using new preferences
 			createGameController(controllerComponent.getController());
 		}
-		
+
 		if (Game.isDebugMode())
 			game.getEventManager().registerEvent(Events.showCustomizeControls, PlayGameState.this);
 	}

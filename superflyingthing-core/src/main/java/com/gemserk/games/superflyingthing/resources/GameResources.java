@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.resources;
 
 import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.gdx.resources.LibgdxResourceBuilder;
+import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.resources.ResourceManager;
 
 /**
@@ -84,6 +85,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("LevelButtonSprite", "TextureAtlas", "level-button");
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
+
+		Levels.declareLevelResources(resourceManager);
+
 	}
 
 }

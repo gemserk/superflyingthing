@@ -35,7 +35,6 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
-import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -113,7 +112,8 @@ public class GenerateLevelThumbnailApplication {
 
 						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory, null);
 
-						Level level = Levels.level(8);
+//						Level level = Levels.level(8);
+						Level level = new Level();
 
 						for (int i = 0; i < level.obstacles.size(); i++) {
 							Obstacle o = level.obstacles.get(i);

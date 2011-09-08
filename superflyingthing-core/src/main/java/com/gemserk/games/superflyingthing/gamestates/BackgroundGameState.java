@@ -50,6 +50,7 @@ import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.CameraComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.BasicAIShipControllerScript;
@@ -59,6 +60,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
@@ -205,7 +207,10 @@ public class BackgroundGameState extends GameStateImpl {
 				.put("spriteId", "BackgroundSprite") //
 				);
 
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(Levels.level(levelNumber));
+		Resource<Level> levelResource = resourceManager.get(Levels.levelId(levelNumber)); 
+		Level level = levelResource.get();
+		
+		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
 		createWorld(levelNumber);
 

@@ -20,6 +20,8 @@ import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.Item;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
+import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.dataloaders.DataLoader;
 
 public class Levels {
 
@@ -44,24 +46,29 @@ public class Levels {
 			"data/levels/level18.svg", //
 	};
 
-	private static Level[] cachedLevels = new Level[levels.length];
-
 	private static Color[] planetColors = new Color[] { Color.BLUE, Color.RED, Colors.darkGreen, Colors.darkMagenta, Colors.darkYellow };
 
-	public static Level level(int levelNumber) {
+	public static String levelId(int levelNumber) {
+		return "Level" + levelNumber;
+	}
 
-		levelNumber -= 1;
+	public static void declareLevelResources(ResourceManager<String> resourceManager) {
+		for (int i = 0; i < levels.length; i++)
+			level(levelId(i + 1), levels[i], resourceManager);
+	}
 
-		if (cachedLevels[levelNumber] != null) {
-			Gdx.app.log("SuperFlyingThing", "Loading level " + (levelNumber + 1) + " from cache...");
-			return cachedLevels[levelNumber];
-		}
+	private static void level(String id, final String file, ResourceManager<String> resourceManager) {
+		resourceManager.add(id, new DataLoader<Level>() {
+			@Override
+			public Level load() {
+				InputStream svg = Gdx.files.internal(file).read();
+				Document document = new DocumentParser().parse(svg);
+				return Levels.loadLevelFromSvg(document);
+			}
+		});
+	}
 
-		Gdx.app.log("SuperFlyingThing", "Loading level " + (levelNumber + 1) + " from file...");
-
-		InputStream svg = Gdx.files.internal(levels[levelNumber]).read();
-		Document document = new DocumentParser().parse(svg);
-
+	public static Level loadLevelFromSvg(Document document) {
 		final Level level = new Level();
 		level.name = "name";
 
@@ -183,9 +190,6 @@ public class Levels {
 		level.startPlanet.color = planetColors[MathUtils.random(planetColors.length - 1)];
 
 		generateRandomClouds(level, 4);
-
-		cachedLevels[levelNumber] = level;
-
 		return level;
 	}
 
