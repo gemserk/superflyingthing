@@ -53,9 +53,9 @@ public class RandomLevelGeneratorFromTilesApp {
 		@Override
 		public void init() {
 			gl = Gdx.graphics.getGL10();
-			
+
 			resourceManager = new ResourceManagerImpl<String>();
-			
+
 			GameResources.load(resourceManager);
 
 			projectionMatrix = new Matrix4();
@@ -68,7 +68,7 @@ public class RandomLevelGeneratorFromTilesApp {
 			projectionMatrix.setToOrtho2D(-worldWidth * 0.25f / zoom, -worldHeight * 0.5f / zoom, worldWidth / zoom, worldHeight / zoom);
 
 			renderer = new ImmediateModeRenderer10();
-			
+
 			Resource<Document> documentResource = resourceManager.get("RandomLevelTilesDocument");
 
 			shapes = new RandomLevelTileBasedGenerator().generateLevel(documentResource.get());
@@ -87,6 +87,18 @@ public class RandomLevelGeneratorFromTilesApp {
 			ImmediateModeRendererUtils.drawLine(0, -1000, 0, 1000, Color.GREEN);
 			ImmediateModeRendererUtils.drawLine(-1000, 0, 1000, 0, Color.GREEN);
 
+			// for (int i = 0; i < shapes.size(); i++) {
+			// Shape shape = shapes.get(i);
+			// renderer.begin(projectionMatrix, GL10.GL_LINE_LOOP);
+			// for (int k = 0; k < shape.vertices.length; k++) {
+			// Vector2 vertex = shape.vertices[k];
+			// renderer.color(1f, 1f, 1f, 1f);
+			// renderer.vertex(vertex.x, vertex.y, 0f);
+			// }
+			// renderer.end();
+			//
+			// }
+
 			for (int i = 0; i < shapes.size(); i++) {
 				Shape shape = shapes.get(i);
 				renderer.begin(projectionMatrix, GL10.GL_LINE_LOOP);
@@ -96,7 +108,6 @@ public class RandomLevelGeneratorFromTilesApp {
 					renderer.vertex(vertex.x + shape.x, vertex.y + shape.y, 0f);
 				}
 				renderer.end();
-
 			}
 
 		}

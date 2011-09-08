@@ -53,13 +53,16 @@ public class RandomLevelGenerator {
 
 		float miny = 10000f;
 		float maxy = -10000f;
+		
+		float startX = 5f;
+		float startY = 5f;
 
 		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel(document);
 		for (int i = 0; i < obstacles.size(); i++) {
 			Shape obstacleShape = obstacles.get(i);
 
-			obstacleShape.x += 7.5f;
-			obstacleShape.y += 7.5f;
+			obstacleShape.x += startX;
+			obstacleShape.y += startY;
 
 			Obstacle obstacle = new Obstacle(obstacleShape.vertices, obstacleShape.x, obstacleShape.y, 0f);
 			obstacle.id = "obstacle-" + UUID.randomUUID();
@@ -84,9 +87,6 @@ public class RandomLevelGenerator {
 
 		System.out.println("level size: " + level.w + "x" + level.h);
 
-		// level.w = MathUtils.random(40f, 200f);
-		// level.h = MathUtils.random(8f, 16f);
-
 		Shape startTile = obstacles.get(0);
 		Shape endTile = obstacles.get(obstacles.size() - 1);
 
@@ -94,20 +94,6 @@ public class RandomLevelGenerator {
 		level.destinationPlanets.add(new DestinationPlanet(endTile.x, endTile.y));
 
 		level.startPlanet.color = getRandomColor();
-
-		float obstacleX = 12f;
-
-		// while (obstacleX < level.w - 17f) {
-		// Obstacle obstacle1 = new Obstacle(getRandomShape().vertices, obstacleX + 5f, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-		// Obstacle obstacle2 = new Obstacle(getRandomShape().vertices, obstacleX, MathUtils.random(0f, level.h), MathUtils.random(0f, 359f));
-		//
-		// obstacle1.id = "obstacle-" + UUID.randomUUID();
-		// obstacle2.id = "obstacle-" + UUID.randomUUID();
-		//
-		// level.obstacles.add(obstacle1);
-		// level.obstacles.add(obstacle2);
-		// obstacleX += 8f;
-		// }
 
 		for (int i = 0; i < 10; i++) {
 			Item item = new Item();

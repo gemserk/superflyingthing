@@ -28,9 +28,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="12.6409"
- inkscape:cx="43.1444"
- inkscape:cy="19.5698"
+ inkscape:zoom="48.3236"
+ inkscape:cx="35.3657"
+ inkscape:cy="21.8082"
  inkscape:document-units="px"
  inkscape:current-layer="layer2"
  showgrid="true"
@@ -77,7 +77,6 @@
  inkscape:label="Tiles">
 <g
  id="A"
- transform="scale(1.5,1.5)"
  type="start"
  restrictions="B,C,D,E,F1,G1">
 <path
@@ -89,24 +88,24 @@
 </g>
 <g
  id="B"
- transform="matrix(1.5,0,0,1.5,15,0)"
+ transform="matrix(1.39166,0,0,1,10,0)"
  restrictions="B,C,D,E,F1,G1">
 <path
  sodipodi:nodetypes="ccccccccc"
  inkscape:connector-curvature="0"
  id="path3064"
- d="M 0,6 2.0172,7.52922 5.0756,6.62198 8,7 9,6 10,6 10,10 0,10 z"
+ d="M 0,6 1.94285,6.41175 4.30236,6.49782 5.74853,6.51735 6.64661,6.02069 7.18564,6 7.18564,10 0,10 z"
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
 <path
  sodipodi:nodetypes="cccccccc"
  inkscape:connector-curvature="0"
  id="path3068"
- d="M 0,4 0.9244,3.50858 2,3 8,3 10,4 10,0 0,0 z"
+ d="M 0,4 0.9244,3.50858 3.15985,3.20694 5.12616,3.49665 7.18564,4 7.18564,0 0,0 z"
  style="fill:#0000ff;fill-opacity:1;fill-rule:nonzero;stroke:none" />
 </g>
 <g
  id="C"
- transform="matrix(1.5,0,0,1.5,30,0)"
+ transform="translate(20,0)"
  restrictions="B,C,D,E,F1,G1">
 <path
  sodipodi:nodetypes="ccccccccc"
@@ -128,7 +127,7 @@
 </g>
 <g
  id="E"
- transform="matrix(-1.5,0,0,-1.5,75,15)"
+ transform="matrix(-1,0,0,-1,50,10)"
  type="end"
  restrictions="">
 <path
@@ -140,7 +139,7 @@
 </g>
 <g
  id="D"
- transform="translate(45,0)"
+ transform="matrix(0.666662,0,0,0.666667,30,0)"
  restrictions="B,C,D,E,F1,G1">
 <path
  inkscape:connector-curvature="0"
@@ -163,7 +162,7 @@
 </g>
 <g
  id="F2"
- transform="translate(15,15)"
+ transform="matrix(0.666667,0,0,0.666667,10,15)"
  restrictions="B,C,D,E,F1,G1">
 <path
  inkscape:connector-curvature="0"
@@ -186,7 +185,7 @@
 </g>
 <g
  id="F1"
- transform="translate(0,15)"
+ transform="matrix(0.666667,0,0,0.666667,0,15)"
  restrictions="F2">
 <path
  sodipodi:nodetypes="ccccccccccc"
@@ -209,7 +208,8 @@
 </g>
 <g
  id="G1"
- restrictions="G2">
+ restrictions="G2"
+ transform="matrix(0.666667,0,0,0.666667,0,5)">
 <path
  sodipodi:nodetypes="ccccccccccc"
  inkscape:connector-curvature="0"
@@ -225,7 +225,8 @@
 </g>
 <g
  id="G2"
- restrictions="G3">
+ restrictions="G3"
+ transform="matrix(0.666667,0,0,0.666667,0,5)">
 <path
  sodipodi:nodetypes="ccccccccccccc"
  inkscape:connector-curvature="0"
@@ -241,7 +242,8 @@
 </g>
 <g
  id="G3"
- restrictions="B,C,D,E,F1,G1">
+ restrictions="B,C,D,E,F1,G1"
+ transform="matrix(0.666667,0,0,0.666667,0,5)">
 <path
  sodipodi:nodetypes="ccccccccccc"
  inkscape:connector-curvature="0"

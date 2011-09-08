@@ -261,6 +261,8 @@ public class RandomLevelTileBasedGenerator {
 						}
 
 					}
+					
+//					System.out.println("NEW TILE: " + svgInkscapeGroup.getId() + ", " + currentTile.size + ", " + currentTile.position);
 
 					tileMap.put(svgInkscapeGroup.getId(), currentTile);
 				}
