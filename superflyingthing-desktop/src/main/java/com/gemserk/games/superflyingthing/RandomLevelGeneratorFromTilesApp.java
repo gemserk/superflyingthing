@@ -25,9 +25,12 @@ import com.gemserk.vecmath.Vector3f;
 public class RandomLevelGeneratorFromTilesApp {
 
 	private static class Application extends com.gemserk.commons.gdx.Game {
+		
+		boolean restartPressed;
 
 		public void create() {
 			setScreen(new ScreenImpl(new GameState()));
+			
 		}
 
 		@Override
@@ -35,7 +38,12 @@ public class RandomLevelGeneratorFromTilesApp {
 			super.render();
 
 			if (Gdx.input.isKeyPressed(Keys.R)) {
-				getScreen().restart();
+				restartPressed = true;
+			} else {
+				if (restartPressed) {
+					getScreen().restart();
+					restartPressed = false;
+				}
 			}
 		}
 

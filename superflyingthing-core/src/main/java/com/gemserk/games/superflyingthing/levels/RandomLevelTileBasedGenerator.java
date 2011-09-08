@@ -27,18 +27,36 @@ import com.gemserk.vecmath.Vector3f;
 
 public class RandomLevelTileBasedGenerator {
 
-	private static class Restriction {
+	private static class TileLink {
 
-		String b;
+		private boolean nullLink;
+		private String tileType;
 
-		// assume right direction for now.
-
-		public Restriction(String b) {
-			this.b = b;
+		public TileLink() {
+			nullLink = true;
 		}
 
-		public Restriction(Restriction restriction) {
-			this.b = restriction.b;
+		public TileLink(String tileType) {
+			if ("".equals(tileType) || "0".equals(tileType))
+				nullLink = true;
+			else {
+				nullLink = false;
+				this.tileType = tileType;
+			}
+		}
+
+		public boolean isNull() {
+			return nullLink;
+		}
+
+		public String getTileType() {
+			return tileType;
+		}
+
+		public boolean match(String tileType) {
+			if (nullLink)
+				return false;
+			return this.tileType.equals(tileType);
 		}
 
 	}
@@ -61,17 +79,16 @@ public class RandomLevelTileBasedGenerator {
 			tiles.add(startTile);
 
 			while (!tiles.isEmpty()) {
-				String tile = tiles.pop();
-				generatedTiles.add(tile);
+				String tileId = tiles.pop();
+				generatedTiles.add(tileId);
 
-				ArrayList<Restriction> tileRestrictions = tileMap.get(tile).restrictions;
-				if (tileRestrictions.isEmpty())
+				Tile tile = tileMap.get(tileId);
+
+				if (tile.rightTileLink.isNull())
 					continue;
 
-				int size = tileRestrictions.size();
-				int nextTile = random.nextInt(size);
-
-				tiles.add(tileRestrictions.get(nextTile).b);
+				Tile nextTile = getRandomTileWithLeftLink(tile.rightTileLink.tileType);
+				tiles.add(nextTile.id);
 			}
 
 			return generatedTiles;
@@ -85,6 +102,22 @@ public class RandomLevelTileBasedGenerator {
 					return key;
 			}
 			return null;
+		}
+
+		private Tile getRandomTileWithLeftLink(String leftLinkType) {
+			ArrayList<Tile> tiles = new ArrayList<Tile>();
+
+			Set<String> keySet = tileMap.keySet();
+			for (String key : keySet) {
+				Tile tile = tileMap.get(key);
+				if (tile.matchLeft(leftLinkType))
+					tiles.add(tile);
+			}
+
+			if (tiles.isEmpty())
+				return null;
+
+			return tiles.get(random.nextInt(tiles.size()));
 		}
 
 	}
@@ -128,29 +161,32 @@ public class RandomLevelTileBasedGenerator {
 			Start, Normal, End
 		};
 
+		String id;
+
 		ArrayList<Path> paths = new ArrayList<Path>();
 		Vector2f size = new Vector2f();
 		Vector2f position = new Vector2f();
 
 		Type type = Type.Normal;
 
-		ArrayList<Restriction> restrictions = new ArrayList<Restriction>();
+		TileLink rightTileLink, leftTileLink;
 
-		public Tile() {
+		public Tile(String id) {
+			this.id = id;
+		}
 
+		public boolean matchLeft(String tileType) {
+			return leftTileLink.match(tileType);
 		}
 
 		public Tile(Tile tile) {
+			this.id = tile.id;
 			this.size.set(tile.size);
 			this.position.set(tile.position);
 			for (int i = 0; i < tile.paths.size(); i++)
 				paths.add(tile.paths.get(i).clone());
 
-			for (int i = 0; i < tile.restrictions.size(); i++) {
-				Restriction restriction = tile.restrictions.get(i);
-				this.restrictions.add(new Restriction(restriction));
-			}
-
+			// TODO: copy links...
 		}
 
 		public Tile translate(float tx, float ty) {
@@ -207,7 +243,7 @@ public class RandomLevelTileBasedGenerator {
 				protected void handle(SvgParser svgParser, SvgInkscapeGroup svgInkscapeGroup, Element element) {
 					if (SvgInkscapeUtils.isLayer(element))
 						return;
-					currentTile = new Tile();
+					currentTile = new Tile(svgInkscapeGroup.getId());
 
 					String attribute = element.getAttribute("type");
 
@@ -217,11 +253,16 @@ public class RandomLevelTileBasedGenerator {
 					if ("end".equals(attribute))
 						currentTile.type = Tile.Type.End;
 
-					String restrictionsString = element.getAttribute("restrictions");
-					if (!"".equals(restrictionsString)) {
-						String[] restrictions = restrictionsString.split(",");
-						for (int i = 0; i < restrictions.length; i++) {
-							currentTile.restrictions.add(new Restriction(restrictions[i]));
+					currentTile.leftTileLink = new TileLink();
+					currentTile.rightTileLink = new TileLink();
+
+					String linksString = element.getAttribute("links");
+					if (!"".equals(linksString)) {
+						String[] linkTileTypes = linksString.split(",");
+
+						if (linkTileTypes.length > 0) {
+							currentTile.leftTileLink = new TileLink(linkTileTypes[0]);
+							currentTile.rightTileLink = new TileLink(linkTileTypes[1]);
 						}
 					}
 
@@ -312,7 +353,7 @@ public class RandomLevelTileBasedGenerator {
 	private Tile lastTile;
 
 	public ArrayList<Shape> generateLevel(Document document) {
-		lastTile = new Tile();
+		lastTile = new Tile("");
 
 		TilesProcessor tilesProcessor = new TilesProcessor();
 		tilesProcessor.process(document);
