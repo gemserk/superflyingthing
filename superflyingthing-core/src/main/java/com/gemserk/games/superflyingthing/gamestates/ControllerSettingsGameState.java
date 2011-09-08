@@ -307,7 +307,7 @@ public class ControllerSettingsGameState extends GameStateImpl {
 					ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
 		else
 			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
-					ControllerType.AxisController, ControllerType.AnalogController, ControllerType.TargetController };
+					ControllerType.AxisController, ControllerType.AnalogController, ControllerType.TargetController, ControllerType.RemoteClassicController };
 	}
 
 	private void controllerTestBed() {

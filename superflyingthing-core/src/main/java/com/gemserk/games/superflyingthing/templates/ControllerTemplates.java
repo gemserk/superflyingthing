@@ -2,8 +2,10 @@ package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.input.RemoteInput;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
@@ -33,7 +35,6 @@ public class ControllerTemplates {
 			ShipController controller = parameters.get("controller");
 			String tag = parameters.get("tag", Groups.PlayerController);
 			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
-//			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller, new RemoteInput(8190))));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
 		}
@@ -50,15 +51,36 @@ public class ControllerTemplates {
 		}
 	}
 
+	// touch classic controller
 	public static class AndroidClassicControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
+
 			String tag = parameters.get("tag", Groups.PlayerController);
-			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller, Gdx.input)));
+			Input input = parameters.get("input", Gdx.input);
+
+			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller, input)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
 		}
+	}
+
+	public static class RemoteClassicControllerTemplate extends AndroidClassicControllerTemplate {
+
+		// for now a static value, on a non default port to avoid conflicting
+		private static Input remoteInput;
+
+		private static Input getRemoteInputInstance() {
+			if (remoteInput == null)
+				remoteInput = new RemoteInput(8192);
+			return remoteInput;
+		}
+
+		public RemoteClassicControllerTemplate() {
+			parameters.put("input", getRemoteInputInstance());
+		}
+
 	}
 
 	public static class AxisControllerTemplate extends EntityTemplateImpl {
@@ -135,7 +157,7 @@ public class ControllerTemplates {
 			entity.addComponent(new ControllerComponent(controller));
 		}
 	}
-	
+
 	public static class TargetControllerTemplate extends EntityTemplateImpl {
 		@Override
 		public void apply(Entity entity) {
@@ -154,6 +176,7 @@ public class ControllerTemplates {
 	public EntityTemplate analogControllerTemplate;
 	public EntityTemplate tiltAndroidControllerTemplate;
 	public EntityTemplate targetControllerTemplate;
+	public EntityTemplate remoteClassicControllerTemplate;
 
 	public EntityTemplate getControllerTemplate(ControllerType controllerType) {
 		switch (controllerType) {
@@ -171,6 +194,8 @@ public class ControllerTemplates {
 			return tiltAndroidControllerTemplate;
 		case TargetController:
 			return targetControllerTemplate;
+		case RemoteClassicController:
+			return remoteClassicControllerTemplate;
 		}
 		return keyboardControllerTemplate;
 	}
