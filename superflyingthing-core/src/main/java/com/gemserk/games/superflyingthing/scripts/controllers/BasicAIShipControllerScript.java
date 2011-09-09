@@ -18,129 +18,189 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.templates.Groups;
 
-public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCastCallback {
+public class BasicAIShipControllerScript extends ScriptJavaImpl {
 
-	private final World physicsWorld;
+	static class RayCastHelper implements RayCastCallback {
+
+		private boolean collides;
+		private final World world;
+
+		private final Vector2 position = new Vector2();
+		private final Vector2 target = new Vector2();
+
+		public RayCastHelper(World world) {
+			this.world = world;
+		}
+
+		private void setPosition(Vector2 position) {
+			this.position.set(position);
+		}
+
+		private void setTarget(float x, float y) {
+			this.target.set(x, y);
+		}
+
+		public boolean checkCollision(Vector2 position, Vector2 target) {
+			setPosition(position);
+			setTarget(target.x, target.y);
+			return checkCollision();
+		}
+
+		private boolean checkCollision() {
+			collides = false;
+			world.rayCast(this, position, target);
+			return collides;
+		}
+
+		@Override
+		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
+			Entity e = (Entity) fixture.getBody().getUserData();
+			if (e != null) {
+				GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
+				if (grabbableComponent != null)
+					return 1;
+
+				AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(e);
+				if (attachmentComponent != null)
+					return 1;
+			}
+
+			collides = true;
+			return 1;
+		}
+
+	}
+
 	private ShipController controller;
 
-	boolean collides = false;
 	float randomDirection = 1f;
 
 	Vector2 target = new Vector2();
+	Vector2 planetPosition = new Vector2();
 	Vector2 direction = new Vector2();
 
 	boolean wayToDestinationPlanet = false;
-	
+	private RayCastHelper rayCastHelper;
+
 	public BasicAIShipControllerScript(World physicsWorld) {
-		this.physicsWorld = physicsWorld;
+		rayCastHelper = new RayCastHelper(physicsWorld);
 	}
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
-		
+
 		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
 		if (playerController == null)
 			return;
 		ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(playerController);
 		controller = controllerComponent.getController();
-		
+
 		updateShipInPlanetBehavior(world, e);
 		updateShipBehavior(world, e);
 	}
 
 	private void updateShipBehavior(com.artemis.World world, Entity e2) {
 
+		float movementDirection = 0f;
+
 		Entity ship = world.getTagManager().getEntity(Groups.ship);
 		if (ship == null)
 			return;
-		
+
 		MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
 
 		Spatial spatial = ComponentWrapper.getSpatial(ship);
 		Vector2 position = spatial.getPosition();
 		direction.set(movementComponent.getDirection());
-
+		
 		if (wayToDestinationPlanet) {
-
+			
+			direction.set(movementComponent.getDirection());
+			
 			float angle = direction.angle();
-			float desiredAngle = target.tmp().sub(position).nor().angle();
+			float desiredAngle = planetPosition.tmp().sub(position).nor().angle();
 
-			controller.setMovementDirection((float) AngleUtils.minimumDifference(angle, desiredAngle) / 90f);
+			movementDirection = (float) AngleUtils.minimumDifference(angle, desiredAngle) / 1f;
+			
+			if (movementDirection > 1f)
+				movementDirection = 1f;
+			if (movementDirection < -1f)
+				movementDirection = -1f;
+			
+			direction.set(movementComponent.getDirection()).rotate(15 * randomDirection);
+			target.set(position).add(direction.tmp().nor().mul(2f));
+
+			boolean collidesA = rayCastHelper.checkCollision(position, target);
+
+			direction.set(movementComponent.getDirection()).rotate(-15 * randomDirection);
+			target.set(position).add(direction.tmp().nor().mul(2f));
+
+			boolean collidesB = rayCastHelper.checkCollision(position, target);
+			
+			if (collidesA)
+				movementDirection += 2f * MathUtils.random();
+
+			if (collidesB)
+				movementDirection -= 2f * MathUtils.random();
+			
+			controller.setMovementDirection(movementDirection);
 
 			return;
-		}
+		} else {
 
-		ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities(Groups.destinationPlanets);
-		for (int i = 0; i < destinationPlanets.size(); i++) {
-			Entity destinationPlanet = destinationPlanets.get(i);
-			Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);
+			ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities(Groups.destinationPlanets);
+			for (int i = 0; i < destinationPlanets.size(); i++) {
+				Entity destinationPlanet = destinationPlanets.get(i);
+				Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);
 
-			Vector2 desiredDirection = destinationPlanetSpatial.getPosition().tmp().sub(position);
-			target.set(position).add(desiredDirection.mul(1f));
+				Vector2 desiredDirection = destinationPlanetSpatial.getPosition().tmp().sub(position);
+				planetPosition.set(position).add(desiredDirection.mul(1f));
 
-			collides = false;
-			physicsWorld.rayCast(this, position, target);
+				boolean collides = rayCastHelper.checkCollision(position, planetPosition);
+				// physicsWorld.rayCast(this, position, target);
 
-			if (!collides) {
-				wayToDestinationPlanet = true;
-				target.set(destinationPlanetSpatial.getPosition());
-//				Gdx.app.log("SuperFlyingThing", "Direct way to destination planet detected");
-				return;
+				if (!collides) {
+					wayToDestinationPlanet = true;
+					planetPosition.set(destinationPlanetSpatial.getPosition());
+					// Gdx.app.log("SuperFlyingThing", "Direct way to destination planet detected");
+					return;
+				}
+
 			}
-
 		}
-
+		
 		target.set(position).add(direction.tmp().nor().mul(2f));
 
-		controller.setMovementDirection(0f);
+		boolean collidesDirect = rayCastHelper.checkCollision(position, target);
 
-		collides = false;
-		physicsWorld.rayCast(this, position, target);
+		direction.set(movementComponent.getDirection()).rotate(30 * randomDirection);
+		target.set(position).add(direction.tmp().nor().mul(2f));
 
-		if (!collides)
-			return;
+		boolean collidesA = rayCastHelper.checkCollision(position, target);
 
-		direction.set(movementComponent.getDirection()).rotate(20 * randomDirection);
-		target.set(position).add(direction.tmp().nor().mul(3f));
+		direction.set(movementComponent.getDirection()).rotate(-30 * randomDirection);
+		target.set(position).add(direction.tmp().nor().mul(2f));
 
-		collides = false;
-		physicsWorld.rayCast(this, position, target);
+		boolean collidesB = rayCastHelper.checkCollision(position, target);
 
-		if (!collides) {
-			controller.setMovementDirection(1f * randomDirection);
-			return;
+		if (!collidesDirect) {
+
+			if (collidesA)
+				movementDirection += 2f * MathUtils.random();
+
+			if (collidesB)
+				movementDirection -= 2f * MathUtils.random();
+
+			controller.setMovementDirection(movementDirection);
+		} else {
+			movementDirection = collidesA ? -1f : 0f;
+			movementDirection -= collidesB ? 1f : 0f;
+
+			if (collidesA && collidesB)
+				movementDirection = 1f * randomDirection;
+			controller.setMovementDirection(movementDirection);
 		}
 
-		direction.set(movementComponent.getDirection()).rotate(-20 * randomDirection);
-		target.set(position).add(direction.tmp().nor().mul(3f));
-
-		collides = false;
-		physicsWorld.rayCast(this, position, target);
-
-		if (!collides) {
-			controller.setMovementDirection(-1f * randomDirection);
-			return;
-		}
-
-		controller.setMovementDirection(1f * randomDirection);
-	}
-
-	@Override
-	public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
-
-		Entity e = (Entity) fixture.getBody().getUserData();
-		if (e != null) {
-			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
-			if (grabbableComponent != null)
-				return 1;
-
-			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(e);
-			if (attachmentComponent != null)
-				return 1;
-		}
-
-		collides = true;
-		return 1;
 	}
 
 	private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
