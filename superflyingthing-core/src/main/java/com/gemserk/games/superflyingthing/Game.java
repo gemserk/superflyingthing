@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -333,6 +334,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				monitorKey("toggleFps", Keys.NUM_8);
 				monitorKey("toggleBox2dDebug", Keys.NUM_7);
 				monitorKey("toggleBackground", Keys.NUM_6);
+				monitorKey("reloadResources", Keys.NUM_1);
 			}
 		};
 
@@ -451,6 +453,14 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		if (inputDevicesMonitor.getButton("toggleDebug").isReleased())
 			Game.setDebugMode(!Game.isDebugMode());
+		
+		if (inputDevicesMonitor.getButton("reloadResources").isReleased()) {
+			ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
+			for (int i = 0; i < registeredResources.size(); i++) {
+				String resourceId = registeredResources.get(i);
+				resourceManager.get(resourceId).reload();
+			}
+		}
 
 		if (inputDevicesMonitor.getButton("toggleBackground").isReleased()) {
 			eventManager.registerEvent(Events.toggleFirstBackground, this);
