@@ -15,7 +15,7 @@
  id="svg2"
  version="1.1"
  inkscape:version="0.48.1 r9760"
- sodipodi:docname="level05.svg"
+ sodipodi:docname="level06.svg"
  levelName="Ship moves in mysterious ways">
 <defs
  id="defs4" />
@@ -26,9 +26,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="1"
  inkscape:pageshadow="2"
- inkscape:zoom="31.2094"
- inkscape:cx="20.4461"
- inkscape:cy="5.90186"
+ inkscape:zoom="45.2548"
+ inkscape:cx="16.7281"
+ inkscape:cy="5.42408"
  inkscape:document-units="px"
  inkscape:current-layer="layer2"
  showgrid="true"
@@ -40,7 +40,7 @@
  inkscape:window-maximized="1"
  showguides="true"
  inkscape:guide-bbox="true"
- inkscape:snap-global="true">
+ inkscape:snap-global="false">
 <inkscape:grid
  type="xygrid"
  id="grid3765"
@@ -65,7 +65,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title />
+<dc:title></dc:title>
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -143,58 +143,44 @@
  sodipodi:nodetypes="ccccccccccccccccc" />
 <path
  style="fill:#000050;fill-opacity:1;fill-rule:nonzero;stroke:#0000b9;stroke-width:0.104;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
- d="M 27,19 25.6012,19.3426 23.5826,19.663 22.0126,18.6057 19.6415,18.2532 19.6735,16.6511 18.3278,13.6392 17.4627,11.3642 17.687,8.6407 17.1102,7.8717 17.2704,6.6221 17.5588,5.5327 17.5588,4.69962 16.5975,3.48204 15.5402,3.12958 14.5789,3.64225 13.7779,4.44329 11.7593,4.09083 10.8621,4.69962 9.19594,4.3792 7.97836,4.95595 7.11324,6.6862 6.50445,8.1281 6.50444,10.7554 6.05586,12.4537 6.50444,13.8315 7.75407,15.2733 8.93961,15.3374 9.86881,14.1839 11.6952,14.216 13.4254,13.9917 14.5789,15.6899 14.4187,16.587 13.9381,17.8367 14.2585,18.7338 13.5536,19.4388 10.9903,19.4388 7.52978,18.9902 7,19 7,20 27,20 z"
+ d="M 27,19 25.6012,19.3426 23.5826,19.663 22.0126,18.6057 19.6415,18.2532 19.6735,16.6511 18.2511,13.6313 17.6931,12.7667 17.8533,11.5171 18.1417,10.4277 18.1417,9.59467 17.1804,8.37709 16.1231,8.02463 15.443,8.06855 14.6577,8.32272 13.6078,8.3765 11.57,8.76655 9.7788,9.27425 8.56122,9.851 7.5086,11.1906 6.57996,12.7582 6.50444,13.8315 7.75407,15.2733 8.93961,15.3374 10.1032,14.4495 11.6952,14.216 12.5035,14.7105 13.2976,15.4399 13.6843,16.087 13.2037,17.3367 13.2116,18.2963 12.8192,18.9388 10.9903,19.4388 8.59228,18.8965 7.57812,18.2188 7,20 11.4003,20.9723 14.0108,19.7569 14.7873,17.3042 14.9229,15.6248 12.9069,12.5671 13.1006,11.0562 14.5097,10.6944 15.1675,10.2441 16.0241,10.3021 16.8366,10.8905 16.2569,13.7106 17.6439,15.7132 17.4922,17.8124 18.5765,19.8343 20.8098,20.8397 23.9933,20.9944 27,20 z"
  id="path3906"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccccccccccccccccccccc" />
 <path
  style="fill:#000050;fill-opacity:1;fill-rule:nonzero;stroke:#0000b9;stroke-width:0.104;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
- d="M 7,20 0,20 0,0 17,0 17,1 14.7712,1.33524 13.2332,1.94403 12.5923,2.42466 11.2146,1.94403 9.5484,1.84791 4.83828,0.8386 1.87443,1.78383 1.05737,2.96937 1.60208,6.91049 2.75558,7.42319 4.83828,8.03199 4.54991,11.1399 3.26824,12.0372 3.26824,13.9917 3.84499,16.1385 4.83829,17.8366 7,19 z"
+ d="M 6.98437,20.0313 6.15625,19.625 3.60937,17.1875 2.78125,13.8438 2.45313,9.96879 -0.45312,7.71878 -0.04687,1.59375 4.54688,-0.53125 7.06251,0.88281 9.2969,2.26562 11.7813,3.24219 14.0157,4.625 17.0525,6.02665 17.2801,7.112 15.7329,6.95591 13.6521,7.39716 12.2316,7.14266 11.0456,7.79441 8.81261,8.19615 7.26716,8.70725 6.71853,7.84168 8.02928,5.13232 7.44941,2.65733 4.82266,0.86985 1.85881,1.81508 1.04175,3.00062 1.58646,6.94174 2.73996,7.45444 4.82266,8.06325 6.58116,9.46805 5.362,12.3498 5.04826,13.9626 4.98438,16.0313 6.0258,17.4617 7.59375,18.2344 z"
  id="path3908"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccccccccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccccccccccccccccccccccc" />
 <path
  style="fill:#000050;fill-opacity:1;fill-rule:nonzero;stroke:#0000b9;stroke-width:0.104;stroke-linecap:butt;stroke-linejoin:round;stroke-miterlimit:4;stroke-opacity:1;stroke-dasharray:none;display:inline"
- d="M 17,1 19.225,2.281 20.1221,5.03657 19.8337,7.72807 19.4813,9.00973 19.8337,11.2526 20.8911,11.3808 23.4224,10.0671 25.2808,9.00973 27.0751,9.20198 28.0044,10.0671 28.9015,10.74 30,11 35,11 35,0 17,0 z"
+ d="M 17.0156,6.01562 17.2719,7.10912 18.7159,7.4272 18.865,8.14994 19.4813,9.00973 19.8337,11.2526 20.8911,11.3808 23.4224,10.0671 25.2808,9.00973 27.0751,9.20198 28.0044,10.0671 28.9015,10.74 30,11 35,11 34.5911,9.83699 33.6786,9.27541 32.7973,8.68258 30.6973,7.96475 29.1598,6.96567 26.8722,6.06034 25.3035,6.03001 23.2034,4.87468 20.4471,5.65685 z"
  id="path3910"
  inkscape:connector-curvature="0"
- sodipodi:nodetypes="ccccccccccccccccc" />
+ sodipodi:nodetypes="cccccccccccccccccccccccc" />
 </g>
 <g
  inkscape:groupmode="layer"
  id="layer8"
  inkscape:label="Items">
 <image
- y="11.1909"
- x="27.3793"
- id="image3019-7"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="14.1429"
- x="4.75149"
+ y="14.4398"
+ x="5.75149"
  id="image3019-7-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="3.12044"
- x="17.8075"
- id="image3019-7-7"
- xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
- height="0.5"
- width="0.5" />
-<image
- y="17.9466"
- x="24.3912"
+ y="13.9466"
+ x="21.7506"
  id="image3019-7-2"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
  width="0.5" />
 <image
- y="6.05103"
- x="5.37374"
+ y="4.92603"
+ x="6.21749"
  id="image3019-7-9"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/white-rectangle.png"
  height="0.5"
@@ -217,8 +203,8 @@
  id="path3806"
  inkscape:connector-curvature="0" />
 <image
- y="15.8446"
- x="10.0863"
+ y="15.9852"
+ x="9.63317"
  id="image3824-5-8"
  xlink:href="file:///home/acoppes/workspace/superflyingthing/superflyingthing-desktop/src/main/resources/data/images/planet.png"
  height="2"

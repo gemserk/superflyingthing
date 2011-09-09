@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.gdx.resources.LibgdxResourceBuilder;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.datasources.DataSourceFactory;
 import com.gemserk.resources.monitor.FilesMonitor;
 
 /**
@@ -92,6 +93,12 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		Levels.declareLevelResources(resourceManager, filesMonitor);
 
+	}
+	
+	@Override
+	public void xmlDocument(String id, String file) {
+		super.xmlDocument(id, file);
+		filesMonitor.monitor(DataSourceFactory.classPathDataSource(file), resourceManager.get(id));
 	}
 
 }

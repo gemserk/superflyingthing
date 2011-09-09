@@ -90,7 +90,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl implements RayCa
 
 		}
 
-		target.set(position).add(direction.tmp().nor().mul(3f));
+		target.set(position).add(direction.tmp().nor().mul(2f));
 
 		controller.setMovementDirection(0f);
 

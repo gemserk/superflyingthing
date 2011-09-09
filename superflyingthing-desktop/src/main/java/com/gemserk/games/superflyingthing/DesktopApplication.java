@@ -18,7 +18,9 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.games.superflyingthing.DebugComponents.MovementComponentDebugWindow;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
+import com.gemserk.resources.monitor.FilesMonitor;
 import com.gemserk.resources.monitor.FilesMonitorImpl;
+import com.gemserk.resources.monitor.FilesMonitorNullImpl;
 
 public class DesktopApplication {
 
@@ -32,12 +34,16 @@ public class DesktopApplication {
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
 
+		FilesMonitor filesMonitor = new FilesMonitorNullImpl();
 		String runningInDebug = System.getProperty("runningInDebug");
 		if (runningInDebug != null) {
 			logger.info("Running in debug mode, Analytics disabled");
 			Analytics.traker.setEnabled(false);
+			
+			logger.info("Running in debug mode, File monitoring enabled");
+			filesMonitor = new FilesMonitorImpl();
 		}
-
+		
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
@@ -55,7 +61,7 @@ public class DesktopApplication {
 		config.useCPUSynch = true;
 		config.forceExit = true;
 
-		new LwjglApplication(new Game(new AdWhirlViewHandler(), new FilesMonitorImpl()) {
+		new LwjglApplication(new Game(new AdWhirlViewHandler(), filesMonitor) {
 			@Override
 			public void create() {
 				// Gdx.graphics.setVSync(true);

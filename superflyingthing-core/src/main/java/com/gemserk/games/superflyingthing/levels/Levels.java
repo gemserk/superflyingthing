@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.levels;
 
-import java.io.File;
 import java.io.InputStream;
 import java.util.HashMap;
 
@@ -21,14 +20,10 @@ import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.Item;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
-import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.dataloaders.DataLoader;
-import com.gemserk.resources.datasources.ClassPathDataSource;
-import com.gemserk.resources.monitor.FileInformationImpl;
-import com.gemserk.resources.monitor.FileMonitor;
+import com.gemserk.resources.datasources.DataSourceFactory;
 import com.gemserk.resources.monitor.FilesMonitor;
-import com.gemserk.resources.monitor.handlers.ReloadResourceWhenFileModified;
 
 public class Levels {
 
@@ -74,9 +69,10 @@ public class Levels {
 			}
 		});
 		
-		Resource resource = resourceManager.get(id);
+		filesMonitor.monitor(DataSourceFactory.classPathDataSource(file), resourceManager.get(id));
+		
 		// ugly?
-		filesMonitor.register(new FileMonitor(new FileInformationImpl(new File(new ClassPathDataSource(file).getUri())), new ReloadResourceWhenFileModified(resource)));
+//		filesMonitor.register(new FileMonitor(new FileInformationImpl(new File(new ClassPathDataSource(file).getUri())), new ReloadResourceWhenFileModified(resource)));
 	}
 
 	public static Level loadLevelFromSvg(Document document) {

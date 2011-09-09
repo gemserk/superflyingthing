@@ -57,8 +57,8 @@ import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 import com.gemserk.resources.Resource;
-import com.gemserk.resources.monitor.FileMonitor;
 import com.gemserk.resources.monitor.FilesMonitor;
+import com.gemserk.resources.monitor.FilesMonitorNullImpl;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -85,18 +85,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public static boolean isShowFps() {
 		return showFps;
-	}
-
-	static class NullFilesMonitor implements FilesMonitor {
-		@Override
-		public void register(FileMonitor fileMonitor) {
-			Gdx.app.log("SuperFlyingThing", "Registering a new file monitor");
-		}
-
-		@Override
-		public void checkModifiedFiles() {
-//			Gdx.app.log("SuperFlyingThing", "Checking resources to be reloaded");
-		}
 	}
 
 	private final AdWhirlViewHandler adWhirlViewHandler;
@@ -237,7 +225,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 	
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
-		this(adWhirlViewHandler, new NullFilesMonitor());
+		this(adWhirlViewHandler, new FilesMonitorNullImpl());
 	}
 
 	public Game(AdWhirlViewHandler adWhirlViewHandler, FilesMonitor filesMonitor) {
