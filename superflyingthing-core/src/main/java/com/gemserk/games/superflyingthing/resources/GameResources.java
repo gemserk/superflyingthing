@@ -4,18 +4,22 @@ import com.badlogic.gdx.Gdx;
 import com.gemserk.commons.gdx.resources.LibgdxResourceBuilder;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.resources.ResourceManager;
+import com.gemserk.resources.monitor.FilesMonitor;
 
 /**
  * Declares all resources needed for the game.
  */
 public class GameResources extends LibgdxResourceBuilder {
 
-	public static void load(ResourceManager<String> resourceManager) {
-		new GameResources(resourceManager);
+	private final FilesMonitor filesMonitor;
+
+	public static void load(ResourceManager<String> resourceManager, FilesMonitor filesMonitor) {
+		new GameResources(resourceManager, filesMonitor);
 	}
 
-	private GameResources(ResourceManager<String> resourceManager) {
+	private GameResources(ResourceManager<String> resourceManager, FilesMonitor filesMonitor) {
 		super(resourceManager);
+		this.filesMonitor = filesMonitor;
 		texture("GemserkLogoTexture", "data/images/logos/logo-gemserk-512x128.png");
 		texture("GemserkLogoTextureBlur", "data/images/logos/logo-gemserk-512x128-blur.png");
 		texture("LwjglLogoTexture", "data/images/logos/logo-lwjgl-512x256-inverted.png");
@@ -86,7 +90,7 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
 
-		Levels.declareLevelResources(resourceManager);
+		Levels.declareLevelResources(resourceManager, filesMonitor);
 
 	}
 

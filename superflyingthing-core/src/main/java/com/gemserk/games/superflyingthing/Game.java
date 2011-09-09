@@ -57,6 +57,8 @@ import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
 import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 import com.gemserk.resources.Resource;
+import com.gemserk.resources.monitor.FileMonitor;
+import com.gemserk.resources.monitor.FilesMonitor;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
@@ -85,6 +87,18 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return showFps;
 	}
 
+	static class NullFilesMonitor implements FilesMonitor {
+		@Override
+		public void register(FileMonitor fileMonitor) {
+			Gdx.app.log("SuperFlyingThing", "Registering a new file monitor");
+		}
+
+		@Override
+		public void checkModifiedFiles() {
+//			Gdx.app.log("SuperFlyingThing", "Checking resources to be reloaded");
+		}
+	}
+
 	private final AdWhirlViewHandler adWhirlViewHandler;
 
 	private CustomResourceManager<String> resourceManager;
@@ -101,6 +115,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Rectangle adsMaxArea;
 
 	private ScreenManager screenManager;
+
+	private FilesMonitor filesMonitor;
 
 	class ScreenManager {
 
@@ -205,10 +221,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return resourceManager;
 	}
 
-	public Game(AdWhirlViewHandler adWhirlViewHandler) {
-		this.adWhirlViewHandler = adWhirlViewHandler;
-	}
-	
 	public Rectangle getAdsMaxArea() {
 		return adsMaxArea;
 	}
@@ -222,6 +234,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 	public Game() {
 		this(new AdWhirlViewHandler());
+	}
+	
+	public Game(AdWhirlViewHandler adWhirlViewHandler) {
+		this(adWhirlViewHandler, new NullFilesMonitor());
+	}
+
+	public Game(AdWhirlViewHandler adWhirlViewHandler, FilesMonitor filesMonitor) {
+		this.adWhirlViewHandler = adWhirlViewHandler;
+		this.filesMonitor = filesMonitor;
 	}
 
 	@Override
@@ -255,7 +276,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		eventManager = new EventManagerImpl();
 
 		resourceManager = new CustomResourceManager<String>();
-		GameResources.load(resourceManager);
+
+		GameResources.load(resourceManager, filesMonitor);
 
 		fpsFontResource = resourceManager.get("FpsFont");
 		spriteBatch = new SpriteBatch();
@@ -341,7 +363,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		float adsWidth = Gdx.graphics.getWidth() * 480f / 800f;
 		float adsHeight = Gdx.graphics.getHeight() * 78f / 480f;
 
-		adsMaxArea = new Rectangle(Gdx.graphics.getWidth() * 0.5f - adsWidth * 0.5f, 1f, adsWidth - 2f,  adsHeight - 2f);
+		adsMaxArea = new Rectangle(Gdx.graphics.getWidth() * 0.5f - adsWidth * 0.5f, 1f, adsWidth - 2f, adsHeight - 2f);
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
@@ -404,16 +426,16 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		public void start() {
-			
+
 			if (transitioning) {
 				Gdx.app.log("SuperFlyingThing", "can't start a new transition if already in a transition");
 				return;
 			}
-			
+
 			final Screen currentScreen = game.getScreen();
 			game.setScreen(new TransitionScreen(new ScreenTransition( //
-					new FadeOutTransition(currentScreen, leaveTime, leaveTransitionHandler), //
-					new FadeInTransition(screen, enterTime, new TransitionHandler() {
+					new FadeOutTransition(currentScreen, resourceManager, leaveTime, leaveTransitionHandler), //
+					new FadeInTransition(screen, resourceManager, enterTime, new TransitionHandler() {
 						public void onEnd() {
 							// disposes current transition screen, not previous screen.
 							game.setScreen(screen, true);
@@ -432,7 +454,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 	}
-	
+
 	private boolean transitioning;
 
 	public TransitionBuilder transition(String screen) {
@@ -453,7 +475,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		if (inputDevicesMonitor.getButton("toggleDebug").isReleased())
 			Game.setDebugMode(!Game.isDebugMode());
-		
+
 		if (inputDevicesMonitor.getButton("reloadResources").isReleased()) {
 			ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
 			for (int i = 0; i < registeredResources.size(); i++) {
@@ -489,6 +511,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		}
 
 		eventManager.process();
+
+		filesMonitor.checkModifiedFiles();
 	}
 
 	@Handles

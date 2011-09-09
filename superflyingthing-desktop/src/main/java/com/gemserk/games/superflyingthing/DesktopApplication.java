@@ -13,10 +13,12 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.games.superflyingthing.DebugComponents.MovementComponentDebugWindow;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
+import com.gemserk.resources.monitor.FilesMonitorImpl;
 
 public class DesktopApplication {
 
@@ -53,7 +55,7 @@ public class DesktopApplication {
 		config.useCPUSynch = true;
 		config.forceExit = true;
 
-		new LwjglApplication(new Game() {
+		new LwjglApplication(new Game(new AdWhirlViewHandler(), new FilesMonitorImpl()) {
 			@Override
 			public void create() {
 				// Gdx.graphics.setVSync(true);

@@ -21,6 +21,7 @@ import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
+import com.gemserk.resources.monitor.FilesMonitorImpl;
 import com.gemserk.vecmath.Vector3f;
 
 public class RandomLevelGeneratorFromTilesApp {
@@ -65,7 +66,7 @@ public class RandomLevelGeneratorFromTilesApp {
 
 			resourceManager = new ResourceManagerImpl<String>();
 
-			GameResources.load(resourceManager);
+			GameResources.load(resourceManager, new FilesMonitorImpl());
 
 			projectionMatrix = new Matrix4();
 

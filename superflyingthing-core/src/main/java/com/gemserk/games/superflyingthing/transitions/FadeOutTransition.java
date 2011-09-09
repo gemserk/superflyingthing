@@ -8,15 +8,13 @@ import com.gemserk.animation4j.transitions.sync.Synchronizer;
 import com.gemserk.commons.gdx.GameTransitions;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.Screen;
-import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 
 public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	
 	private float alpha = 0f;
 	private Sprite whiteRectangle;
-	ResourceManager<String> resourceManager;
+	private ResourceManager<String> resourceManager;
 	SpriteBatch spriteBatch;
 	private final float time;
 	private Synchronizer synchronizer;
@@ -25,21 +23,21 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 		this.alpha = alpha;
 	}
 
-	public FadeOutTransition(Screen screen, float time) {
+	public FadeOutTransition(Screen screen, ResourceManager<String> resourceManager, float time) {
 		super(screen, time);
 		this.time = time;
+		this.resourceManager = resourceManager;
 	}
 
-	public FadeOutTransition(Screen screen, float time, TransitionHandler transitionHandler) {
+	public FadeOutTransition(Screen screen, ResourceManager<String> resourceManager, float time, TransitionHandler transitionHandler) {
 		super(screen, time, transitionHandler);
 		this.time = time;
+		this.resourceManager = resourceManager;
 	}
 
 	@Override
 	public void init() {
 		super.init();
-		resourceManager = new ResourceManagerImpl<String>();
-		GameResources.load(resourceManager);
 		whiteRectangle = resourceManager.getResourceValue("WhiteRectangle");
 		spriteBatch = new SpriteBatch();
 		synchronizer = new Synchronizer();
@@ -49,7 +47,6 @@ public class FadeOutTransition extends GameTransitions.LeaveTransition {
 	@Override
 	public void dispose() {
 		super.dispose();
-		resourceManager.unloadAll();
 	}
 
 	@Override

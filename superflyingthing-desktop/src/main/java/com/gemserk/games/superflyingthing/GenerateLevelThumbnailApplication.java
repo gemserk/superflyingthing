@@ -40,6 +40,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
+import com.gemserk.resources.monitor.FilesMonitorImpl;
 import com.gemserk.util.ScreenshotSaver;
 
 public class GenerateLevelThumbnailApplication {
@@ -97,7 +98,7 @@ public class GenerateLevelThumbnailApplication {
 
 						ResourceManager<String> resourceManager = new ResourceManagerImpl<String>();
 
-						GameResources.load(resourceManager);
+						GameResources.load(resourceManager, new FilesMonitorImpl());
 
 						World world = new World();
 						EntityFactory entityFactory = new EntityFactoryImpl(world);

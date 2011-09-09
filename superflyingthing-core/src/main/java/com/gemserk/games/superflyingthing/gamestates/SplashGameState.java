@@ -16,10 +16,7 @@ import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.games.superflyingthing.CustomResourceManager;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.Resource;
-import com.gemserk.resources.ResourceManager;
-import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.resources.progress.TaskQueue;
 import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
@@ -30,15 +27,13 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
 
-	private ResourceManager<String> resourceManager;
-
 	private Sprite gemserkLogo;
 	private Sprite lwjglLogo;
 	private Sprite libgdxLogo;
 	private Sprite gemserkLogoBlur;
 
 	private Color blurColor = new Color();
-
+	
 	public SplashGameState(Game game) {
 		this.game = game;
 	}
@@ -55,10 +50,8 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		spriteBatch = new SpriteBatch();
 		font = new BitmapFont();
 		font.setColor(1f, 1f, 0f, 1f);
-
-		resourceManager = new ResourceManagerImpl<String>();
-
-		GameResources.load(resourceManager);
+		
+		final CustomResourceManager<String> resourceManager = game.getResourceManager();
 
 		gemserkLogo = resourceManager.getResourceValue("GemserkLogo");
 		gemserkLogoBlur = resourceManager.getResourceValue("GemserkLogoBlur");
@@ -81,7 +74,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 		taskQueue.add(new SimulateLoadingTimeRunnable(0));
 
-		final CustomResourceManager<String> resourceManager = game.getResourceManager();
 		ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
 		for (int i = 0; i < registeredResources.size(); i++) {
 			final String resourceId = registeredResources.get(i);
@@ -143,11 +135,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	public void resume() {
 		game.getAdWhirlViewHandler().hide();
 		Gdx.input.setCatchBackKey(false);
-	}
-
-	@Override
-	public void pause() {
-
 	}
 
 	@Override
