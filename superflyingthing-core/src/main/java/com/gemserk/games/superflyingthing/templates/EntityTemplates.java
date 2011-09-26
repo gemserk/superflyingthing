@@ -15,9 +15,12 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.components.AnimationComponent;
+import com.gemserk.commons.artemis.components.CameraComponent;
 import com.gemserk.commons.artemis.components.ContainerComponent;
 import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.PreviousStateCameraComponent;
+import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
@@ -33,6 +36,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -230,7 +234,10 @@ public class EntityTemplates {
 
 			entity.addComponent(new TagComponent(Groups.MainCamera));
 			entity.addComponent(new TargetComponent(target));
-			entity.addComponent(new Components.CameraComponent(camera, libgdxCamera));
+			
+			entity.addComponent(new CameraComponent(libgdxCamera, camera));
+			entity.addComponent(new PreviousStateCameraComponent(new CameraImpl()));
+			
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(new ScriptComponent(new CameraScript(eventManager), //
 					new UpdateCameraFromSpatialScript(), new UpdateLibgdxCameraScript()));
@@ -306,7 +313,10 @@ public class EntityTemplates {
 
 			e.addComponent(new TagComponent(Groups.ship));
 			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
+			
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+			e.addComponent(new PreviousStateSpatialComponent());
+			
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
 			e.addComponent(new MovementComponent(direction.x, direction.y, maxLinearSpeed, maxAngularVelocity));
@@ -374,6 +384,7 @@ public class EntityTemplates {
 			// e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, width, height, 0f)));
 			e.addComponent(new PhysicsComponent(body));
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
+			e.addComponent(new PreviousStateSpatialComponent());
 
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), color));

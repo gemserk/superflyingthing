@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing;
 
-import org.lwjgl.opengl.Display;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -58,14 +57,17 @@ public class DesktopApplication {
 		config.fullscreen = false;
 		config.title = "Super Flying Thing";
 		config.useGL20 = false;
-		config.useCPUSynch = true;
+		
+		config.useCPUSynch = false;
+		config.vSyncEnabled = false;
+		
 		config.forceExit = true;
 
 		new LwjglApplication(new Game(new AdWhirlViewHandler(), filesMonitor) {
 			@Override
 			public void create() {
 				// Gdx.graphics.setVSync(true);
-				Display.setVSyncEnabled(false);
+//				Display.setVSyncEnabled(false);
 				String remoteInput = System.getProperty("remoteInput");
 				if (remoteInput != null)
 					Gdx.input = new RemoteInput(8190);

@@ -7,8 +7,6 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Joint;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.graphics.Mesh2d;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.games.superflyingthing.ShipController;
@@ -35,30 +33,6 @@ public class Components {
 
 		public ControllerComponent(ShipController controller) {
 			this.shipControllerImpl = controller;
-		}
-
-	}
-
-	public static class CameraComponent extends Component {
-
-		private final Libgdx2dCamera libgdx2dCamera;
-		private Camera camera;
-
-		public void setCamera(Camera camera) {
-			this.camera = camera;
-		}
-
-		public Camera getCamera() {
-			return camera;
-		}
-
-		public Libgdx2dCamera getLibgdx2dCamera() {
-			return libgdx2dCamera;
-		}
-
-		public CameraComponent(Camera camera, Libgdx2dCamera libgdx2dCamera) {
-			this.libgdx2dCamera = libgdx2dCamera;
-			setCamera(camera);
 		}
 
 	}
