@@ -11,21 +11,22 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.utils.gdx.LwjglLibgdxLibraryUtils;
 
 public class Applet extends java.applet.Applet {
 
 	private static final long serialVersionUID = 6396112708370503447L;
-	
+
 	private Canvas canvas;
-	
+
 	private LwjglApplication application;
 
 	public void start() {
-		
+
 	}
 
 	public void stop() {
-		
+
 	}
 
 	public void destroy() {
@@ -35,13 +36,14 @@ public class Applet extends java.applet.Applet {
 
 	public void init() {
 		GdxNativesLoader.disableNativesLoading = true;
-		
-		System.loadLibrary("gdx");
-		
+
+		// System.loadLibrary("gdx");
+		LwjglLibgdxLibraryUtils.loadLibgdxLibrary();
+
 		AnalyticsConfigData analyticsConfig = new AnalyticsConfigData("UA-23542248-4");
 		DesktopAnalyticsAutoConfigurator.populateFromSystem(analyticsConfig);
 		Analytics.traker = new JGoogleAnalyticsTracker(analyticsConfig, GoogleAnalyticsVersion.V_4_7_2);
-		
+
 		try {
 			setLayout(new BorderLayout());
 			// ApplicationListener game = (ApplicationListener) Class.forName(getParameter("game")).newInstance();
@@ -49,7 +51,7 @@ public class Applet extends java.applet.Applet {
 			canvas = new Canvas() {
 				public final void addNotify() {
 					super.addNotify();
-					application = new LwjglApplication(new Game(){
+					application = new LwjglApplication(new Game() {
 						@Override
 						public void create() {
 							Gdx.graphics.setVSync(true);

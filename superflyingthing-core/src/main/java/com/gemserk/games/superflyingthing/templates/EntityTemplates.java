@@ -86,7 +86,7 @@ import com.gemserk.resources.ResourceManager;
 public class EntityTemplates {
 
 	private class AttachedShipTemplate extends EntityTemplateImpl {
-		 
+
 		public AttachedShipTemplate() {
 			parameters.put("maxLinearSpeed", new Float(4f));
 			parameters.put("maxAngularVelocity", new Float(400f));
@@ -129,6 +129,7 @@ public class EntityTemplates {
 			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
 		}
 	}
+
 	public static class CategoryBits {
 
 		public static short AllCategoryBits = 0xFF;
@@ -662,7 +663,7 @@ public class EntityTemplates {
 				v[p] = new Vector2(pt[0], pt[1]);
 
 				mesh2dBuilder.color(0.85f, 0.7f, 0.5f, 1f);
-				mesh2dBuilder.texCoord(pt[0] * 0.25f, pt[1] * 0.25f);
+				mesh2dBuilder.texCoord(x + pt[0], y + pt[1]);
 				// mesh2dBuilder.texCoord(pt[0], pt[1]);
 				mesh2dBuilder.vertex(pt[0], pt[1]);
 
