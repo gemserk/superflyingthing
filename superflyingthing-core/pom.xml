@@ -50,6 +50,11 @@
 			<artifactId>commons-gdx-artemis</artifactId>
 			<version>${commons.gdx.version}</version>
 		</dependency>
+				<dependency>
+			<groupId>com.gemserk.commons.gdx</groupId>
+			<artifactId>commons-gdx-resources</artifactId>
+			<version>${commons.gdx.version}</version>
+		</dependency>
 		<dependency>
 			<groupId>com.dmurph</groupId>
 			<artifactId>JGoogleAnalyticsTracker</artifactId>
