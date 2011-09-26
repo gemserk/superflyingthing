@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import com.artemis.World;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -8,6 +9,7 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
@@ -18,6 +20,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.scenes.EmptySceneTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -36,6 +39,8 @@ public class AboutGameState extends GameStateImpl {
 	private SpriteBatch spriteBatch;
 
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+
+	private WorldWrapper scene;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -140,17 +145,26 @@ public class AboutGameState extends GameStateImpl {
 			}
 		};
 
+		scene = new WorldWrapper(new World());
+
+		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
+		emptySceneTemplate.setResourceManager(resourceManager);
+
+		emptySceneTemplate.apply(scene);
+
+		scene.update(1);
 	}
 
 	private void mainMenu() {
 		game.transition(Screens.MainMenu)//
-				.disposeCurrent(true) //
+			.disposeCurrent() //
 				.start();
 	}
 
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
+		scene.render();
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
@@ -158,6 +172,8 @@ public class AboutGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
+		scene.update(getDeltaInMs());
+		
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
 		inputDevicesMonitor.update();
