@@ -86,7 +86,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		return showFps;
 	}
 
-	private final AdWhirlViewHandler adWhirlViewHandler;
+	private AdWhirlViewHandler adWhirlViewHandler;
 
 	private CustomResourceManager<String> resourceManager;
 	private Resource<BitmapFont> fpsFontResource;
@@ -218,7 +218,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public EventManager getEventManager() {
 		return eventManager;
 	}
-
+	
+	public void setBrowserUtils(BrowserUtils browserUtils) {
+		this.browserUtils = browserUtils;
+	}
+	
+	public void setAdWhirlViewHandler(AdWhirlViewHandler adWhirlViewHandler) {
+		this.adWhirlViewHandler = adWhirlViewHandler;
+	}
+	
+	public void setFilesMonitor(FilesMonitor filesMonitor) {
+		this.filesMonitor = filesMonitor;
+	}
+	
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}

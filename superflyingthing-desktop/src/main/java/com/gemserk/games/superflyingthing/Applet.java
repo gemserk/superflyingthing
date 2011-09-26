@@ -11,6 +11,7 @@ import com.dmurph.tracking.JGoogleAnalyticsTracker;
 import com.dmurph.tracking.JGoogleAnalyticsTracker.GoogleAnalyticsVersion;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
+import com.gemserk.commons.utils.BrowserUtilsDesktopImpl;
 import com.gemserk.commons.utils.gdx.LwjglLibgdxLibraryUtils;
 
 public class Applet extends java.applet.Applet {
@@ -51,13 +52,18 @@ public class Applet extends java.applet.Applet {
 			canvas = new Canvas() {
 				public final void addNotify() {
 					super.addNotify();
-					application = new LwjglApplication(new Game() {
+					
+					Game game = new Game() {
 						@Override
 						public void create() {
 							Gdx.graphics.setVSync(true);
 							super.create();
 						};
-					}, false, this) {
+					};
+					
+					game.setBrowserUtils(new BrowserUtilsDesktopImpl());
+					
+					application = new LwjglApplication(game, false, this) {
 						public com.badlogic.gdx.Application.ApplicationType getType() {
 							return ApplicationType.Applet;
 						};

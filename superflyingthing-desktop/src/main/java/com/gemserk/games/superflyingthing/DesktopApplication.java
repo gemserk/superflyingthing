@@ -15,6 +15,7 @@ import com.gemserk.analytics.googleanalytics.DesktopAnalyticsAutoConfigurator;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
+import com.gemserk.commons.utils.BrowserUtilsDesktopImpl;
 import com.gemserk.games.superflyingthing.DebugComponents.MovementComponentDebugWindow;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.resources.monitor.FilesMonitor;
@@ -58,12 +59,12 @@ public class DesktopApplication {
 		config.title = "Super Flying Thing";
 		config.useGL20 = false;
 
-		config.useCPUSynch = false;
-		config.vSyncEnabled = false;
+		config.useCPUSynch = true;
+		config.vSyncEnabled = true;
 
 		config.forceExit = true;
 
-		new LwjglApplication(new Game(new AdWhirlViewHandler(), filesMonitor) {
+		Game game = new Game() {
 			@Override
 			public void create() {
 				// Gdx.graphics.setVSync(true);
@@ -85,8 +86,13 @@ public class DesktopApplication {
 				});
 
 			}
-
-		}, config);
+		};
+		
+		game.setAdWhirlViewHandler(new AdWhirlViewHandler());
+		game.setFilesMonitor(filesMonitor);
+		game.setBrowserUtils(new BrowserUtilsDesktopImpl());
+		
+		new LwjglApplication(game, config);
 	}
 
 }

@@ -21,6 +21,7 @@ import com.gemserk.analytics.googleanalytics.android.BasicConfig;
 import com.gemserk.commons.adwhirl.AdWhirlAndroidHandler;
 import com.gemserk.commons.adwhirl.CustomAdViewHandler;
 import com.gemserk.commons.adwhirl.PausableAdWhirlLayout;
+import com.gemserk.commons.utils.BrowserUtilsAndroidImpl;
 
 public class AndroidApplication extends com.badlogic.gdx.backends.android.AndroidApplication implements AdWhirlInterface {
 
@@ -55,13 +56,19 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		
 		Handler handler = new AdWhirlAndroidHandler(adView);
 		CustomAdViewHandler adWhirlViewHandler = new CustomAdViewHandler(handler);
-		View gameView = initializeForView(new Game(adWhirlViewHandler) {
+		
+		Game game = new Game() {
 			@Override
 			public void pause() {
 				super.pause();
 				saveAnalyticsData();
 			}
-		}, config);
+		};
+		
+		game.setAdWhirlViewHandler(adWhirlViewHandler);
+		game.setBrowserUtils(new BrowserUtilsAndroidImpl(this));
+		
+		View gameView = initializeForView(game, config);
 		
 		int diWidth = 320;
 		int diHeight = 52;
