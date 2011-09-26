@@ -38,11 +38,11 @@ public class DesktopApplication {
 		if (runningInDebug != null) {
 			logger.info("Running in debug mode, Analytics disabled");
 			Analytics.traker.setEnabled(false);
-			
+
 			logger.info("Running in debug mode, File monitoring enabled");
 			filesMonitor = new FilesMonitorImpl();
 		}
-		
+
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 		config.width = 800;
 		config.height = 480;
@@ -57,17 +57,17 @@ public class DesktopApplication {
 		config.fullscreen = false;
 		config.title = "Super Flying Thing";
 		config.useGL20 = false;
-		
+
 		config.useCPUSynch = false;
 		config.vSyncEnabled = false;
-		
+
 		config.forceExit = true;
 
 		new LwjglApplication(new Game(new AdWhirlViewHandler(), filesMonitor) {
 			@Override
 			public void create() {
 				// Gdx.graphics.setVSync(true);
-//				Display.setVSyncEnabled(false);
+				// Display.setVSyncEnabled(false);
 				String remoteInput = System.getProperty("remoteInput");
 				if (remoteInput != null)
 					Gdx.input = new RemoteInput(8190);

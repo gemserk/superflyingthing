@@ -17,4 +17,6 @@ public class Screens {
 	public static final String ControllersTest = "ControllersTest";
 	public static final String ReplayPlayer = "ReplayPlayer";
 	
+	public static final String About = "About";
+	
 }

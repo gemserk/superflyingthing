@@ -100,8 +100,9 @@ public class MainMenuGameState extends GameStateImpl {
 				.build();
 
 		TextButton exitButton = GuiControls.textButton() //
+				.id("AboutButton")
 				.position(centerX, height * 0f) //
-				.text("Exit") //
+				.text("About us") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
 				.notOverColor(Color.WHITE)//
@@ -109,7 +110,7 @@ public class MainMenuGameState extends GameStateImpl {
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
-						Gdx.app.exit();
+						aboutUs();
 					}
 				})//
 				.build();
@@ -130,6 +131,12 @@ public class MainMenuGameState extends GameStateImpl {
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
 		backgroundGameScreen.init();
 		game.getEventManager().registerEvent(Events.previewRandomLevel, this);
+	}
+	
+	private void aboutUs() {
+		game.transition(Screens.About) //
+				.disposeCurrent(true) //
+				.start();
 	}
 
 	private void settings() {

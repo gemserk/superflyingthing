@@ -31,10 +31,13 @@ import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
+import com.gemserk.commons.utils.BrowserUtils;
+import com.gemserk.commons.utils.BrowserUtilsNullImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.gamestates.AboutGameState;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerSettingsGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
@@ -99,8 +102,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private Rectangle adsMaxArea;
 
 	private ScreenManager screenManager;
-
 	private FilesMonitor filesMonitor;
+	private BrowserUtils browserUtils = new BrowserUtilsNullImpl();
 
 	class ScreenManager {
 
@@ -302,6 +305,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
 		replayPlayerGameState.setResourceManager(resourceManager);
+		
+		AboutGameState aboutGameState = new AboutGameState(this);
+		aboutGameState.setResourceManager(resourceManager);
+		aboutGameState.setBrowserUtils(browserUtils);
 
 		screenManager = new ScreenManager();
 
@@ -319,6 +326,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.Play, playGameState);
 
 		screenManager.add(Screens.BackgroundGame, backgroundGameState);
+		screenManager.add(Screens.About, aboutGameState);
 
 		EventListenerReflectionRegistrator registrator = new EventListenerReflectionRegistrator(eventManager);
 
