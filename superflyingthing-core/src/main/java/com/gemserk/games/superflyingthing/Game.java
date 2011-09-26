@@ -25,14 +25,12 @@ import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.gdx.GameState;
-import com.gemserk.commons.gdx.GameTransitions.ScreenTransition;
-import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
-import com.gemserk.commons.gdx.GameTransitions.TransitionScreen;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
+import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -54,8 +52,6 @@ import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
-import com.gemserk.games.superflyingthing.transitions.FadeInTransition;
-import com.gemserk.games.superflyingthing.transitions.FadeOutTransition;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.monitor.FilesMonitor;
 import com.gemserk.resources.monitor.FilesMonitorNullImpl;
@@ -223,7 +219,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}
-	
+
 	public Game(AdWhirlViewHandler adWhirlViewHandler) {
 		this(adWhirlViewHandler, new FilesMonitorNullImpl());
 	}
@@ -355,95 +351,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		Gdx.graphics.getGL10().glClearColor(0, 0, 0, 1);
 	}
-
-	public class TransitionBuilder {
-
-		private final Screen screen;
-		private final Game game;
-
-		float leaveTime;
-		float enterTime;
-		boolean shouldDisposeCurrentScreen;
-
-		TransitionHandler leaveTransitionHandler = new TransitionHandler();
-
-		public TransitionBuilder leaveTime(float leaveTime) {
-			this.leaveTime = leaveTime;
-			return this;
-		}
-
-		public TransitionBuilder enterTime(float enterTime) {
-			this.enterTime = enterTime;
-			return this;
-		}
-
-		public TransitionBuilder leaveTime(int leaveTime) {
-			return leaveTime((float) leaveTime * 0.001f);
-		}
-
-		public TransitionBuilder enterTime(int enterTime) {
-			return enterTime((float) enterTime * 0.001f);
-		}
-
-		public TransitionBuilder disposeCurrent() {
-			this.shouldDisposeCurrentScreen = true;
-			return this;
-		}
-
-		public TransitionBuilder disposeCurrent(boolean disposeCurrent) {
-			this.shouldDisposeCurrentScreen = disposeCurrent;
-			return this;
-		}
-
-		public TransitionBuilder leaveTransitionHandler(TransitionHandler transitionHandler) {
-			this.leaveTransitionHandler = transitionHandler;
-			return this;
-		}
-
-		public TransitionBuilder parameter(String key, Object value) {
-			screen.getParameters().put(key, value);
-			return this;
-		}
-
-		public TransitionBuilder(final Game game, final Screen screen) {
-			this.game = game;
-			this.screen = screen;
-			this.leaveTransitionHandler = new TransitionHandler();
-			this.leaveTime = 0.25f;
-			this.enterTime = 0.25f;
-		}
-
-		public void start() {
-
-			if (transitioning) {
-				Gdx.app.log("SuperFlyingThing", "can't start a new transition if already in a transition");
-				return;
-			}
-
-			final Screen currentScreen = game.getScreen();
-			game.setScreen(new TransitionScreen(new ScreenTransition( //
-					new FadeOutTransition(currentScreen, resourceManager, leaveTime, leaveTransitionHandler), //
-					new FadeInTransition(screen, resourceManager, enterTime, new TransitionHandler() {
-						public void onEnd() {
-							// disposes current transition screen, not previous screen.
-							game.setScreen(screen, true);
-							if (shouldDisposeCurrentScreen)
-								currentScreen.dispose();
-							transitioning = false;
-						};
-					}))) {
-				@Override
-				public void resume() {
-					super.resume();
-					Gdx.input.setCatchBackKey(true);
-				}
-			});
-			transitioning = true;
-		}
-
-	}
-
-	private boolean transitioning;
 
 	public TransitionBuilder transition(String screen) {
 		return new TransitionBuilder(this, screenManager.get(screen));
