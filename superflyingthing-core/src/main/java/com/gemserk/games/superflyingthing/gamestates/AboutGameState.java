@@ -149,6 +149,7 @@ public class AboutGameState extends GameStateImpl {
 
 		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
 		emptySceneTemplate.setResourceManager(resourceManager);
+		emptySceneTemplate.setBackgroundEnabled(true);
 
 		emptySceneTemplate.apply(scene);
 

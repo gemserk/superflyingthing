@@ -24,22 +24,29 @@ import com.gemserk.resources.ResourceManager;
 public class EmptySceneTemplate {
 
 	private ResourceManager<String> resourceManager;
-	
+	private boolean backgroundEnabled;
+
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
 	}
+
+	public void setBackgroundEnabled(boolean backgroundEnabled) {
+		this.backgroundEnabled = backgroundEnabled;
+	}
 	
+	// TODO: use parameters for scene templates too
+
 	public void apply(WorldWrapper worldWrapper) {
 
 		RenderLayers renderLayers = new RenderLayers();
 
 		final Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 
-		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera));
-		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, backgroundLayerCamera));
+		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera), backgroundEnabled);
+		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, backgroundLayerCamera), backgroundEnabled);
 
 		World world = worldWrapper.getWorld();
-		
+
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.init();
@@ -71,7 +78,7 @@ public class EmptySceneTemplate {
 				.put("center", new Vector2(0.5f, 0.5f)) //
 				.put("spriteId", "FogSprite") //
 				);
-		
+
 	}
 
 }
