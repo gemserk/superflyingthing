@@ -350,7 +350,10 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		setScreen(getSplashScreen());
 
+		String version = getGameData().get("version");
+
 		Analytics.traker.trackPageView("/start", "/start", null);
+		Analytics.traker.trackPageView("/info/version/" + version, "/info/version/" + version, null);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
