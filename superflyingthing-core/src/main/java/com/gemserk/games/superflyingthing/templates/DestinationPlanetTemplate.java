@@ -13,7 +13,6 @@ import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityFactory;
-import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
@@ -25,21 +24,22 @@ import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits
 import com.gemserk.resources.ResourceManager;
 
 public class DestinationPlanetTemplate extends EntityTemplateImpl {
-	
+
 	ResourceManager<String> resourceManager;
 	BodyBuilder bodyBuilder;
 	JointBuilder jointBuilder;
 	EventManager eventManager;
 	EntityFactory entityFactory;
+	EntityTemplates entityTemplates;
 
 	@Override
 	public void apply(Entity entity) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
-		
+
 		Float radius = parameters.get("radius");
 		Float x = parameters.get("x");
 		Float y = parameters.get("y");
-		EntityTemplate planetFillAnimationTemplate = parameters.get("planetFillAnimationTemplate");
+		// EntityTemplate planetFillAnimationTemplate = parameters.get("planetFillAnimationTemplate");
 
 		entity.setGroup(Groups.destinationPlanets);
 
@@ -63,9 +63,9 @@ public class DestinationPlanetTemplate extends EntityTemplateImpl {
 		entity.addComponent(new SpriteComponent(sprite, Color.WHITE));
 		entity.addComponent(new RenderableComponent(-2));
 		entity.addComponent(new AttachmentComponent());
-		entity.addComponent(new ScriptComponent(new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, planetFillAnimationTemplate)));
+		entity.addComponent(new ScriptComponent(new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, entityTemplates.planetFillAnimationTemplate)));
 		entity.addComponent(new ContainerComponent());
-		
+
 	}
 
 }

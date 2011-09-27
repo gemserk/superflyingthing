@@ -35,7 +35,6 @@ import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.commons.gdx.games.SpatialHierarchicalImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
@@ -49,7 +48,6 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
@@ -60,7 +58,6 @@ import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterC
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
-import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
@@ -143,10 +140,6 @@ public class EntityTemplates {
 		return attachedShipTemplate;
 	}
 
-	public EntityTemplate getLaserBulletTemplate() {
-		return laserBulletTemplate;
-	}
-
 	public EntityTemplate getShipTemplate() {
 		return shipTemplate;
 	}
@@ -215,6 +208,7 @@ public class EntityTemplates {
 				add("bodyBuilder", bodyBuilder);
 				add("mesh2dBuilder", mesh2dBuilder);
 				add("jointBuilder", jointBuilder);
+				add("entityTemplates", EntityTemplates.this);
 			}
 		});
 
@@ -226,6 +220,7 @@ public class EntityTemplates {
 		this.planetFillAnimationTemplate = templateProvider.get(PlanetFillAnimationTemplate.class);
 		this.portalTemplate = templateProvider.get(PortalTemplate.class);
 		this.replayShipTemplate = templateProvider.get(ReplayShipTemplate.class);
+		this.laserBulletTemplate = templateProvider.get(LaserBulletTemplate.class);
 		
 	}
 
@@ -237,8 +232,9 @@ public class EntityTemplates {
 	public EntityTemplate planetFillAnimationTemplate;
 	public EntityTemplate portalTemplate;
 	public EntityTemplate replayShipTemplate;
+	public EntityTemplate laserBulletTemplate;
 
-	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
+	public EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
 		{
 			// used to transform the emitter and particles to the world coordinates space
@@ -349,47 +345,6 @@ public class EntityTemplates {
 			e.setGroup(Groups.ReplayShipGroup);
 			e.addComponent(new ScriptComponent(new ReplayPlayerScript(replay, eventManager, target)));
 
-		}
-
-	};
-
-	private EntityTemplate laserBulletTemplate = new EntityTemplateImpl() {
-
-		{
-			parameters.put("x", new Float(0f));
-			parameters.put("y", new Float(0f));
-			parameters.put("angle", new Float(0f));
-			parameters.put("damage", new Float(1f));
-			parameters.put("color", Colors.lightBlue);
-		}
-
-		@Override
-		public void apply(Entity entity) {
-			Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
-			Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
-			Integer duration = parameters.get("duration", 1000);
-			Color color = parameters.get("color");
-
-			Float x = parameters.get("x");
-			Float y = parameters.get("y");
-			Float angle = parameters.get("angle");
-			Float damage = parameters.get("damage");
-
-			Entity owner = parameters.get("owner");
-
-			Spatial ownerSpatial = ComponentWrapper.getSpatial(owner);
-			SpatialHierarchicalImpl bulletSpatial = new SpatialHierarchicalImpl(ownerSpatial, 1f, 0.1f);
-
-			bulletSpatial.setPosition(x + ownerSpatial.getX(), y + ownerSpatial.getY());
-			bulletSpatial.setAngle(angle + ownerSpatial.getAngle());
-
-			entity.addComponent(new SpatialComponent(bulletSpatial));
-			entity.addComponent(new ScriptComponent(script));
-			entity.addComponent(new SpriteComponent(sprite, new Vector2(0f, 0.5f), color));
-			entity.addComponent(new RenderableComponent(5));
-			entity.addComponent(new TimerComponent((float) duration * 0.001f));
-			entity.addComponent(new Components.DamageComponent(damage));
-			entity.addComponent(new OwnerComponent(owner));
 		}
 
 	};
