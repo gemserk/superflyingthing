@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.gdx.GameStateImpl;
@@ -154,11 +155,14 @@ public class AboutGameState extends GameStateImpl {
 		emptySceneTemplate.apply(scene);
 
 		scene.update(1);
+
+		Analytics.traker.trackPageView("/about", "/about", null);
+
 	}
 
 	private void mainMenu() {
 		game.transition(Screens.MainMenu)//
-			.disposeCurrent() //
+				.disposeCurrent() //
 				.start();
 	}
 
@@ -174,7 +178,7 @@ public class AboutGameState extends GameStateImpl {
 	@Override
 	public void update() {
 		scene.update(getDeltaInMs());
-		
+
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
 		inputDevicesMonitor.update();
