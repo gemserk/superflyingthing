@@ -94,9 +94,12 @@ public class ControllerSettingsGameState extends GameStateImpl {
 		@Override
 		public void draw(SpriteBatch spriteBatch) {
 			super.draw(spriteBatch);
-			underlineSprite.draw(spriteBatch);
 
-			SpriteUtils.centerOn(underlineSprite, selectedControl.getX(), selectedControl.getY() - 15f, 0f, 0.5f);
+			if (selectedControl != null) {
+				SpriteUtils.centerOn(underlineSprite, selectedControl.getX(), selectedControl.getY() - 15f, 0f, 0.5f);
+				underlineSprite.draw(spriteBatch);
+			}
+
 		}
 
 		@Override
@@ -153,7 +156,7 @@ public class ControllerSettingsGameState extends GameStateImpl {
 				.build());
 
 		float x = width * 0.025f;
-		float y = height * 0f;
+		float y = height * 0.12f;
 
 		Sprite underlineSprite = resourceManager.getResourceValue("WhiteRectangle");
 		underlineSprite.setSize(Gdx.graphics.getWidth() * 0.35f, 3f);
@@ -258,11 +261,9 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 	private ControllerType[] getAvailableControllers() {
 		if (Gdx.app.getType() == ApplicationType.Android)
-			return new ControllerType[] { ControllerType.ClassicController, ControllerType.AxisController, //
-					ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
+			return new ControllerType[] { ControllerType.ClassicController, ControllerType.AnalogController, ControllerType.TargetController };
 		else
-			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.AnalogKeyboardController, //
-					ControllerType.AxisController, ControllerType.AnalogController, ControllerType.TargetController, ControllerType.RemoteClassicController };
+			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.TargetController,  ControllerType.RemoteClassicController };
 	}
 
 	private void controllerTestBed() {
