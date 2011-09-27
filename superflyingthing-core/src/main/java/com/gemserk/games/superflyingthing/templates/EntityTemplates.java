@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
@@ -42,9 +41,6 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.Container;
-import com.gemserk.componentsengine.utils.Parameters;
-import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
@@ -125,10 +121,8 @@ public class EntityTemplates {
 	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 	private final Mesh2dBuilder mesh2dBuilder;
-	private final World physicsWorld;
 	private final EntityFactory entityFactory;
 
-	private final Parameters parameters = new ParametersWrapper();
 	private final EventManager eventManager;
 
 	public EntityTemplate userMessageTemplate;
@@ -143,10 +137,6 @@ public class EntityTemplates {
 
 	public EntityTemplate getParticleEmitterTemplate() {
 		return particleEmitterTemplate;
-	}
-
-	public EntityTemplate getDeadShipTemplate() {
-		return deadShipTemplate;
 	}
 
 	public EntityTemplate getLaserGunTemplate() {
@@ -186,7 +176,6 @@ public class EntityTemplates {
 	}
 
 	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
-		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
 		this.entityFactory = entityFactory;
@@ -320,22 +309,6 @@ public class EntityTemplates {
 
 	private EntityTemplate attachedShipTemplate = new AttachedShipTemplate();
 
-	private EntityTemplate deadShipTemplate = new EntityTemplateImpl() {
-
-		@Override
-		public void apply(Entity entity) {
-			Spatial spatial = parameters.get("spatial");
-			Sprite sprite = parameters.get("sprite");
-
-			SpriteComponent spriteComponent = new SpriteComponent(sprite, Colors.semiBlack);
-			spriteComponent.setUpdateRotation(false);
-
-			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(spriteComponent);
-			entity.addComponent(new RenderableComponent(1));
-		}
-	};
-
 	private EntityTemplate replayPlayerTemplate = new EntityTemplateImpl() {
 
 		@Override
@@ -348,14 +321,6 @@ public class EntityTemplates {
 		}
 
 	};
-
-	public Entity destinationPlanet(float x, float y, float radius) {
-		return entityFactory.instantiate(destinationPlanetTemplate, new ParametersWrapper() //
-				.put("x", x) //
-				.put("y", y) //
-				.put("radius", radius) //
-				);
-	}
 
 	public Entity obstacle(String id, Vector2[] vertices, float x, float y, float angle) {
 		Entity e = entityBuilder.build();

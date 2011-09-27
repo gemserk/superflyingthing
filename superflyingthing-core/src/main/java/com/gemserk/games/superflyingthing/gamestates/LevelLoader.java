@@ -83,7 +83,7 @@ public class LevelLoader {
 				.put("radius", 1f) //
 				.put("controller", controller) //
 				);
-		
+
 		entityFactory.instantiate(entityTemplates.getPlanetFillAnimationTemplate(), parameters //
 				.put("owner", startPlanet) //
 				.put("color", level.startPlanet.color) //
@@ -91,7 +91,11 @@ public class LevelLoader {
 
 		for (int i = 0; i < level.destinationPlanets.size(); i++) {
 			DestinationPlanet destinationPlanet = level.destinationPlanets.get(i);
-			entityTemplates.destinationPlanet(destinationPlanet.x, destinationPlanet.y, 1f);
+			entityFactory.instantiate(entityTemplates.destinationPlanetTemplate, new ParametersWrapper() //
+					.put("x", destinationPlanet.x) //
+					.put("y", destinationPlanet.y) //
+					.put("radius", 1f) //
+					);
 		}
 
 		parameters.clear();
