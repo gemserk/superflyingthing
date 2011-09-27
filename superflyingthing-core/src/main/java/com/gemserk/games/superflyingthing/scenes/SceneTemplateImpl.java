@@ -5,7 +5,7 @@ import com.gemserk.componentsengine.utils.Parameters;
 
 public abstract class SceneTemplateImpl implements SceneTemplate {
 
-	private Parameters parameters;
+	protected Parameters parameters;
 
 	public Parameters getParameters() {
 		return parameters;

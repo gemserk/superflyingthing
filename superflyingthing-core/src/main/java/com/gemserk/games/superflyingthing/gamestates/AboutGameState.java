@@ -16,12 +16,14 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.utils.BrowserUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.scenes.EmptySceneTemplate;
+import com.gemserk.games.superflyingthing.scenes.TutorialSceneTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -41,7 +43,7 @@ public class AboutGameState extends GameStateImpl {
 
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private WorldWrapper scene;
+	private WorldWrapper worldWrapper;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -146,15 +148,21 @@ public class AboutGameState extends GameStateImpl {
 			}
 		};
 
-		scene = new WorldWrapper(new World());
+		worldWrapper = new WorldWrapper(new World());
 
-		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
-		emptySceneTemplate.setResourceManager(resourceManager);
-		emptySceneTemplate.setBackgroundEnabled(true);
+		TutorialSceneTemplate tutorialSceneTemplate = new TutorialSceneTemplate(resourceManager);
+		
+		tutorialSceneTemplate.setParameters(new ParametersWrapper().put("timeStepProvider", new TimeStepProviderGameStateImpl(this)));
+		
+		tutorialSceneTemplate.apply(worldWrapper);
 
-		emptySceneTemplate.apply(scene);
+		// EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
+		// emptySceneTemplate.setResourceManager(resourceManager);
+		// emptySceneTemplate.setBackgroundEnabled(true);
+		//
+		// emptySceneTemplate.apply(worldWrapper);
 
-		scene.update(1);
+		worldWrapper.update(1);
 
 		Analytics.traker.trackPageView("/about", "/about", null);
 
@@ -169,7 +177,7 @@ public class AboutGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-		scene.render();
+		worldWrapper.render();
 		spriteBatch.begin();
 		guiContainer.draw(spriteBatch);
 		spriteBatch.end();
@@ -177,7 +185,7 @@ public class AboutGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
-		scene.update(getDeltaInMs());
+		worldWrapper.update(getDeltaInMs());
 
 		Synchronizers.synchronize(getDelta());
 		guiContainer.update();
