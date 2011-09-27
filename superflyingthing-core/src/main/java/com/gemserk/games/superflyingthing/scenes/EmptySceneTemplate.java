@@ -21,7 +21,7 @@ import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.resources.ResourceManager;
 
-public class EmptySceneTemplate {
+public class EmptySceneTemplate extends SceneTemplateImpl {
 
 	private ResourceManager<String> resourceManager;
 	private boolean backgroundEnabled;
