@@ -15,11 +15,9 @@ import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.components.AnimationComponent;
-import com.gemserk.commons.artemis.components.CameraComponent;
 import com.gemserk.commons.artemis.components.ContainerComponent;
 import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
-import com.gemserk.commons.artemis.components.PreviousStateCameraComponent;
 import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -35,9 +33,6 @@ import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
-import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.camera.CameraImpl;
-import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialHierarchicalImpl;
@@ -47,6 +42,8 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.graphics.ParticleEmitterUtils;
 import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
+import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
@@ -64,12 +61,10 @@ import com.gemserk.games.superflyingthing.components.Components.MovementComponen
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
-import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.RemoveWhenGrabbedScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
-import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
@@ -83,8 +78,6 @@ import com.gemserk.games.superflyingthing.scripts.Scripts.StarAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
-import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
-import com.gemserk.games.superflyingthing.scripts.UpdateLibgdxCameraScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -212,38 +205,33 @@ public class EntityTemplates {
 		return staticSpriteTemplate;
 	}
 
-	public EntityTemplates(World physicsWorld, com.artemis.World world, ResourceManager<String> resourceManager, EntityBuilder entityBuilder, EntityFactory EntityFactory, EventManager eventManager) {
+	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
 		this.physicsWorld = physicsWorld;
 		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
-		this.entityFactory = EntityFactory;
+		this.entityFactory = entityFactory;
 		this.eventManager = eventManager;
 		this.bodyBuilder = new BodyBuilder(physicsWorld);
 		this.mesh2dBuilder = new Mesh2dBuilder();
 		this.jointBuilder = new JointBuilder(physicsWorld);
+
+		ProviderImpl templateProvider = new ProviderImpl(new ObjectConfigurator() {
+			{
+				add("physicsWorld", physicsWorld);
+				add("resourceManager", resourceManager);
+				add("entityBuilder", entityBuilder);
+				add("entityFactory", entityFactory);
+				add("eventManager", eventManager);
+				add("bodyBuilder", bodyBuilder);
+				add("mesh2dBuilder", mesh2dBuilder);
+				add("jointBuilder", jointBuilder);
+			}
+		});
+
+		this.cameraTemplate = templateProvider.get(CameraTemplate.class);
 	}
-
-	private EntityTemplate cameraTemplate = new EntityTemplateImpl() {
-		@Override
-		public void apply(Entity entity) {
-
-			Camera camera = parameters.get("camera");
-			Libgdx2dCamera libgdxCamera = parameters.get("libgdxCamera");
-			Spatial spatial = parameters.get("spatial");
-			Entity target = parameters.get("target");
-
-			entity.addComponent(new TagComponent(Groups.MainCamera));
-			entity.addComponent(new TargetComponent(target));
-			
-			entity.addComponent(new CameraComponent(libgdxCamera, camera));
-			entity.addComponent(new PreviousStateCameraComponent(new CameraImpl()));
-			
-			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(new ScriptComponent(new CameraScript(eventManager), //
-					new UpdateCameraFromSpatialScript(), new UpdateLibgdxCameraScript()));
-
-		}
-	};
+	
+	private EntityTemplate cameraTemplate;
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -313,10 +301,10 @@ public class EntityTemplates {
 
 			e.addComponent(new TagComponent(Groups.ship));
 			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-			
+
 			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 			e.addComponent(new PreviousStateSpatialComponent());
-			
+
 			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
 			e.addComponent(new RenderableComponent(1));
 			e.addComponent(new MovementComponent(direction.x, direction.y, maxLinearSpeed, maxAngularVelocity));
