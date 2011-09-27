@@ -1,22 +1,15 @@
 package com.gemserk.games.superflyingthing.templates;
 
-import com.artemis.Entity;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.artemis.EntityBuilder;
-import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.commons.reflection.ProviderImpl;
-import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
-import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
@@ -31,9 +24,6 @@ public class EntityTemplates {
 
 	}
 
-	private final BodyBuilder bodyBuilder;
-	private final EntityBuilder entityBuilder;
-	private final Mesh2dBuilder mesh2dBuilder;
 	private final EntityFactory entityFactory;
 
 	private final EventManager eventManager;
@@ -89,12 +79,8 @@ public class EntityTemplates {
 	}
 
 	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
-		this.entityBuilder = entityBuilder;
 		this.entityFactory = entityFactory;
 		this.eventManager = eventManager;
-		this.bodyBuilder = new BodyBuilder(physicsWorld);
-		this.mesh2dBuilder = new Mesh2dBuilder();
-		this.jointBuilder = new JointBuilder(physicsWorld);
 
 		ProviderImpl templateProvider = new ProviderImpl(new ObjectConfigurator() {
 			{
@@ -103,9 +89,9 @@ public class EntityTemplates {
 				add("entityBuilder", entityBuilder);
 				add("entityFactory", entityFactory);
 				add("eventManager", eventManager);
-				add("bodyBuilder", bodyBuilder);
-				add("mesh2dBuilder", mesh2dBuilder);
-				add("jointBuilder", jointBuilder);
+				add("bodyBuilder", new BodyBuilder(physicsWorld));
+				add("mesh2dBuilder", new Mesh2dBuilder());
+				add("jointBuilder", new JointBuilder(physicsWorld));
 				add("entityTemplates", EntityTemplates.this);
 			}
 		});
@@ -127,6 +113,8 @@ public class EntityTemplates {
 		this.staticObstacleTemplate = templateProvider.get(StaticObstacleTemplate.class);
 		this.boxObstacleTemplate = templateProvider.get(BoxObstacleTemplate.class);
 		this.movingObstacleTemplate = templateProvider.get(MovingObstacleTemplate.class);
+		this.timerTemplate = templateProvider.get(TimerTemplate.class);
+		this.particleEmitterSpawnerTemplate = templateProvider.get(ParticleEmitterSpawnerTemplate.class);
 
 	}
 
@@ -151,30 +139,8 @@ public class EntityTemplates {
 	public EntityTemplate staticObstacleTemplate;
 	public EntityTemplate boxObstacleTemplate;
 	public EntityTemplate movingObstacleTemplate;
-
-	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {
-		@Override
-		public void apply(Entity entity) {
-			entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, getParticleEmitterTemplate())));
-		}
-	};
-
-	private EntityTemplate timerTemplate = new EntityTemplateImpl() {
-
-		{
-			parameters.put("time", new Float(0f));
-		}
-
-		@Override
-		public void apply(Entity entity) {
-			Float time = parameters.get("time");
-			String eventId = parameters.get("eventId");
-
-			entity.addComponent(new TimerComponent(time));
-			entity.addComponent(new ScriptComponent(new TimerScript(eventManager, eventId)));
-		}
-	};
-
-	private JointBuilder jointBuilder;
+	public EntityTemplate timerTemplate;
+	
+	public EntityTemplate particleEmitterSpawnerTemplate;
 
 }
