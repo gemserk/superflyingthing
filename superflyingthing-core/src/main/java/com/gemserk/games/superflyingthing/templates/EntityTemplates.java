@@ -1,7 +1,6 @@
 package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.components.ScriptComponent;
@@ -126,6 +125,7 @@ public class EntityTemplates {
 		this.shipTemplate = templateProvider.get(ShipTemplate.class);
 		this.particleEmitterTemplate = templateProvider.get(ParticleEmitterTemplate.class);
 		this.staticObstacleTemplate = templateProvider.get(StaticObstacleTemplate.class);
+		this.boxObstacleTemplate = templateProvider.get(BoxObstacleTemplate.class);
 		this.movingObstacleTemplate = templateProvider.get(MovingObstacleTemplate.class);
 
 	}
@@ -149,24 +149,8 @@ public class EntityTemplates {
 
 	public EntityTemplate particleEmitterTemplate;
 	public EntityTemplate staticObstacleTemplate;
+	public EntityTemplate boxObstacleTemplate;
 	public EntityTemplate movingObstacleTemplate;
-
-	public Entity boxObstacle(String id, float x, float y, float w, float h, float angle) {
-
-		Vector2[] vertices = new Vector2[] { //
-		new Vector2(w * 0.5f, h * 0.5f),//
-				new Vector2(w * 0.5f, -h * 0.5f), //
-				new Vector2(-w * 0.5f, -h * 0.5f),//
-				new Vector2(-w * 0.5f, h * 0.5f), };
-
-		return entityFactory.instantiate(staticObstacleTemplate, new ParametersWrapper() //
-				.put("id", id) //
-				.put("x", x) //
-				.put("y", y) //
-				.put("angle", angle) //
-				.put("vertices", vertices) //
-				);
-	}
 
 	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {
 		@Override

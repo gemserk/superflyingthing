@@ -59,10 +59,38 @@ public class LevelLoader {
 		float centerX = worldWidth * 0.5f;
 		float centerY = worldHeight * 0.5f;
 		float limitWidth = 0.1f;
-		entityTemplates.boxObstacle("worldLimit1", centerX, -offset, worldWidth + 1, limitWidth, 0f);
-		entityTemplates.boxObstacle("worldLimit2", centerX, worldHeight + offset, worldWidth + 1, limitWidth, 0f);
-		entityTemplates.boxObstacle("worldLimit3", -offset, centerY, limitWidth, worldHeight + 1, 0f);
-		entityTemplates.boxObstacle("worldLimit4", worldWidth + offset, centerY, limitWidth, worldHeight + 1, 0f);
+		entityFactory.instantiate(entityTemplates.boxObstacleTemplate, new ParametersWrapper() //
+				.put("id", "worldLimit1") //
+				.put("x", centerX) //
+				.put("y", (-offset)) //
+				.put("angle", 0f) //
+				.put("w", (worldWidth + 1)) //
+				.put("h", limitWidth) //
+				);
+		entityFactory.instantiate(entityTemplates.boxObstacleTemplate, new ParametersWrapper() //
+				.put("id", "worldLimit2") //
+				.put("x", centerX) //
+				.put("y", (worldHeight + offset)) //
+				.put("angle", 0f) //
+				.put("w", (worldWidth + 1)) //
+				.put("h", limitWidth) //
+				);
+		entityFactory.instantiate(entityTemplates.boxObstacleTemplate, new ParametersWrapper() //
+				.put("id", "worldLimit3") //
+				.put("x", (-offset)) //
+				.put("y", centerY) //
+				.put("angle", 0f) //
+				.put("w", limitWidth) //
+				.put("h", (worldHeight + 1)) //
+				);
+		entityFactory.instantiate(entityTemplates.boxObstacleTemplate, new ParametersWrapper() //
+				.put("id", "worldLimit4") //
+				.put("x", (worldWidth + offset)) //
+				.put("y", centerY) //
+				.put("angle", 0f) //
+				.put("w", limitWidth) //
+				.put("h", (worldHeight + 1)) //
+				);
 	}
 
 	public void loadLevel(Level level) {
