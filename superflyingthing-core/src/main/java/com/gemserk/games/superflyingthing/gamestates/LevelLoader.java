@@ -112,7 +112,7 @@ public class LevelLoader {
 				.put("controller", controller) //
 				);
 
-		entityFactory.instantiate(entityTemplates.getPlanetFillAnimationTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.planetFillAnimationTemplate, parameters //
 				.put("owner", startPlanet) //
 				.put("color", level.startPlanet.color) //
 				);
@@ -127,7 +127,7 @@ public class LevelLoader {
 		}
 
 		parameters.clear();
-		entityFactory.instantiate(entityTemplates.getCameraTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.cameraTemplate, parameters //
 				.put("camera", camera) //
 				.put("libgdxCamera", worldCamera) //
 				.put("spatial", new SpatialImpl(level.startPlanet.x, level.startPlanet.y, 1f, 1f, 0f)) //
@@ -206,7 +206,7 @@ public class LevelLoader {
 
 			parameters.clear();
 
-			entityFactory.instantiate(entityTemplates.getLaserGunTemplate(), parameters //
+			entityFactory.instantiate(entityTemplates.laserGunTemplate, parameters //
 					.put("position", new Vector2(laserTurret.x, laserTurret.y)) //
 					.put("angle", laserTurret.angle) //
 					.put("fireRate", laserTurret.fireRate) //
@@ -220,7 +220,7 @@ public class LevelLoader {
 
 			parameters.clear();
 
-			entityFactory.instantiate(entityTemplates.getPortalTemplate(), parameters //
+			entityFactory.instantiate(entityTemplates.portalTemplate, parameters //
 					.put("id", portal.id) //
 					.put("targetPortalId", portal.targetPortalId) //
 					.put("spatial", new SpatialImpl(portal.x, portal.y, portal.w, portal.h, portal.angle)) //
@@ -228,7 +228,7 @@ public class LevelLoader {
 		}
 
 		for (int i = 0; i < level.fogClouds.size(); i++)
-			entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), level.fogClouds.get(i));
+			entityFactory.instantiate(entityTemplates.staticSpriteTemplate, level.fogClouds.get(i));
 
 		createWorldLimits(worldWidth, worldHeight);
 

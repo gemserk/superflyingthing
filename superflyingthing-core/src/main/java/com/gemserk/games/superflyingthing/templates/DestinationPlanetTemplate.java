@@ -20,7 +20,6 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
-import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits;
 import com.gemserk.resources.ResourceManager;
 
 public class DestinationPlanetTemplate extends EntityTemplateImpl {

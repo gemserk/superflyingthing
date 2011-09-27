@@ -14,73 +14,7 @@ import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
 
-	public static class CategoryBits {
-
-		public static short AllCategoryBits = 0xFF;
-		public static short ShipCategoryBits = 1;
-		public static short MiniPlanetCategoryBits = 2;
-		public static short MovingObstacleCategoryBits = 4;
-		public static short ObstacleCategoryBits = 8;
-
-	}
-
-	private final EntityFactory entityFactory;
-
-	private final EventManager eventManager;
-
-	public EntityTemplate userMessageTemplate;
-
-	public EntityTemplate getAttachedShipTemplate() {
-		return attachedShipTemplate;
-	}
-
-	public EntityTemplate getShipTemplate() {
-		return shipTemplate;
-	}
-
-	public EntityTemplate getParticleEmitterTemplate() {
-		return particleEmitterTemplate;
-	}
-
-	public EntityTemplate getLaserGunTemplate() {
-		return laserGunTemplate;
-	}
-
-	public EntityTemplate getPortalTemplate() {
-		return portalTemplate;
-	}
-
-	public EntityTemplate getPlanetFillAnimationTemplate() {
-		return planetFillAnimationTemplate;
-	}
-
-	public EntityTemplate getCameraTemplate() {
-		return cameraTemplate;
-	}
-
-	public EntityTemplate getReplayShipTemplate() {
-		return replayShipTemplate;
-	}
-
-	public EntityTemplate getParticleEmitterSpawnerTemplate() {
-		return particleEmitterSpawnerTemplate;
-	}
-
-	public EntityTemplate getTimerTemplate() {
-		return timerTemplate;
-	}
-
-	public EntityTemplate getReplayPlayerTemplate() {
-		return replayPlayerTemplate;
-	}
-
-	public EntityTemplate getStaticSpriteTemplate() {
-		return staticSpriteTemplate;
-	}
-
 	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
-		this.entityFactory = entityFactory;
-		this.eventManager = eventManager;
 
 		ProviderImpl templateProvider = new ProviderImpl(new ObjectConfigurator() {
 			{

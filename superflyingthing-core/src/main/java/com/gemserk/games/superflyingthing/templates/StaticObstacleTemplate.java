@@ -21,7 +21,6 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
-import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits;
 import com.gemserk.resources.ResourceManager;
 
 public class StaticObstacleTemplate extends EntityTemplateImpl {

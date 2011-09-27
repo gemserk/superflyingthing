@@ -20,7 +20,6 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
-import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits;
 import com.gemserk.resources.ResourceManager;
 
 public class ReplayShipTemplate extends EntityTemplateImpl {

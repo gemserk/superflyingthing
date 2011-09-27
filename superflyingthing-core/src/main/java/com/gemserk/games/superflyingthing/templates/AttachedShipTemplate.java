@@ -20,7 +20,6 @@ import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
-import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits;
 import com.gemserk.resources.ResourceManager;
 
 public class AttachedShipTemplate extends EntityTemplateImpl {

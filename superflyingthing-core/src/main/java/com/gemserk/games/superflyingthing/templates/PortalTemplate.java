@@ -18,7 +18,6 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
-import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits;
 import com.gemserk.resources.ResourceManager;
 
 public class PortalTemplate extends EntityTemplateImpl {

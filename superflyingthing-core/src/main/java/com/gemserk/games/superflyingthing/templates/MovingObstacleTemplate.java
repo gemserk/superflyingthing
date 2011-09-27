@@ -20,7 +20,6 @@ import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
-import com.gemserk.games.superflyingthing.templates.EntityTemplates.CategoryBits;
 import com.gemserk.resources.ResourceManager;
 
 public class MovingObstacleTemplate extends EntityTemplateImpl {

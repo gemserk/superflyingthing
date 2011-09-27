@@ -62,7 +62,6 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
-import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
@@ -200,11 +199,10 @@ public class BackgroundGameState extends GameStateImpl {
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
 		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
-		entityTemplates.userMessageTemplate = new UserMessageTemplate(guiContainer, resourceManager);
 
 		gameData = new GameData();
 
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
 				.put("layer", (-999)) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
@@ -286,7 +284,7 @@ public class BackgroundGameState extends GameStateImpl {
 				.build();
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
-		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
 	}
 
 	private void gameFinished() {

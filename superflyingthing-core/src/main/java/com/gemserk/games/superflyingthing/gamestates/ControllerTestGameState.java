@@ -209,7 +209,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		gameData = new GameData();
 
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
 				.put("layer", (-999)) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
@@ -232,7 +232,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		final ShipController controller = new ShipController();
 
-		entityFactory.instantiate(entityTemplates.getShipTemplate(), //
+		entityFactory.instantiate(entityTemplates.shipTemplate, //
 				parameters //
 						.put("spatial", new SpatialImpl(-5f, 0f, 0.8f, 0.8f, 0f)) //
 						.put("controller", controller) //
@@ -241,7 +241,7 @@ public class ControllerTestGameState extends GameStateImpl {
 				);
 
 		parameters.clear();
-		entityFactory.instantiate(entityTemplates.getCameraTemplate(), //
+		entityFactory.instantiate(entityTemplates.cameraTemplate, //
 				parameters.put("camera", camera) //
 						.put("libgdxCamera", worldCamera) //
 						.put("spatial", new SpatialImpl(0f, 0f, 1f, 1f, 0f))//

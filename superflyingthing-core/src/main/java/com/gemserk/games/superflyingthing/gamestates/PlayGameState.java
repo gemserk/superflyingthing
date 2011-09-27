@@ -269,7 +269,7 @@ public class PlayGameState extends GameStateImpl {
 			container.add(tiltvalue);
 		}
 
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
 				.put("layer", (-999)) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
@@ -366,7 +366,7 @@ public class PlayGameState extends GameStateImpl {
 				gameMode.delete();
 
 				parameters.clear();
-				entityFactory.instantiate(entityTemplates.getTimerTemplate(), parameters //
+				entityFactory.instantiate(entityTemplates.timerTemplate, parameters //
 						.put("time", 2.5f) //
 						.put("eventId", Events.gameOver) //
 						);
@@ -504,7 +504,7 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
-		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
 	}
 
 	private void loadLevel() {

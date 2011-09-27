@@ -56,7 +56,7 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 
 		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
 
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
 				.put("layer", (-999)) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0f)) //
@@ -64,14 +64,14 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 				.put("spriteId", "BackgroundSprite") //
 				);
 
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.GREEN) //
 				.put("layer", (-400)) //
 				.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.57f), (Gdx.graphics.getHeight() * 0.23f), 160f, 160f, 86f)) //
 				.put("center", new Vector2(0.5f, 0.5f)) //
 				.put("spriteId", "FogSprite") //
 				);
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.RED) //
 				.put("layer", (-400)) //
 				.put("spatial", new SpatialImpl((Gdx.graphics.getWidth() * 0.24f), (Gdx.graphics.getHeight() * 0.68f), 120f, 120f, 189f)) //

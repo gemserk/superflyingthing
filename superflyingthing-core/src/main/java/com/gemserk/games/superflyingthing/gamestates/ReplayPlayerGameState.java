@@ -189,7 +189,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		// creates and registers all the controller templates
 
-		entityFactory.instantiate(entityTemplates.getStaticSpriteTemplate(), parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
 				.put("layer", (-999)) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
@@ -214,12 +214,12 @@ public class ReplayPlayerGameState extends GameStateImpl {
 			Replay replay = replays.get(i);
 
 			parameters.clear();
-			Entity replayShip = entityFactory.instantiate(entityTemplates.getReplayShipTemplate(), parameters //
+			Entity replayShip = entityFactory.instantiate(entityTemplates.replayShipTemplate, parameters //
 					.put("replay", replay) //
 					);
 
 			parameters.clear();
-			entityFactory.instantiate(entityTemplates.getReplayPlayerTemplate(), parameters //
+			entityFactory.instantiate(entityTemplates.replayPlayerTemplate, parameters //
 					.put("replay", replay) //
 					.put("target", replayShip) //
 					);
@@ -241,7 +241,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 						Replay replay = replayComponent.replay;
 
 						// also starts a timer to invoke game over game state
-						entityFactory.instantiate(entityTemplates.getTimerTemplate(), new ParametersWrapper() //
+						entityFactory.instantiate(entityTemplates.timerTemplate, new ParametersWrapper() //
 								.put("time", (float) (replay.duration - 100) * 0.001f) //
 								.put("eventId", Events.gameOver));
 
@@ -292,7 +292,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 				.build();
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
-		entityFactory.instantiate(entityTemplates.getParticleEmitterSpawnerTemplate());
+		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
 
 		// create gui label..
 

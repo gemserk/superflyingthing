@@ -274,9 +274,9 @@ public class Scripts {
 			this.invulnerable = invulnerable;
 			this.entityFactory = entityFactory;
 
-			shipTemplate = entityTemplates.getShipTemplate();
-			attachedShipTemplate = entityTemplates.getAttachedShipTemplate();
-			particleEmitterTemplate = entityTemplates.getParticleEmitterTemplate();
+			shipTemplate = entityTemplates.shipTemplate;
+			attachedShipTemplate = entityTemplates.attachedShipTemplate;
+			particleEmitterTemplate = entityTemplates.particleEmitterTemplate;
 		}
 
 		@Override
