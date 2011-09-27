@@ -9,17 +9,11 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
 import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
-import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
-import com.gemserk.commons.artemis.components.AnimationComponent;
-import com.gemserk.commons.artemis.components.ContainerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
-import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
-import com.gemserk.commons.artemis.components.SpriteComponent;
-import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.Script;
@@ -30,7 +24,6 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
-import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
@@ -39,23 +32,15 @@ import com.gemserk.commons.gdx.graphics.ShapeUtils;
 import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.commons.reflection.ProviderImpl;
-import com.gemserk.componentsengine.utils.Container;
-import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components;
-import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
-import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
-import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
-import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
-import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
-import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.resources.ResourceManager;
 
@@ -163,6 +148,7 @@ public class EntityTemplates {
 		this.laserBulletTemplate = templateProvider.get(LaserBulletTemplate.class);
 		this.laserGunTemplate = templateProvider.get(LaserGunTemplate.class);
 		this.attachedShipTemplate = templateProvider.get(AttachedShipTemplate.class);
+		this.shipTemplate = templateProvider.get(ShipTemplate.class);
 		
 	}
 
@@ -179,6 +165,7 @@ public class EntityTemplates {
 	public EntityTemplate laserGunTemplate;
 	
 	public EntityTemplate attachedShipTemplate;
+	public EntityTemplate shipTemplate;
 
 	public EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -206,65 +193,6 @@ public class EntityTemplates {
 		}
 
 	};
-
-	private EntityTemplate shipTemplate = new EntityTemplateImpl() {
-
-		private final Vector2 direction = new Vector2();
-
-		{
-			parameters.put("maxLinearSpeed", new Float(4.5f));
-			parameters.put("maxAngularVelocity", new Float(360f));
-		}
-
-		@Override
-		public void apply(Entity e) {
-			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
-
-			Spatial spatial = parameters.get("spatial");
-
-			Float maxLinearSpeed = parameters.get("maxLinearSpeed");
-			Float maxAngularVelocity = parameters.get("maxAngularVelocity");
-
-			float angle = spatial.getAngle();
-			float width = spatial.getWidth();
-			float height = spatial.getHeight();
-
-			direction.set(1f, 0f).rotate(angle);
-
-			ShipController controller = parameters.get("controller");
-			// Script script = parameters.get("script", new ShipScript(), new GrabGrabbableScript());
-
-			Body body = bodyBuilder //
-					.fixture(bodyBuilder.fixtureDefBuilder() //
-							.restitution(0f) //
-							.categoryBits(CategoryBits.ShipCategoryBits) //
-							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-							.boxShape(width * 0.25f, height * 0.1f))//
-					.mass(50f) //
-					.position(spatial.getX(), spatial.getY()) //
-					.type(BodyType.DynamicBody) //
-					.userData(e) //
-					.build();
-
-			e.addComponent(new TagComponent(Groups.ship));
-			e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-
-			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-			e.addComponent(new PreviousStateSpatialComponent());
-
-			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));
-			e.addComponent(new RenderableComponent(1));
-			e.addComponent(new MovementComponent(direction.x, direction.y, maxLinearSpeed, maxAngularVelocity));
-			e.addComponent(new AttachableComponent());
-			e.addComponent(new ControllerComponent(controller));
-			e.addComponent(new ScriptComponent(new ShipScript(), new GrabGrabbableScript()));
-			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
-			e.addComponent(new ContainerComponent());
-			e.addComponent(new HealthComponent(new Container(100f, 100f)));
-		}
-	};
-
-	
 
 	private EntityTemplate replayPlayerTemplate = new EntityTemplateImpl() {
 
