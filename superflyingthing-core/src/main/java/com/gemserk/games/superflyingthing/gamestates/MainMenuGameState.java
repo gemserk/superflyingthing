@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
@@ -51,7 +50,7 @@ public class MainMenuGameState extends GameStateImpl {
 		BitmapFont versionFont = resourceManager.getResourceValue("VersionFont");
 
 		container = new Container();
-		
+
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		panel.add(GuiControls.label("Super Flying Thing") //
@@ -99,9 +98,8 @@ public class MainMenuGameState extends GameStateImpl {
 				})//
 				.build();
 
-		TextButton exitButton = GuiControls.textButton() //
-				.id("AboutButton")
-				.position(centerX, height * 0f) //
+		TextButton aboutButton = GuiControls.textButton() //
+				.id("AboutButton").position(centerX, height * 0f) //
 				.text("About us") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
@@ -118,9 +116,8 @@ public class MainMenuGameState extends GameStateImpl {
 		// container.add(text);
 		panel.add(playButton);
 		panel.add(settingsButton);
-		if (Gdx.app.getType() != ApplicationType.Applet)
-			panel.add(exitButton);
-		
+		panel.add(aboutButton);
+
 		container.add(panel);
 
 		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
@@ -132,7 +129,7 @@ public class MainMenuGameState extends GameStateImpl {
 		backgroundGameScreen.init();
 		game.getEventManager().registerEvent(Events.previewRandomLevel, this);
 	}
-	
+
 	private void aboutUs() {
 		game.transition(Screens.About) //
 				.disposeCurrent(true) //
