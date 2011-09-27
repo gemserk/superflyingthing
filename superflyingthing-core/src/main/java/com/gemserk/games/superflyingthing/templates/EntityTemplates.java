@@ -52,7 +52,6 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
-import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
@@ -70,7 +69,6 @@ import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
 import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
-import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.resources.ResourceManager;
@@ -227,6 +225,8 @@ public class EntityTemplates {
 		this.staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);
 		this.starTemplate = templateProvider.get(StarTemplate.class);
 		this.startPlanetTemplate = templateProvider.get(StartPlanetTemplate.class);
+		this.destinationPlanetTemplate = templateProvider.get(DestinationPlanetTemplate.class);
+		this.planetFillAnimationTemplate = templateProvider.get(PlanetFillAnimationTemplate.class);
 		
 	}
 
@@ -234,6 +234,8 @@ public class EntityTemplates {
 	public EntityTemplate staticSpriteTemplate;
 	public EntityTemplate starTemplate;
 	public EntityTemplate startPlanetTemplate;
+	public EntityTemplate destinationPlanetTemplate;
+	public EntityTemplate planetFillAnimationTemplate;
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -521,66 +523,13 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateImpl() {
-
-		{
-			parameters.put("animation", "PlanetFillAnimation");
-			parameters.put("color", Colors.darkBlue);
-		}
-
-		@Override
-		public void apply(Entity entity) {
-			Entity owner = parameters.get("owner");
-
-			String animationId = parameters.get("animation");
-			Color color = parameters.get("color");
-
-			Animation planetFillAnimation = resourceManager.getResourceValue(animationId);
-			Sprite sprite = planetFillAnimation.getCurrentFrame();
-
-			Spatial ownerSpatial = ComponentWrapper.getSpatial(owner);
-
-			entity.addComponent(new SpatialComponent(new SpatialHierarchicalImpl(ownerSpatial)));
-			entity.addComponent(new SpriteComponent(sprite, color));
-			entity.addComponent(new RenderableComponent(-1));
-			entity.addComponent(new AnimationComponent(new Animation[] { planetFillAnimation }));
-			entity.addComponent(new OwnerComponent(owner));
-			entity.addComponent(new ScriptComponent(new Scripts.UpdateAnimationScript()));
-		}
-
-	};
-
 	public Entity destinationPlanet(float x, float y, float radius) {
-		Sprite sprite = resourceManager.getResourceValue("Planet");
-		Entity e = entityBuilder.build();
-
-		e.setGroup(Groups.destinationPlanets);
-
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.circleShape(radius * 0.1f) //
-						.categoryBits(CategoryBits.MiniPlanetCategoryBits) //
-						.restitution(0f)) //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.circleShape(radius * 1.5f) //
-						.categoryBits(CategoryBits.AllCategoryBits) //
-						.sensor()) //
-				.position(x, y) //
-				.mass(1f) //
-				.type(BodyType.StaticBody) //
-				.userData(e) //
-				.build();
-
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-		e.addComponent(new SpriteComponent(sprite, Color.WHITE));
-		e.addComponent(new RenderableComponent(-2));
-		e.addComponent(new AttachmentComponent());
-		e.addComponent(new ScriptComponent(new DestinationPlanetScript(eventManager, jointBuilder, entityFactory, getPlanetFillAnimationTemplate())));
-		e.addComponent(new ContainerComponent());
-
-		e.refresh();
-		return e;
+		return entityFactory.instantiate(destinationPlanetTemplate, new ParametersWrapper() //
+				.put("x", x) //
+				.put("y", y) //
+				.put("radius", radius) //
+				.put("planetFillAnimationTemplate", planetFillAnimationTemplate) //
+				);
 	}
 
 	public Entity obstacle(String id, Vector2[] vertices, float x, float y, float angle) {
@@ -710,21 +659,6 @@ public class EntityTemplates {
 			entity.addComponent(new ScriptComponent(new TimerScript(eventManager, eventId)));
 		}
 	};
-
-	// private EntityTemplate staticSpriteTemplate = new EntityTemplateImpl() {
-	// @Override
-	// public void apply(Entity entity) {
-	// Color color = parameters.get("color", Color.WHITE);
-	// Integer layer = parameters.get("layer");
-	// Spatial spatial = parameters.get("spatial");
-	// String spriteId = parameters.get("spriteId");
-	// Vector2 center = parameters.get("center");
-	// Sprite sprite = resourceManager.getResourceValue(spriteId);
-	// entity.addComponent(new SpatialComponent(spatial));
-	// entity.addComponent(new SpriteComponent(sprite, new Vector2(center), color));
-	// entity.addComponent(new RenderableComponent(layer));
-	// }
-	// };
 
 	private JointBuilder jointBuilder;
 
