@@ -66,7 +66,6 @@ import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
-import com.gemserk.games.superflyingthing.scripts.PortalScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
@@ -227,6 +226,7 @@ public class EntityTemplates {
 		this.startPlanetTemplate = templateProvider.get(StartPlanetTemplate.class);
 		this.destinationPlanetTemplate = templateProvider.get(DestinationPlanetTemplate.class);
 		this.planetFillAnimationTemplate = templateProvider.get(PlanetFillAnimationTemplate.class);
+		this.portalTemplate = templateProvider.get(PortalTemplate.class);
 		
 	}
 
@@ -236,6 +236,7 @@ public class EntityTemplates {
 	public EntityTemplate startPlanetTemplate;
 	public EntityTemplate destinationPlanetTemplate;
 	public EntityTemplate planetFillAnimationTemplate;
+	public EntityTemplate portalTemplate;
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -477,48 +478,6 @@ public class EntityTemplates {
 			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
 			entity.addComponent(new OwnerComponent(owner));
 			entity.addComponent(new ContainerComponent());
-		}
-
-	};
-
-	private EntityTemplate portalTemplate = new EntityTemplateImpl() {
-
-		{
-			parameters.put("sprite", "PortalSprite");
-		}
-
-		@Override
-		public void apply(Entity entity) {
-
-			String id = parameters.get("id");
-			String targetPortalId = parameters.get("targetPortalId");
-			String spriteId = parameters.get("sprite");
-			Spatial spatial = parameters.get("spatial");
-			Script script = parameters.get("script", new PortalScript());
-
-			Sprite sprite = resourceManager.getResourceValue(spriteId);
-
-			entity.addComponent(new TagComponent(id));
-			entity.addComponent(new SpriteComponent(sprite, Colors.darkBlue));
-			entity.addComponent(new Components.PortalComponent(targetPortalId, spatial.getAngle()));
-			entity.addComponent(new RenderableComponent(-5));
-			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(new ScriptComponent(script));
-
-			Body body = bodyBuilder //
-					.fixture(bodyBuilder.fixtureDefBuilder() //
-							.circleShape(spatial.getWidth() * 0.35f) //
-							.categoryBits(CategoryBits.ObstacleCategoryBits) //
-							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits)) //
-							.sensor()) //
-					.position(spatial.getX(), spatial.getY()) //
-					.mass(1f) //
-					.type(BodyType.StaticBody) //
-					.userData(entity) //
-					.build();
-
-			entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-
 		}
 
 	};
