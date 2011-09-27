@@ -229,9 +229,9 @@ public class EntityTemplates {
 		this.starTemplate = templateProvider.get(StarTemplate.class);
 	}
 
-	private EntityTemplate cameraTemplate;
-	private EntityTemplate staticSpriteTemplate;
-	private EntityTemplate starTemplate;
+	public EntityTemplate cameraTemplate;
+	public EntityTemplate staticSpriteTemplate;
+	public EntityTemplate starTemplate;
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -518,14 +518,6 @@ public class EntityTemplates {
 		}
 
 	};
-
-	public Entity star(String id, float x, float y) {
-		return entityFactory.instantiate(starTemplate, new ParametersWrapper() //
-				.put("x", x) //
-				.put("y", y) //
-				.put("id", id) //
-				);
-	}
 
 	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateImpl() {
 

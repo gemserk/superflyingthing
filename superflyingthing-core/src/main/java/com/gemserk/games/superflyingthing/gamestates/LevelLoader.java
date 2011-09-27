@@ -140,7 +140,11 @@ public class LevelLoader {
 				}
 			}
 
-			entityTemplates.star(item.id, item.x, item.y);
+			entityFactory.instantiate(entityTemplates.starTemplate, new ParametersWrapper() //
+					.put("x", item.x) //
+					.put("y", item.y) //
+					.put("id", item.id) //
+					);
 
 			j++;
 		}
