@@ -77,7 +77,13 @@ public class LevelLoader {
 
 		parameters.clear();
 
-		Entity startPlanet = entityTemplates.startPlanet(level.startPlanet.x, level.startPlanet.y, 1f, controller);
+		Entity startPlanet = entityFactory.instantiate(entityTemplates.startPlanetTemplate, new ParametersWrapper() //
+				.put("x", level.startPlanet.x) //
+				.put("y", level.startPlanet.y) //
+				.put("radius", 1f) //
+				.put("controller", controller) //
+				);
+		
 		entityFactory.instantiate(entityTemplates.getPlanetFillAnimationTemplate(), parameters //
 				.put("owner", startPlanet) //
 				.put("color", level.startPlanet.color) //

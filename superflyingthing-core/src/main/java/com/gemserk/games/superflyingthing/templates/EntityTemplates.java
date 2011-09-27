@@ -550,44 +550,6 @@ public class EntityTemplates {
 
 	};
 
-	public Entity startPlanet(float x, float y, float radius, ShipController controller) {
-
-		return entityFactory.instantiate(startPlanetTemplate, new ParametersWrapper() //
-				.put("x", x) //
-				.put("y", y) //
-				.put("radius", radius) //
-				.put("controller", controller) //
-				);
-
-		// Sprite sprite = resourceManager.getResourceValue("Planet");
-		//
-		// Entity entity = entityBuilder.build();
-		// Body body = bodyBuilder //
-		// .fixture(bodyBuilder.fixtureDefBuilder() //
-		// .circleShape(radius * 0.1f) //
-		// .restitution(0f) //
-		// .categoryBits(CategoryBits.MiniPlanetCategoryBits)) //
-		// .position(x, y) //
-		// .mass(1f) //
-		// .type(BodyType.StaticBody) //
-		// .userData(entity) //
-		// .build();
-		//
-		// entity.addComponent(new TagComponent(Groups.startPlanet));
-		// entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		// entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-		// entity.addComponent(new AttachmentComponent());
-		// entity.addComponent(new SpriteComponent(sprite, Color.WHITE));
-		// entity.addComponent(new RenderableComponent(-2));
-		// entity.addComponent(new ControllerComponent(controller));
-		// entity.addComponent(new ScriptComponent(new StartPlanetScript(physicsWorld, jointBuilder, eventManager)));
-		// entity.addComponent(new ContainerComponent());
-		//
-		// entity.refresh();
-		//
-		// return entity;
-	}
-
 	public Entity destinationPlanet(float x, float y, float radius) {
 		Sprite sprite = resourceManager.getResourceValue("Planet");
 		Entity e = entityBuilder.build();
