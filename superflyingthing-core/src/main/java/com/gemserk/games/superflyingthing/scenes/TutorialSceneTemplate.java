@@ -74,18 +74,6 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 		BodyBuilder bodyBuilder;
 		EventManager eventManager;
 
-		public void setResourceManager(ResourceManager<String> resourceManager) {
-			this.resourceManager = resourceManager;
-		}
-
-		public void setBodyBuilder(BodyBuilder bodyBuilder) {
-			this.bodyBuilder = bodyBuilder;
-		}
-
-		public void setEventManager(EventManager eventManager) {
-			this.eventManager = eventManager;
-		}
-
 		@Override
 		public void apply(Entity entity) {
 			float radius = 0.3f;
@@ -121,10 +109,6 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 
 		EventManager eventManager;
 
-		public void setEventManager(EventManager eventManager) {
-			this.eventManager = eventManager;
-		}
-
 		@Override
 		public void apply(Entity entity) {
 
@@ -149,10 +133,6 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 	public static class StaticSpriteTemplate extends EntityTemplateImpl {
 
 		ResourceManager<String> resourceManager;
-
-		public void setResourceManager(ResourceManager<String> resourceManager) {
-			this.resourceManager = resourceManager;
-		}
 
 		@Override
 		public void apply(Entity entity) {
