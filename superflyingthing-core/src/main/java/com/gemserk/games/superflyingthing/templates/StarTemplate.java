@@ -16,6 +16,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
+import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.RemoveWhenGrabbedScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
@@ -32,6 +33,8 @@ public class StarTemplate extends EntityTemplateImpl {
 		float radius = 0.3f;
 
 		Animation rotateAnimation = resourceManager.getResourceValue("StarAnimation");
+		
+		String id = parameters.get("id");
 		Float x = parameters.get("x");
 		Float y = parameters.get("y");
 
@@ -46,6 +49,7 @@ public class StarTemplate extends EntityTemplateImpl {
 				.userData(entity) //
 				.build();
 
+		entity.addComponent(new LabelComponent(id));
 		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 

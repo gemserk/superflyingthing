@@ -54,7 +54,6 @@ import com.gemserk.games.superflyingthing.components.Components;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
-import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
@@ -63,7 +62,6 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
-import com.gemserk.games.superflyingthing.scripts.Behaviors.RemoveWhenGrabbedScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
@@ -74,8 +72,6 @@ import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.StarAnimationScript;
-import com.gemserk.games.superflyingthing.scripts.Scripts.StarScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.resources.ResourceManager;
@@ -229,9 +225,13 @@ public class EntityTemplates {
 		});
 
 		this.cameraTemplate = templateProvider.get(CameraTemplate.class);
+		this.staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);
+		this.starTemplate = templateProvider.get(StarTemplate.class);
 	}
-	
+
 	private EntityTemplate cameraTemplate;
+	private EntityTemplate staticSpriteTemplate;
+	private EntityTemplate starTemplate;
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -520,35 +520,11 @@ public class EntityTemplates {
 	};
 
 	public Entity star(String id, float x, float y) {
-		Entity e = entityBuilder.build();
-
-		float radius = 0.3f;
-
-		Animation rotateAnimation = resourceManager.getResourceValue("StarAnimation");
-
-		Body body = bodyBuilder //
-				.fixture(bodyBuilder.fixtureDefBuilder() //
-						.sensor() //
-						.restitution(0f) //
-						.circleShape(radius)) //
-				.mass(50f) //
-				.position(x, y) //
-				.type(BodyType.DynamicBody) //
-				.userData(e) //
-				.build();
-
-		e.addComponent(new LabelComponent(id));
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
-
-		e.addComponent(new SpriteComponent(rotateAnimation.getCurrentFrame()));
-		e.addComponent(new RenderableComponent(3));
-		e.addComponent(new GrabbableComponent());
-		e.addComponent(new AnimationComponent(new Animation[] { rotateAnimation }));
-		e.addComponent(new ScriptComponent(new StarScript(eventManager), new RemoveWhenGrabbedScript(), new StarAnimationScript()));
-
-		e.refresh();
-		return e;
+		return entityFactory.instantiate(starTemplate, new ParametersWrapper() //
+				.put("x", x) //
+				.put("y", y) //
+				.put("id", id) //
+				);
 	}
 
 	private EntityTemplate planetFillAnimationTemplate = new EntityTemplateImpl() {
@@ -772,20 +748,21 @@ public class EntityTemplates {
 		}
 	};
 
-	private EntityTemplate staticSpriteTemplate = new EntityTemplateImpl() {
-		@Override
-		public void apply(Entity entity) {
-			Color color = parameters.get("color", Color.WHITE);
-			Integer layer = parameters.get("layer");
-			Spatial spatial = parameters.get("spatial");
-			String spriteId = parameters.get("spriteId");
-			Vector2 center = parameters.get("center");
-			Sprite sprite = resourceManager.getResourceValue(spriteId);
-			entity.addComponent(new SpatialComponent(spatial));
-			entity.addComponent(new SpriteComponent(sprite, new Vector2(center), color));
-			entity.addComponent(new RenderableComponent(layer));
-		}
-	};
+	// private EntityTemplate staticSpriteTemplate = new EntityTemplateImpl() {
+	// @Override
+	// public void apply(Entity entity) {
+	// Color color = parameters.get("color", Color.WHITE);
+	// Integer layer = parameters.get("layer");
+	// Spatial spatial = parameters.get("spatial");
+	// String spriteId = parameters.get("spriteId");
+	// Vector2 center = parameters.get("center");
+	// Sprite sprite = resourceManager.getResourceValue(spriteId);
+	// entity.addComponent(new SpatialComponent(spatial));
+	// entity.addComponent(new SpriteComponent(sprite, new Vector2(center), color));
+	// entity.addComponent(new RenderableComponent(layer));
+	// }
+	// };
+
 	private JointBuilder jointBuilder;
 
 }
