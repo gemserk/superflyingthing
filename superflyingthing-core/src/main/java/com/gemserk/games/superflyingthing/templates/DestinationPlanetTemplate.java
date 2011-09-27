@@ -39,7 +39,6 @@ public class DestinationPlanetTemplate extends EntityTemplateImpl {
 		Float radius = parameters.get("radius");
 		Float x = parameters.get("x");
 		Float y = parameters.get("y");
-		// EntityTemplate planetFillAnimationTemplate = parameters.get("planetFillAnimationTemplate");
 
 		entity.setGroup(Groups.destinationPlanets);
 

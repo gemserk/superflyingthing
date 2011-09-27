@@ -29,19 +29,9 @@ public class LaserBulletTemplate extends EntityTemplateImpl {
 	World physicsWorld;
 	EntityTemplates entityTemplates;
 
-	// {
-	// parameters.put("x", new Float(0f));
-	// parameters.put("y", new Float(0f));
-	// parameters.put("angle", new Float(0f));
-	// parameters.put("damage", new Float(1f));
-	// parameters.put("color", Colors.lightBlue);
-	// }
-
 	@Override
 	public void apply(Entity entity) {
 		Sprite sprite = parameters.get("sprite", (Sprite) resourceManager.getResourceValue("LaserSprite"));
-		// Script script = parameters.get("script", new LaserBulletScript(physicsWorld, entityFactory, getParticleEmitterTemplate()));
-		// EntityTemplate particleEmitterTemplate = parameters.get("particleEmitterTemplate");
 		Script script = new LaserBulletScript(physicsWorld, entityFactory, entityTemplates.particleEmitterTemplate);
 
 		Integer duration = parameters.get("duration", 1000);

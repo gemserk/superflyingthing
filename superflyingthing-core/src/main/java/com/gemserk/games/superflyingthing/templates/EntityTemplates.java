@@ -2,7 +2,6 @@ package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.Texture.TextureWrap;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -16,7 +15,6 @@ import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.ContainerComponent;
-import com.gemserk.commons.artemis.components.OwnerComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.PreviousStateSpatialComponent;
 import com.gemserk.commons.artemis.components.RenderableComponent;
@@ -58,7 +56,6 @@ import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterC
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
-import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
 import com.gemserk.games.superflyingthing.scripts.ReplayPlayerScript;
@@ -221,6 +218,7 @@ public class EntityTemplates {
 		this.portalTemplate = templateProvider.get(PortalTemplate.class);
 		this.replayShipTemplate = templateProvider.get(ReplayShipTemplate.class);
 		this.laserBulletTemplate = templateProvider.get(LaserBulletTemplate.class);
+		this.laserGunTemplate = templateProvider.get(LaserGunTemplate.class);
 		
 	}
 
@@ -232,7 +230,9 @@ public class EntityTemplates {
 	public EntityTemplate planetFillAnimationTemplate;
 	public EntityTemplate portalTemplate;
 	public EntityTemplate replayShipTemplate;
+	
 	public EntityTemplate laserBulletTemplate;
+	public EntityTemplate laserGunTemplate;
 
 	public EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -349,50 +349,11 @@ public class EntityTemplates {
 
 	};
 
-	private EntityTemplate laserGunTemplate = new EntityTemplateImpl() {
-
-		{
-			parameters.put("position", new Vector2());
-			parameters.put("angle", new Float(0f));
-			parameters.put("fireRate", new Integer(1000));
-			parameters.put("bulletDuration", new Integer(250));
-			parameters.put("currentReloadTime", new Integer(0));
-			parameters.put("color", Colors.lightGreen);
-		}
-
-		@Override
-		public void apply(Entity entity) {
-			Animation idleAnimation = resourceManager.getResourceValue("LaserGunAnimation");
-
-			Vector2 position = parameters.get("position");
-			Float angle = parameters.get("angle");
-
-			Integer fireRate = parameters.get("fireRate");
-			Integer bulletDuration = parameters.get("bulletDuration");
-			Integer currentReloadTime = parameters.get("currentReloadTime");
-
-			Color color = parameters.get("color");
-
-			Entity owner = parameters.get("owner");
-
-			entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y, 1f, 1f, angle)));
-			entity.addComponent(new ScriptComponent(new LaserGunScript(entityFactory)));
-			entity.addComponent(new AnimationComponent(new Animation[] { idleAnimation }));
-			entity.addComponent(new SpriteComponent(idleAnimation.getCurrentFrame(), color));
-			entity.addComponent(new RenderableComponent(4));
-			entity.addComponent(new Components.WeaponComponent(fireRate, bulletDuration, currentReloadTime, laserBulletTemplate));
-			entity.addComponent(new OwnerComponent(owner));
-			entity.addComponent(new ContainerComponent());
-		}
-
-	};
-
 	public Entity destinationPlanet(float x, float y, float radius) {
 		return entityFactory.instantiate(destinationPlanetTemplate, new ParametersWrapper() //
 				.put("x", x) //
 				.put("y", y) //
 				.put("radius", radius) //
-				.put("planetFillAnimationTemplate", planetFillAnimationTemplate) //
 				);
 	}
 
