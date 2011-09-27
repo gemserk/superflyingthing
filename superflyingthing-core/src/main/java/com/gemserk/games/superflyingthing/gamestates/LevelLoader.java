@@ -107,10 +107,24 @@ public class LevelLoader {
 
 		for (int i = 0; i < level.obstacles.size(); i++) {
 			Obstacle o = level.obstacles.get(i);
-			if (o.bodyType == BodyType.StaticBody)
-				entityTemplates.obstacle(o.id, o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
-			else {
-				entityTemplates.movingObstacle(o.id, o.vertices, o.path, o.startPoint, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+			if (o.bodyType == BodyType.StaticBody) {
+				entityFactory.instantiate(entityTemplates.staticObstacleTemplate, new ParametersWrapper() //
+						.put("id", o.id) //
+						.put("x", o.x) //
+						.put("y", o.y) //
+						.put("angle", (o.angle * MathUtils.degreesToRadians)) //
+						.put("vertices", o.vertices) //
+						);
+			} else {
+				entityFactory.instantiate(entityTemplates.movingObstacleTemplate, new ParametersWrapper() //
+						.put("id", o.id) //
+						.put("x", o.x) //
+						.put("y", o.y) //
+						.put("angle", (o.angle * MathUtils.degreesToRadians)) //
+						.put("vertices", o.vertices) //
+						.put("points", o.path) //
+						.put("startPoint", o.startPoint) //
+						);
 			}
 		}
 

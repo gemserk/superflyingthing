@@ -33,6 +33,7 @@ import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.resources.GameResources;
@@ -113,13 +114,20 @@ public class GenerateLevelThumbnailApplication {
 
 						templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory, null);
 
-//						Level level = Levels.level(8);
+						// Level level = Levels.level(8);
 						Level level = new Level();
 
 						for (int i = 0; i < level.obstacles.size(); i++) {
 							Obstacle o = level.obstacles.get(i);
-							if (o.bodyType == BodyType.StaticBody)
-								templates.obstacle(o.id, o.vertices, o.x, o.y, o.angle * MathUtils.degreesToRadians);
+							if (o.bodyType == BodyType.StaticBody) {
+								entityFactory.instantiate(templates.staticObstacleTemplate, new ParametersWrapper() //
+										.put("id", o.id) //
+										.put("x", o.x) //
+										.put("y", o.y) //
+										.put("angle", (o.angle * MathUtils.degreesToRadians)) //
+										.put("vertices", o.vertices) //
+										);
+							}
 						}
 
 						// worldCamera.move(level.w * 0.5f, level.h * 0.5f);

@@ -2,34 +2,20 @@ package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.Body;
-import com.badlogic.gdx.physics.box2d.BodyDef.BodyType;
-import com.badlogic.gdx.physics.box2d.FixtureDef;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.artemis.EntityBuilder;
-import com.gemserk.commons.artemis.components.PhysicsComponent;
-import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
-import com.gemserk.commons.gdx.box2d.FixtureDefBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
-import com.gemserk.commons.gdx.games.PhysicsImpl;
-import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
-import com.gemserk.commons.gdx.graphics.ShapeUtils;
-import com.gemserk.commons.gdx.graphics.Triangulator;
 import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.components.Components;
-import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
-import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
 import com.gemserk.games.superflyingthing.scripts.ParticleEmitterSpawnerScript;
 import com.gemserk.games.superflyingthing.scripts.TimerScript;
 import com.gemserk.resources.ResourceManager;
@@ -47,7 +33,6 @@ public class EntityTemplates {
 	}
 
 	private final BodyBuilder bodyBuilder;
-	private final ResourceManager<String> resourceManager;
 	private final EntityBuilder entityBuilder;
 	private final Mesh2dBuilder mesh2dBuilder;
 	private final EntityFactory entityFactory;
@@ -105,7 +90,6 @@ public class EntityTemplates {
 	}
 
 	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
-		this.resourceManager = resourceManager;
 		this.entityBuilder = entityBuilder;
 		this.entityFactory = entityFactory;
 		this.eventManager = eventManager;
@@ -142,6 +126,7 @@ public class EntityTemplates {
 		this.shipTemplate = templateProvider.get(ShipTemplate.class);
 		this.particleEmitterTemplate = templateProvider.get(ParticleEmitterTemplate.class);
 		this.staticObstacleTemplate = templateProvider.get(StaticObstacleTemplate.class);
+		this.movingObstacleTemplate = templateProvider.get(MovingObstacleTemplate.class);
 
 	}
 
@@ -164,8 +149,16 @@ public class EntityTemplates {
 
 	public EntityTemplate particleEmitterTemplate;
 	public EntityTemplate staticObstacleTemplate;
+	public EntityTemplate movingObstacleTemplate;
 
-	public Entity obstacle(String id, Vector2[] vertices, float x, float y, float angle) {
+	public Entity boxObstacle(String id, float x, float y, float w, float h, float angle) {
+
+		Vector2[] vertices = new Vector2[] { //
+		new Vector2(w * 0.5f, h * 0.5f),//
+				new Vector2(w * 0.5f, -h * 0.5f), //
+				new Vector2(-w * 0.5f, -h * 0.5f),//
+				new Vector2(-w * 0.5f, h * 0.5f), };
+
 		return entityFactory.instantiate(staticObstacleTemplate, new ParametersWrapper() //
 				.put("id", id) //
 				.put("x", x) //
@@ -173,61 +166,6 @@ public class EntityTemplates {
 				.put("angle", angle) //
 				.put("vertices", vertices) //
 				);
-	}
-
-	public Entity movingObstacle(String id, Vector2[] vertices, final Vector2[] points, int startPoint, float x, float y, float angle) {
-		Entity e = entityBuilder.build();
-
-		Triangulator triangulator = ShapeUtils.triangulate(vertices);
-
-		FixtureDef[] fixtureDefs = new FixtureDef[triangulator.getTriangleCount()];
-		FixtureDefBuilder fixtureDefBuilder = new FixtureDefBuilder();
-
-		for (int i = 0; i < triangulator.getTriangleCount(); i++) {
-			Vector2[] v = new Vector2[3];
-			for (int p = 0; p < 3; p++) {
-				float[] pt = triangulator.getTrianglePoint(i, p);
-				v[p] = new Vector2(pt[0], pt[1]);
-
-				mesh2dBuilder.color(1f, 0f, 0f, 1f);
-				// mesh2dBuilder.texCoord(pt[0] * 0.5f, pt[1] * 0.5f);
-				mesh2dBuilder.vertex(pt[0], pt[1]);
-			}
-			fixtureDefs[i] = fixtureDefBuilder //
-					.polygonShape(v) //
-					.restitution(0f) //
-					.categoryBits(CategoryBits.MovingObstacleCategoryBits) //
-					.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.ObstacleCategoryBits & ~CategoryBits.MovingObstacleCategoryBits)) //
-					.build();
-		}
-
-		Body body = bodyBuilder //
-				.mass(500f) //
-				.inertia(1f) //
-				.fixtures(fixtureDefs) //
-				.position(x, y) //
-				.type(BodyType.DynamicBody) //
-				.angle(angle) //
-				.userData(e) //
-				.build();
-
-		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
-		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, 1f, 1f)));
-		e.addComponent(new ShapeComponent(mesh2dBuilder.build()));
-		e.addComponent(new RenderableComponent(-59));
-		e.addComponent(new Components.DamageComponent(6000f));
-		e.addComponent(new ScriptComponent(new MovingObstacleScript(points, startPoint)));
-
-		e.refresh();
-		return e;
-	}
-
-	public Entity boxObstacle(String id, float x, float y, float w, float h, float angle) {
-		return obstacle(id, new Vector2[] { //
-				new Vector2(w * 0.5f, h * 0.5f),//
-						new Vector2(w * 0.5f, -h * 0.5f), //
-						new Vector2(-w * 0.5f, -h * 0.5f),//
-						new Vector2(-w * 0.5f, h * 0.5f), }, x, y, angle);
 	}
 
 	private EntityTemplate particleEmitterSpawnerTemplate = new EntityTemplateImpl() {
