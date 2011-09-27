@@ -57,11 +57,9 @@ import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
-import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.ShapeComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
-import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.games.superflyingthing.scripts.LaserGunScript;
 import com.gemserk.games.superflyingthing.scripts.MovingObstacleScript;
@@ -227,6 +225,7 @@ public class EntityTemplates {
 		this.destinationPlanetTemplate = templateProvider.get(DestinationPlanetTemplate.class);
 		this.planetFillAnimationTemplate = templateProvider.get(PlanetFillAnimationTemplate.class);
 		this.portalTemplate = templateProvider.get(PortalTemplate.class);
+		this.replayShipTemplate = templateProvider.get(ReplayShipTemplate.class);
 		
 	}
 
@@ -237,6 +236,7 @@ public class EntityTemplates {
 	public EntityTemplate destinationPlanetTemplate;
 	public EntityTemplate planetFillAnimationTemplate;
 	public EntityTemplate portalTemplate;
+	public EntityTemplate replayShipTemplate;
 
 	private EntityTemplate particleEmitterTemplate = new EntityTemplateImpl() {
 
@@ -337,56 +337,6 @@ public class EntityTemplates {
 			entity.addComponent(new SpatialComponent(spatial));
 			entity.addComponent(spriteComponent);
 			entity.addComponent(new RenderableComponent(1));
-		}
-	};
-
-	private EntityTemplate replayShipTemplate = new EntityTemplateImpl() {
-
-		@Override
-		public void apply(Entity e) {
-			float width = 0.8f;
-			float height = 0.8f;
-
-			Animation rotationAnimation = resourceManager.getResourceValue("ShipAnimation");
-
-			Replay replay = parameters.get("replay");
-
-			boolean mainReplay = replay.main;
-
-			Color color = mainReplay ? Color.WHITE : new Color(0.5f, 0.5f, 0.5f, 1f);
-
-			e.setGroup(Groups.ReplayShipGroup);
-
-			if (mainReplay)
-				e.addComponent(new TagComponent(Groups.MainReplayShip));
-
-			Body body = bodyBuilder //
-					.fixture(bodyBuilder.fixtureDefBuilder() //
-							.restitution(0f) //
-							.categoryBits(CategoryBits.ShipCategoryBits) //
-							.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-							.boxShape(width * 0.25f, height * 0.1f))//
-					.mass(50f) //
-					.position(0f, 0f) //
-					.type(BodyType.DynamicBody) //
-					.userData(e) //
-					.build();
-
-			e.addComponent(new ReplayComponent(replay));
-
-			// e.addComponent(new SpatialComponent(new SpatialImpl(0f, 0f, width, height, 0f)));
-			e.addComponent(new PhysicsComponent(body));
-			e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
-			e.addComponent(new PreviousStateSpatialComponent());
-
-			e.addComponent(new AnimationComponent(new Animation[] { rotationAnimation }));
-			e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame(), color));
-			e.addComponent(new RenderableComponent(0));
-
-			e.addComponent(new ScriptComponent( //
-					new ShipAnimationScript(), //
-					new GrabGrabbableScript()));
-
 		}
 	};
 
