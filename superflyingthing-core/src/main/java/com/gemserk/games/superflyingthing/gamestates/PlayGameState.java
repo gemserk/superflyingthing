@@ -18,7 +18,6 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
-import com.gemserk.commons.artemis.components.CameraComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
@@ -47,7 +46,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
-import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -66,7 +65,6 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
@@ -502,23 +500,10 @@ public class PlayGameState extends GameStateImpl {
 				.component(new ScriptComponent(new ReplayRecorderScript())) //
 				.build();
 
-		entityBuilder //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					@Override
-					public void update(com.artemis.World world, Entity e) {
-						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-						CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
-
-						Camera camera = cameraComponent.getCamera();
-
-						secondBackgroundLayerCamera.move(camera.getX(), camera.getY());
-						secondBackgroundLayerCamera.zoom(camera.getZoom() * 0.25f);
-						secondBackgroundLayerCamera.rotate(camera.getAngle());
-					}
-
-				})) //
-				.build();
+		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
+				.put("camera", new CameraImpl()) //
+				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
+				);
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);

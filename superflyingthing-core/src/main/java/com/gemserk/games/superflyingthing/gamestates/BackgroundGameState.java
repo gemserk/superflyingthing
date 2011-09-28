@@ -41,6 +41,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
+import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -284,21 +285,10 @@ public class BackgroundGameState extends GameStateImpl {
 
 		})).build();
 
-		entityBuilder //
-				.component(new ScriptComponent(new ScriptJavaImpl() {
-
-					@Override
-					public void update(com.artemis.World world, Entity e) {
-						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-						CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
-						Camera camera = cameraComponent.getCamera();
-						secondBackgroundLayerCamera.move(camera.getX(), camera.getY());
-						secondBackgroundLayerCamera.zoom(camera.getZoom() * 0.25f);
-						secondBackgroundLayerCamera.rotate(camera.getAngle());
-					}
-
-				})) //
-				.build();
+		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
+				.put("camera", new CameraImpl()) //
+				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
+				);
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);

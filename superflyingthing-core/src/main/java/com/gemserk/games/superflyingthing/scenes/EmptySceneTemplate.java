@@ -27,12 +27,6 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
 
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	// TODO: use parameters for scene templates too
-
 	public void apply(WorldWrapper worldWrapper) {
 
 		RenderLayers renderLayers = new RenderLayers();
