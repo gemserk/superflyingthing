@@ -29,7 +29,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
@@ -45,7 +45,7 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
-	ObjectConfigurator objectConfigurator;
+	Injector injector;
 
 	public void apply(WorldWrapper worldWrapper) {
 		int screenWidth = Gdx.graphics.getWidth();
@@ -87,10 +87,10 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.init();
 		
-		objectConfigurator.add("bodyBuilder", new BodyBuilder(physicsWorld));
-		objectConfigurator.add("eventManager", eventManager);
+		injector.add("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.add("eventManager", eventManager);
 
-		Provider templateProvider = new ProviderImpl(objectConfigurator);
+		Provider templateProvider = new ProviderImpl(injector);
 
 		float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);

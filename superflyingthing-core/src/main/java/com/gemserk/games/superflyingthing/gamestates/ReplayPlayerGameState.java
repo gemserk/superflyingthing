@@ -50,7 +50,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
@@ -190,7 +190,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		guiContainer = new Container();
 
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+		Injector injector = new Injector() {
 			{
 				add("physicsWorld", physicsWorld);
 				add("resourceManager", resourceManager);
@@ -203,7 +203,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 			}
 		};
 
-		entityTemplates = new EntityTemplates(objectConfigurator);
+		entityTemplates = new EntityTemplates(injector);
 
 		// creates and registers all the controller templates
 

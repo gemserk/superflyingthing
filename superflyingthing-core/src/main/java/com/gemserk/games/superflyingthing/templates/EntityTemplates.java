@@ -1,16 +1,16 @@
 package com.gemserk.games.superflyingthing.templates;
 
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 
 public class EntityTemplates {
 
-	public EntityTemplates(ObjectConfigurator objectConfigurator) {
-		objectConfigurator.add("entityTemplates", this);
+	public EntityTemplates(Injector injector) {
+		injector.add("entityTemplates", this);
 		
-		Provider templateProvider = new ProviderImpl(objectConfigurator);
+		Provider templateProvider = new ProviderImpl(injector);
 		
 		this.cameraTemplate = templateProvider.get(CameraTemplate.class);
 		this.staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);

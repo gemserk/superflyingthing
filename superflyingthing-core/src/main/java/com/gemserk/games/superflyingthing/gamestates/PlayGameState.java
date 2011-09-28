@@ -55,7 +55,7 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -226,7 +226,7 @@ public class PlayGameState extends GameStateImpl {
 
 		container = new Container();
 
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+		Injector injector = new Injector() {
 			{
 				add("physicsWorld", physicsWorld);
 				add("resourceManager", resourceManager);
@@ -239,7 +239,7 @@ public class PlayGameState extends GameStateImpl {
 			}
 		};
 
-		entityTemplates = new EntityTemplates(objectConfigurator);
+		entityTemplates = new EntityTemplates(injector);
 
 		// creates and registers all the controller templates
 		controllerTemplates = new ControllerTemplates();

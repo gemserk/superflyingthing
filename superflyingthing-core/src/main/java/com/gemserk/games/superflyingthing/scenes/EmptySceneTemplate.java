@@ -16,7 +16,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
@@ -26,7 +26,7 @@ import com.gemserk.resources.ResourceManager;
 public class EmptySceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
-	ObjectConfigurator objectConfigurator;
+	Injector injector;
 
 	public void apply(WorldWrapper worldWrapper) {
 
@@ -48,11 +48,11 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		Parameters parameters = new ParametersWrapper();
 		
-		objectConfigurator.add("entityBuilder", new EntityBuilder(world));
-		objectConfigurator.add("entityFactory", new EntityFactoryImpl(world));
-		objectConfigurator.add("mesh2dBuilder", new Mesh2dBuilder());
+		injector.add("entityBuilder", new EntityBuilder(world));
+		injector.add("entityFactory", new EntityFactoryImpl(world));
+		injector.add("mesh2dBuilder", new Mesh2dBuilder());
 
-		EntityTemplates entityTemplates = new EntityTemplates(objectConfigurator);
+		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //

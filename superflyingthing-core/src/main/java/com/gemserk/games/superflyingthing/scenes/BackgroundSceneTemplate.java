@@ -31,7 +31,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
@@ -54,7 +54,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
-	ObjectConfigurator objectConfigurator;
+	Injector injector;
 
 	public void apply(WorldWrapper worldWrapper) {
 
@@ -78,7 +78,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
 		
-		objectConfigurator.add("renderLayers", renderLayers);
+		injector.add("renderLayers", renderLayers);
 
 		World world = worldWrapper.getWorld();
 		final EntityFactory entityFactory = new EntityFactoryImpl(world);
@@ -104,18 +104,18 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		final EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		objectConfigurator.add("physicsWorld", physicsWorld);
-		objectConfigurator.add("resourceManager", resourceManager);
-		objectConfigurator.add("entityBuilder", entityBuilder);
-		objectConfigurator.add("entityFactory", entityFactory);
-		objectConfigurator.add("eventManager", eventManager);
-		objectConfigurator.add("bodyBuilder", new BodyBuilder(physicsWorld));
-		objectConfigurator.add("mesh2dBuilder", new Mesh2dBuilder());
-		objectConfigurator.add("jointBuilder", new JointBuilder(physicsWorld));
+		injector.add("physicsWorld", physicsWorld);
+		injector.add("resourceManager", resourceManager);
+		injector.add("entityBuilder", entityBuilder);
+		injector.add("entityFactory", entityFactory);
+		injector.add("eventManager", eventManager);
+		injector.add("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.add("mesh2dBuilder", new Mesh2dBuilder());
+		injector.add("jointBuilder", new JointBuilder(physicsWorld));
 
-		EntityTemplates entityTemplates = new EntityTemplates(objectConfigurator);
+		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
-		Provider provider = new ProviderImpl(objectConfigurator);
+		Provider provider = new ProviderImpl(injector);
 
 		EntityTemplate basicAiControllerTemplate = provider.get(BasicAIControllerTemplate.class);
 		EntityTemplate eventManagerTemplate = provider.get(EventManagerTemplate.class);

@@ -17,7 +17,7 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.commons.utils.BrowserUtils;
@@ -155,14 +155,14 @@ public class AboutGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+		Injector injector = new Injector() {
 			{
 				add("resourceManager", resourceManager);
 				add("timeStepProvider", new TimeStepProviderGameStateImpl(AboutGameState.this));
 			}
 		};
 		
-		Provider provider = new ProviderImpl(objectConfigurator);
+		Provider provider = new ProviderImpl(injector);
 
 		SceneTemplate sceneTemplate = provider.get(TutorialSceneTemplate.class);
 		sceneTemplate.apply(worldWrapper);

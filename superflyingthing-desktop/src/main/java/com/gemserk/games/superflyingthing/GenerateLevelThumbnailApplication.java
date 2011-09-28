@@ -34,7 +34,7 @@ import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
@@ -114,7 +114,7 @@ public class GenerateLevelThumbnailApplication {
 
 						com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
-						ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+						Injector injector = new Injector() {
 							{
 								// add("physicsWorld", physicsWorld);
 								// add("resourceManager", resourceManager);
@@ -127,7 +127,7 @@ public class GenerateLevelThumbnailApplication {
 							}
 						};
 
-						templates = new EntityTemplates(objectConfigurator);
+						templates = new EntityTemplates(injector);
 
 						// templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory, null);
 

@@ -45,7 +45,7 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
-import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -199,7 +199,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+		Injector injector = new Injector() {
 			{
 				add("physicsWorld", physicsWorld);
 				add("resourceManager", resourceManager);
@@ -212,7 +212,7 @@ public class ControllerTestGameState extends GameStateImpl {
 			}
 		};
 
-		entityTemplates = new EntityTemplates(objectConfigurator);
+		entityTemplates = new EntityTemplates(injector);
 
 		controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
