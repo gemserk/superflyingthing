@@ -25,7 +25,7 @@ import com.gemserk.resources.ResourceManager;
 
 public class EmptySceneTemplate extends SceneTemplateImpl {
 
-	private ResourceManager<String> resourceManager;
+	ResourceManager<String> resourceManager;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;

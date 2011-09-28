@@ -8,5 +8,7 @@ public interface SceneTemplate {
 	void apply(WorldWrapper worldWrapper);
 	
 	void setParameters(Parameters parameters);
-
+	
+	Parameters getParameters();
+	
 }

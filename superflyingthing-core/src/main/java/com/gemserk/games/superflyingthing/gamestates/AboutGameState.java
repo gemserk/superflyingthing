@@ -25,7 +25,8 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.scenes.TutorialSceneTemplate;
+import com.gemserk.games.superflyingthing.scenes.EmptySceneTemplate;
+import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -100,6 +101,7 @@ public class AboutGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						browserUtils.open(blogUrl);
+						Analytics.traker.trackPageView("/about/blog", "/about/blog", null);
 					}
 				}) //
 				.build());
@@ -120,6 +122,7 @@ public class AboutGameState extends GameStateImpl {
 							browserUtils.open(androidMoreGamesUrl);
 						else
 							browserUtils.open(desktopMoreGamesUrl);
+						Analytics.traker.trackPageView("/about/moreGames", "/about/moreGames", null);
 					}
 				}) //
 				.build());
@@ -151,25 +154,14 @@ public class AboutGameState extends GameStateImpl {
 		};
 
 		worldWrapper = new WorldWrapper(new World());
+		
+		Provider provider = new ProviderImpl(new ObjectConfigurator() {{
+			add("resourceManager", resourceManager);
+			add("timeStepProvider", new TimeStepProviderGameStateImpl(AboutGameState.this));
+		}});
 
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator();
-
-		objectConfigurator.add("resourceManager", resourceManager);
-		objectConfigurator.add("timeStepProvider", new TimeStepProviderGameStateImpl(this));
-
-		Provider provider = new ProviderImpl(objectConfigurator);
-
-		TutorialSceneTemplate tutorialSceneTemplate = provider.get(TutorialSceneTemplate.class);
-
-		// tutorialSceneTemplate.setParameters(new ParametersWrapper().put("timeStepProvider", new TimeStepProviderGameStateImpl(this)));
-
-		tutorialSceneTemplate.apply(worldWrapper);
-
-		// EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
-		// emptySceneTemplate.setResourceManager(resourceManager);
-		// emptySceneTemplate.setBackgroundEnabled(true);
-		//
-		// emptySceneTemplate.apply(worldWrapper);
+		SceneTemplate sceneTemplate = provider.get(EmptySceneTemplate.class);
+		sceneTemplate.apply(worldWrapper);
 
 		worldWrapper.update(1);
 
