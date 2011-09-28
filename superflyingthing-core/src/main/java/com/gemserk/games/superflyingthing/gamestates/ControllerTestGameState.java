@@ -33,15 +33,19 @@ import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
+import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
+import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -195,7 +199,20 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		entityTemplates = new EntityTemplates(physicsWorld, world, resourceManager, entityBuilder, entityFactory, eventManager);
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+			{
+				add("physicsWorld", physicsWorld);
+				add("resourceManager", resourceManager);
+				add("entityBuilder", new EntityBuilder(world));
+				add("entityFactory", new EntityFactoryImpl(world));
+				add("eventManager", eventManager);
+				add("bodyBuilder", new BodyBuilder(physicsWorld));
+				add("mesh2dBuilder", new Mesh2dBuilder());
+				add("jointBuilder", new JointBuilder(physicsWorld));
+			}
+		};
+
+		entityTemplates = new EntityTemplates(objectConfigurator);
 
 		controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();

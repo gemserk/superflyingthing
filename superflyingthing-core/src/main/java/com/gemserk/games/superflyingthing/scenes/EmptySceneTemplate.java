@@ -15,6 +15,8 @@ import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
+import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
+import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
@@ -33,7 +35,7 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 	public void setBackgroundEnabled(boolean backgroundEnabled) {
 		this.backgroundEnabled = backgroundEnabled;
 	}
-	
+
 	// TODO: use parameters for scene templates too
 
 	public void apply(WorldWrapper worldWrapper) {
@@ -45,7 +47,7 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera), backgroundEnabled);
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, backgroundLayerCamera), backgroundEnabled);
 
-		World world = worldWrapper.getWorld();
+		final World world = worldWrapper.getWorld();
 
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
@@ -54,7 +56,22 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		Parameters parameters = new ParametersWrapper();
 
-		EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
+			{
+				// add("physicsWorld", physicsWorld);
+				add("resourceManager", resourceManager);
+				add("entityBuilder", new EntityBuilder(world));
+				add("entityFactory", new EntityFactoryImpl(world));
+				// add("eventManager", eventManager);
+				// add("bodyBuilder", new BodyBuilder(physicsWorld));
+				add("mesh2dBuilder", new Mesh2dBuilder());
+				// add("jointBuilder", new JointBuilder(physicsWorld));
+			}
+		};
+		
+		EntityTemplates entityTemplates = new EntityTemplates(objectConfigurator);
+
+		// EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //

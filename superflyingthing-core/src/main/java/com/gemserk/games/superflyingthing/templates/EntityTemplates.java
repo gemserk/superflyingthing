@@ -1,53 +1,17 @@
 package com.gemserk.games.superflyingthing.templates;
 
-import com.badlogic.gdx.physics.box2d.World;
-import com.gemserk.commons.artemis.EntityBuilder;
-import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
-import com.gemserk.commons.gdx.box2d.BodyBuilder;
-import com.gemserk.commons.gdx.box2d.JointBuilder;
-import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.reflection.ObjectConfigurator;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
-import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
 
-	// public static EntityTemplates createEntityTemplates(ObjectConfigurator objectConfigurator) {
-	// EntityTemplates entityTemplates = new EntityTemplates();
-	// objectConfigurator.add("entityTemplates", entityTemplates);
-	// entityTemplates.configure(new ProviderImpl(objectConfigurator));
-	// return entityTemplates;
-	// }
-
-	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
-
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
-			{
-				add("physicsWorld", physicsWorld);
-				add("resourceManager", resourceManager);
-				add("entityBuilder", entityBuilder);
-				add("entityFactory", entityFactory);
-				add("eventManager", eventManager);
-				add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("mesh2dBuilder", new Mesh2dBuilder());
-				add("jointBuilder", new JointBuilder(physicsWorld));
-			}
-		};
-
+	public EntityTemplates(ObjectConfigurator objectConfigurator) {
 		objectConfigurator.add("entityTemplates", this);
-
-		configure(new ProviderImpl(objectConfigurator));
-	}
-
-	// public EntityTemplates() {
-	//
-	// }
-
-	public void configure(Provider templateProvider) {
-
+		
+		Provider templateProvider = new ProviderImpl(objectConfigurator);
+		
 		this.cameraTemplate = templateProvider.get(CameraTemplate.class);
 		this.staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);
 		this.starTemplate = templateProvider.get(StarTemplate.class);
@@ -67,7 +31,6 @@ public class EntityTemplates {
 		this.movingObstacleTemplate = templateProvider.get(MovingObstacleTemplate.class);
 		this.timerTemplate = templateProvider.get(TimerTemplate.class);
 		this.particleEmitterSpawnerTemplate = templateProvider.get(ParticleEmitterSpawnerTemplate.class);
-
 	}
 
 	public EntityTemplate cameraTemplate;
