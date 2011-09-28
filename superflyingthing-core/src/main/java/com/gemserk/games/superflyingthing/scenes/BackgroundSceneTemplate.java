@@ -22,6 +22,7 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.CameraImpl;
@@ -31,15 +32,21 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Provider;
+import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
+import com.gemserk.games.superflyingthing.templates.BasicAIControllerTemplate;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
+import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
@@ -47,6 +54,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
+	ObjectConfigurator objectConfigurator;
 
 	public void apply(WorldWrapper worldWrapper) {
 
@@ -69,6 +77,8 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
+		
+		objectConfigurator.add("renderLayers", renderLayers);
 
 		World world = worldWrapper.getWorld();
 		final EntityFactory entityFactory = new EntityFactoryImpl(world);
@@ -94,20 +104,22 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		final EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
-			{
-				add("physicsWorld", physicsWorld);
-				add("resourceManager", resourceManager);
-				add("entityBuilder", entityBuilder);
-				add("entityFactory", entityFactory);
-				add("eventManager", eventManager);
-				add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("mesh2dBuilder", new Mesh2dBuilder());
-				add("jointBuilder", new JointBuilder(physicsWorld));
-			}
-		};
-		
+		objectConfigurator.add("physicsWorld", physicsWorld);
+		objectConfigurator.add("resourceManager", resourceManager);
+		objectConfigurator.add("entityBuilder", entityBuilder);
+		objectConfigurator.add("entityFactory", entityFactory);
+		objectConfigurator.add("eventManager", eventManager);
+		objectConfigurator.add("bodyBuilder", new BodyBuilder(physicsWorld));
+		objectConfigurator.add("mesh2dBuilder", new Mesh2dBuilder());
+		objectConfigurator.add("jointBuilder", new JointBuilder(physicsWorld));
+
 		EntityTemplates entityTemplates = new EntityTemplates(objectConfigurator);
+
+		Provider provider = new ProviderImpl(objectConfigurator);
+
+		EntityTemplate basicAiControllerTemplate = provider.get(BasicAIControllerTemplate.class);
+		EntityTemplate eventManagerTemplate = provider.get(EventManagerTemplate.class);
+		EntityTemplate normalModeGameLogicTemplate = provider.get(NormalModeGameLogicTemplate.class);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
@@ -122,13 +134,20 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
+		entityFactory.instantiate(basicAiControllerTemplate);
+
+		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper() //
+				.put("gameData", new GameData()) //
+				);
+
+		entityFactory.instantiate(eventManagerTemplate);
+
 		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
 				.put("camera", new CameraImpl()) //
 				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
 				);
 
-		// createWorld(levelNumber);
-
+		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
 	}
 
 }

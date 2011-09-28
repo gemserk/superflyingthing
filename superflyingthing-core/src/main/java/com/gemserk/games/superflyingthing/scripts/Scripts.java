@@ -263,7 +263,7 @@ public class Scripts {
 
 		private EntityTemplate shipTemplate;
 		private EntityTemplate attachedShipTemplate;
-		private EntityTemplate particleEmitterTemplate;
+		// private EntityTemplate particleEmitterTemplate;
 		private Entity owner;
 
 		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
@@ -276,7 +276,7 @@ public class Scripts {
 
 			shipTemplate = entityTemplates.shipTemplate;
 			attachedShipTemplate = entityTemplates.attachedShipTemplate;
-			particleEmitterTemplate = entityTemplates.particleEmitterTemplate;
+			// particleEmitterTemplate = entityTemplates.particleEmitterTemplate;
 		}
 
 		@Override
@@ -352,7 +352,7 @@ public class Scripts {
 
 			if (gameDataComponent.ship != null)
 				return;
-			
+
 			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
 			if (startPlanet == null)
 				return;
@@ -390,7 +390,7 @@ public class Scripts {
 
 			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
 			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
-			
+
 			PhysicsComponent attachedShipPhysicsComponent = ComponentWrapper.getPhysicsComponent(gameDataComponent.attachedShip);
 
 			Entity contollerEntity = world.getTagManager().getEntity(Groups.PlayerController);
@@ -407,9 +407,9 @@ public class Scripts {
 			parameters.put("maxAngularVelocity", movementComponent.getMaxAngularVelocity());
 
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
-			
+
 			PhysicsComponent shipPhysicsComponent = ComponentWrapper.getPhysicsComponent(gameDataComponent.ship);
-			
+
 			Vector2 linearVelocity = attachedShipPhysicsComponent.getBody().getLinearVelocity();
 			shipPhysicsComponent.getBody().setLinearVelocity(linearVelocity);
 

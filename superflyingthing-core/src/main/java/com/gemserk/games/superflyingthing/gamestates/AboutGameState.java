@@ -25,8 +25,8 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.scenes.BackgroundSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
+import com.gemserk.games.superflyingthing.scenes.TutorialSceneTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -155,21 +155,21 @@ public class AboutGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		Provider provider = new ProviderImpl(new ObjectConfigurator() {
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
 			{
 				add("resourceManager", resourceManager);
 				add("timeStepProvider", new TimeStepProviderGameStateImpl(AboutGameState.this));
 			}
-		});
+		};
+		
+		Provider provider = new ProviderImpl(objectConfigurator);
 
-		SceneTemplate sceneTemplate = provider.get(BackgroundSceneTemplate.class);
-		// SceneTemplate sceneTemplate = provider.get(EmptySceneTemplate.class);
+		SceneTemplate sceneTemplate = provider.get(TutorialSceneTemplate.class);
 		sceneTemplate.apply(worldWrapper);
 
 		worldWrapper.update(1);
 
 		Analytics.traker.trackPageView("/about", "/about", null);
-
 	}
 
 	private void mainMenu() {

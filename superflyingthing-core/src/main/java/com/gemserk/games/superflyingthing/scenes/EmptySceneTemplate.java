@@ -26,6 +26,7 @@ import com.gemserk.resources.ResourceManager;
 public class EmptySceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
+	ObjectConfigurator objectConfigurator;
 
 	public void apply(WorldWrapper worldWrapper) {
 
@@ -46,23 +47,12 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		Parameters parameters = new ParametersWrapper();
-
-		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
-			{
-				// add("physicsWorld", physicsWorld);
-				add("resourceManager", resourceManager);
-				add("entityBuilder", new EntityBuilder(world));
-				add("entityFactory", new EntityFactoryImpl(world));
-				// add("eventManager", eventManager);
-				// add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("mesh2dBuilder", new Mesh2dBuilder());
-				// add("jointBuilder", new JointBuilder(physicsWorld));
-			}
-		};
 		
-		EntityTemplates entityTemplates = new EntityTemplates(objectConfigurator);
+		objectConfigurator.add("entityBuilder", new EntityBuilder(world));
+		objectConfigurator.add("entityFactory", new EntityFactoryImpl(world));
+		objectConfigurator.add("mesh2dBuilder", new Mesh2dBuilder());
 
-		// EntityTemplates entityTemplates = new EntityTemplates(null, world, resourceManager, new EntityBuilder(world), new EntityFactoryImpl(world), null);
+		EntityTemplates entityTemplates = new EntityTemplates(objectConfigurator);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //

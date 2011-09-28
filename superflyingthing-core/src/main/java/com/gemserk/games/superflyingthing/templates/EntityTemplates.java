@@ -58,6 +58,6 @@ public class EntityTemplates {
 	public EntityTemplate timerTemplate;
 
 	public EntityTemplate particleEmitterSpawnerTemplate;
-	public SecondCameraTemplate secondCameraTemplate;
-
+	public EntityTemplate secondCameraTemplate;
+	
 }

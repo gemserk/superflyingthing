@@ -255,12 +255,14 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		Provider provider = new ProviderImpl(new ObjectConfigurator() {
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
 			{
 				add("resourceManager", resourceManager);
 				add("timeStepProvider", new TimeStepProviderGameStateImpl(ControllerSettingsGameState.this));
 			}
-		});
+		};
+		
+		Provider provider = new ProviderImpl(objectConfigurator);
 
 		SceneTemplate sceneTemplate = provider.get(EmptySceneTemplate.class);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());

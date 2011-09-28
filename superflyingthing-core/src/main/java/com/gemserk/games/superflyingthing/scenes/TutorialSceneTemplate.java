@@ -45,6 +45,7 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
+	ObjectConfigurator objectConfigurator;
 
 	public void apply(WorldWrapper worldWrapper) {
 		int screenWidth = Gdx.graphics.getWidth();
@@ -85,14 +86,11 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
 
 		worldWrapper.init();
+		
+		objectConfigurator.add("bodyBuilder", new BodyBuilder(physicsWorld));
+		objectConfigurator.add("eventManager", eventManager);
 
-		Provider templateProvider = new ProviderImpl(new ObjectConfigurator() {
-			{
-				add("resourceManager", resourceManager);
-				add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("eventManager", eventManager);
-			}
-		});
+		Provider templateProvider = new ProviderImpl(objectConfigurator);
 
 		float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);
@@ -108,13 +106,6 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
-
-		// for (int i = 0; i < 5; i++) {
-		// entityFactory.instantiate(starTemplate, new ParametersWrapper() //
-		// .put("x", MathUtils.random(-10f, 10f)) //
-		// .put("y", MathUtils.random(-7f, 7f)) //
-		// );
-		// }
 
 		entityFactory.instantiate(cameraTemplate, new ParametersWrapper() //
 				.put("camera", camera) //

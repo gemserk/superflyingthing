@@ -196,12 +196,14 @@ public class SettingsGameState extends GameStateImpl {
 
 		final TimeStepProvider timeStepProvider = new TimeStepProviderGameStateImpl(this);
 
-		Provider provider = new ProviderImpl(new ObjectConfigurator() {
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
 			{
 				add("resourceManager", resourceManager);
 				add("timeStepProvider", timeStepProvider);
 			}
-		});
+		};
+		
+		Provider provider = new ProviderImpl(objectConfigurator);
 
 		sceneTemplate = provider.get(EmptySceneTemplate.class);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
