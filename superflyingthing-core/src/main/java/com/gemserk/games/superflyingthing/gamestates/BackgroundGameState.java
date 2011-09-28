@@ -204,7 +204,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
-				.put("layer", (-999)) //
+				.put("layer", -999) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //

@@ -9,14 +9,22 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.resources.ResourceManager;
 
 public class EntityTemplates {
 
+	// public static EntityTemplates createEntityTemplates(ObjectConfigurator objectConfigurator) {
+	// EntityTemplates entityTemplates = new EntityTemplates();
+	// objectConfigurator.add("entityTemplates", entityTemplates);
+	// entityTemplates.configure(new ProviderImpl(objectConfigurator));
+	// return entityTemplates;
+	// }
+
 	public EntityTemplates(final World physicsWorld, com.artemis.World world, final ResourceManager<String> resourceManager, final EntityBuilder entityBuilder, final EntityFactory entityFactory, final EventManager eventManager) {
 
-		ProviderImpl templateProvider = new ProviderImpl(new ObjectConfigurator() {
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator() {
 			{
 				add("physicsWorld", physicsWorld);
 				add("resourceManager", resourceManager);
@@ -26,9 +34,19 @@ public class EntityTemplates {
 				add("bodyBuilder", new BodyBuilder(physicsWorld));
 				add("mesh2dBuilder", new Mesh2dBuilder());
 				add("jointBuilder", new JointBuilder(physicsWorld));
-				add("entityTemplates", EntityTemplates.this);
 			}
-		});
+		};
+
+		objectConfigurator.add("entityTemplates", this);
+
+		configure(new ProviderImpl(objectConfigurator));
+	}
+
+	// public EntityTemplates() {
+	//
+	// }
+
+	public void configure(Provider templateProvider) {
 
 		this.cameraTemplate = templateProvider.get(CameraTemplate.class);
 		this.staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);
@@ -74,7 +92,7 @@ public class EntityTemplates {
 	public EntityTemplate boxObstacleTemplate;
 	public EntityTemplate movingObstacleTemplate;
 	public EntityTemplate timerTemplate;
-	
+
 	public EntityTemplate particleEmitterSpawnerTemplate;
 
 }
