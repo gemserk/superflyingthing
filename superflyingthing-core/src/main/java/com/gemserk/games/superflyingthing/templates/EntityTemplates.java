@@ -32,6 +32,8 @@ public class EntityTemplates {
 		this.timerTemplate = templateProvider.get(TimerTemplate.class);
 		this.particleEmitterSpawnerTemplate = templateProvider.get(ParticleEmitterSpawnerTemplate.class);
 		this.secondCameraTemplate = templateProvider.get(SecondCameraTemplate.class);
+		this.replayRecorderTemplate = templateProvider.get(ReplayRecorderTemplate.class);
+		
 	}
 
 	public EntityTemplate cameraTemplate;
@@ -59,5 +61,7 @@ public class EntityTemplates {
 
 	public EntityTemplate particleEmitterSpawnerTemplate;
 	public EntityTemplate secondCameraTemplate;
+	
+	public EntityTemplate replayRecorderTemplate;
 	
 }

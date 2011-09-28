@@ -69,14 +69,12 @@ import com.gemserk.games.superflyingthing.components.Components.ControllerCompon
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
-import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.levels.RandomLevelGenerator;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
-import com.gemserk.games.superflyingthing.scripts.ReplayRecorderScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -302,6 +300,7 @@ public class PlayGameState extends GameStateImpl {
 				monitorKeys("showCustomizeControls", Keys.NUM_5);
 			}
 		};
+
 	}
 
 	private void createWorld() {
@@ -446,59 +445,7 @@ public class PlayGameState extends GameStateImpl {
 
 		})).build();
 
-		// entityBuilder //
-		// .component(new TagComponent(Groups.ControllerSwitcher)) //
-		// .component(new ScriptComponent(new ScriptJavaImpl() {
-		//
-		// private int current = 0;
-		// private ShipController controller;
-		//
-		// private ControllerType[] controllerTypes = new ControllerType[] { ControllerType.KeyboardController, //
-		// ControllerType.AnalogKeyboardController, ControllerType.ClassicController, ControllerType.AxisController, //
-		// ControllerType.AnalogController, ControllerType.TiltController, ControllerType.TargetController };
-		//
-		// @Override
-		// public void update(com.artemis.World world, Entity e) {
-		//
-		// Entity currentController = world.getTagManager().getEntity(Groups.PlayerController);
-		//
-		// if (currentController != null) {
-		// if (controller == null)
-		// controller = currentController.getComponent(ControllerComponent.class).getController();
-		// }
-		//
-		// if (currentController == null) {
-		//
-		// current++;
-		// if (current >= controllerTypes.length)
-		// current = 0;
-		//
-		// ControllerType controllerType = controllerTypes[current];
-		// String controllerName = controllerType.name();
-		//
-		// parameters.clear();
-		// parameters.put("controller", controller);
-		// entityFactory.instantiate(controllerTemplates.getControllerTemplate(controllerType), parameters);
-		//
-		// Gdx.app.log("SuperFlyingThing", "Changing controller to " + controllerName);
-		// parameters.clear();
-		// parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-		// parameters.put("text", controllerName);
-		// parameters.put("time", 1000);
-		// entityFactory.instantiate(userMessageTemplate, parameters);
-		// }
-		//
-		// if (inputDevicesMonitor.getButton("switchControls").isReleased())
-		// currentController.delete();
-		//
-		// }
-		// })).build();
-
-		entityBuilder //
-				.component(new TagComponent(Groups.ReplayRecorder)) //
-				.component(new ReplayListComponent(new ReplayList())) //
-				.component(new ScriptComponent(new ReplayRecorderScript())) //
-				.build();
+		entityFactory.instantiate(entityTemplates.replayRecorderTemplate);
 
 		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
 				.put("camera", new CameraImpl()) //

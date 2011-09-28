@@ -25,8 +25,8 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.scenes.EmptySceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
-import com.gemserk.games.superflyingthing.scenes.TutorialSceneTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -164,7 +164,7 @@ public class AboutGameState extends GameStateImpl {
 		
 		Provider provider = new ProviderImpl(injector);
 
-		SceneTemplate sceneTemplate = provider.get(TutorialSceneTemplate.class);
+		SceneTemplate sceneTemplate = provider.get(EmptySceneTemplate.class);
 		sceneTemplate.apply(worldWrapper);
 
 		worldWrapper.update(1);
