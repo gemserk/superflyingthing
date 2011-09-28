@@ -22,6 +22,7 @@ import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
@@ -251,8 +252,11 @@ public class ControllerSettingsGameState extends GameStateImpl {
 		worldWrapper = new WorldWrapper(new World());
 
 		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
+
+		emptySceneTemplate.setParameters(new ParametersWrapper() //
+				.put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled()));
+
 		emptySceneTemplate.setResourceManager(resourceManager);
-		emptySceneTemplate.setBackgroundEnabled(game.getGamePreferences().isFirstBackgroundEnabled());
 
 		emptySceneTemplate.apply(worldWrapper);
 
@@ -263,7 +267,7 @@ public class ControllerSettingsGameState extends GameStateImpl {
 		if (Gdx.app.getType() == ApplicationType.Android)
 			return new ControllerType[] { ControllerType.ClassicController, ControllerType.AnalogController, ControllerType.TargetController };
 		else
-			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.TargetController,  ControllerType.RemoteClassicController };
+			return new ControllerType[] { ControllerType.KeyboardController, ControllerType.TargetController, ControllerType.RemoteClassicController };
 	}
 
 	private void controllerTestBed() {

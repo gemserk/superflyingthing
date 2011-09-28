@@ -17,10 +17,12 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
+import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Provider;
+import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.commons.utils.BrowserUtils;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
-import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.scenes.TutorialSceneTemplate;
@@ -150,10 +152,17 @@ public class AboutGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		TutorialSceneTemplate tutorialSceneTemplate = new TutorialSceneTemplate(resourceManager);
-		
-		tutorialSceneTemplate.setParameters(new ParametersWrapper().put("timeStepProvider", new TimeStepProviderGameStateImpl(this)));
-		
+		ObjectConfigurator objectConfigurator = new ObjectConfigurator();
+
+		objectConfigurator.add("resourceManager", resourceManager);
+		objectConfigurator.add("timeStepProvider", new TimeStepProviderGameStateImpl(this));
+
+		Provider provider = new ProviderImpl(objectConfigurator);
+
+		TutorialSceneTemplate tutorialSceneTemplate = provider.get(TutorialSceneTemplate.class);
+
+		// tutorialSceneTemplate.setParameters(new ParametersWrapper().put("timeStepProvider", new TimeStepProviderGameStateImpl(this)));
+
 		tutorialSceneTemplate.apply(worldWrapper);
 
 		// EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();

@@ -20,6 +20,7 @@ import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
@@ -189,7 +190,9 @@ public class SettingsGameState extends GameStateImpl {
 
 		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
 		emptySceneTemplate.setResourceManager(resourceManager);
-		emptySceneTemplate.setBackgroundEnabled(game.getGamePreferences().isFirstBackgroundEnabled());
+
+		emptySceneTemplate.setParameters(new ParametersWrapper() //
+				.put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled()));
 
 		emptySceneTemplate.apply(worldWrapper);
 
@@ -202,9 +205,9 @@ public class SettingsGameState extends GameStateImpl {
 
 	private void toggleBackground() {
 		toggleBackground = !toggleBackground;
-		
+
 		boolean backgroundEnabled = game.getGamePreferences().isFirstBackgroundEnabled();
-		
+
 		if (toggleBackground)
 			backgroundEnabled = !backgroundEnabled;
 
@@ -214,7 +217,9 @@ public class SettingsGameState extends GameStateImpl {
 
 		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
 		emptySceneTemplate.setResourceManager(resourceManager);
-		emptySceneTemplate.setBackgroundEnabled(backgroundEnabled);
+
+		emptySceneTemplate.setParameters(new ParametersWrapper() //
+				.put("backgroundEnabled", backgroundEnabled));
 
 		emptySceneTemplate.apply(worldWrapper);
 

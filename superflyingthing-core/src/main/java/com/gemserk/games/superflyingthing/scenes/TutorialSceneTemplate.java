@@ -43,17 +43,12 @@ import com.gemserk.resources.ResourceManager;
 
 public class TutorialSceneTemplate extends SceneTemplateImpl {
 
-	private final ResourceManager<String> resourceManager;
-
-	public TutorialSceneTemplate(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
+	ResourceManager<String> resourceManager;
+	TimeStepProvider timeStepProvider;
 
 	public void apply(WorldWrapper worldWrapper) {
 		int screenWidth = Gdx.graphics.getWidth();
 		int screenHeight = Gdx.graphics.getHeight();
-
-		TimeStepProvider timeStepProvider = getParameters().get("timeStepProvider");
 
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(screenWidth * 0.5f, screenHeight * 0.5f);
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
@@ -102,7 +97,7 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 		float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);
 
-//		EntityTemplate starTemplate = templateProvider.get(StarTemplate.class);
+		// EntityTemplate starTemplate = templateProvider.get(StarTemplate.class);
 		EntityTemplate cameraTemplate = templateProvider.get(CameraTemplate.class);
 		EntityTemplate staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);
 

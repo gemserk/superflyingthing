@@ -26,14 +26,9 @@ import com.gemserk.resources.ResourceManager;
 public class EmptySceneTemplate extends SceneTemplateImpl {
 
 	private ResourceManager<String> resourceManager;
-	private boolean backgroundEnabled;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
-	}
-
-	public void setBackgroundEnabled(boolean backgroundEnabled) {
-		this.backgroundEnabled = backgroundEnabled;
 	}
 
 	// TODO: use parameters for scene templates too
@@ -43,6 +38,8 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 		RenderLayers renderLayers = new RenderLayers();
 
 		final Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
+		
+		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", true);
 
 		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera), backgroundEnabled);
 		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, backgroundLayerCamera), backgroundEnabled);
