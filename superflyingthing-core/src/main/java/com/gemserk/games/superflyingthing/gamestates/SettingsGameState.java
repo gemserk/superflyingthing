@@ -18,14 +18,19 @@ import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
+import com.gemserk.commons.gdx.time.TimeStepProvider;
+import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
+import com.gemserk.commons.reflection.ObjectConfigurator;
+import com.gemserk.commons.reflection.Provider;
+import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
-import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.scenes.EmptySceneTemplate;
+import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class SettingsGameState extends GameStateImpl {
@@ -41,6 +46,7 @@ public class SettingsGameState extends GameStateImpl {
 
 	private boolean toggleBackground;
 	private boolean showReplay;
+	private SceneTemplate sceneTemplate;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -188,13 +194,18 @@ public class SettingsGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
-		emptySceneTemplate.setResourceManager(resourceManager);
+		final TimeStepProvider timeStepProvider = new TimeStepProviderGameStateImpl(this);
 
-		emptySceneTemplate.setParameters(new ParametersWrapper() //
-				.put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled()));
+		Provider provider = new ProviderImpl(new ObjectConfigurator() {
+			{
+				add("resourceManager", resourceManager);
+				add("timeStepProvider", timeStepProvider);
+			}
+		});
 
-		emptySceneTemplate.apply(worldWrapper);
+		sceneTemplate = provider.get(EmptySceneTemplate.class);
+		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
+		sceneTemplate.apply(worldWrapper);
 
 		worldWrapper.update(1);
 	}
@@ -215,13 +226,8 @@ public class SettingsGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		EmptySceneTemplate emptySceneTemplate = new EmptySceneTemplate();
-		emptySceneTemplate.setResourceManager(resourceManager);
-
-		emptySceneTemplate.setParameters(new ParametersWrapper() //
-				.put("backgroundEnabled", backgroundEnabled));
-
-		emptySceneTemplate.apply(worldWrapper);
+		sceneTemplate.getParameters().put("backgroundEnabled", backgroundEnabled);
+		sceneTemplate.apply(worldWrapper);
 
 		worldWrapper.update(1);
 	}
