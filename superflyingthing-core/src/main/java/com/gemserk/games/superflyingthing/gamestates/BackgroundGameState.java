@@ -109,6 +109,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 		SceneTemplate sceneTemplate = injector.getInstance(BackgroundSceneTemplate.class);
 		sceneTemplate.getParameters().put("levelNumber", levelNumber);
+		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
 		sceneTemplate.apply(worldWrapper);
 		
 		injector.injectMembers(this);

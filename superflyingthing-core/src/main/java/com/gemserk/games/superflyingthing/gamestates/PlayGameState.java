@@ -7,48 +7,24 @@ import org.w3c.dom.Document;
 import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
-import com.gemserk.commons.artemis.events.EventManager;
-import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
-import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
-import com.gemserk.commons.artemis.systems.ContainerSystem;
-import com.gemserk.commons.artemis.systems.OwnerSystem;
-import com.gemserk.commons.artemis.systems.PhysicsSystem;
-import com.gemserk.commons.artemis.systems.PreviousStateSpatialSystem;
-import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
-import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
-import com.gemserk.commons.artemis.systems.RenderableSystem;
-import com.gemserk.commons.artemis.systems.ScriptSystem;
-import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
-import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
-import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.AverageFPS;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.box2d.BodyBuilder;
-import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
-import com.gemserk.commons.gdx.box2d.JointBuilder;
-import com.gemserk.commons.gdx.camera.CameraImpl;
-import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
-import com.gemserk.commons.gdx.games.SpatialImpl;
-import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
@@ -73,15 +49,12 @@ import com.gemserk.games.superflyingthing.levels.RandomLevelGenerator;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
+import com.gemserk.games.superflyingthing.scenes.NormalModeSceneTemplate;
+import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
-import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
-import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
-import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
-import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.Groups;
-import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
@@ -89,30 +62,26 @@ import com.gemserk.resources.ResourceManager;
 public class PlayGameState extends GameStateImpl {
 
 	private final Game game;
-	SpriteBatch spriteBatch;
-	Libgdx2dCamera worldCamera;
+	private SpriteBatch spriteBatch;
+	// private Libgdx2dCamera worldCamera;
 
-	World physicsWorld;
-	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
-	ResourceManager<String> resourceManager;
+	// private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
+	private ResourceManager<String> resourceManager;
 	Container container;
-	private Libgdx2dCamera guiCamera;
+	// private Libgdx2dCamera guiCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	EntityTemplates entityTemplates;
-	ControllerTemplates controllerTemplates;
+	private EntityTemplates entityTemplates;
+	private ControllerTemplates controllerTemplates;
 
 	EntityBuilder entityBuilder;
-	private com.artemis.World world;
 	private WorldWrapper worldWrapper;
 	private EntityFactory entityFactory;
-	private Parameters parameters;
+	private Parameters parameters = new ParametersWrapper();
 
 	GameData gameData;
 	private Text itemsTakenLabel;
 	private Text timerLabel;
-
-	private EventManager eventManager;
 
 	EntityTemplate userMessageTemplate;
 
@@ -128,11 +97,8 @@ public class PlayGameState extends GameStateImpl {
 	private RenderLayers renderLayers;
 	private Level level;
 	private Integer levelNumber;
-	private Libgdx2dCamera secondBackgroundLayerCamera;
 	private AverageFPS averageFPS;
 	private Injector injector;
-
-	// private boolean loading;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -162,82 +128,56 @@ public class PlayGameState extends GameStateImpl {
 	public void init() {
 		averageFPS = new AverageFPS();
 		createALotOfStuff();
-		loadLevel();
 		createWorld();
 	}
 
 	private void createALotOfStuff() {
+		
+		levelNumber = getParameters().get("level", 1);
+		
 		shouldDisposeWorldWrapper = true;
 
 		spriteBatch = new SpriteBatch();
 
-		eventManager = new EventManagerImpl();
+		injector = new InjectorImpl();
+		injector.configureField("resourceManager", resourceManager);
+		injector.configureField("timeStepProvider", new TimeStepProviderGameStateImpl(this));
 
-		physicsWorld = new World(new Vector2(), false);
+		gameData = new GameData();
+		GameInformation.gameData = gameData;
 
-		worldCamera = new Libgdx2dCameraTransformImpl();
-		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			level = loadLevelForChallengeMode();
+			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/start", "/challenge/" + levelNumber + "/start", null);
+		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
+			level = loadRandomLevelForRandomMode();
+			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
+			level = loadRandomLevelForRandomMode();
+			Analytics.traker.trackPageView("/random/start", "/random/start", null);
+		}
 
-		guiCamera = new Libgdx2dCameraTransformImpl();
+		BitmapFont font = resourceManager.getResourceValue("GameFont");
+		
+		itemsTakenLabel = GuiControls.label("") //
+				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.95f) //
+				.font(font) //
+				.color(1f, 1f, 1f, 1f) //
+				.build();
 
-		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		secondBackgroundLayerCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		gameData.totalItems = level.items.size();
+		if (gameData.totalItems > 0)
+			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
-		renderLayers = new RenderLayers();
+		worldWrapper = new WorldWrapper(new com.artemis.World());
 
-		renderLayers.add(Layers.FirstBackground, new RenderLayerSpriteBatchImpl(-10000, -500, backgroundLayerCamera), game.getGamePreferences().isFirstBackgroundEnabled());
-		renderLayers.add(Layers.SecondBackground, new RenderLayerSpriteBatchImpl(-500, -100, secondBackgroundLayerCamera), game.getGamePreferences().isSecondBackgroundEnabled());
-		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
-		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
-		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
+		SceneTemplate sceneTemplate = injector.getInstance(NormalModeSceneTemplate.class);
+		sceneTemplate.getParameters().put("level", level);
+		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
+		sceneTemplate.getParameters().put("shouldRemoveItems", GameInformation.gameMode != GameInformation.ChallengeGameMode);
+		sceneTemplate.apply(worldWrapper);
 
-		// used by the controllers to draw stuff, could be removed later
-		renderLayers.add(Layers.Controllers, new RenderLayerSpriteBatchImpl(200, 10000, guiCamera));
-
-		world = new com.artemis.World();
-		entityFactory = new EntityFactoryImpl(world);
-		worldWrapper = new WorldWrapper(world);
-		parameters = new ParametersWrapper();
-		// add render and all stuff...
-
-		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
-		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
-		worldWrapper.addUpdateSystem(new ScriptSystem());
-		worldWrapper.addUpdateSystem(new TagSystem());
-		worldWrapper.addUpdateSystem(new ContainerSystem());
-		worldWrapper.addUpdateSystem(new OwnerSystem());
-
-		// testing event listener auto registration using reflection
-		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
-
-		worldWrapper.addRenderSystem(new CameraUpdateSystem(new TimeStepProviderGameStateImpl(this)));
-		worldWrapper.addRenderSystem(new SpriteUpdateSystem(new TimeStepProviderGameStateImpl(this)));
-		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
-
-		worldWrapper.init();
-
-		entityBuilder = new EntityBuilder(world);
-
-		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
-
-		container = new Container();
-
-		injector = new InjectorImpl() {
-			{
-				configureField("physicsWorld", physicsWorld);
-				configureField("resourceManager", resourceManager);
-				configureField("entityBuilder", new EntityBuilder(world));
-				configureField("entityFactory", new EntityFactoryImpl(world));
-				configureField("eventManager", eventManager);
-				configureField("bodyBuilder", new BodyBuilder(physicsWorld));
-				configureField("mesh2dBuilder", new Mesh2dBuilder());
-				configureField("jointBuilder", new JointBuilder(physicsWorld));
-			}
-		};
-
-		entityTemplates = new EntityTemplates(injector);
+		injector.injectMembers(this);
 
 		// creates and registers all the controller templates
 		controllerTemplates = new ControllerTemplates();
@@ -250,18 +190,9 @@ public class PlayGameState extends GameStateImpl {
 		controllerTemplates.targetControllerTemplate = new ControllerTemplates.TargetControllerTemplate();
 		controllerTemplates.remoteClassicControllerTemplate = new ControllerTemplates.RemoteClassicControllerTemplate();
 
-		gameData = new GameData();
-		GameInformation.gameData = gameData;
+		container = new Container();
 
 		userMessageTemplate = new UserMessageTemplate(container, resourceManager);
-
-		BitmapFont font = resourceManager.getResourceValue("GameFont");
-
-		itemsTakenLabel = GuiControls.label("") //
-				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.95f) //
-				.font(font) //
-				.color(1f, 1f, 1f, 1f) //
-				.build();
 
 		timerLabel = GuiControls.label("") //
 				.position(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.95f) //
@@ -282,16 +213,6 @@ public class PlayGameState extends GameStateImpl {
 			container.add(tiltvalue);
 		}
 
-		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
-				.put("color", Color.WHITE) //
-				.put("layer", (-999)) //
-				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
-				.put("center", new Vector2(0, 0)) //
-				.put("spriteId", "BackgroundSprite") //
-				);
-
-		levelNumber = getParameters().get("level", 1);
-
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
 			{
@@ -306,19 +227,16 @@ public class PlayGameState extends GameStateImpl {
 	private void createWorld() {
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
-		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
-
-		entityFactory.instantiate(eventManagerTemplate);
-
-		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
-
-		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper() //
-				.put("invulnerable", GameInformation.gameMode == GameInformation.PracticeGameMode) //
-				);
-
 		// creates controller the first time if no controller was created before...
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
+
+					private com.artemis.World world;
+
+					@Override
+					public void init(com.artemis.World world, Entity e) {
+						this.world = world;
+					}
 
 					@Handles(ids = Events.gameStarted)
 					public void createControllerWhenGameStarts(Event event) {
@@ -340,6 +258,7 @@ public class PlayGameState extends GameStateImpl {
 
 			boolean incrementTimer = true;
 			private com.artemis.World world;
+			private Parameters parameters = new ParametersWrapper();
 
 			@Override
 			public void init(com.artemis.World world, Entity e) {
@@ -456,29 +375,6 @@ public class PlayGameState extends GameStateImpl {
 
 		})).build();
 
-		entityFactory.instantiate(entityTemplates.replayRecorderTemplate);
-
-		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
-				.put("camera", new CameraImpl()) //
-				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
-				);
-
-		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
-		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
-	}
-
-	private void loadLevel() {
-
-		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			level = loadLevelForChallengeMode();
-			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/start", "/challenge/" + levelNumber + "/start", null);
-		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			level = loadRandomLevelForRandomMode();
-			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
-		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
-			level = loadRandomLevelForRandomMode();
-			Analytics.traker.trackPageView("/random/start", "/random/start", null);
-		}
 	}
 
 	Level loadLevelForChallengeMode() {
@@ -488,32 +384,17 @@ public class PlayGameState extends GameStateImpl {
 			Resource<Level> levelResource = resourceManager.get(Levels.levelId(levelNumber));
 			Level level = levelResource.get();
 
-			new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
-
-			gameData.totalItems = level.items.size();
-			if (gameData.totalItems > 0)
-				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
-
 			return level;
 		}
 		return null;
 	}
 
 	Level loadRandomLevelForRandomMode() {
-
 		Resource<Document> resource = resourceManager.get("RandomLevelTilesDocument");
 
 		RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(resource.get());
 
 		Level level = randomLevelGenerator.generateRandomLevel();
-
-		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, true).loadLevel(level);
-
-		// int starsCount = randomLevelGenerator.generateStars(level.w, level.h, 10);
-
-		gameData.totalItems = level.items.size();
-		if (gameData.totalItems > 0)
-			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 		return level;
 	}
@@ -537,7 +418,6 @@ public class PlayGameState extends GameStateImpl {
 
 		entityFactory.instantiate(userMessageTemplate, parameters);
 		gameData.averageFPS = averageFPS.getFPS();
-		// container.add(message);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/finish", "/challenge/" + levelNumber + "/finish", null);
@@ -554,16 +434,13 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void render() {
-		// if (loading)
-		// return;
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
 
-		if (Game.isShowBox2dDebug())
-			box2dCustomDebugRenderer.render();
+		// if (Game.isShowBox2dDebug())
+		// box2dCustomDebugRenderer.render();
 
-		guiCamera.apply(spriteBatch);
 		spriteBatch.begin();
 		container.draw(spriteBatch);
 		spriteBatch.end();
@@ -571,8 +448,6 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void update() {
-		// if (loading)
-		// return;
 		averageFPS.update();
 
 		inputDevicesMonitor.update();
@@ -601,9 +476,6 @@ public class PlayGameState extends GameStateImpl {
 
 	@Override
 	public void resume() {
-		// if (loading)
-		// return;
-		// automatically handled in Game class and if no previous screen, then don't handle it (or system.exit())
 		game.getAdWhirlViewHandler().hide();
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
@@ -611,7 +483,7 @@ public class PlayGameState extends GameStateImpl {
 
 		// recreate controller ...
 
-		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+		Entity playerController = worldWrapper.getWorld().getTagManager().getEntity(Groups.PlayerController);
 		if (playerController != null) {
 
 			ControllerComponent controllerComponent = playerController.getComponent(ControllerComponent.class);
