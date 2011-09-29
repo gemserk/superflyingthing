@@ -30,8 +30,6 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.commons.reflection.Provider;
-import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -90,14 +88,12 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.configureField("eventManager", eventManager);
 
-		Provider templateProvider = new ProviderImpl(injector);
-
 		float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);
 
 		// EntityTemplate starTemplate = templateProvider.get(StarTemplate.class);
-		EntityTemplate cameraTemplate = templateProvider.getInstance(CameraTemplate.class);
-		EntityTemplate staticSpriteTemplate = templateProvider.getInstance(StaticSpriteTemplate.class);
+		EntityTemplate cameraTemplate = injector.getInstance(CameraTemplate.class);
+		EntityTemplate staticSpriteTemplate = injector.getInstance(StaticSpriteTemplate.class);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("color", Color.WHITE) //

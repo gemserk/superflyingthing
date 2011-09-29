@@ -2,37 +2,33 @@ package com.gemserk.games.superflyingthing.templates;
 
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.commons.reflection.Provider;
-import com.gemserk.commons.reflection.ProviderImpl;
 
 public class EntityTemplates {
 
 	public EntityTemplates(Injector injector) {
 		injector.configureField("entityTemplates", this);
 		
-		Provider templateProvider = new ProviderImpl(injector);
-		
-		this.cameraTemplate = templateProvider.getInstance(CameraTemplate.class);
-		this.staticSpriteTemplate = templateProvider.getInstance(StaticSpriteTemplate.class);
-		this.starTemplate = templateProvider.getInstance(StarTemplate.class);
-		this.startPlanetTemplate = templateProvider.getInstance(StartPlanetTemplate.class);
-		this.destinationPlanetTemplate = templateProvider.getInstance(DestinationPlanetTemplate.class);
-		this.planetFillAnimationTemplate = templateProvider.getInstance(PlanetFillAnimationTemplate.class);
-		this.portalTemplate = templateProvider.getInstance(PortalTemplate.class);
-		this.replayShipTemplate = templateProvider.getInstance(ReplayShipTemplate.class);
-		this.replayPlayerTemplate = templateProvider.getInstance(ReplayPlayerTemplate.class);
-		this.laserBulletTemplate = templateProvider.getInstance(LaserBulletTemplate.class);
-		this.laserGunTemplate = templateProvider.getInstance(LaserGunTemplate.class);
-		this.attachedShipTemplate = templateProvider.getInstance(AttachedShipTemplate.class);
-		this.shipTemplate = templateProvider.getInstance(ShipTemplate.class);
-		this.particleEmitterTemplate = templateProvider.getInstance(ParticleEmitterTemplate.class);
-		this.staticObstacleTemplate = templateProvider.getInstance(StaticObstacleTemplate.class);
-		this.boxObstacleTemplate = templateProvider.getInstance(BoxObstacleTemplate.class);
-		this.movingObstacleTemplate = templateProvider.getInstance(MovingObstacleTemplate.class);
-		this.timerTemplate = templateProvider.getInstance(TimerTemplate.class);
-		this.particleEmitterSpawnerTemplate = templateProvider.getInstance(ParticleEmitterSpawnerTemplate.class);
-		this.secondCameraTemplate = templateProvider.getInstance(SecondCameraTemplate.class);
-		this.replayRecorderTemplate = templateProvider.getInstance(ReplayRecorderTemplate.class);
+		this.cameraTemplate = injector.getInstance(CameraTemplate.class);
+		this.staticSpriteTemplate = injector.getInstance(StaticSpriteTemplate.class);
+		this.starTemplate = injector.getInstance(StarTemplate.class);
+		this.startPlanetTemplate = injector.getInstance(StartPlanetTemplate.class);
+		this.destinationPlanetTemplate = injector.getInstance(DestinationPlanetTemplate.class);
+		this.planetFillAnimationTemplate = injector.getInstance(PlanetFillAnimationTemplate.class);
+		this.portalTemplate = injector.getInstance(PortalTemplate.class);
+		this.replayShipTemplate = injector.getInstance(ReplayShipTemplate.class);
+		this.replayPlayerTemplate = injector.getInstance(ReplayPlayerTemplate.class);
+		this.laserBulletTemplate = injector.getInstance(LaserBulletTemplate.class);
+		this.laserGunTemplate = injector.getInstance(LaserGunTemplate.class);
+		this.attachedShipTemplate = injector.getInstance(AttachedShipTemplate.class);
+		this.shipTemplate = injector.getInstance(ShipTemplate.class);
+		this.particleEmitterTemplate = injector.getInstance(ParticleEmitterTemplate.class);
+		this.staticObstacleTemplate = injector.getInstance(StaticObstacleTemplate.class);
+		this.boxObstacleTemplate = injector.getInstance(BoxObstacleTemplate.class);
+		this.movingObstacleTemplate = injector.getInstance(MovingObstacleTemplate.class);
+		this.timerTemplate = injector.getInstance(TimerTemplate.class);
+		this.particleEmitterSpawnerTemplate = injector.getInstance(ParticleEmitterSpawnerTemplate.class);
+		this.secondCameraTemplate = injector.getInstance(SecondCameraTemplate.class);
+		this.replayRecorderTemplate = injector.getInstance(ReplayRecorderTemplate.class);
 		
 	}
 

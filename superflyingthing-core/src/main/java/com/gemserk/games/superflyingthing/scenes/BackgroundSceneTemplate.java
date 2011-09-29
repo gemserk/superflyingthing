@@ -32,8 +32,6 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.commons.reflection.Provider;
-import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
@@ -115,11 +113,9 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
-		Provider provider = new ProviderImpl(injector);
-
-		EntityTemplate basicAiControllerTemplate = provider.getInstance(BasicAIControllerTemplate.class);
-		EntityTemplate eventManagerTemplate = provider.getInstance(EventManagerTemplate.class);
-		EntityTemplate normalModeGameLogicTemplate = provider.getInstance(NormalModeGameLogicTemplate.class);
+		EntityTemplate basicAiControllerTemplate = injector.getInstance(BasicAIControllerTemplate.class);
+		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
+		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //

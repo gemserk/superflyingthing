@@ -22,8 +22,6 @@ import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
-import com.gemserk.commons.reflection.Provider;
-import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Colors;
@@ -197,16 +195,14 @@ public class SettingsGameState extends GameStateImpl {
 
 		final TimeStepProvider timeStepProvider = new TimeStepProviderGameStateImpl(this);
 
-		Injector injectorImpl = new InjectorImpl() {
+		Injector injector = new InjectorImpl() {
 			{
 				configureField("resourceManager", resourceManager);
 				configureField("timeStepProvider", timeStepProvider);
 			}
 		};
 		
-		Provider provider = new ProviderImpl(injectorImpl);
-
-		sceneTemplate = provider.getInstance(EmptySceneTemplate.class);
+		sceneTemplate = injector.getInstance(EmptySceneTemplate.class);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
 		sceneTemplate.apply(worldWrapper);
 
