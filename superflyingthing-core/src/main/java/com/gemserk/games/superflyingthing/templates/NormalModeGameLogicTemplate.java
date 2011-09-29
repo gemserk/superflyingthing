@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
@@ -20,6 +21,7 @@ public class NormalModeGameLogicTemplate extends EntityTemplateImpl {
 		GameData gameData = parameters.get("gameData");
 		Boolean invulnerable = parameters.get("invulnerable", false);
 
+		entity.addComponent(new TagComponent(Groups.NormalGameModeLogic));
 		entity.addComponent(new GameDataComponent());
 		entity.addComponent(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, invulnerable)));
 	}

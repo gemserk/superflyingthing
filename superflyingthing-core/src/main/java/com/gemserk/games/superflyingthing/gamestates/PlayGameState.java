@@ -68,7 +68,6 @@ import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
-import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Levels;
@@ -76,7 +75,6 @@ import com.gemserk.games.superflyingthing.levels.RandomLevelGenerator;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
-import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
@@ -84,6 +82,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.Groups;
+import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
@@ -132,6 +131,7 @@ public class PlayGameState extends GameStateImpl {
 	private Integer levelNumber;
 	private Libgdx2dCamera secondBackgroundLayerCamera;
 	private AverageFPS averageFPS;
+	private Injector injector;
 
 	// private boolean loading;
 
@@ -225,7 +225,7 @@ public class PlayGameState extends GameStateImpl {
 
 		container = new Container();
 
-		Injector injector = new InjectorImpl() {
+		injector = new InjectorImpl() {
 			{
 				configureField("physicsWorld", physicsWorld);
 				configureField("resourceManager", resourceManager);
@@ -458,39 +458,22 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void loadLevel() {
+
+		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
+
+		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper() //
+				.put("gameData", gameData) //
+				.put("invulnerable", GameInformation.gameMode == GameInformation.PracticeGameMode) //
+				);
+
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
-
-			// play game state custom
-			
-//			entityFactory.instantiate(entityTemplates.)
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
-					.build();
-
 			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/start", "/challenge/" + levelNumber + "/start", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
 			level = loadRandomLevelForRandomMode();
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, true))) //
-					.build();
-
 			Analytics.traker.trackPageView("/practice/start", "/practice/start", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			level = loadRandomLevelForRandomMode();
-
-			entityBuilder //
-					.component(new TagComponent(Groups.NormalGameModeLogic)) //
-					.component(new GameDataComponent()) //
-					.component(new ScriptComponent(new Scripts.GameScript(eventManager, entityTemplates, entityFactory, gameData, false))) //
-					.build();
-
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 	}
