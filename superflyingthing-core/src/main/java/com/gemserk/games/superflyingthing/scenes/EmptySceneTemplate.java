@@ -48,9 +48,9 @@ public class EmptySceneTemplate extends SceneTemplateImpl {
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		Parameters parameters = new ParametersWrapper();
 		
-		injector.add("entityBuilder", new EntityBuilder(world));
-		injector.add("entityFactory", new EntityFactoryImpl(world));
-		injector.add("mesh2dBuilder", new Mesh2dBuilder());
+		injector.configureField("entityBuilder", new EntityBuilder(world));
+		injector.configureField("entityFactory", new EntityFactoryImpl(world));
+		injector.configureField("mesh2dBuilder", new Mesh2dBuilder());
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 

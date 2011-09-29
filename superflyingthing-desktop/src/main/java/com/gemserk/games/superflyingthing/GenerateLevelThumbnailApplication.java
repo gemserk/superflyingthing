@@ -34,7 +34,7 @@ import com.gemserk.commons.gdx.camera.CameraRestrictedImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
-import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
@@ -114,20 +114,20 @@ public class GenerateLevelThumbnailApplication {
 
 						com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
-						Injector injector = new Injector() {
+						InjectorImpl injectorImpl = new InjectorImpl() {
 							{
 								// add("physicsWorld", physicsWorld);
 								// add("resourceManager", resourceManager);
-								add("entityBuilder", new EntityBuilder(world));
-								add("entityFactory", new EntityFactoryImpl(world));
+								configureField("entityBuilder", new EntityBuilder(world));
+								configureField("entityFactory", new EntityFactoryImpl(world));
 								// add("eventManager", eventManager);
 								// add("bodyBuilder", new BodyBuilder(physicsWorld));
-								add("mesh2dBuilder", new Mesh2dBuilder());
+								configureField("mesh2dBuilder", new Mesh2dBuilder());
 								// add("jointBuilder", new JointBuilder(physicsWorld));
 							}
 						};
 
-						templates = new EntityTemplates(injector);
+						templates = new EntityTemplates(injectorImpl);
 
 						// templates = new EntityTemplates(physicsWorld, world, resourceManager, new EntityBuilder(world), entityFactory, null);
 

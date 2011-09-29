@@ -56,6 +56,7 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -224,16 +225,16 @@ public class PlayGameState extends GameStateImpl {
 
 		container = new Container();
 
-		Injector injector = new Injector() {
+		Injector injector = new InjectorImpl() {
 			{
-				add("physicsWorld", physicsWorld);
-				add("resourceManager", resourceManager);
-				add("entityBuilder", new EntityBuilder(world));
-				add("entityFactory", new EntityFactoryImpl(world));
-				add("eventManager", eventManager);
-				add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("mesh2dBuilder", new Mesh2dBuilder());
-				add("jointBuilder", new JointBuilder(physicsWorld));
+				configureField("physicsWorld", physicsWorld);
+				configureField("resourceManager", resourceManager);
+				configureField("entityBuilder", new EntityBuilder(world));
+				configureField("entityFactory", new EntityFactoryImpl(world));
+				configureField("eventManager", eventManager);
+				configureField("bodyBuilder", new BodyBuilder(physicsWorld));
+				configureField("mesh2dBuilder", new Mesh2dBuilder());
+				configureField("jointBuilder", new JointBuilder(physicsWorld));
 			}
 		};
 
@@ -461,6 +462,8 @@ public class PlayGameState extends GameStateImpl {
 			level = loadLevelForChallengeMode();
 
 			// play game state custom
+			
+//			entityFactory.instantiate(entityTemplates.)
 
 			entityBuilder //
 					.component(new TagComponent(Groups.NormalGameModeLogic)) //

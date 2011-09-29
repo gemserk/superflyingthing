@@ -50,7 +50,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
-import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Colors;
@@ -190,20 +190,20 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		guiContainer = new Container();
 
-		Injector injector = new Injector() {
+		InjectorImpl injectorImpl = new InjectorImpl() {
 			{
-				add("physicsWorld", physicsWorld);
-				add("resourceManager", resourceManager);
-				add("entityBuilder", new EntityBuilder(world));
-				add("entityFactory", new EntityFactoryImpl(world));
-				add("eventManager", eventManager);
-				add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("mesh2dBuilder", new Mesh2dBuilder());
-				add("jointBuilder", new JointBuilder(physicsWorld));
+				configureField("physicsWorld", physicsWorld);
+				configureField("resourceManager", resourceManager);
+				configureField("entityBuilder", new EntityBuilder(world));
+				configureField("entityFactory", new EntityFactoryImpl(world));
+				configureField("eventManager", eventManager);
+				configureField("bodyBuilder", new BodyBuilder(physicsWorld));
+				configureField("mesh2dBuilder", new Mesh2dBuilder());
+				configureField("jointBuilder", new JointBuilder(physicsWorld));
 			}
 		};
 
-		entityTemplates = new EntityTemplates(injector);
+		entityTemplates = new EntityTemplates(injectorImpl);
 
 		// creates and registers all the controller templates
 

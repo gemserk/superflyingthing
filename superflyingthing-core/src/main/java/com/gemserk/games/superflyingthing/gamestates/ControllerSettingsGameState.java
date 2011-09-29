@@ -22,6 +22,7 @@ import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
@@ -255,16 +256,16 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		Injector injector = new Injector() {
+		Injector injectorImpl = new InjectorImpl() {
 			{
-				add("resourceManager", resourceManager);
-				add("timeStepProvider", new TimeStepProviderGameStateImpl(ControllerSettingsGameState.this));
+				configureField("resourceManager", resourceManager);
+				configureField("timeStepProvider", new TimeStepProviderGameStateImpl(ControllerSettingsGameState.this));
 			}
 		};
 		
-		Provider provider = new ProviderImpl(injector);
+		Provider provider = new ProviderImpl(injectorImpl);
 
-		SceneTemplate sceneTemplate = provider.get(EmptySceneTemplate.class);
+		SceneTemplate sceneTemplate = provider.getInstance(EmptySceneTemplate.class);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
 		sceneTemplate.apply(worldWrapper);
 

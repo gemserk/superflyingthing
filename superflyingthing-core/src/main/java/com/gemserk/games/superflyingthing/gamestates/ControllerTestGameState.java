@@ -45,7 +45,7 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
-import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
@@ -199,20 +199,20 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		Injector injector = new Injector() {
+		InjectorImpl injectorImpl = new InjectorImpl() {
 			{
-				add("physicsWorld", physicsWorld);
-				add("resourceManager", resourceManager);
-				add("entityBuilder", new EntityBuilder(world));
-				add("entityFactory", new EntityFactoryImpl(world));
-				add("eventManager", eventManager);
-				add("bodyBuilder", new BodyBuilder(physicsWorld));
-				add("mesh2dBuilder", new Mesh2dBuilder());
-				add("jointBuilder", new JointBuilder(physicsWorld));
+				configureField("physicsWorld", physicsWorld);
+				configureField("resourceManager", resourceManager);
+				configureField("entityBuilder", new EntityBuilder(world));
+				configureField("entityFactory", new EntityFactoryImpl(world));
+				configureField("eventManager", eventManager);
+				configureField("bodyBuilder", new BodyBuilder(physicsWorld));
+				configureField("mesh2dBuilder", new Mesh2dBuilder());
+				configureField("jointBuilder", new JointBuilder(physicsWorld));
 			}
 		};
 
-		entityTemplates = new EntityTemplates(injector);
+		entityTemplates = new EntityTemplates(injectorImpl);
 
 		controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();

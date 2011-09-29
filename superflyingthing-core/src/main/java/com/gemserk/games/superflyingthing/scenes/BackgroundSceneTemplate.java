@@ -78,7 +78,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
 		
-		injector.add("renderLayers", renderLayers);
+		injector.configureField("renderLayers", renderLayers);
 
 		World world = worldWrapper.getWorld();
 		final EntityFactory entityFactory = new EntityFactoryImpl(world);
@@ -104,22 +104,22 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		final EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		injector.add("physicsWorld", physicsWorld);
-		injector.add("resourceManager", resourceManager);
-		injector.add("entityBuilder", entityBuilder);
-		injector.add("entityFactory", entityFactory);
-		injector.add("eventManager", eventManager);
-		injector.add("bodyBuilder", new BodyBuilder(physicsWorld));
-		injector.add("mesh2dBuilder", new Mesh2dBuilder());
-		injector.add("jointBuilder", new JointBuilder(physicsWorld));
+		injector.configureField("physicsWorld", physicsWorld);
+		injector.configureField("resourceManager", resourceManager);
+		injector.configureField("entityBuilder", entityBuilder);
+		injector.configureField("entityFactory", entityFactory);
+		injector.configureField("eventManager", eventManager);
+		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.configureField("mesh2dBuilder", new Mesh2dBuilder());
+		injector.configureField("jointBuilder", new JointBuilder(physicsWorld));
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
 		Provider provider = new ProviderImpl(injector);
 
-		EntityTemplate basicAiControllerTemplate = provider.get(BasicAIControllerTemplate.class);
-		EntityTemplate eventManagerTemplate = provider.get(EventManagerTemplate.class);
-		EntityTemplate normalModeGameLogicTemplate = provider.get(NormalModeGameLogicTemplate.class);
+		EntityTemplate basicAiControllerTemplate = provider.getInstance(BasicAIControllerTemplate.class);
+		EntityTemplate eventManagerTemplate = provider.getInstance(EventManagerTemplate.class);
+		EntityTemplate normalModeGameLogicTemplate = provider.getInstance(NormalModeGameLogicTemplate.class);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //

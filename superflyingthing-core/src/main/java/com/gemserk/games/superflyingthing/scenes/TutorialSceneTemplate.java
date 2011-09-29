@@ -87,8 +87,8 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.init();
 		
-		injector.add("bodyBuilder", new BodyBuilder(physicsWorld));
-		injector.add("eventManager", eventManager);
+		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.configureField("eventManager", eventManager);
 
 		Provider templateProvider = new ProviderImpl(injector);
 
@@ -96,8 +96,8 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);
 
 		// EntityTemplate starTemplate = templateProvider.get(StarTemplate.class);
-		EntityTemplate cameraTemplate = templateProvider.get(CameraTemplate.class);
-		EntityTemplate staticSpriteTemplate = templateProvider.get(StaticSpriteTemplate.class);
+		EntityTemplate cameraTemplate = templateProvider.getInstance(CameraTemplate.class);
+		EntityTemplate staticSpriteTemplate = templateProvider.getInstance(StaticSpriteTemplate.class);
 
 		entityFactory.instantiate(staticSpriteTemplate, new ParametersWrapper() //
 				.put("color", Color.WHITE) //

@@ -23,6 +23,7 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.commons.reflection.Provider;
 import com.gemserk.commons.reflection.ProviderImpl;
 import com.gemserk.games.superflyingthing.Events;
@@ -100,21 +101,21 @@ public class BackgroundGameState extends GameStateImpl {
 
 		worldWrapper = new WorldWrapper(new World());
 
-		Injector injector = new Injector() {
+		Injector injectorImpl = new InjectorImpl() {
 			{
-				add("resourceManager", resourceManager);
-				add("timeStepProvider", new TimeStepProviderGameStateImpl(BackgroundGameState.this));
-				add("entityBuilder", new EntityBuilder(worldWrapper.getWorld()));
+				configureField("resourceManager", resourceManager);
+				configureField("timeStepProvider", new TimeStepProviderGameStateImpl(BackgroundGameState.this));
+				configureField("entityBuilder", new EntityBuilder(worldWrapper.getWorld()));
 			}
 		};
 
-		Provider provider = new ProviderImpl(injector);
+		Provider provider = new ProviderImpl(injectorImpl);
 
-		SceneTemplate sceneTemplate = provider.get(BackgroundSceneTemplate.class);
+		SceneTemplate sceneTemplate = provider.getInstance(BackgroundSceneTemplate.class);
 		sceneTemplate.getParameters().put("levelNumber", levelNumber);
 		sceneTemplate.apply(worldWrapper);
 		
-		injector.injectMembers(this);
+		injectorImpl.injectMembers(this);
 
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
