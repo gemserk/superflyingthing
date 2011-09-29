@@ -137,7 +137,7 @@ public class ControllerTestGameState extends GameStateImpl {
 	private EventManager eventManager;
 
 	private Container container;
-	private Libgdx2dCamera guiCamera;
+	private Libgdx2dCamera hudCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	private ControllerTemplates controllerTemplates;
 
@@ -164,7 +164,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		worldCamera.center(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
-		guiCamera = new Libgdx2dCameraTransformImpl();
+		hudCamera = new Libgdx2dCameraTransformImpl();
 
 		RenderLayers renderLayers = new RenderLayers();
 
@@ -175,7 +175,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 
 		// used by the controllers to draw stuff, could be removed later
-		renderLayers.add(Layers.Controllers, new RenderLayerSpriteBatchImpl(200, 10000, guiCamera));
+		renderLayers.add(Layers.Hud, new RenderLayerSpriteBatchImpl(200, 10000, hudCamera));
 
 		world = new com.artemis.World();
 		entityFactory = new EntityFactoryImpl(world);
@@ -326,7 +326,7 @@ public class ControllerTestGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 		worldWrapper.render();
 
-		guiCamera.apply(spriteBatch);
+		hudCamera.apply(spriteBatch);
 		spriteBatch.begin();
 		container.draw(spriteBatch);
 		spriteBatch.end();

@@ -43,23 +43,30 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
+import com.gemserk.resources.ResourceManager;
 
 public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
+	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
 	Injector injector;
 
 	public void apply(WorldWrapper worldWrapper) {
-		
+
 		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", false);
 		Boolean shouldRemoveItems = getParameters().get("shouldRemoveItems", true);
+
+		// Boolean randomLevel = getParameters().get("randomLevel", false);
+		// Integer levelNumber = getParameters().get("levelNumber");
+
 		Level level = getParameters().get("level");
-		
+
 		EventManager eventManager = new EventManagerImpl();
 
 		World physicsWorld = new World(new Vector2(), false);
 
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		Libgdx2dCamera hudCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -71,6 +78,8 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
+		
+		renderLayers.add(Layers.Hud, new RenderLayerParticleEmitterImpl(200, 10000, hudCamera));
 
 		com.artemis.World world = worldWrapper.getWorld();
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
@@ -130,7 +139,18 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
-		
+
+		// if (randomLevel) {
+		// Resource<Document> resource = resourceManager.get("RandomLevelTilesDocument");
+		// RandomLevelGenerator randomLevelGenerator = new RandomLevelGenerator(resource.get());
+		// level = randomLevelGenerator.generateRandomLevel();
+		// } else {
+		// if (Levels.hasLevel(levelNumber)) {
+		// Resource<Level> levelResource = resourceManager.get(Levels.levelId(levelNumber));
+		// level = levelResource.get();
+		// }
+		// }
+
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);
 
 	}

@@ -63,12 +63,10 @@ public class PlayGameState extends GameStateImpl {
 
 	private final Game game;
 	private SpriteBatch spriteBatch;
-	// private Libgdx2dCamera worldCamera;
 
 	// private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	private ResourceManager<String> resourceManager;
 	Container container;
-	// private Libgdx2dCamera guiCamera;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private EntityTemplates entityTemplates;
