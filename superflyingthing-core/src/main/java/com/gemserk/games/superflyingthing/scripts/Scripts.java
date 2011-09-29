@@ -28,7 +28,6 @@ import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
-import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
@@ -254,7 +253,6 @@ public class Scripts {
 		private final EntityFactory entityFactory;
 		private final EventManager eventManager;
 
-		private GameData gameData;
 		private boolean invulnerable;
 
 		Script fixCameraTargetBehavior = new FixCameraTargetScript();
@@ -266,11 +264,9 @@ public class Scripts {
 		// private EntityTemplate particleEmitterTemplate;
 		private Entity owner;
 
-		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, GameData gameData, //
-				boolean invulnerable) {
+		public GameScript(EventManager eventListenerManager, EntityTemplates entityTemplates, EntityFactory entityFactory, boolean invulnerable) {
 
 			this.eventManager = eventListenerManager;
-			this.gameData = gameData;
 			this.invulnerable = invulnerable;
 			this.entityFactory = entityFactory;
 
@@ -333,7 +329,6 @@ public class Scripts {
 
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
-			gameData.deaths++;
 
 			eventManager.registerEvent(Events.shipDeath, spatial);
 			eventManager.registerEvent(Events.explosion, spatial);

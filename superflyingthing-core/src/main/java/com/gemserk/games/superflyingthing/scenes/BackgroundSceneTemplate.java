@@ -34,7 +34,6 @@ import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Levels;
@@ -75,7 +74,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
-		
+
 		injector.configureField("renderLayers", renderLayers);
 
 		World world = worldWrapper.getWorld();
@@ -132,9 +131,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		entityFactory.instantiate(basicAiControllerTemplate);
 
-		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper() //
-				.put("gameData", new GameData()) //
-				);
+		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper());
 
 		entityFactory.instantiate(eventManagerTemplate);
 

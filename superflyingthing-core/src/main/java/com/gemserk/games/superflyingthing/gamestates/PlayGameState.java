@@ -19,13 +19,11 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.ScriptComponent;
-import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
-import com.gemserk.commons.artemis.scripts.EventSystemScript;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
@@ -81,6 +79,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
+import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
@@ -307,6 +306,16 @@ public class PlayGameState extends GameStateImpl {
 	private void createWorld() {
 		final PlayerProfile playerProfile = game.getGamePreferences().getCurrentPlayerProfile();
 
+		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
+
+		entityFactory.instantiate(eventManagerTemplate);
+
+		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
+
+		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper() //
+				.put("invulnerable", GameInformation.gameMode == GameInformation.PracticeGameMode) //
+				);
+
 		// creates controller the first time if no controller was created before...
 		entityBuilder //
 				.component(new ScriptComponent(new ScriptJavaImpl() {
@@ -326,11 +335,6 @@ public class PlayGameState extends GameStateImpl {
 				})) //
 				.build();
 
-		entityBuilder //
-				.component(new TagComponent(Groups.EventManager)) //
-				.component(new ScriptComponent(new EventSystemScript(eventManager))) //
-				.build();
-
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
 
@@ -341,6 +345,12 @@ public class PlayGameState extends GameStateImpl {
 			public void init(com.artemis.World world, Entity e) {
 				this.world = world;
 				timerLabelBuilder.append("Time: ");
+			}
+
+			@Handles(ids = Events.shipDeath)
+			public void shipDeath(Event e) {
+				gameData.deaths++;
+				System.out.println(gameData.deaths);
 			}
 
 			@Handles
@@ -458,13 +468,6 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void loadLevel() {
-
-		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
-
-		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper() //
-				.put("gameData", gameData) //
-				.put("invulnerable", GameInformation.gameMode == GameInformation.PracticeGameMode) //
-				);
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			level = loadLevelForChallengeMode();
