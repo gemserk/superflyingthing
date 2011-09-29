@@ -5,29 +5,24 @@ import com.artemis.World;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
-import com.gemserk.animation4j.animations.Animation;
 import com.gemserk.animation4j.timeline.Builders;
-import com.gemserk.animation4j.timeline.sync.MutableObjectSynchronizer;
-import com.gemserk.animation4j.timeline.sync.SynchronizedAnimation;
-import com.gemserk.animation4j.timeline.sync.TimelineSynchronizer;
+import com.gemserk.animation4j.timeline.TimelineAnimation;
+import com.gemserk.commons.artemis.components.Components;
+import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.TextComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.commons.gdx.gui.Container;
-import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.commons.gdx.gui.Text;
+import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.resources.ResourceManager;
 
 public class UserMessageTemplate extends EntityTemplateImpl {
 
-	private final Container guiContainer;
-	private final ResourceManager<String> resourceManager;
+	ResourceManager<String> resourceManager;
 
-	public UserMessageTemplate(Container guiContainer, ResourceManager<String> resourceManager) {
-		this.guiContainer = guiContainer;
-		this.resourceManager = resourceManager;
-
+	public UserMessageTemplate() {
 		parameters.put("time", new Integer(2500));
 		parameters.put("fontId", "GameFont");
 		parameters.put("iterations", new Integer(1));
@@ -43,16 +38,10 @@ public class UserMessageTemplate extends EntityTemplateImpl {
 		final Integer iterations = parameters.get("iterations");
 		final Integer time = parameters.get("time");
 		BitmapFont font = resourceManager.getResourceValue(fontId);
-		
-		float animationTime = (float) time  * 0.001f;
 
-		final Text textControl = GuiControls.label(text) //
-				.position(position.x, position.y) //
-				.font(font) //
-				.color(1f, 1f, 1f, 0f) //
-				.build();
+		float animationTime = (float) time * 0.001f;
 
-		final Animation animation = new SynchronizedAnimation(Builders.animation(Builders.timeline() //
+		final TimelineAnimation animation = Builders.animation(Builders.timeline() //
 				.value(Builders.timelineValue("color") //
 						.keyFrame(0f, new Color(1f, 1f, 1f, 0f)) //
 						.keyFrame(animationTime * 0.25f, Color.WHITE) //
@@ -62,25 +51,26 @@ public class UserMessageTemplate extends EntityTemplateImpl {
 				.delay(0f) //
 				.speed(1f) //
 				.started(true) //
-				.build(), //
-				new TimelineSynchronizer(new MutableObjectSynchronizer(), textControl));
+				.build();
 
 		animation.start(iterations);
 
-		guiContainer.add(textControl);
+		entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y)));
+		entity.addComponent(new TextComponent(text, font, 0f, 0f, 0.5f, 0.5f));
+		entity.addComponent(new RenderableComponent(260));
 
 		entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
 
-			Text text = textControl;
-			Animation internalAnimation = animation;
+			TimelineAnimation internalAnimation = animation;
 
 			@Override
 			public void update(World world, Entity e) {
 				internalAnimation.update(GlobalTime.getDelta());
-				if (internalAnimation.isFinished()) {
+				if (internalAnimation.isFinished())
 					e.delete();
-					guiContainer.remove(text);
-				}
+				TextComponent textComponent = Components.getTextComponent(e);
+				Color color = internalAnimation.getValue("color");
+				textComponent.color.set(color);
 			}
 
 		}));

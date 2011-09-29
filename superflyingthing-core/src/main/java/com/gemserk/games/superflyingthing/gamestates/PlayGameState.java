@@ -92,11 +92,12 @@ public class PlayGameState extends GameStateImpl {
 	private boolean shouldDisposeWorldWrapper;
 
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
-	private RenderLayers renderLayers;
 	private Level level;
 	private Integer levelNumber;
 	private AverageFPS averageFPS;
 	private Injector injector;
+	
+	RenderLayers renderLayers;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
 		this.resourceManager = resourceManager;
@@ -170,6 +171,7 @@ public class PlayGameState extends GameStateImpl {
 		worldWrapper = new WorldWrapper(new com.artemis.World());
 
 		SceneTemplate sceneTemplate = injector.getInstance(NormalModeSceneTemplate.class);
+		sceneTemplate.getParameters().put("gameData", gameData);
 		sceneTemplate.getParameters().put("level", level);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
 		sceneTemplate.getParameters().put("shouldRemoveItems", GameInformation.gameMode != GameInformation.ChallengeGameMode);
@@ -190,7 +192,7 @@ public class PlayGameState extends GameStateImpl {
 
 		container = new Container();
 
-		userMessageTemplate = new UserMessageTemplate(container, resourceManager);
+		userMessageTemplate = injector.getInstance(UserMessageTemplate.class);
 
 		timerLabel = GuiControls.label("") //
 				.position(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.95f) //
@@ -199,7 +201,8 @@ public class PlayGameState extends GameStateImpl {
 				.color(1f, 1f, 1f, 1f) //
 				.build();
 
-		container.add(itemsTakenLabel);
+//		container.add(itemsTakenLabel);
+		
 		container.add(timerLabel);
 
 		if (tiltValueEnabled) {

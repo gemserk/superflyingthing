@@ -4,6 +4,7 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.components.CameraComponent;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
@@ -48,7 +49,7 @@ public class TargetControllerScript extends ScriptJavaImpl {
 		if (mainCamera == null)
 			return;
 
-		CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
+		CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
 		Libgdx2dCamera libgdx2dCamera = cameraComponent.getLibgdx2dCamera();
 
 		Spatial shipSpatial = ComponentWrapper.getSpatial(ship);

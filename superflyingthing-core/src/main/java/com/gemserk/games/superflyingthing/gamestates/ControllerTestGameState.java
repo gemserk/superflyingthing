@@ -32,6 +32,7 @@ import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
+import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.Box2DCustomDebugRenderer;
@@ -45,6 +46,7 @@ import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
+import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -199,7 +201,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		box2dCustomDebugRenderer = new Box2DCustomDebugRenderer((Libgdx2dCameraTransformImpl) worldCamera, physicsWorld);
 
-		InjectorImpl injectorImpl = new InjectorImpl() {
+		Injector injector = new InjectorImpl() {
 			{
 				configureField("physicsWorld", physicsWorld);
 				configureField("resourceManager", resourceManager);
@@ -212,7 +214,7 @@ public class ControllerTestGameState extends GameStateImpl {
 			}
 		};
 
-		entityTemplates = new EntityTemplates(injectorImpl);
+		entityTemplates = new EntityTemplates(injector);
 
 		controllerTemplates = new ControllerTemplates();
 		controllerTemplates.keyboardControllerTemplate = new ControllerTemplates.KeyboardControllerTemplate();
@@ -291,7 +293,10 @@ public class ControllerTestGameState extends GameStateImpl {
 				);
 
 		parameters.clear();
-		entityFactory.instantiate(new UserMessageTemplate(container, resourceManager), //
+		
+		EntityTemplate userMessageTemplate = injector.getInstance(UserMessageTemplate.class);
+		
+		entityFactory.instantiate(userMessageTemplate, //
 				parameters //
 						.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f)) //
 						.put("text", "Collect all the stars") //

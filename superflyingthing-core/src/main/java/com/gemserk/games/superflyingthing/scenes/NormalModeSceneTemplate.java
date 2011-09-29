@@ -1,14 +1,27 @@
 package com.gemserk.games.superflyingthing.scenes;
 
+import java.text.MessageFormat;
+import java.util.HashMap;
+import java.util.Map;
+
+import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.World;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.Components;
+import com.gemserk.commons.artemis.components.RenderableComponent;
+import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.TagComponent;
+import com.gemserk.commons.artemis.components.TextComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
 import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
@@ -20,9 +33,11 @@ import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
+import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
+import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.CameraImpl;
@@ -34,6 +49,9 @@ import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.Components.GameData;
+import com.gemserk.games.superflyingthing.components.PropertiesComponent;
 import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -46,6 +64,51 @@ import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class NormalModeSceneTemplate extends SceneTemplateImpl {
+
+	public static class ItemsTakenLabelEntityTemplate extends EntityTemplateImpl {
+
+		ResourceManager<String> resourceManager;
+
+		@Override
+		public void apply(Entity entity) {
+			GameData gameData = parameters.get("gameData");
+
+			BitmapFont font = resourceManager.getResourceValue("GameFont");
+
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put("gameData", gameData);
+
+			entity.addComponent(new TagComponent("ItemsTakenLabel"));
+			entity.addComponent(new SpatialComponent(new SpatialImpl(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.95f)));
+			entity.addComponent(new RenderableComponent(250));
+			entity.addComponent(new TextComponent("", font, 0f, 0f, 0.5f, 0.5f));
+			entity.addComponent(new PropertiesComponent(properties));
+			entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+
+				private int currentItems;
+
+				@Override
+				public void init(com.artemis.World world, Entity e) {
+					currentItems = -1;
+				}
+
+				@Override
+				public void update(com.artemis.World world, Entity e) {
+
+					PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
+					GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
+					
+					if (currentItems == gameData.currentItems)
+						return;
+					
+					TextComponent textComponent = Components.getTextComponent(e);
+					textComponent.text = MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems);
+				}
+
+			}));
+		}
+
+	}
 
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
@@ -60,6 +123,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// Integer levelNumber = getParameters().get("levelNumber");
 
 		Level level = getParameters().get("level");
+		GameData gameData = getParameters().get("gameData");
 
 		EventManager eventManager = new EventManagerImpl();
 
@@ -78,8 +142,8 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
-		
-		renderLayers.add(Layers.Hud, new RenderLayerParticleEmitterImpl(200, 10000, hudCamera));
+
+		renderLayers.add(Layers.Hud, new RenderLayerSpriteBatchImpl(200, 10000, hudCamera));
 
 		com.artemis.World world = worldWrapper.getWorld();
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
@@ -98,18 +162,22 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
+		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
 
 		worldWrapper.init();
 
+		EntityBuilder entityBuilder = new EntityBuilder(world);
+
 		injector.configureField("physicsWorld", physicsWorld);
-		injector.configureField("entityBuilder", new EntityBuilder(world));
+		injector.configureField("entityBuilder", entityBuilder);
 		injector.configureField("entityFactory", new EntityFactoryImpl(world));
 		injector.configureField("eventManager", eventManager);
 		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.configureField("mesh2dBuilder", new Mesh2dBuilder());
 		injector.configureField("jointBuilder", new JointBuilder(physicsWorld));
+		injector.configureField("renderLayers", renderLayers);
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
@@ -150,6 +218,16 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// level = levelResource.get();
 		// }
 		// }
+
+		EntityTemplate itemTakenLabelTemplate = injector.getInstance(ItemsTakenLabelEntityTemplate.class);
+		// EntityTemplate gameModeTemplate = injector.getInstance(GameModeEntityTemplate.class);
+
+		// HashMap<String, Object> gameModeProperties = new HashMap<String, Object>();
+		// gameModeProperties.put("totalItems", level.items.size());
+		// gameModeProperties.put("currentItems", 0);
+		// entityFactory.instantiate(gameModeTemplate, new ParametersWrapper().put("properties", gameModeProperties));
+
+		entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);
 

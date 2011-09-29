@@ -15,6 +15,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.CameraComponent;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.events.Event;
@@ -269,7 +270,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					@Handles(ids = Events.gameStarted)
 					public void resetCameraZoomWhenGameStarted(Event event) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-						CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
+						CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
 
 						Camera camera = cameraComponent.getCamera();
 						camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);

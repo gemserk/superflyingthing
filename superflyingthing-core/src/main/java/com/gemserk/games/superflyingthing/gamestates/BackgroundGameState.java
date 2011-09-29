@@ -12,6 +12,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.artemis.components.CameraComponent;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.ScriptComponent;
 import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.reflection.Handles;
@@ -27,7 +28,6 @@ import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.scenes.BackgroundSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
 import com.gemserk.games.superflyingthing.templates.Groups;
@@ -132,7 +132,7 @@ public class BackgroundGameState extends GameStateImpl {
 			@Handles(ids = Events.gameStarted)
 			public void resetCameraZoomWhenGameStarted(Event event) {
 				Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-				CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(mainCamera);
+				CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
 				Camera camera = cameraComponent.getCamera();
 				camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
 			}

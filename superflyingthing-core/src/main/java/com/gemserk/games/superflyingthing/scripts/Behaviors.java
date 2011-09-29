@@ -10,6 +10,7 @@ import com.badlogic.gdx.physics.box2d.Body;
 import com.gemserk.animation4j.gdx.Animation;
 import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.CameraComponent;
+import com.gemserk.commons.artemis.components.Components;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
@@ -38,7 +39,7 @@ public class Behaviors {
 		@Override
 		public void update(World world, Entity e) {
 			Spatial spatial = ComponentWrapper.getSpatial(e);
-			CameraComponent cameraComponent = ComponentWrapper.getCameraComponent(e);
+			CameraComponent cameraComponent = Components.getCameraComponent(e);
 			Camera camera = cameraComponent.getCamera();
 			camera.setPosition(spatial.getX(), spatial.getY());
 		}

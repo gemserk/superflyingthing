@@ -2,7 +2,6 @@ package com.gemserk.games.superflyingthing.components;
 
 import com.artemis.Entity;
 import com.gemserk.commons.artemis.components.AnimationComponent;
-import com.gemserk.commons.artemis.components.CameraComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
@@ -28,7 +27,6 @@ public class ComponentWrapper {
 	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
 	private static final Class<SpriteComponent> spriteComponentClass = SpriteComponent.class;
 	private static final Class<AnimationComponent> animationComponentClass = AnimationComponent.class;
-	private static final Class<CameraComponent> cameraComponentClass = CameraComponent.class;
 	private static final Class<AttachmentComponent> attachmentComponentClass = AttachmentComponent.class;
 	private static final Class<MovementComponent> movementComponentClass = MovementComponent.class;
 	private static final Class<ParticleEmitterComponent> particleEmitterComponentClass = ParticleEmitterComponent.class;
@@ -42,6 +40,8 @@ public class ComponentWrapper {
 	private static final Class<AttachableComponent> attachableComponentClass = AttachableComponent.class;
 	private static final Class<ReplayListComponent> replayComponentClass = ReplayListComponent.class;
 	private static final Class<TimerComponent> timerComponentClass = TimerComponent.class;
+	
+	public static final Class<PropertiesComponent> propertiesComponentClass = PropertiesComponent.class;
 	
 	public static Physics getPhysics(Entity e) {
 		return getPhysicsComponent(e).getPhysics();
@@ -65,10 +65,6 @@ public class ComponentWrapper {
 	
 	public static AnimationComponent getAnimationComponent(Entity e) {
 		return e.getComponent(animationComponentClass);
-	}
-	
-	public static CameraComponent getCameraComponent(Entity e) {
-		return e.getComponent(cameraComponentClass);
 	}
 	
 	public static AttachmentComponent getAttachmentComponent(Entity e) {
@@ -121,5 +117,9 @@ public class ComponentWrapper {
 
 	public static TimerComponent getTimerComponent(Entity e) {
 		return e.getComponent(timerComponentClass);
+	}
+	
+	public static PropertiesComponent getPropertiesComponent(Entity e) {
+		return e.getComponent(propertiesComponentClass);
 	}
 }
