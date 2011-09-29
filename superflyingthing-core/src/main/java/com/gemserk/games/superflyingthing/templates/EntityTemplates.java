@@ -6,7 +6,7 @@ import com.gemserk.commons.reflection.Injector;
 public class EntityTemplates {
 
 	public EntityTemplates(Injector injector) {
-		injector.configureField("entityTemplates", this);
+		injector.bind("entityTemplates", this);
 		
 		this.cameraTemplate = injector.getInstance(CameraTemplate.class);
 		this.staticSpriteTemplate = injector.getInstance(StaticSpriteTemplate.class);

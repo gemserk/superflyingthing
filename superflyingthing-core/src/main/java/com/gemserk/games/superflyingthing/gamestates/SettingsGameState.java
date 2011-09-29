@@ -197,8 +197,8 @@ public class SettingsGameState extends GameStateImpl {
 
 		Injector injector = new InjectorImpl() {
 			{
-				configureField("resourceManager", resourceManager);
-				configureField("timeStepProvider", timeStepProvider);
+				bind("resourceManager", resourceManager);
+				bind("timeStepProvider", timeStepProvider);
 			}
 		};
 		

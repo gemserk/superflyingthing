@@ -85,8 +85,8 @@ public class TutorialSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.init();
 		
-		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
-		injector.configureField("eventManager", eventManager);
+		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.bind("eventManager", eventManager);
 
 		float cameraZoom = Gdx.graphics.getWidth() * 48f / 800f;
 		Camera camera = new CameraImpl(0f, 0f, cameraZoom, 0f);

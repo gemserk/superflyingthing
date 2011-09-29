@@ -203,14 +203,14 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		Injector injector = new InjectorImpl() {
 			{
-				configureField("physicsWorld", physicsWorld);
-				configureField("resourceManager", resourceManager);
-				configureField("entityBuilder", new EntityBuilder(world));
-				configureField("entityFactory", new EntityFactoryImpl(world));
-				configureField("eventManager", eventManager);
-				configureField("bodyBuilder", new BodyBuilder(physicsWorld));
-				configureField("mesh2dBuilder", new Mesh2dBuilder());
-				configureField("jointBuilder", new JointBuilder(physicsWorld));
+				bind("physicsWorld", physicsWorld);
+				bind("resourceManager", resourceManager);
+				bind("entityBuilder", new EntityBuilder(world));
+				bind("entityFactory", new EntityFactoryImpl(world));
+				bind("eventManager", eventManager);
+				bind("bodyBuilder", new BodyBuilder(physicsWorld));
+				bind("mesh2dBuilder", new Mesh2dBuilder());
+				bind("jointBuilder", new JointBuilder(physicsWorld));
 			}
 		};
 

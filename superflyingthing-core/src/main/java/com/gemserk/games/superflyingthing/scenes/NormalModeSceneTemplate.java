@@ -225,14 +225,14 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		injector.configureField("physicsWorld", physicsWorld);
-		injector.configureField("entityBuilder", entityBuilder);
-		injector.configureField("entityFactory", new EntityFactoryImpl(world));
-		injector.configureField("eventManager", eventManager);
-		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
-		injector.configureField("mesh2dBuilder", new Mesh2dBuilder());
-		injector.configureField("jointBuilder", new JointBuilder(physicsWorld));
-		injector.configureField("renderLayers", renderLayers);
+		injector.bind("physicsWorld", physicsWorld);
+		injector.bind("entityBuilder", entityBuilder);
+		injector.bind("entityFactory", new EntityFactoryImpl(world));
+		injector.bind("eventManager", eventManager);
+		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
+		injector.bind("jointBuilder", new JointBuilder(physicsWorld));
+		injector.bind("renderLayers", renderLayers);
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 

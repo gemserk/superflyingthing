@@ -101,9 +101,9 @@ public class BackgroundGameState extends GameStateImpl {
 
 		Injector injector = new InjectorImpl() {
 			{
-				configureField("resourceManager", resourceManager);
-				configureField("timeStepProvider", new TimeStepProviderGameStateImpl(BackgroundGameState.this));
-				configureField("entityBuilder", new EntityBuilder(worldWrapper.getWorld()));
+				bind("resourceManager", resourceManager);
+				bind("timeStepProvider", new TimeStepProviderGameStateImpl(BackgroundGameState.this));
+				bind("entityBuilder", new EntityBuilder(worldWrapper.getWorld()));
 			}
 		};
 

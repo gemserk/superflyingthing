@@ -75,7 +75,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
 
-		injector.configureField("renderLayers", renderLayers);
+		injector.bind("renderLayers", renderLayers);
 
 		World world = worldWrapper.getWorld();
 		final EntityFactory entityFactory = new EntityFactoryImpl(world);
@@ -101,14 +101,14 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		final EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		injector.configureField("physicsWorld", physicsWorld);
-		injector.configureField("resourceManager", resourceManager);
-		injector.configureField("entityBuilder", entityBuilder);
-		injector.configureField("entityFactory", entityFactory);
-		injector.configureField("eventManager", eventManager);
-		injector.configureField("bodyBuilder", new BodyBuilder(physicsWorld));
-		injector.configureField("mesh2dBuilder", new Mesh2dBuilder());
-		injector.configureField("jointBuilder", new JointBuilder(physicsWorld));
+		injector.bind("physicsWorld", physicsWorld);
+		injector.bind("resourceManager", resourceManager);
+		injector.bind("entityBuilder", entityBuilder);
+		injector.bind("entityFactory", entityFactory);
+		injector.bind("eventManager", eventManager);
+		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
+		injector.bind("jointBuilder", new JointBuilder(physicsWorld));
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 

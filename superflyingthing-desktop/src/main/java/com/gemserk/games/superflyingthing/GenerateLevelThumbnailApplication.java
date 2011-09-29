@@ -118,11 +118,11 @@ public class GenerateLevelThumbnailApplication {
 							{
 								// add("physicsWorld", physicsWorld);
 								// add("resourceManager", resourceManager);
-								configureField("entityBuilder", new EntityBuilder(world));
-								configureField("entityFactory", new EntityFactoryImpl(world));
+								bind("entityBuilder", new EntityBuilder(world));
+								bind("entityFactory", new EntityFactoryImpl(world));
 								// add("eventManager", eventManager);
 								// add("bodyBuilder", new BodyBuilder(physicsWorld));
-								configureField("mesh2dBuilder", new Mesh2dBuilder());
+								bind("mesh2dBuilder", new Mesh2dBuilder());
 								// add("jointBuilder", new JointBuilder(physicsWorld));
 							}
 						};

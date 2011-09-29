@@ -6,7 +6,6 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -127,8 +126,8 @@ public class PlayGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		injector = new InjectorImpl();
-		injector.configureField("resourceManager", resourceManager);
-		injector.configureField("timeStepProvider", new TimeStepProviderGameStateImpl(this));
+		injector.bind("resourceManager", resourceManager);
+		injector.bind("timeStepProvider", new TimeStepProviderGameStateImpl(this));
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
@@ -143,8 +142,6 @@ public class PlayGameState extends GameStateImpl {
 			level = loadRandomLevelForRandomMode();
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
-
-		BitmapFont font = resourceManager.getResourceValue("GameFont");
 
 		gameData.totalItems = level.items.size();
 
