@@ -67,6 +67,28 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 	public static class ItemsTakenLabelEntityTemplate extends EntityTemplateImpl {
 
+		private class UpdateItemsTakenScript extends ScriptJavaImpl {
+			private int currentItems;
+
+			@Override
+			public void init(com.artemis.World world, Entity e) {
+				currentItems = -1;
+			}
+
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+
+				PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
+				GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
+
+				if (currentItems == gameData.currentItems)
+					return;
+
+				TextComponent textComponent = Components.getTextComponent(e);
+				textComponent.text = MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems);
+			}
+		}
+
 		ResourceManager<String> resourceManager;
 
 		@Override
@@ -83,29 +105,62 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 			entity.addComponent(new RenderableComponent(250));
 			entity.addComponent(new TextComponent("", font, 0f, 0f, 0.5f, 0.5f));
 			entity.addComponent(new PropertiesComponent(properties));
-			entity.addComponent(new ScriptComponent(new ScriptJavaImpl() {
+			entity.addComponent(new ScriptComponent(new UpdateItemsTakenScript()));
+		}
 
-				private int currentItems;
+	}
 
-				@Override
-				public void init(com.artemis.World world, Entity e) {
-					currentItems = -1;
-				}
+	public static class TimerLabelEntityTemplate extends EntityTemplateImpl {
 
-				@Override
-				public void update(com.artemis.World world, Entity e) {
+		private class UpdateLabelScript extends ScriptJavaImpl {
 
-					PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
-					GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
-					
-					if (currentItems == gameData.currentItems)
-						return;
-					
-					TextComponent textComponent = Components.getTextComponent(e);
-					textComponent.text = MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems);
-				}
+			private float seconds = -1;
+			private StringBuilder timerLabelBuilder = new StringBuilder();
+			
+			public UpdateLabelScript() {
+				timerLabelBuilder.append("Time: ");
+			}
 
-			}));
+			@Override
+			public void update(com.artemis.World world, Entity e) {
+				PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
+				GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
+
+				if (seconds == seconds(gameData.time))
+					return;
+
+				timerLabelBuilder.delete(6, timerLabelBuilder.length());
+				timerLabelBuilder.append(seconds(gameData.time));
+				
+				TextComponent textComponent = Components.getTextComponent(e);
+				textComponent.text = timerLabelBuilder;
+
+				seconds = seconds(gameData.time);
+			}
+
+			private int seconds(float seconds) {
+				return (int) seconds;
+			}
+			
+		}
+
+		ResourceManager<String> resourceManager;
+
+		@Override
+		public void apply(Entity entity) {
+			GameData gameData = parameters.get("gameData");
+
+			BitmapFont font = resourceManager.getResourceValue("GameFont");
+
+			Map<String, Object> properties = new HashMap<String, Object>();
+			properties.put("gameData", gameData);
+
+			entity.addComponent(new TagComponent("TimerLabel"));
+			entity.addComponent(new SpatialComponent(new SpatialImpl(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.95f)));
+			entity.addComponent(new RenderableComponent(250));
+			entity.addComponent(new TextComponent("", font, 0f, 0f, 0f, 0.5f));
+			entity.addComponent(new PropertiesComponent(properties));
+			entity.addComponent(new ScriptComponent(new UpdateLabelScript()));
 		}
 
 	}
@@ -220,6 +275,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// }
 
 		EntityTemplate itemTakenLabelTemplate = injector.getInstance(ItemsTakenLabelEntityTemplate.class);
+		EntityTemplate timerLabelTemplate = injector.getInstance(TimerLabelEntityTemplate.class);
 		// EntityTemplate gameModeTemplate = injector.getInstance(GameModeEntityTemplate.class);
 
 		// HashMap<String, Object> gameModeProperties = new HashMap<String, Object>();
@@ -227,6 +283,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// gameModeProperties.put("currentItems", 0);
 		// entityFactory.instantiate(gameModeTemplate, new ParametersWrapper().put("properties", gameModeProperties));
 
+		entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 		entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);

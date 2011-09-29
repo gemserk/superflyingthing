@@ -1,7 +1,5 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
-import java.text.MessageFormat;
-
 import org.w3c.dom.Document;
 
 import com.artemis.Entity;
@@ -25,9 +23,6 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.AverageFPS;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.gui.Container;
-import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
@@ -66,7 +61,6 @@ public class PlayGameState extends GameStateImpl {
 
 	// private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
 	private ResourceManager<String> resourceManager;
-	Container container;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private EntityTemplates entityTemplates;
@@ -78,16 +72,10 @@ public class PlayGameState extends GameStateImpl {
 	private Parameters parameters = new ParametersWrapper();
 
 	GameData gameData;
-	private Text itemsTakenLabel;
-	private Text timerLabel;
 
 	EntityTemplate userMessageTemplate;
 
 	private GamePreferences gamePreferences;
-
-	private Text tiltvalue;
-	private final boolean tiltValueEnabled = false;
-	int tilttime = 0;
 
 	private boolean shouldDisposeWorldWrapper;
 
@@ -96,7 +84,7 @@ public class PlayGameState extends GameStateImpl {
 	private Integer levelNumber;
 	private AverageFPS averageFPS;
 	private Injector injector;
-	
+
 	RenderLayers renderLayers;
 
 	public void setResourceManager(ResourceManager<String> resourceManager) {
@@ -131,9 +119,9 @@ public class PlayGameState extends GameStateImpl {
 	}
 
 	private void createALotOfStuff() {
-		
+
 		levelNumber = getParameters().get("level", 1);
-		
+
 		shouldDisposeWorldWrapper = true;
 
 		spriteBatch = new SpriteBatch();
@@ -157,16 +145,8 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 		BitmapFont font = resourceManager.getResourceValue("GameFont");
-		
-		itemsTakenLabel = GuiControls.label("") //
-				.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.95f) //
-				.font(font) //
-				.color(1f, 1f, 1f, 1f) //
-				.build();
 
 		gameData.totalItems = level.items.size();
-		if (gameData.totalItems > 0)
-			itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 
 		worldWrapper = new WorldWrapper(new com.artemis.World());
 
@@ -190,29 +170,7 @@ public class PlayGameState extends GameStateImpl {
 		controllerTemplates.targetControllerTemplate = new ControllerTemplates.TargetControllerTemplate();
 		controllerTemplates.remoteClassicControllerTemplate = new ControllerTemplates.RemoteClassicControllerTemplate();
 
-		container = new Container();
-
 		userMessageTemplate = injector.getInstance(UserMessageTemplate.class);
-
-		timerLabel = GuiControls.label("") //
-				.position(Gdx.graphics.getWidth() * 0.05f, Gdx.graphics.getHeight() * 0.95f) //
-				.center(0f, 0.5f) //
-				.font(font) //
-				.color(1f, 1f, 1f, 1f) //
-				.build();
-
-//		container.add(itemsTakenLabel);
-		
-		container.add(timerLabel);
-
-		if (tiltValueEnabled) {
-			tiltvalue = GuiControls.label("") //
-					.position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.90f) //
-					.font(font) //
-					.color(1f, 1f, 1f, 1f) //
-					.build();
-			container.add(tiltvalue);
-		}
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -264,19 +222,16 @@ public class PlayGameState extends GameStateImpl {
 			@Override
 			public void init(com.artemis.World world, Entity e) {
 				this.world = world;
-				timerLabelBuilder.append("Time: ");
 			}
 
 			@Handles(ids = Events.shipDeath)
 			public void shipDeath(Event e) {
 				gameData.deaths++;
-				System.out.println(gameData.deaths);
 			}
 
 			@Handles
 			public void itemTaken(Event e) {
 				gameData.currentItems++;
-				itemsTakenLabel.setText(MessageFormat.format("{0}/{1}", gameData.currentItems, gameData.totalItems));
 			}
 
 			@Handles(ids = Events.gameStarted)
@@ -350,24 +305,10 @@ public class PlayGameState extends GameStateImpl {
 
 			}
 
-			private float seconds = -1;
-			private StringBuilder timerLabelBuilder = new StringBuilder();
-
 			@Override
 			public void update(com.artemis.World world, Entity e) {
-
 				if (incrementTimer)
 					gameData.time += getDelta();
-
-				if (seconds == seconds(gameData.time))
-					return;
-
-				timerLabelBuilder.delete(6, timerLabelBuilder.length());
-				timerLabelBuilder.append(seconds(gameData.time));
-
-				timerLabel.setText(timerLabelBuilder);
-
-				seconds = seconds(gameData.time);
 			}
 
 			private int seconds(float seconds) {
@@ -414,10 +355,11 @@ public class PlayGameState extends GameStateImpl {
 
 		parameters.clear();
 
-		parameters.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f));
-		parameters.put("text", getRandomEndMessage());
-
-		entityFactory.instantiate(userMessageTemplate, parameters);
+		entityFactory.instantiate(userMessageTemplate, new ParametersWrapper() //
+				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f)) //
+				.put("text", getRandomEndMessage()) //
+				);
+		
 		gameData.averageFPS = averageFPS.getFPS();
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
@@ -442,9 +384,6 @@ public class PlayGameState extends GameStateImpl {
 		// if (Game.isShowBox2dDebug())
 		// box2dCustomDebugRenderer.render();
 
-		spriteBatch.begin();
-		container.draw(spriteBatch);
-		spriteBatch.end();
 	}
 
 	@Override
@@ -453,7 +392,6 @@ public class PlayGameState extends GameStateImpl {
 
 		inputDevicesMonitor.update();
 		Synchronizers.synchronize(getDelta());
-		container.update();
 
 		if (inputDevicesMonitor.getButton("pause").isReleased()) {
 			gameData.averageFPS = averageFPS.getFPS();
@@ -465,14 +403,6 @@ public class PlayGameState extends GameStateImpl {
 		}
 
 		worldWrapper.update(getDeltaInMs());
-		if (tiltValueEnabled) {
-			float pitch = Gdx.input.getPitch();
-			tilttime += getDeltaInMs();
-			if (tilttime > 200) {
-				tiltvalue.setText(String.format("%8.4f", pitch));
-				tilttime -= 200;
-			}
-		}
 	}
 
 	@Override
