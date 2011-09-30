@@ -294,22 +294,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				bind("soundPlayer", soundPlayer);
 				bind("resourceManager", resourceManager);
 				bind("adWhirlViewHandler", adWhirlViewHandler);
+				bind("gamePreferences", gamePreferences);
 			}
 		};
 
-		PlayGameState playGameState = new PlayGameState(this);
-		playGameState.setResourceManager(resourceManager);
-		playGameState.setGamePreferences(gamePreferences);
+		GameState playGameState = injector.getInstance(PlayGameState.class);
+		GameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
 
 		PauseGameState pauseGameState = new PauseGameState(this);
 		pauseGameState.setResourceManager(resourceManager);
-
-		MainMenuGameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
-
-		// MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
-		// mainMenuGameState.setResourceManager(resourceManager);
-		// mainMenuGameState.setSoundPlayer(soundPlayer);
-		// mainMenuGameState.setAdWhirlViewHandler(adWhirlViewHandler);
 
 		SelectPlayModeGameState selectPlayModeGameState = new SelectPlayModeGameState(this);
 		selectPlayModeGameState.setResourceManager(resourceManager);

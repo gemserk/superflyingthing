@@ -121,6 +121,7 @@ public class MainMenuGameState extends GameStateImpl {
 		panel.add(playButton);
 		panel.add(settingsButton);
 		panel.add(aboutButton);
+		
 
 		container.add(panel);
 

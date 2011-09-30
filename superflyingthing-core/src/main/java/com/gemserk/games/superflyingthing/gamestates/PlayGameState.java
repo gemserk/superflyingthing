@@ -56,11 +56,13 @@ import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
+	GamePreferences gamePreferences;
+	
 	private SpriteBatch spriteBatch;
 
 	// private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
-	private ResourceManager<String> resourceManager;
 	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	private EntityTemplates entityTemplates;
@@ -75,7 +77,6 @@ public class PlayGameState extends GameStateImpl {
 
 	EntityTemplate userMessageTemplate;
 
-	private GamePreferences gamePreferences;
 
 	private boolean shouldDisposeWorldWrapper;
 
@@ -86,18 +87,6 @@ public class PlayGameState extends GameStateImpl {
 	private Injector injector;
 
 	RenderLayers renderLayers;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public void setGamePreferences(GamePreferences gamePreferences) {
-		this.gamePreferences = gamePreferences;
-	}
-
-	public PlayGameState(Game game) {
-		this.game = game;
-	}
 
 	@Handles
 	public void toggleFirstBackground(Event e) {
