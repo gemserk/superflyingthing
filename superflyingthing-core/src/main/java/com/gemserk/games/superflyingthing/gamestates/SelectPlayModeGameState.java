@@ -78,7 +78,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.build());
 
 		panel.add(GuiControls.textButton() //
-				.text("Random") //
+				.text("Training") //
 				.font(buttonFont) //
 				.position(centerX, height * 0.2f) //
 				.center(0.5f, 0.5f) //

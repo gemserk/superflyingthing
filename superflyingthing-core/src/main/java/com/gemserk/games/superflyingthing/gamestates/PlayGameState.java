@@ -271,7 +271,7 @@ public class PlayGameState extends GameStateImpl {
 
 				parameters.clear();
 				entityFactory.instantiate(entityTemplates.timerTemplate, parameters //
-						.put("time", 2.5f) //
+						.put("time", 2f) //
 						.put("eventId", Events.gameOver) //
 						);
 			}
