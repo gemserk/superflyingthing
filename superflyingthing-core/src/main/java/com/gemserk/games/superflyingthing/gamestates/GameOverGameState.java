@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.util.Locale;
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
@@ -66,8 +68,14 @@ public class GameOverGameState extends GameStateImpl {
 		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
 		worldWrapper = getParameters().get("worldWrapper");
-
-		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
+		
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
+			
+			panel.add(GuiControls.label(String.format(Locale.US, "Your time was: %1$.2f seconds", GameInformation.gameData.travelTime))
+					.position(centerX, height * 0.6f) //
+					.font(buttonFont) //
+					.build());
+			
 			panel.add(GuiControls.textButton() //
 					.position(centerX, height * 0.4f) //
 					.text("Try Again") //
@@ -82,6 +90,7 @@ public class GameOverGameState extends GameStateImpl {
 						}
 					})//
 					.build());
+		}
 
 		String nextLevelText = "Next Level";
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode && !Levels.hasLevel(levelNumber + 1))

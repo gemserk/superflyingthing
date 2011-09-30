@@ -182,6 +182,11 @@ public class Components {
 		public int currentItems;
 		public float time;
 		public int averageFPS;
+		
+		/**
+		 * Time to travel from source planet to destination planet
+		 */
+		public float travelTime;
 
 		public GameData() {
 			this.deaths = 0;
@@ -189,6 +194,7 @@ public class Components {
 			this.totalItems = 0;
 			this.time = 0;
 			this.averageFPS = 0;
+			this.travelTime = 0f;
 		}
 
 	}

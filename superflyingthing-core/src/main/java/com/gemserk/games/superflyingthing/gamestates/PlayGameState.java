@@ -45,6 +45,7 @@ import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
 import com.gemserk.games.superflyingthing.scenes.NormalModeSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
+import com.gemserk.games.superflyingthing.scripts.CountTravelTimeScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
@@ -143,7 +144,7 @@ public class PlayGameState extends GameStateImpl {
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
-		gameData.totalItems = level.items.size();
+//		gameData.totalItems = level.items.size();
 
 		worldWrapper = new WorldWrapper(new com.artemis.World());
 
@@ -210,7 +211,7 @@ public class PlayGameState extends GameStateImpl {
 				.build();
 
 		// entity with some game logic
-		entityBuilder.component(new ScriptComponent(new ScriptJavaImpl() {
+		entityBuilder.component(new ScriptComponent(new CountTravelTimeScript(gameData), new ScriptJavaImpl() {
 
 			boolean incrementTimer = true;
 			private com.artemis.World world;

@@ -116,7 +116,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 			private float seconds = -1;
 			private StringBuilder timerLabelBuilder = new StringBuilder();
-			
+
 			public UpdateLabelScript() {
 				timerLabelBuilder.append("Time: ");
 			}
@@ -131,7 +131,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 				timerLabelBuilder.delete(6, timerLabelBuilder.length());
 				timerLabelBuilder.append(seconds(gameData.time));
-				
+
 				TextComponent textComponent = Components.getTextComponent(e);
 				textComponent.text = timerLabelBuilder;
 
@@ -141,7 +141,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 			private int seconds(float seconds) {
 				return (int) seconds;
 			}
-			
+
 		}
 
 		ResourceManager<String> resourceManager;
@@ -164,7 +164,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		}
 
 	}
-
+	
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
 	Injector injector;
@@ -276,6 +276,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		EntityTemplate itemTakenLabelTemplate = injector.getInstance(ItemsTakenLabelEntityTemplate.class);
 		EntityTemplate timerLabelTemplate = injector.getInstance(TimerLabelEntityTemplate.class);
+
 		// EntityTemplate gameModeTemplate = injector.getInstance(GameModeEntityTemplate.class);
 
 		// HashMap<String, Object> gameModeProperties = new HashMap<String, Object>();
@@ -283,10 +284,14 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// gameModeProperties.put("currentItems", 0);
 		// entityFactory.instantiate(gameModeTemplate, new ParametersWrapper().put("properties", gameModeProperties));
 
-		entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
-		entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
-
+		// entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
+		
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);
+		
+		gameData.totalItems = level.items.size();
+		
+		if (gameData.totalItems > 0)
+			entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
 	}
 
