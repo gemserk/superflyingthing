@@ -301,9 +301,10 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		if (gameData.totalItems > 0)
 			entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
-		entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
+		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
+			entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 		
-		if (bestTime != null) 
+		if (bestTime != null && GameInformation.gameMode == GameInformation.ChallengeGameMode) 
 			entityFactory.instantiate(bestTimeLabelTemplate, new ParametersWrapper().put("bestTime", bestTime));
 			
 		

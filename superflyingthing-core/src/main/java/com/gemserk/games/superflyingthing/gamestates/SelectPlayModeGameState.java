@@ -52,7 +52,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
 		container = new Container();
-		
+
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		panel.add(GuiControls.label("Select Game Mode") //
@@ -93,22 +93,22 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		panel.add(GuiControls.textButton() //
-				.text("Practice") //
-				.font(buttonFont) //
-				.position(centerX, height * 0f) //
-				.center(0.5f, 0.5f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.boundsOffset(30f, 30f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						practice();
-					}
-				}) //
-				.build());
-		
+		// panel.add(GuiControls.textButton() //
+		// .text("Practice") //
+		// .font(buttonFont) //
+		// .position(centerX, height * 0f) //
+		// .center(0.5f, 0.5f) //
+		// .notOverColor(Color.WHITE) //
+		// .overColor(Color.GREEN) //
+		// .boundsOffset(30f, 30f) //
+		// .handler(new ButtonHandler() {
+		// @Override
+		// public void onReleased(Control control) {
+		// practice();
+		// }
+		// }) //
+		// .build());
+
 		container.add(panel);
 
 		if (Gdx.app.getType() != ApplicationType.Android)
