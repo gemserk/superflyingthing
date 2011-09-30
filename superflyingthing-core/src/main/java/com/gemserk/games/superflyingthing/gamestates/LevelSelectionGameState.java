@@ -30,25 +30,18 @@ import com.gemserk.resources.ResourceManager;
 
 public class LevelSelectionGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-	private Integer selectedLevel;
+	Game game;
+	ResourceManager<String> resourceManager;
+
+	SpriteBatch spriteBatch;
+	Integer selectedLevel;
 
 	Container container;
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	private Sprite whiteRectangleSprite;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	Sprite whiteRectangleSprite;
 
-	private Rectangle selectionRectangle;
-	private Sprite backgroundSprite;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public LevelSelectionGameState(Game game) {
-		this.game = game;
-	}
+	Rectangle selectionRectangle;
+	Sprite backgroundSprite;
 
 	@Override
 	public void init() {

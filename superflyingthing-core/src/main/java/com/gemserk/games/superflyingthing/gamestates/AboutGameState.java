@@ -35,29 +35,14 @@ public class AboutGameState extends GameStateImpl {
 	private static final String desktopMoreGamesUrl = "http://blog.gemserk.com/games";
 	private static final String androidMoreGamesUrl = "market://search?q=pub:Gemserk Studios";
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
+	BrowserUtils browserUtils;
 
-	private ResourceManager<String> resourceManager;
-	private BrowserUtils browserUtils;
-
-	private Container guiContainer;
-	private SpriteBatch spriteBatch;
-
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-
-	private WorldWrapper worldWrapper;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public void setBrowserUtils(BrowserUtils browserUtils) {
-		this.browserUtils = browserUtils;
-	}
-
-	public AboutGameState(Game game) {
-		this.game = game;
-	}
+	Container guiContainer;
+	SpriteBatch spriteBatch;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	WorldWrapper worldWrapper;
 
 	@Override
 	public void init() {

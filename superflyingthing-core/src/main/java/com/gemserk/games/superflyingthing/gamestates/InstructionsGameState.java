@@ -20,20 +20,13 @@ import com.gemserk.resources.ResourceManager;
 
 public class InstructionsGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-	private Sprite whiteRectangle;
+	Game game;
+	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
+	Sprite whiteRectangle;
 	Container container;
-	private InputAdapter inputProcessor;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public InstructionsGameState(Game game) {
-		this.game = game;
-	}
+	InputAdapter inputProcessor;
 
 	@Override
 	public void init() {

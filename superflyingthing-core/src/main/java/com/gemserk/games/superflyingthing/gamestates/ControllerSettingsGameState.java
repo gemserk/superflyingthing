@@ -116,24 +116,14 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 	}
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-
-	private Container container;
-	// private RenderLayers renderLayers;
-	private WorldWrapper worldWrapper;
-
-	private ControllerType selectedControllerType;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public ControllerSettingsGameState(Game game) {
-		this.game = game;
-	}
+	Game game;
+	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	Container container;
+	WorldWrapper worldWrapper;
+	ControllerType selectedControllerType;
 
 	@Override
 	public void init() {

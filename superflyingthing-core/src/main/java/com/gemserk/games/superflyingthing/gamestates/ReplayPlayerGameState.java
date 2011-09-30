@@ -75,31 +75,30 @@ import com.gemserk.resources.ResourceManager;
 
 public class ReplayPlayerGameState extends GameStateImpl {
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
+	
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
 
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
-	ResourceManager<String> resourceManager;
 	boolean resetPressed;
 	Container guiContainer;
-	private Libgdx2dCamera guiCamera;
+	Libgdx2dCamera guiCamera;
 	// private InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	EntityTemplates entityTemplates;
 
 	EntityBuilder entityBuilder;
-	private com.artemis.World world;
-	private WorldWrapper worldWrapper;
-	private EntityFactory entityFactory;
-	private Parameters parameters;
+	com.artemis.World world;
+	WorldWrapper worldWrapper;
+	EntityFactory entityFactory;
+	Parameters parameters;
 
 	GameData gameData;
-
-	private EventManager eventManager;
-
-	private RenderLayers renderLayers;
+	EventManager eventManager;
+	RenderLayers renderLayers;
 
 	private InputAdapter inputProcessor = new InputAdapter() {
 
@@ -114,14 +113,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		};
 
 	};
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public ReplayPlayerGameState(Game game) {
-		this.game = game;
-	}
 
 	@Handles
 	public void toggleFirstBackground(Event e) {

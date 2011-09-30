@@ -295,45 +295,27 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				bind("resourceManager", resourceManager);
 				bind("adWhirlViewHandler", adWhirlViewHandler);
 				bind("gamePreferences", gamePreferences);
+				bind("browserUtils", browserUtils);
 			}
 		};
 
-		GameState playGameState = injector.getInstance(PlayGameState.class);
 		GameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
 
-		PauseGameState pauseGameState = new PauseGameState(this);
-		pauseGameState.setResourceManager(resourceManager);
+		GameState selectPlayModeGameState = injector.getInstance(SelectPlayModeGameState.class);
+		GameState levelSelectionGameState = injector.getInstance(LevelSelectionGameState.class);
+		
+		GameState playGameState = injector.getInstance(PlayGameState.class);
+		GameState pauseGameState = injector.getInstance(PauseGameState.class);
+		GameState replayPlayerGameState = injector.getInstance(ReplayPlayerGameState.class);
+		GameState gameOverGameState = injector.getInstance(GameOverGameState.class);
 
-		SelectPlayModeGameState selectPlayModeGameState = new SelectPlayModeGameState(this);
-		selectPlayModeGameState.setResourceManager(resourceManager);
-
-		LevelSelectionGameState levelSelectionGameState = new LevelSelectionGameState(this);
-		levelSelectionGameState.setResourceManager(resourceManager);
-
-		GameOverGameState gameOverGameState = new GameOverGameState(this);
-		gameOverGameState.setResourceManager(resourceManager);
-
-		InstructionsGameState instructionsGameState = new InstructionsGameState(this);
-		instructionsGameState.setResourceManager(resourceManager);
-
-		BackgroundGameState backgroundGameState = new BackgroundGameState(this);
-		backgroundGameState.setResourceManager(resourceManager);
-
-		SettingsGameState settingsGameState = new SettingsGameState(this);
-		settingsGameState.setResourceManager(resourceManager);
-
-		ControllerSettingsGameState controllerSettingsGameState = new ControllerSettingsGameState(this);
-		controllerSettingsGameState.setResourceManager(resourceManager);
-
-		ControllerTestGameState controllerTestGameState = new ControllerTestGameState(this);
-		controllerTestGameState.setResourceManager(resourceManager);
-
-		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
-		replayPlayerGameState.setResourceManager(resourceManager);
-
-		AboutGameState aboutGameState = new AboutGameState(this);
-		aboutGameState.setResourceManager(resourceManager);
-		aboutGameState.setBrowserUtils(browserUtils);
+		GameState instructionsGameState = injector.getInstance(InstructionsGameState.class);
+		GameState backgroundGameState = injector.getInstance(BackgroundGameState.class);
+		
+		GameState settingsGameState = injector.getInstance(SettingsGameState.class);
+		GameState controllerSettingsGameState = injector.getInstance(ControllerSettingsGameState.class);
+		GameState controllerTestGameState = injector.getInstance(ControllerTestGameState.class);
+		GameState aboutGameState = injector.getInstance(AboutGameState.class);
 
 		screenManager = new ScreenManager();
 

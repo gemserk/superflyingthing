@@ -28,23 +28,15 @@ import com.gemserk.resources.ResourceManager;
 
 public class GameOverGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-	private Sprite whiteRectangle;
-	private Container container;
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	private WorldWrapper worldWrapper;
-
-	private Integer levelNumber;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public GameOverGameState(Game game) {
-		this.game = game;
-	}
+	Game game;
+	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
+	Sprite whiteRectangle;
+	Container container;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	WorldWrapper worldWrapper;
+	Integer levelNumber;
 
 	@Override
 	public void init() {

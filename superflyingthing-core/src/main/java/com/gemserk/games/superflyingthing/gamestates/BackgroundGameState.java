@@ -35,30 +35,17 @@ import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {
 
-	private final Game game;
-	SpriteBatch spriteBatch;
-
+	Game game;
 	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
 	boolean done;
-
-	private WorldWrapper worldWrapper;
-
-	private Container guiContainer;
-
-	private TimeTransition restartTimeTransition;
-
-	private Integer previewLevelNumber;
-
+	WorldWrapper worldWrapper;
+	Container guiContainer;
+	TimeTransition restartTimeTransition;
+	Integer previewLevelNumber;
 	RenderLayers renderLayers;
 	EntityBuilder entityBuilder;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public BackgroundGameState(Game game) {
-		this.game = game;
-	}
 
 	@Handles
 	public void toggleFirstBackground(Event e) {

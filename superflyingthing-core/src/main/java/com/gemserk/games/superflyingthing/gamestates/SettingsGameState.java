@@ -34,26 +34,18 @@ import com.gemserk.resources.ResourceManager;
 
 public class SettingsGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	Game game;
+	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	private Container container;
-	// private RenderLayers renderLayers;
-	private WorldWrapper worldWrapper;
+	Container container;
+	WorldWrapper worldWrapper;
 
-	private boolean toggleBackground;
-	private boolean showReplay;
-	private SceneTemplate sceneTemplate;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public SettingsGameState(Game game) {
-		this.game = game;
-	}
+	boolean toggleBackground;
+	boolean showReplay;
+	SceneTemplate sceneTemplate;
 
 	@Override
 	public void init() {

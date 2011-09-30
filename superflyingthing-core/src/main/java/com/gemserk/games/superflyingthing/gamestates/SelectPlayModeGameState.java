@@ -24,21 +24,13 @@ import com.gemserk.resources.ResourceManager;
 
 public class SelectPlayModeGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	private Sprite whiteRectangleSprite;
-	private Container container;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public SelectPlayModeGameState(Game game) {
-		this.game = game;
-	}
+	Game game;
+	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	Sprite whiteRectangleSprite;
+	Container container;
 
 	@Override
 	public void init() {

@@ -30,6 +30,7 @@ import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
+import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -118,14 +119,15 @@ public class ControllerTestGameState extends GameStateImpl {
 
 	}
 
-	private final Game game;
+	Game game;
+	ResourceManager<String> resourceManager;
+	
 	SpriteBatch spriteBatch;
 	Libgdx2dCamera worldCamera;
 
 	EntityTemplates entityTemplates;
 	World physicsWorld;
 	Box2DCustomDebugRenderer box2dCustomDebugRenderer;
-	ResourceManager<String> resourceManager;
 	boolean done;
 
 	EntityBuilder entityBuilder;
@@ -144,14 +146,6 @@ public class ControllerTestGameState extends GameStateImpl {
 	private ControllerTemplates controllerTemplates;
 
 	private boolean inputEnabled = false;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public ControllerTestGameState(Game game) {
-		this.game = game;
-	}
 
 	@Override
 	public void init() {
@@ -193,6 +187,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(new TimeStepProviderGameStateImpl(this)));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(new TimeStepProviderGameStateImpl(this)));
+		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 
 		worldWrapper.init();

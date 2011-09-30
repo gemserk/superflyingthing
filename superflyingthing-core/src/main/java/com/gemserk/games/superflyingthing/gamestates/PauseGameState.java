@@ -24,21 +24,14 @@ import com.gemserk.resources.ResourceManager;
 
 public class PauseGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
-	private Sprite whiteRectangle;
-	private InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	private Integer levelNumber;
-	private Container container;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public PauseGameState(Game game) {
-		this.game = game;
-	}
+	Game game;
+	ResourceManager<String> resourceManager;
+	
+	SpriteBatch spriteBatch;
+	Sprite whiteRectangle;
+	InputDevicesMonitorImpl<String> inputDevicesMonitor;
+	Integer levelNumber;
+	Container container;
 
 	@Override
 	public void init() {
