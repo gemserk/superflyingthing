@@ -2,6 +2,7 @@ package com.gemserk.games.superflyingthing.scenes;
 
 import java.text.MessageFormat;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import com.artemis.Entity;
@@ -114,32 +115,19 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		private class UpdateLabelScript extends ScriptJavaImpl {
 
-			private float seconds = -1;
 			private StringBuilder timerLabelBuilder = new StringBuilder();
-
-			public UpdateLabelScript() {
-				timerLabelBuilder.append("Time: ");
-			}
+			private final String format = "Time: %1$.2f";
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
 				PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
 				GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
 
-				if (seconds == seconds(gameData.time))
-					return;
-
-				timerLabelBuilder.delete(6, timerLabelBuilder.length());
-				timerLabelBuilder.append(seconds(gameData.time));
+				timerLabelBuilder.delete(0, timerLabelBuilder.length());
+				timerLabelBuilder.append(String.format(Locale.US, format, gameData.travelTime));
 
 				TextComponent textComponent = Components.getTextComponent(e);
 				textComponent.text = timerLabelBuilder;
-
-				seconds = seconds(gameData.time);
-			}
-
-			private int seconds(float seconds) {
-				return (int) seconds;
 			}
 
 		}
@@ -284,7 +272,6 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// gameModeProperties.put("currentItems", 0);
 		// entityFactory.instantiate(gameModeTemplate, new ParametersWrapper().put("properties", gameModeProperties));
 
-		// entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 		
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);
 		
@@ -293,6 +280,8 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		if (gameData.totalItems > 0)
 			entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
+		entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
+		
 	}
 
 }
