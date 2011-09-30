@@ -28,9 +28,12 @@ import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.ScreenImpl;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
+import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.commons.utils.BrowserUtils;
 import com.gemserk.commons.utils.BrowserUtilsNullImpl;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
@@ -104,6 +107,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private ScreenManager screenManager;
 	private FilesMonitor filesMonitor;
 	private BrowserUtils browserUtils = new BrowserUtilsNullImpl();
+
+	private SoundPlayer soundPlayer;
 
 	class ScreenManager {
 
@@ -218,19 +223,19 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	public EventManager getEventManager() {
 		return eventManager;
 	}
-	
+
 	public void setBrowserUtils(BrowserUtils browserUtils) {
 		this.browserUtils = browserUtils;
 	}
-	
+
 	public void setAdWhirlViewHandler(AdWhirlViewHandler adWhirlViewHandler) {
 		this.adWhirlViewHandler = adWhirlViewHandler;
 	}
-	
+
 	public void setFilesMonitor(FilesMonitor filesMonitor) {
 		this.filesMonitor = filesMonitor;
 	}
-	
+
 	public Game() {
 		this(new AdWhirlViewHandler());
 	}
@@ -249,6 +254,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Vector2.class, LibgdxConverters.vector2());
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
+
+		soundPlayer = new SoundPlayer();
 
 		gameData = new ParametersWrapper();
 
@@ -281,6 +288,15 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		fpsFontResource = resourceManager.get("FpsFont");
 		spriteBatch = new SpriteBatch();
 
+		Injector injector = new InjectorImpl() {
+			{
+				bind("game", Game.this);
+				bind("soundPlayer", soundPlayer);
+				bind("resourceManager", resourceManager);
+				bind("adWhirlViewHandler", adWhirlViewHandler);
+			}
+		};
+
 		PlayGameState playGameState = new PlayGameState(this);
 		playGameState.setResourceManager(resourceManager);
 		playGameState.setGamePreferences(gamePreferences);
@@ -288,8 +304,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		PauseGameState pauseGameState = new PauseGameState(this);
 		pauseGameState.setResourceManager(resourceManager);
 
-		MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
-		mainMenuGameState.setResourceManager(resourceManager);
+		MainMenuGameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
+
+		// MainMenuGameState mainMenuGameState = new MainMenuGameState(this);
+		// mainMenuGameState.setResourceManager(resourceManager);
+		// mainMenuGameState.setSoundPlayer(soundPlayer);
+		// mainMenuGameState.setAdWhirlViewHandler(adWhirlViewHandler);
 
 		SelectPlayModeGameState selectPlayModeGameState = new SelectPlayModeGameState(this);
 		selectPlayModeGameState.setResourceManager(resourceManager);
@@ -317,7 +337,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		ReplayPlayerGameState replayPlayerGameState = new ReplayPlayerGameState(this);
 		replayPlayerGameState.setResourceManager(resourceManager);
-		
+
 		AboutGameState aboutGameState = new AboutGameState(this);
 		aboutGameState.setResourceManager(resourceManager);
 		aboutGameState.setBrowserUtils(browserUtils);

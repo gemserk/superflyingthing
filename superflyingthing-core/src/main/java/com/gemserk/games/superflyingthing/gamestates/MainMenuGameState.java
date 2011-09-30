@@ -1,14 +1,17 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.Screen;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
@@ -18,24 +21,20 @@ import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
 
-	private final Game game;
-	private SpriteBatch spriteBatch;
-	private ResourceManager<String> resourceManager;
+	Game game;
+	SoundPlayer soundPlayer;
+	AdWhirlViewHandler adWhirlViewHandler;
+	ResourceManager<String> resourceManager;
 
-	private Sprite whiteRectangleSprite;
-	private Container container;
-
-	public void setResourceManager(ResourceManager<String> resourceManager) {
-		this.resourceManager = resourceManager;
-	}
-
-	public MainMenuGameState(Game game) {
-		this.game = game;
-	}
+	SpriteBatch spriteBatch;
+	Sprite whiteRectangleSprite;
+	Container container;
+	Resource<Sound> buttonSound;
 
 	@Override
 	public void init() {
@@ -44,6 +43,8 @@ public class MainMenuGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
+
+		buttonSound = resourceManager.get("ButtonReleasedSound");
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
@@ -79,6 +80,7 @@ public class MainMenuGameState extends GameStateImpl {
 						game.transition(Screens.SelectPlayMode) //
 								.disposeCurrent() //
 								.start();
+						soundPlayer.play(buttonSound.get());
 					}
 				})//
 				.build();
@@ -94,6 +96,7 @@ public class MainMenuGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						settings();
+						soundPlayer.play(buttonSound.get());
 					}
 				})//
 				.build();
@@ -109,6 +112,7 @@ public class MainMenuGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						aboutUs();
+						soundPlayer.play(buttonSound.get());
 					}
 				})//
 				.build();
@@ -165,7 +169,7 @@ public class MainMenuGameState extends GameStateImpl {
 	@Override
 	public void show() {
 		super.show();
-		game.getAdWhirlViewHandler().show();
+		adWhirlViewHandler.show();
 		game.getBackgroundGameScreen().show();
 	}
 

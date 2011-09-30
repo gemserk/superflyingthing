@@ -90,6 +90,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("LevelButtonSprite", "TextureAtlas", "level-button");
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
+		
+		sound("ButtonReleasedSound", "data/audio/button01.ogg");
 
 		Levels.declareLevelResources(resourceManager, filesMonitor);
 

@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.w3c.dom.Document;
@@ -22,6 +23,7 @@ import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 import com.gemserk.resources.ResourceManagerImpl;
 import com.gemserk.resources.monitor.FilesMonitorImpl;
+import com.gemserk.util.ScreenshotSaver;
 import com.gemserk.vecmath.Vector3f;
 
 public class RandomLevelGeneratorFromTilesApp {
@@ -45,6 +47,14 @@ public class RandomLevelGeneratorFromTilesApp {
 				if (restartPressed) {
 					getScreen().restart();
 					restartPressed = false;
+				}
+			}
+			
+			if (Gdx.input.isKeyPressed(Keys.NUM_0)) {
+				try {
+					ScreenshotSaver.saveScreenshot("random-generator");
+				} catch (IOException e) {
+					e.printStackTrace();
 				}
 			}
 		}
@@ -73,7 +83,7 @@ public class RandomLevelGeneratorFromTilesApp {
 			float worldWidth = 80;
 			float worldHeight = 48;
 
-			float zoom = 0.25f;
+			float zoom = 1.5f;
 
 			projectionMatrix.setToOrtho2D(-worldWidth * 0.25f / zoom, -worldHeight * 0.5f / zoom, worldWidth / zoom, worldHeight / zoom);
 
