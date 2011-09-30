@@ -49,6 +49,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.components.ComponentWrapper;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
@@ -62,6 +63,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
+import com.gemserk.games.superflyingthing.templates.SoundTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class NormalModeSceneTemplate extends SceneTemplateImpl {
@@ -152,18 +154,18 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		}
 
 	}
-	
+
 	public static class BestTimeLabelTemplate extends EntityTemplateImpl {
 
 		ResourceManager<String> resourceManager;
-		
+
 		private final String format = "Best time: %1$.2f";
 
 		@Override
 		public void apply(Entity entity) {
 			BitmapFont font = resourceManager.getResourceValue("GameFont");
 			Float bestTime = parameters.get("bestTime", 0f);
-			
+
 			entity.addComponent(new TagComponent("BestTimeLabel"));
 			entity.addComponent(new SpatialComponent(new SpatialImpl(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.95f)));
 			entity.addComponent(new RenderableComponent(250));
@@ -171,7 +173,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		}
 
 	}
-	
+
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
 	Injector injector;
@@ -180,7 +182,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", false);
 		Boolean shouldRemoveItems = getParameters().get("shouldRemoveItems", true);
-		
+
 		Float bestTime = getParameters().get("bestTime");
 
 		// Boolean randomLevel = getParameters().get("randomLevel", false);
@@ -286,6 +288,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		EntityTemplate itemTakenLabelTemplate = injector.getInstance(ItemsTakenLabelEntityTemplate.class);
 		EntityTemplate timerLabelTemplate = injector.getInstance(TimerLabelEntityTemplate.class);
 		EntityTemplate bestTimeLabelTemplate = injector.getInstance(BestTimeLabelTemplate.class);
+		EntityTemplate soundTemplate = injector.getInstance(SoundTemplate.class);
 
 		// EntityTemplate gameModeTemplate = injector.getInstance(GameModeEntityTemplate.class);
 
@@ -293,21 +296,26 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// gameModeProperties.put("totalItems", level.items.size());
 		// gameModeProperties.put("currentItems", 0);
 		// entityFactory.instantiate(gameModeTemplate, new ParametersWrapper().put("properties", gameModeProperties));
-		
+
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);
-		
+
 		gameData.totalItems = level.items.size();
-		
+
 		if (gameData.totalItems > 0)
 			entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
-		
-		if (bestTime != null && GameInformation.gameMode == GameInformation.ChallengeGameMode) 
+
+		if (bestTime != null && GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			entityFactory.instantiate(bestTimeLabelTemplate, new ParametersWrapper().put("bestTime", bestTime));
-			
-		
+
+
+		entityFactory.instantiate(soundTemplate, new ParametersWrapper() //
+				.put("soundId", "ExplosionSound") //
+				.put("eventId", Events.explosion)//
+				);
+
 	}
 
 }

@@ -22,6 +22,7 @@ import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.AverageFPS;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
@@ -59,6 +60,7 @@ public class PlayGameState extends GameStateImpl {
 	Game game;
 	ResourceManager<String> resourceManager;
 	GamePreferences gamePreferences;
+	SoundPlayer soundPlayer;
 	
 	private SpriteBatch spriteBatch;
 
@@ -120,6 +122,7 @@ public class PlayGameState extends GameStateImpl {
 		injector.bind("resourceManager", resourceManager);
 		injector.bind("timeStepProvider", new TimeStepProviderGameStateImpl(this));
 		injector.bind("gamePreferences", gamePreferences);
+		injector.bind("soundPlayer", soundPlayer);
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;

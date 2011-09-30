@@ -9,10 +9,13 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 
+/**
+ * A custom emitter spawner script for this game, as it is state less can be used as singleton.
+ */
 public class ParticleEmitterSpawnerScript extends ScriptJavaImpl {
 
-	private final EntityFactory entityFactory;
-	private final EntityTemplate emitterTemplate;
+	EntityFactory entityFactory;
+	EntityTemplate emitterTemplate;
 
 	private Parameters parameters = new ParametersWrapper();
 
@@ -24,9 +27,6 @@ public class ParticleEmitterSpawnerScript extends ScriptJavaImpl {
 	@Handles
 	public void explosion(Event e) {
 		Spatial spatial = (Spatial) e.getSource();
-
-		parameters.clear();
-
 		entityFactory.instantiate(emitterTemplate, parameters //
 				.put("position", spatial.getPosition()) //
 				.put("emitter", "ExplosionEmitter"));

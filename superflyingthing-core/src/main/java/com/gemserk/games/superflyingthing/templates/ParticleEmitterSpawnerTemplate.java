@@ -13,7 +13,8 @@ public class ParticleEmitterSpawnerTemplate extends EntityTemplateImpl {
 	
 	@Override
 	public void apply(Entity entity) {
-		entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, entityTemplates.particleEmitterTemplate)));
+		entity.addComponent(new ScriptComponent(new ParticleEmitterSpawnerScript(entityFactory, 
+				entityTemplates.particleEmitterTemplate)));
 	}
 	
 }
