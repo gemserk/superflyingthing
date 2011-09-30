@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector2;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Shape;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
-import com.gemserk.games.superflyingthing.levels.Level.Item;
 import com.gemserk.games.superflyingthing.levels.Level.Obstacle;
 import com.gemserk.games.superflyingthing.levels.Level.StartPlanet;
 
@@ -37,7 +36,7 @@ public class RandomLevelGenerator {
 	private Color getRandomColor() {
 		return planetColors[MathUtils.random(planetColors.length - 1)];
 	}
-	
+
 	public RandomLevelGenerator(Document document) {
 		this.document = document;
 	}
@@ -45,7 +44,7 @@ public class RandomLevelGenerator {
 	public Level generateRandomLevel() {
 
 		Level level = new Level();
-		
+
 		level.zoom = 64f;
 
 		float minx = 10000f;
@@ -53,12 +52,12 @@ public class RandomLevelGenerator {
 
 		float miny = 10000f;
 		float maxy = -10000f;
-		
+
 		float startX = 5f;
 		float startY = 5f;
 
 		int maxLevelDepth = MathUtils.random(2, 7);
-		
+
 		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel(document, maxLevelDepth);
 		for (int i = 0; i < obstacles.size(); i++) {
 			Shape obstacleShape = obstacles.get(i);
@@ -97,12 +96,14 @@ public class RandomLevelGenerator {
 
 		level.startPlanet.color = getRandomColor();
 
-		for (int i = 0; i < maxLevelDepth; i++) {
-			Item item = new Item();
-			item.x = MathUtils.random(10f, level.w - 10f);
-			item.y = MathUtils.random(1f, level.h - 1f);
-			level.items.add(item);
-		}
+		// int maxItems = 10;
+		//
+		// for (int i = 0; i < maxItems; i++) {
+		// Item item = new Item();
+		// item.x = MathUtils.random(10f, level.w - 10f);
+		// item.y = MathUtils.random(1f, level.h - 1f);
+		// level.items.add(item);
+		// }
 
 		Levels.generateRandomClouds(level, 6);
 
