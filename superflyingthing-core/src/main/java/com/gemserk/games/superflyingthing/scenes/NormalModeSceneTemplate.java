@@ -153,6 +153,25 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 	}
 	
+	public static class BestTimeLabelTemplate extends EntityTemplateImpl {
+
+		ResourceManager<String> resourceManager;
+		
+		private final String format = "Best time: %1$.2f";
+
+		@Override
+		public void apply(Entity entity) {
+			BitmapFont font = resourceManager.getResourceValue("GameFont");
+			Float bestTime = parameters.get("bestTime", 0f);
+			
+			entity.addComponent(new TagComponent("BestTimeLabel"));
+			entity.addComponent(new SpatialComponent(new SpatialImpl(Gdx.graphics.getWidth() * 0.95f, Gdx.graphics.getHeight() * 0.95f)));
+			entity.addComponent(new RenderableComponent(250));
+			entity.addComponent(new TextComponent(String.format(Locale.US, format, bestTime), font, 0f, 0f, 1f, 0.5f));
+		}
+
+	}
+	
 	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
 	Injector injector;
@@ -161,6 +180,8 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", false);
 		Boolean shouldRemoveItems = getParameters().get("shouldRemoveItems", true);
+		
+		Float bestTime = getParameters().get("bestTime");
 
 		// Boolean randomLevel = getParameters().get("randomLevel", false);
 		// Integer levelNumber = getParameters().get("levelNumber");
@@ -264,6 +285,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		EntityTemplate itemTakenLabelTemplate = injector.getInstance(ItemsTakenLabelEntityTemplate.class);
 		EntityTemplate timerLabelTemplate = injector.getInstance(TimerLabelEntityTemplate.class);
+		EntityTemplate bestTimeLabelTemplate = injector.getInstance(BestTimeLabelTemplate.class);
 
 		// EntityTemplate gameModeTemplate = injector.getInstance(GameModeEntityTemplate.class);
 
@@ -271,7 +293,6 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		// gameModeProperties.put("totalItems", level.items.size());
 		// gameModeProperties.put("currentItems", 0);
 		// entityFactory.instantiate(gameModeTemplate, new ParametersWrapper().put("properties", gameModeProperties));
-
 		
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, shouldRemoveItems).loadLevel(level);
 		
@@ -281,6 +302,10 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 			entityFactory.instantiate(itemTakenLabelTemplate, new ParametersWrapper().put("gameData", gameData));
 
 		entityFactory.instantiate(timerLabelTemplate, new ParametersWrapper().put("gameData", gameData));
+		
+		if (bestTime != null) 
+			entityFactory.instantiate(bestTimeLabelTemplate, new ParametersWrapper().put("bestTime", bestTime));
+			
 		
 	}
 

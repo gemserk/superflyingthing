@@ -127,8 +127,10 @@ public class PlayGameState extends GameStateImpl {
 		spriteBatch = new SpriteBatch();
 
 		injector = new InjectorImpl();
+
 		injector.bind("resourceManager", resourceManager);
 		injector.bind("timeStepProvider", new TimeStepProviderGameStateImpl(this));
+		injector.bind("gamePreferences", gamePreferences);
 
 		gameData = new GameData();
 		GameInformation.gameData = gameData;
@@ -144,12 +146,18 @@ public class PlayGameState extends GameStateImpl {
 			Analytics.traker.trackPageView("/random/start", "/random/start", null);
 		}
 
-//		gameData.totalItems = level.items.size();
+		// gameData.totalItems = level.items.size();
+
+		PlayerProfile playerProfile = gamePreferences.getCurrentPlayerProfile();
 
 		worldWrapper = new WorldWrapper(new com.artemis.World());
 
 		SceneTemplate sceneTemplate = injector.getInstance(NormalModeSceneTemplate.class);
 		sceneTemplate.getParameters().put("gameData", gameData);
+
+		if (playerProfile.hasPlayedLevel(levelNumber))
+			sceneTemplate.getParameters().put("bestTime", playerProfile.getLevelInformation(levelNumber).time);
+
 		sceneTemplate.getParameters().put("level", level);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
 		sceneTemplate.getParameters().put("shouldRemoveItems", GameInformation.gameMode != GameInformation.ChallengeGameMode);
@@ -345,7 +353,7 @@ public class PlayGameState extends GameStateImpl {
 				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.8f)) //
 				.put("text", getRandomEndMessage()) //
 				);
-		
+
 		gameData.averageFPS = averageFPS.getFPS();
 
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
