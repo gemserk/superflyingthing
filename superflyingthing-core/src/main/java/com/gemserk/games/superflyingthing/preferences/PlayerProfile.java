@@ -11,11 +11,10 @@ public class PlayerProfile {
 
 	public static class LevelInformation {
 
-		public int time;
-
+		public float time;
 		public int stars;
 		
-		public LevelInformation(int time, int stars) {
+		public LevelInformation(float time, int stars) {
 			this.time = time;
 			this.stars = stars;
 		}
@@ -68,7 +67,7 @@ public class PlayerProfile {
 
 		if (hasPlayedLevel(level)) {
 			LevelInformation currentLevelInformation = getLevelInformation(level);
-			int previousTime = currentLevelInformation.time;
+			float previousTime = currentLevelInformation.time;
 			if (levelInformation.time < previousTime) 
 				currentLevelInformation.time = levelInformation.time;
 		} else {

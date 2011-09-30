@@ -57,7 +57,7 @@ public class PlayerProfileTest {
 	public void shouldStoreAndReturnTimeForLevel() {
 		PlayerProfile playerProfile = new PlayerProfile();
 		playerProfile.setLevelInformationForLevel(1, new LevelInformation(500, 0));
-		assertThat(playerProfile.getLevelInformation(1).time, IsEqual.equalTo(500));
+		assertThat(playerProfile.getLevelInformation(1).time, IsEqual.equalTo(500f));
 	}
 	
 	@Test
@@ -65,7 +65,7 @@ public class PlayerProfileTest {
 		PlayerProfile playerProfile = new PlayerProfile();
 		playerProfile.setLevelInformationForLevel(1, new LevelInformation(350, 0));
 		playerProfile.setLevelInformationForLevel(1, new LevelInformation(500, 0));
-		assertThat(playerProfile.getLevelInformation(1).time, IsEqual.equalTo(350));
+		assertThat(playerProfile.getLevelInformation(1).time, IsEqual.equalTo(350f));
 	}
 
 }

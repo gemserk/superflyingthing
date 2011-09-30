@@ -213,7 +213,6 @@ public class PlayGameState extends GameStateImpl {
 		// entity with some game logic
 		entityBuilder.component(new ScriptComponent(new CountTravelTimeScript(gameData), new ScriptJavaImpl() {
 
-			boolean incrementTimer = true;
 			private com.artemis.World world;
 			private Parameters parameters = new ParametersWrapper();
 
@@ -246,9 +245,8 @@ public class PlayGameState extends GameStateImpl {
 			public void gameFinished(Event e) {
 
 				PlayGameState.this.gameFinished();
-				incrementTimer = false;
 				if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-					playerProfile.setLevelInformationForLevel(levelNumber, new LevelInformation(seconds(gameData.time), gameData.currentItems));
+					playerProfile.setLevelInformationForLevel(levelNumber, new LevelInformation(gameData.travelTime, gameData.currentItems));
 					game.getGamePreferences().updatePlayerProfile(playerProfile);
 				}
 
@@ -301,16 +299,6 @@ public class PlayGameState extends GameStateImpl {
 						.disposeCurrent() //
 						.start();
 
-			}
-
-			@Override
-			public void update(com.artemis.World world, Entity e) {
-				if (incrementTimer)
-					gameData.time += getDelta();
-			}
-
-			private int seconds(float seconds) {
-				return (int) seconds;
 			}
 
 		})).build();

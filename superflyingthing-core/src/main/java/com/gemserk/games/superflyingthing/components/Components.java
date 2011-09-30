@@ -180,7 +180,6 @@ public class Components {
 		public int deaths;
 		public int totalItems;
 		public int currentItems;
-		public float time;
 		public int averageFPS;
 		
 		/**
@@ -192,7 +191,6 @@ public class Components {
 			this.deaths = 0;
 			this.currentItems = 0;
 			this.totalItems = 0;
-			this.time = 0;
 			this.averageFPS = 0;
 			this.travelTime = 0f;
 		}
