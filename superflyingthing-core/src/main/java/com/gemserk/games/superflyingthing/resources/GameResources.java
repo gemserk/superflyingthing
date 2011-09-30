@@ -91,7 +91,7 @@ public class GameResources extends LibgdxResourceBuilder {
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
 		
-		sound("ButtonReleasedSound", "data/audio/button01.ogg");
+		sound("ButtonReleasedSound", "data/audio/button01.wav");
 
 		Levels.declareLevelResources(resourceManager, filesMonitor);
 

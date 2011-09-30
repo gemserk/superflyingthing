@@ -4,6 +4,7 @@ import com.artemis.World;
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,6 +13,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.WorldWrapper;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
@@ -26,6 +28,7 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.scenes.EmptySceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
+import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
 public class AboutGameState extends GameStateImpl {
@@ -38,11 +41,13 @@ public class AboutGameState extends GameStateImpl {
 	Game game;
 	ResourceManager<String> resourceManager;
 	BrowserUtils browserUtils;
+	SoundPlayer soundPlayer;
 
 	Container guiContainer;
 	SpriteBatch spriteBatch;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	WorldWrapper worldWrapper;
+	
 
 	@Override
 	public void init() {
@@ -55,6 +60,8 @@ public class AboutGameState extends GameStateImpl {
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont instructionsFont = resourceManager.getResourceValue("InstructionsFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
+		
+		final Resource<Sound> buttonSound = resourceManager.get("ButtonReleasedSound");
 
 		guiContainer.add(GuiControls.label("ABOUT US") //
 				.position(width * 0.5f, height * 0.95f) //
@@ -86,6 +93,7 @@ public class AboutGameState extends GameStateImpl {
 					public void onReleased(Control control) {
 						browserUtils.open(blogUrl);
 						Analytics.traker.trackPageView("/about/blog", "/about/blog", null);
+						soundPlayer.play(buttonSound.get());
 					}
 				}) //
 				.build());
@@ -107,6 +115,7 @@ public class AboutGameState extends GameStateImpl {
 						else
 							browserUtils.open(desktopMoreGamesUrl);
 						Analytics.traker.trackPageView("/about/moreGames", "/about/moreGames", null);
+						soundPlayer.play(buttonSound.get());
 					}
 				}) //
 				.build());
@@ -125,6 +134,7 @@ public class AboutGameState extends GameStateImpl {
 						@Override
 						public void onReleased(Control control) {
 							mainMenu();
+							soundPlayer.play(buttonSound.get());
 						}
 					}) //
 					.build());
