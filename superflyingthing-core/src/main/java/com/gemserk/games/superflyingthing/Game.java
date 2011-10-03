@@ -61,6 +61,10 @@ import com.gemserk.resources.monitor.FilesMonitorNullImpl;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
+	
+	public static final String blogUrl = "http://blog.gemserk.com/";
+	public static final String desktopMoreGamesUrl = "http://blog.gemserk.com/games";
+	public static final String androidMoreGamesUrl = "market://search?q=pub:Gemserk Studios";
 
 	private static boolean debugMode;
 	private static boolean showFps = false;
@@ -247,6 +251,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		eventManager = new EventManagerImpl();
 
 		resourceManager = new CustomResourceManager<String>();
+		screenManager = new ScreenManagerImpl(this);
 
 		GameResources.load(resourceManager, filesMonitor);
 
@@ -261,6 +266,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				bind("adWhirlViewHandler", adWhirlViewHandler);
 				bind("gamePreferences", gamePreferences);
 				bind("browserUtils", browserUtils);
+				bind("screenManager", screenManager);
 			}
 		};
 
@@ -268,7 +274,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		GameState selectPlayModeGameState = injector.getInstance(SelectPlayModeGameState.class);
 		GameState levelSelectionGameState = injector.getInstance(LevelSelectionGameState.class);
-		
+
 		GameState playGameState = injector.getInstance(PlayGameState.class);
 		GameState pauseGameState = injector.getInstance(PauseGameState.class);
 		GameState replayPlayerGameState = injector.getInstance(ReplayPlayerGameState.class);
@@ -276,13 +282,13 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		GameState instructionsGameState = injector.getInstance(InstructionsGameState.class);
 		GameState backgroundGameState = injector.getInstance(BackgroundGameState.class);
-		
+
 		GameState settingsGameState = injector.getInstance(SettingsGameState.class);
 		GameState controllerSettingsGameState = injector.getInstance(ControllerSettingsGameState.class);
 		GameState controllerTestGameState = injector.getInstance(ControllerTestGameState.class);
 		GameState aboutGameState = injector.getInstance(AboutGameState.class);
 
-		screenManager = new ScreenManager();
+		GameState splashGameState = injector.getInstance(SplashGameState.class);
 
 		screenManager.add(Screens.Pause, pauseGameState);
 		screenManager.add(Screens.MainMenu, mainMenuGameState);
@@ -290,7 +296,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager.add(Screens.LevelSelection, levelSelectionGameState);
 		screenManager.add(Screens.GameOver, gameOverGameState);
 		screenManager.add(Screens.Instructions, instructionsGameState);
-		screenManager.add(Screens.Splash, new SplashGameState(this));
+		screenManager.add(Screens.Splash, splashGameState);
 		screenManager.add(Screens.Settings, settingsGameState);
 		screenManager.add(Screens.ControllersSettings, controllerSettingsGameState);
 		screenManager.add(Screens.ControllersTest, controllerTestGameState);
@@ -336,7 +342,8 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	}
 
 	public TransitionBuilder transition(String screen) {
-		return new TransitionBuilder(this, screenManager.get(screen));
+		return screenManager.transition(screen);
+		// return new TransitionBuilder(this, screenManager.get(screen));
 	}
 
 	@Override

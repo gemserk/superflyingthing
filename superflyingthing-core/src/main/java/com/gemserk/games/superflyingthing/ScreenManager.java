@@ -1,19 +1,10 @@
 package com.gemserk.games.superflyingthing;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.Screen;
-import com.gemserk.commons.gdx.ScreenImpl;
+import com.gemserk.commons.gdx.screens.transitions.TransitionBuilder;
 
-public class ScreenManager {
-
-	private Map<String, Screen> screens;
-
-	public ScreenManager() {
-		screens = new HashMap<String, Screen>();
-	}
+public interface ScreenManager {
 
 	/**
 	 * Adds a new screen for the specified game state.
@@ -23,9 +14,7 @@ public class ScreenManager {
 	 * @param gameState
 	 *            The GameState instance to be used for the new Screen.
 	 */
-	public void add(String id, GameState gameState) {
-		screens.put(id, screen(gameState));
-	}
+	void add(String id, GameState gameState);
 
 	/**
 	 * Adds the specified screen with the specified id.
@@ -35,19 +24,19 @@ public class ScreenManager {
 	 * @param screen
 	 *            The Screen instance.
 	 */
-	public void add(String id, Screen screen) {
-		screens.put(id, screen);
-	}
+	void add(String id, Screen screen);
 
 	/**
-	 * Creates a new screen for the specified gamestate.
+	 * Returns the Screen registered with that identifier.
 	 */
-	private Screen screen(GameState gameState) {
-		return new ScreenImpl(gameState);
-	}
+	Screen get(String id);
 
-	public Screen get(String id) {
-		return screens.get(id);
-	}
+	/**
+	 * Returns a TransitionBuilder to build game screen transitions.
+	 * 
+	 * @param screenId
+	 *            The Screen identifier.
+	 */
+	TransitionBuilder transition(String screenId);
 
 }

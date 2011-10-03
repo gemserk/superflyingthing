@@ -11,10 +11,11 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.Transitions;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.games.superflyingthing.CustomResourceManager;
-import com.gemserk.games.superflyingthing.Game;
+import com.gemserk.games.superflyingthing.ScreenManager;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.progress.TaskQueue;
@@ -22,7 +23,9 @@ import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
 public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingGameState {
 
-	private final Game game;
+	CustomResourceManager<String> resourceManager;
+	AdWhirlViewHandler adWhirlViewHandler;
+	ScreenManager screenManager;
 
 	private SpriteBatch spriteBatch;
 	private BitmapFont font;
@@ -34,10 +37,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 	private Color blurColor = new Color();
 	
-	public SplashGameState(Game game) {
-		this.game = game;
-	}
-
 	@Override
 	public void init() {
 		super.init();
@@ -51,8 +50,6 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 		font = new BitmapFont();
 		font.setColor(1f, 1f, 0f, 1f);
 		
-		final CustomResourceManager<String> resourceManager = game.getResourceManager();
-
 		gemserkLogo = resourceManager.getResourceValue("GemserkLogo");
 		gemserkLogoBlur = resourceManager.getResourceValue("GemserkLogoBlur");
 		lwjglLogo = resourceManager.getResourceValue("LwjglLogo");
@@ -96,7 +93,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	}
 
 	private void mainMenu() {
-		game.transition(Screens.MainMenu) //
+		screenManager.transition(Screens.MainMenu) //
 				.disposeCurrent() //
 				.start();
 	}
@@ -133,7 +130,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 
 	@Override
 	public void resume() {
-		game.getAdWhirlViewHandler().hide();
+		adWhirlViewHandler.hide();
 		Gdx.input.setCatchBackKey(false);
 	}
 
