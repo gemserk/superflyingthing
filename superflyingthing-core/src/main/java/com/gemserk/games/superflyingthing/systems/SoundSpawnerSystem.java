@@ -25,7 +25,7 @@ public class SoundSpawnerSystem extends EntityProcessingSystem {
 		@Override
 		public void onEvent(Event event) {
 			SoundSpawnerComponent soundSpawnerComponent = GameComponents.getSoundSpawnerComponent(e);
-			soundPlayer.play(soundSpawnerComponent.sound.get());
+			soundPlayer.play(soundSpawnerComponent.sound);
 		}
 
 	}
