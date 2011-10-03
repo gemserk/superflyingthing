@@ -1,5 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputAdapter;
@@ -22,6 +23,7 @@ import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.scenes.ReplayGameSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
+import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class ReplayPlayerGameState extends GameStateImpl {
@@ -30,8 +32,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	ResourceManager<String> resourceManager;
 	SoundPlayer soundPlayer;
 
-	boolean resetPressed;
-
 	EntityBuilder entityBuilder;
 	WorldWrapper worldWrapper;
 	EventManager eventManager;
@@ -39,12 +39,14 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	private InputAdapter inputProcessor = new InputAdapter() {
 
 		public boolean keyUp(int keycode) {
-			nextScreen();
+			eventManager.registerEvent(Events.gameOver, ReplayPlayerGameState.this);
+//			nextScreen();
 			return super.keyUp(keycode);
 		};
 
 		public boolean touchUp(int x, int y, int pointer, int button) {
-			nextScreen();
+			eventManager.registerEvent(Events.gameOver, ReplayPlayerGameState.this);
+//			nextScreen();
 			return false;
 		};
 
@@ -52,8 +54,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 	@Override
 	public void init() {
-		resetPressed = false;
-
 		Injector injector = new InjectorImpl();
 
 		injector.bind("soundPlayer", soundPlayer);
@@ -77,6 +77,11 @@ public class ReplayPlayerGameState extends GameStateImpl {
 			@Override
 			public void onEvent(Event event) {
 				nextScreen();
+				
+				World world = worldWrapper.getWorld();
+				Entity replayLabel = world.getTagManager().getEntity(Groups.ReplayLabel);
+				if (replayLabel != null)
+					replayLabel.delete();
 			}
 		});
 

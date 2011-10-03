@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.components.RenderableComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
+import com.gemserk.commons.artemis.components.TagComponent;
 import com.gemserk.commons.artemis.components.TextComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.SpatialImpl;
@@ -17,6 +18,7 @@ public class LabelTemplate extends EntityTemplateImpl {
 
 	@Override
 	public void apply(Entity entity) {
+		String id = parameters.get("id");
 		String fontId = parameters.get("fontId");
 		String text = parameters.get("text");
 		Integer layer = parameters.get("layer");
@@ -29,6 +31,9 @@ public class LabelTemplate extends EntityTemplateImpl {
 		TextComponent textComponent = new TextComponent(text, font, 0f, 0f, center.x, center.y);
 		textComponent.color.set(color);
 
+		if (id != null)
+			entity.addComponent(new TagComponent(id));
+		
 		entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y)));
 		entity.addComponent(textComponent);
 		entity.addComponent(new RenderableComponent(layer));

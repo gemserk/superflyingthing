@@ -24,5 +24,7 @@ public class Groups {
 	 * Identifies an entity which contains relevant information about the current game mode.
 	 */
 	public static final String GameMode = "GameMode";
+	
+	public static final String ReplayLabel = "ReplayLabel";
 
 }

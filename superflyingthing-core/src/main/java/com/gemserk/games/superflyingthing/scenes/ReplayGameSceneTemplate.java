@@ -234,6 +234,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 		entityFactory.instantiate(eventManagerTemplate);
 
 		entityFactory.instantiate(labelTemplate, new ParametersWrapper() //
+				.put("id", Groups.ReplayLabel) //
 				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f)) //
 				.put("text", "Playing replay, touch to continue...") //
 				.put("fontId", "LevelFont") //
