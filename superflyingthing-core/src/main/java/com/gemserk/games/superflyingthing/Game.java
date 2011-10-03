@@ -2,8 +2,6 @@ package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -27,7 +25,6 @@ import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.gdx.GameState;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.Screen;
-import com.gemserk.commons.gdx.ScreenImpl;
 import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
@@ -109,38 +106,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 	private BrowserUtils browserUtils = new BrowserUtilsNullImpl();
 
 	private SoundPlayer soundPlayer;
-
-	class ScreenManager {
-
-		private Map<String, Screen> screens;
-
-		public ScreenManager() {
-			screens = new HashMap<String, Screen>();
-		}
-
-		/**
-		 * Adds a new screen for the specified game state.
-		 * 
-		 * @param id
-		 *            The Screen identifier.
-		 */
-		public void add(String id, GameState gameState) {
-			screens.put(id, screen(gameState));
-		}
-
-		public void add(String id, Screen screen) {
-			screens.put(id, screen);
-		}
-
-		public Screen screen(GameState gameState) {
-			return new ScreenImpl(gameState);
-		}
-
-		public Screen get(String id) {
-			return screens.get(id);
-		}
-
-	}
 
 	public AdWhirlViewHandler getAdWhirlViewHandler() {
 		return adWhirlViewHandler;
