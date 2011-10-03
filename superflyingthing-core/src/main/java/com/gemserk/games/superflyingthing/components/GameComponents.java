@@ -23,23 +23,23 @@ import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
 public class GameComponents {
 	
-	private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
-	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
-	private static final Class<SpriteComponent> spriteComponentClass = SpriteComponent.class;
-	private static final Class<AnimationComponent> animationComponentClass = AnimationComponent.class;
-	private static final Class<AttachmentComponent> attachmentComponentClass = AttachmentComponent.class;
-	private static final Class<MovementComponent> movementComponentClass = MovementComponent.class;
-	private static final Class<ParticleEmitterComponent> particleEmitterComponentClass = ParticleEmitterComponent.class;
-	private static final Class<ControllerComponent> controllerComponentClass = ControllerComponent.class;
-	private static final Class<GameDataComponent> gameDataComponentClass = GameDataComponent.class;
-	private static final Class<TargetComponent> targetComponentClass = TargetComponent.class;
-	private static final Class<HealthComponent> healthComponentClass = HealthComponent.class;
-	private static final Class<DamageComponent> damageComponentClass = DamageComponent.class;
-	private static final Class<WeaponComponent> weaponComponentClass = WeaponComponent.class;
-	private static final Class<GrabbableComponent> grabbableComponentClass = GrabbableComponent.class;
-	private static final Class<AttachableComponent> attachableComponentClass = AttachableComponent.class;
-	private static final Class<ReplayListComponent> replayComponentClass = ReplayListComponent.class;
-	private static final Class<TimerComponent> timerComponentClass = TimerComponent.class;
+	public static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
+	public static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;
+	public static final Class<SpriteComponent> spriteComponentClass = SpriteComponent.class;
+	public static final Class<AnimationComponent> animationComponentClass = AnimationComponent.class;
+	public static final Class<AttachmentComponent> attachmentComponentClass = AttachmentComponent.class;
+	public static final Class<MovementComponent> movementComponentClass = MovementComponent.class;
+	public static final Class<ParticleEmitterComponent> particleEmitterComponentClass = ParticleEmitterComponent.class;
+	public static final Class<ControllerComponent> controllerComponentClass = ControllerComponent.class;
+	public static final Class<GameDataComponent> gameDataComponentClass = GameDataComponent.class;
+	public static final Class<TargetComponent> targetComponentClass = TargetComponent.class;
+	public static final Class<HealthComponent> healthComponentClass = HealthComponent.class;
+	public static final Class<DamageComponent> damageComponentClass = DamageComponent.class;
+	public static final Class<WeaponComponent> weaponComponentClass = WeaponComponent.class;
+	public static final Class<GrabbableComponent> grabbableComponentClass = GrabbableComponent.class;
+	public static final Class<AttachableComponent> attachableComponentClass = AttachableComponent.class;
+	public static final Class<ReplayListComponent> replayComponentClass = ReplayListComponent.class;
+	public static final Class<TimerComponent> timerComponentClass = TimerComponent.class;
 	
 	public static final Class<PropertiesComponent> propertiesComponentClass = PropertiesComponent.class;
 	public static final Class<SoundSpawnerComponent> soundSpawnerComponentClass = SoundSpawnerComponent.class;

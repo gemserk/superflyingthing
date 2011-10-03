@@ -51,8 +51,8 @@ import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.PropertiesComponent;
 import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
@@ -60,6 +60,7 @@ import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
+import com.gemserk.games.superflyingthing.systems.SoundSpawnerSystem;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
@@ -212,10 +213,21 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.Hud, new RenderLayerSpriteBatchImpl(200, 10000, hudCamera));
 
 		com.artemis.World world = worldWrapper.getWorld();
-		EntityFactory entityFactory = new EntityFactoryImpl(world);
-		parameters = new ParametersWrapper();
-		// add render and all stuff...
 
+		EntityFactory entityFactory = new EntityFactoryImpl(world);
+		EntityBuilder entityBuilder = new EntityBuilder(world);
+
+		injector.bind("physicsWorld", physicsWorld);
+		injector.bind("entityBuilder", entityBuilder);
+		injector.bind("entityFactory", entityFactory);
+		injector.bind("eventManager", eventManager);
+		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
+		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
+		injector.bind("jointBuilder", new JointBuilder(physicsWorld));
+		injector.bind("renderLayers", renderLayers);
+		
+//		EntitySystem soundSystem = injector.getInstance(SoundSpawnerSystem.class);
+		
 		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());
@@ -225,6 +237,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		// testing event listener auto registration using reflection
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
+		worldWrapper.addUpdateSystem(injector.getInstance(SoundSpawnerSystem.class));
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
@@ -234,20 +247,9 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.init();
 
-		EntityBuilder entityBuilder = new EntityBuilder(world);
-
-		injector.bind("physicsWorld", physicsWorld);
-		injector.bind("entityBuilder", entityBuilder);
-		injector.bind("entityFactory", new EntityFactoryImpl(world));
-		injector.bind("eventManager", eventManager);
-		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
-		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
-		injector.bind("jointBuilder", new JointBuilder(physicsWorld));
-		injector.bind("renderLayers", renderLayers);
-
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
-		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, new ParametersWrapper() //
 				.put("color", Color.WHITE) //
 				.put("layer", -999) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
