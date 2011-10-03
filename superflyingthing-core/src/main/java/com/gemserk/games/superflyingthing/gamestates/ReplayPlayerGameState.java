@@ -21,6 +21,7 @@ import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
+import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
@@ -44,7 +45,6 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
-	Injector injector;
 
 	// SpriteBatch spriteBatch;
 	// Libgdx2dCamera worldCamera;
@@ -98,6 +98,9 @@ public class ReplayPlayerGameState extends GameStateImpl {
 	public void init() {
 		resetPressed = false;
 		
+		Injector injector = new InjectorImpl();
+		
+		injector.bind("resourceManager", resourceManager);
 		injector.bind("timeStepProvider", new TimeStepProviderGameStateImpl(this));
 
 		world = new World();
@@ -192,7 +195,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		game.getAdWhirlViewHandler().show();
 		super.resume();
 		Gdx.input.setCatchBackKey(true);
-		game.getBackgroundGameScreen().dispose();
+//		game.getBackgroundGameScreen().dispose();
 		Gdx.input.setInputProcessor(inputProcessor);
 	}
 

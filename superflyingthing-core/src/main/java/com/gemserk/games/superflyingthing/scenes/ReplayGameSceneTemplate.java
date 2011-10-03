@@ -23,6 +23,7 @@ import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
+import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -105,7 +106,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
-
+		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
 
@@ -152,50 +153,50 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		}
 
-//		entityBuilder //
-//				.component(new ScriptComponent(new ScriptJavaImpl() {
-//
-//					@Override
-//					public void init(com.artemis.World world, Entity e) {
-//						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-//						TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
-//
-//						Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
-//						targetComponent.setTarget(mainReplayShip);
-//
-//						ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
-//						Replay replay = replayComponent.replay;
-//
-//						// also starts a timer to invoke game over game state
-//						entityFactory.instantiate(entityTemplates.timerTemplate, new ParametersWrapper() //
-//								.put("time", (float) (replay.duration - 100) * 0.001f) //
-//								.put("eventId", Events.gameOver));
-//
-//						eventManager.registerEvent(Events.gameStarted, e);
-//					}
-//
-//					@Handles(ids = Events.gameStarted)
-//					public void resetCameraZoomWhenGameStarted(Event event) {
-//						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-//						CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
-//
-//						Camera camera = cameraComponent.getCamera();
-//						camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
-//					}
-//
-//					@Handles(ids = Events.gameOver)
-//					public void gameOver(Event event) {
-//						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-//						// mainCamera.delete();
-//						TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
-//						targetComponent.setTarget(null);
-//
-//						nextScreen();
-//					}
-//
-//				})) //
-//				.build();
-		
+		// entityBuilder //
+		// .component(new ScriptComponent(new ScriptJavaImpl() {
+		//
+		// @Override
+		// public void init(com.artemis.World world, Entity e) {
+		// Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+		// TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
+		//
+		// Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
+		// targetComponent.setTarget(mainReplayShip);
+		//
+		// ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
+		// Replay replay = replayComponent.replay;
+		//
+		// // also starts a timer to invoke game over game state
+		// entityFactory.instantiate(entityTemplates.timerTemplate, new ParametersWrapper() //
+		// .put("time", (float) (replay.duration - 100) * 0.001f) //
+		// .put("eventId", Events.gameOver));
+		//
+		// eventManager.registerEvent(Events.gameStarted, e);
+		// }
+		//
+		// @Handles(ids = Events.gameStarted)
+		// public void resetCameraZoomWhenGameStarted(Event event) {
+		// Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+		// CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
+		//
+		// Camera camera = cameraComponent.getCamera();
+		// camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
+		// }
+		//
+		// @Handles(ids = Events.gameOver)
+		// public void gameOver(Event event) {
+		// Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+		// // mainCamera.delete();
+		// TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
+		// targetComponent.setTarget(null);
+		//
+		// nextScreen();
+		// }
+		//
+		// })) //
+		// .build();
+
 		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
 				.put("camera", new CameraImpl()) //
 				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
@@ -215,11 +216,11 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		entityFactory.instantiate(labelTemplate, new ParametersWrapper() //
 				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f)) //
-				.put("text", "") //
+				.put("text", "Playing replay, touch to continue...") //
 				.put("fontId", "LevelFont") //
 				.put("layer", 250) //
-				// .put(center, 0.5f, 0f)
-				// .put color
+				.put("center", new Vector2(0.5f, 0f))
+		// .put color
 				);
 
 		// guiContainer.add(GuiControls.label("Playing replay, touch to continue...") //
