@@ -17,8 +17,8 @@ import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialHierarchicalImpl;
 import com.gemserk.games.superflyingthing.Colors;
-import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.scripts.LaserBulletScript;
 import com.gemserk.resources.ResourceManager;
 

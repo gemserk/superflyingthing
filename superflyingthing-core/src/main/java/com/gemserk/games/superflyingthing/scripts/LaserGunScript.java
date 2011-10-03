@@ -10,8 +10,8 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class LaserGunScript extends ScriptJavaImpl {
 

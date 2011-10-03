@@ -2,8 +2,8 @@ package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
 import com.badlogic.gdx.audio.Sound;
+import com.gemserk.commons.artemis.components.SoundSpawnerComponent;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
-import com.gemserk.games.superflyingthing.components.SoundSpawnerComponent;
 import com.gemserk.resources.ResourceManager;
 
 /**

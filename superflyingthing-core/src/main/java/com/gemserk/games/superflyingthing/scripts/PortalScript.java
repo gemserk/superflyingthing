@@ -9,9 +9,9 @@ import com.gemserk.commons.gdx.box2d.Contacts;
 import com.gemserk.commons.gdx.box2d.Contacts.Contact;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.PortalComponent;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class PortalScript extends ScriptJavaImpl {
 

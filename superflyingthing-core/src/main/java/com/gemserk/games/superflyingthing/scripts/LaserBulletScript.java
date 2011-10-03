@@ -18,9 +18,9 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback {
 
