@@ -42,6 +42,7 @@ public class ComponentWrapper {
 	private static final Class<TimerComponent> timerComponentClass = TimerComponent.class;
 	
 	public static final Class<PropertiesComponent> propertiesComponentClass = PropertiesComponent.class;
+	public static final Class<SoundSpawnerComponent> soundSpawnerComponentClass = SoundSpawnerComponent.class;
 	
 	public static Physics getPhysics(Entity e) {
 		return getPhysicsComponent(e).getPhysics();
@@ -122,4 +123,9 @@ public class ComponentWrapper {
 	public static PropertiesComponent getPropertiesComponent(Entity e) {
 		return e.getComponent(propertiesComponentClass);
 	}
+	
+	public static SoundSpawnerComponent getSoundSpawnerComponent(Entity e) {
+		return e.getComponent(soundSpawnerComponentClass);
+	}
+
 }

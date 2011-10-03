@@ -310,11 +310,15 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		if (bestTime != null && GameInformation.gameMode == GameInformation.ChallengeGameMode)
 			entityFactory.instantiate(bestTimeLabelTemplate, new ParametersWrapper().put("bestTime", bestTime));
 
-
 		entityFactory.instantiate(soundTemplate, new ParametersWrapper() //
 				.put("soundId", "ExplosionSound") //
 				.put("eventId", Events.explosion)//
 				);
+
+		// entityFactory.instantiate(soundTemplate, new ParametersWrapper() //
+		// .put("soundId", "ButtonReleasedSound") //
+		// .put("eventId", Events.enablePlanetReleaseShip)//
+		// );
 
 	}
 
