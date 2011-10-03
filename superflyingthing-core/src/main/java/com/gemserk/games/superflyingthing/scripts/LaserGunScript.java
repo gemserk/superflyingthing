@@ -10,7 +10,7 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
 public class LaserGunScript extends ScriptJavaImpl {
@@ -26,13 +26,13 @@ public class LaserGunScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
-		WeaponComponent weaponComponent = ComponentWrapper.getWeaponComponent(e);
+		WeaponComponent weaponComponent = GameComponents.getWeaponComponent(e);
 		float reloadTime = weaponComponent.getReloadTime();
 		reloadTime -= GlobalTime.getDelta();
 
 		if (reloadTime <= 0) {
 
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			SpriteComponent spriteComponent = GameComponents.getSpriteComponent(e);
 
 			bulletParameters.put("owner", e);
 			bulletParameters.put("x", 0.5f);
@@ -47,11 +47,11 @@ public class LaserGunScript extends ScriptJavaImpl {
 		}
 		weaponComponent.setReloadTime(reloadTime);
 
-		AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
+		AnimationComponent animationComponent = GameComponents.getAnimationComponent(e);
 		Animation currentAnimation = animationComponent.getCurrentAnimation();
 		currentAnimation.update(GlobalTime.getDelta());
 
-		SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+		SpriteComponent spriteComponent = GameComponents.getSpriteComponent(e);
 		spriteComponent.setSprite(currentAnimation.getCurrentFrame());
 	}
 

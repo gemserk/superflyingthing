@@ -7,7 +7,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class AnalogControllerScript extends ScriptJavaImpl {
@@ -42,10 +42,10 @@ public class AnalogControllerScript extends ScriptJavaImpl {
 		if (ship == null)
 			return;
 
-		Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
+		Spatial shipSpatial = GameComponents.getSpatial(ship);
 		float angle = shipSpatial.getAngle();
 		
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+		Spatial spatial = GameComponents.getSpatial(e);
 		spatial.setPosition(-100, 0);
 		
 		if (!isTouched && Gdx.input.isTouched()) {

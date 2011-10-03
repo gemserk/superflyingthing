@@ -59,7 +59,7 @@ import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
@@ -242,7 +242,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					@Override
 					public void init(com.artemis.World world, Entity e) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-						TargetComponent targetComponent = ComponentWrapper.getTargetComponent(mainCamera);
+						TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
 
 						Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
 						targetComponent.setTarget(mainReplayShip);
@@ -271,7 +271,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 					public void gameOver(Event event) {
 						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
 						// mainCamera.delete();
-						TargetComponent targetComponent = ComponentWrapper.getTargetComponent(mainCamera);
+						TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
 						targetComponent.setTarget(null);
 
 						nextScreen();

@@ -58,7 +58,7 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
@@ -100,7 +100,7 @@ public class ControllerTestGameState extends GameStateImpl {
 
 		private void checkShipOutsideBounds(com.artemis.World world, Entity e) {
 			Entity ship = world.getTagManager().getEntity(Groups.ship);
-			Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
+			Spatial shipSpatial = GameComponents.getSpatial(ship);
 
 			float limitX = 8.5f;
 			int limitY = 6;

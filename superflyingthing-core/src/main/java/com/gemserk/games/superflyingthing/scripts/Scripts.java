@@ -24,7 +24,7 @@ import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
@@ -86,7 +86,7 @@ public class Scripts {
 		}
 
 		private void updateGrabbable(Entity e) {
-			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
+			GrabbableComponent grabbableComponent = GameComponents.getGrabbableComponent(e);
 			if (!grabbableComponent.grabbed)
 				return;
 			Gdx.app.log("SuperFlyingThing", "Registering event for item taken");
@@ -101,8 +101,8 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+			AnimationComponent animationComponent = GameComponents.getAnimationComponent(e);
+			SpriteComponent spriteComponent = GameComponents.getSpriteComponent(e);
 
 			angle += rotationSpeed * GlobalTime.getDelta();
 
@@ -175,7 +175,7 @@ public class Scripts {
 			if (!enabled)
 				return;
 
-			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e);
+			AttachmentComponent entityAttachment = GameComponents.getAttachmentComponent(e);
 			Entity attachedEntity = entityAttachment.entity;
 
 			if (attachedEntity == null)
@@ -187,7 +187,7 @@ public class Scripts {
 			if (entityAttachment.joint != null)
 				physicsWorld.destroyJoint(entityAttachment.joint);
 
-			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(attachedEntity);
+			AttachableComponent attachableComponent = GameComponents.getAttachableComponent(attachedEntity);
 			attachableComponent.owner = null;
 
 			entityAttachment.joint = null;
@@ -195,7 +195,7 @@ public class Scripts {
 		}
 
 		private boolean shouldReleaseShip(com.artemis.World world, Entity e) {
-			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
+			ControllerComponent controllerComponent = GameComponents.getControllerComponent(e);
 			ShipController shipController = controllerComponent.getController();
 			return shipController.shouldReleaseShip();
 		}
@@ -232,7 +232,7 @@ public class Scripts {
 			attachEntityBehavior.update(world, e);
 			calculateInputDirectionBehavior.update(world, e);
 
-			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(e);
+			AttachmentComponent attachmentComponent = GameComponents.getAttachmentComponent(e);
 			if (attachmentComponent.entity == null)
 				return;
 
@@ -313,19 +313,19 @@ public class Scripts {
 			if (invulnerable)
 				return;
 
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
+			GameDataComponent gameDataComponent = GameComponents.getGameDataComponent(e);
 
 			Entity ship = gameDataComponent.ship;
 			if (ship == null)
 				return;
 
-			HealthComponent healthComponent = ComponentWrapper.getHealthComponent(ship);
+			HealthComponent healthComponent = GameComponents.getHealthComponent(ship);
 			if (healthComponent == null)
 				return;
 			if (!healthComponent.getHealth().isEmpty())
 				return;
 
-			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.ship);
+			Spatial spatial = GameComponents.getSpatial(gameDataComponent.ship);
 
 			world.deleteEntity(gameDataComponent.ship);
 			gameDataComponent.ship = null;
@@ -340,7 +340,7 @@ public class Scripts {
 		}
 
 		private void regenerateShipIfNoShip(com.artemis.World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
+			GameDataComponent gameDataComponent = GameComponents.getGameDataComponent(e);
 
 			if (gameDataComponent.attachedShip != null)
 				return;
@@ -352,17 +352,17 @@ public class Scripts {
 			if (startPlanet == null)
 				return;
 
-			Spatial spatial = ComponentWrapper.getSpatial(startPlanet);
+			Spatial spatial = GameComponents.getSpatial(startPlanet);
 
 			parameters.put("position", spatial.getPosition().tmp().add(0f, 2f));
 
 			Entity attachedShip = entityFactory.instantiate(attachedShipTemplate, parameters);
 
-			AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(startPlanet);
+			AttachmentComponent attachmentComponent = GameComponents.getAttachmentComponent(startPlanet);
 			attachmentComponent.setEntity(attachedShip);
 			attachmentComponent.setJoint(null);
 
-			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(attachedShip);
+			AttachableComponent attachableComponent = GameComponents.getAttachableComponent(attachedShip);
 			attachableComponent.setOwner(startPlanet);
 
 			gameDataComponent.attachedShip = attachedShip;
@@ -371,7 +371,7 @@ public class Scripts {
 		}
 
 		private void generateShipIfAttachedShipReleased(com.artemis.World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
+			GameDataComponent gameDataComponent = GameComponents.getGameDataComponent(e);
 
 			if (gameDataComponent.attachedShip == null)
 				return;
@@ -379,14 +379,14 @@ public class Scripts {
 			if (gameDataComponent.ship != null)
 				return;
 
-			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(gameDataComponent.attachedShip);
+			AttachableComponent attachableComponent = GameComponents.getAttachableComponent(gameDataComponent.attachedShip);
 			if (attachableComponent.getOwner() != null)
 				return;
 
-			Spatial spatial = ComponentWrapper.getSpatial(gameDataComponent.attachedShip);
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(gameDataComponent.attachedShip);
+			Spatial spatial = GameComponents.getSpatial(gameDataComponent.attachedShip);
+			MovementComponent movementComponent = GameComponents.getMovementComponent(gameDataComponent.attachedShip);
 
-			PhysicsComponent attachedShipPhysicsComponent = ComponentWrapper.getPhysicsComponent(gameDataComponent.attachedShip);
+			PhysicsComponent attachedShipPhysicsComponent = GameComponents.getPhysicsComponent(gameDataComponent.attachedShip);
 
 			Entity contollerEntity = world.getTagManager().getEntity(Groups.PlayerController);
 			if (contollerEntity == null) {
@@ -394,7 +394,7 @@ public class Scripts {
 				return;
 			}
 
-			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(contollerEntity);
+			ControllerComponent controllerComponent = GameComponents.getControllerComponent(contollerEntity);
 
 			parameters.put("spatial", spatial);
 			parameters.put("controller", controllerComponent.getController());
@@ -403,7 +403,7 @@ public class Scripts {
 
 			gameDataComponent.ship = entityFactory.instantiate(shipTemplate, parameters);
 
-			PhysicsComponent shipPhysicsComponent = ComponentWrapper.getPhysicsComponent(gameDataComponent.ship);
+			PhysicsComponent shipPhysicsComponent = GameComponents.getPhysicsComponent(gameDataComponent.ship);
 
 			Vector2 linearVelocity = attachedShipPhysicsComponent.getBody().getLinearVelocity();
 			shipPhysicsComponent.getBody().setLinearVelocity(linearVelocity);
@@ -419,7 +419,7 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			ParticleEmitterComponent particleEmitterComponent = ComponentWrapper.getParticleEmitter(e);
+			ParticleEmitterComponent particleEmitterComponent = GameComponents.getParticleEmitter(e);
 			ParticleEmitter particleEmitter = particleEmitterComponent.getParticleEmitter();
 			if (particleEmitter.isComplete())
 				world.deleteEntity(e);
@@ -431,8 +431,8 @@ public class Scripts {
 
 		@Override
 		public void update(com.artemis.World world, Entity e) {
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
+			SpriteComponent spriteComponent = GameComponents.getSpriteComponent(e);
+			AnimationComponent animationComponent = GameComponents.getAnimationComponent(e);
 			Animation animation = animationComponent.getCurrentAnimation();
 			animation.update(GlobalTime.getDelta());
 			Sprite sprite = animation.getCurrentFrame();

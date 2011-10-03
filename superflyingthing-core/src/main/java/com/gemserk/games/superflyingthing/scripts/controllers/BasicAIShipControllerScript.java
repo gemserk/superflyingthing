@@ -11,7 +11,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
@@ -56,11 +56,11 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 		public float reportRayFixture(Fixture fixture, Vector2 point, Vector2 normal, float fraction) {
 			Entity e = (Entity) fixture.getBody().getUserData();
 			if (e != null) {
-				GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
+				GrabbableComponent grabbableComponent = GameComponents.getGrabbableComponent(e);
 				if (grabbableComponent != null)
 					return 1;
 
-				AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(e);
+				AttachmentComponent attachmentComponent = GameComponents.getAttachmentComponent(e);
 				if (attachmentComponent != null)
 					return 1;
 			}
@@ -92,7 +92,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
 		if (playerController == null)
 			return;
-		ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(playerController);
+		ControllerComponent controllerComponent = GameComponents.getControllerComponent(playerController);
 		controller = controllerComponent.getController();
 
 		updateShipInPlanetBehavior(world, e);
@@ -107,9 +107,9 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 		if (ship == null)
 			return;
 
-		MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
+		MovementComponent movementComponent = GameComponents.getMovementComponent(ship);
 
-		Spatial spatial = ComponentWrapper.getSpatial(ship);
+		Spatial spatial = GameComponents.getSpatial(ship);
 		Vector2 position = spatial.getPosition();
 		direction.set(movementComponent.getDirection());
 		
@@ -151,7 +151,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 			ImmutableBag<Entity> destinationPlanets = world.getGroupManager().getEntities(Groups.destinationPlanets);
 			for (int i = 0; i < destinationPlanets.size(); i++) {
 				Entity destinationPlanet = destinationPlanets.get(i);
-				Spatial destinationPlanetSpatial = ComponentWrapper.getSpatial(destinationPlanet);
+				Spatial destinationPlanetSpatial = GameComponents.getSpatial(destinationPlanet);
 
 				Vector2 desiredDirection = destinationPlanetSpatial.getPosition().tmp().sub(position);
 				planetPosition.set(position).add(desiredDirection.mul(1f));
@@ -207,7 +207,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 		Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
 		controller.setShouldReleaseShip(false);
 
-		AttachmentComponent attachmentComponent = ComponentWrapper.getAttachmentComponent(startPlanet);
+		AttachmentComponent attachmentComponent = GameComponents.getAttachmentComponent(startPlanet);
 		if (attachmentComponent == null)
 			return;
 
@@ -216,7 +216,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 
 		Entity ship = attachmentComponent.getEntity();
 
-		MovementComponent movementComponent = ComponentWrapper.getMovementComponent(ship);
+		MovementComponent movementComponent = GameComponents.getMovementComponent(ship);
 		Vector2 direction = movementComponent.getDirection();
 		if (AngleUtils.minimumDifference(direction.angle(), 0) < 10)
 			controller.setShouldReleaseShip(true);

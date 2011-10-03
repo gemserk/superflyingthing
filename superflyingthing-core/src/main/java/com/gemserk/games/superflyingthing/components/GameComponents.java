@@ -21,7 +21,7 @@ import com.gemserk.games.superflyingthing.components.Components.ReplayListCompon
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.Components.WeaponComponent;
 
-public class ComponentWrapper {
+public class GameComponents {
 	
 	private static final Class<PhysicsComponent> physicsComponentClass = PhysicsComponent.class;
 	private static final Class<SpatialComponent> spatialComponentClass = SpatialComponent.class;

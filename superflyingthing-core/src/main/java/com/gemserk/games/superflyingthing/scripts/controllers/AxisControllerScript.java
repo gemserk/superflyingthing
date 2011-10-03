@@ -6,7 +6,7 @@ import com.gemserk.animation4j.interpolator.function.InterpolationFunctions;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class AxisControllerScript extends ScriptJavaImpl {
 
@@ -32,7 +32,7 @@ public class AxisControllerScript extends ScriptJavaImpl {
 
 	public void updateMovementDirection(com.artemis.World world, Entity e) {
 
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+		Spatial spatial = GameComponents.getSpatial(e);
 		spatial.setPosition(-100, 0);
 
 		if (!isTouched && Gdx.input.isTouched()) {

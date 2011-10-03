@@ -7,7 +7,7 @@ import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 
 public class ParticleEmitterSystem extends EntityProcessingSystem {
@@ -42,7 +42,7 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 	protected void process(Entity e) {
 		ParticleEmitterComponent particleEmitterComponent = particleEmitterComponentMapper.get(e);
 
-		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(e);
+		SpatialComponent spatialComponent = GameComponents.getSpatialComponent(e);
 
 		ParticleEmitter emitter = particleEmitterComponent.getParticleEmitter();
 

@@ -18,7 +18,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.Container;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.DamageComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 
@@ -48,7 +48,7 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 		TimerComponent timerComponent = e.getComponent(TimerComponent.class);
 		float totalTime = timerComponent.getTotalTime();
 
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+		Spatial spatial = GameComponents.getSpatial(e);
 
 		laserTimelineAnimation = Builders.animation(Builders.timeline() //
 				.value(Builders.timelineValue("alpha") //
@@ -82,10 +82,10 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 			return;
 		}
 
-		SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
+		SpriteComponent spriteComponent = GameComponents.getSpriteComponent(e);
 		spriteComponent.getColor().a = (Float) laserTimelineAnimation.getValue("alpha");
 
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+		Spatial spatial = GameComponents.getSpatial(e);
 		// float width = spatial.getWidth();
 
 		target.set(1f, 0f).mul(20f).rotate(spatial.getAngle()).add(spatial.getPosition());
@@ -97,9 +97,9 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 			Body body = lastCollisionFixture.getBody();
 			Entity entity = (Entity) body.getUserData();
 			if (entity != null) {
-				HealthComponent healthComponent = ComponentWrapper.getHealthComponent(entity);
+				HealthComponent healthComponent = GameComponents.getHealthComponent(entity);
 				if (healthComponent != null) {
-					DamageComponent damageComponent = ComponentWrapper.getDamageComponent(e);
+					DamageComponent damageComponent = GameComponents.getDamageComponent(e);
 					Container health = healthComponent.getHealth();
 					health.remove(damageComponent.getDamage() * GlobalTime.getDelta());
 				}
@@ -118,7 +118,7 @@ public class LaserBulletScript extends ScriptJavaImpl implements RayCastCallback
 		if (laserHitParticleEmitter == null)
 			laserHitParticleEmitter = entityFactory.instantiate(particleEmitterTemplate, parameters);
 
-		Spatial laserHitEmitterSpatial = ComponentWrapper.getSpatial(laserHitParticleEmitter);
+		Spatial laserHitEmitterSpatial = GameComponents.getSpatial(laserHitParticleEmitter);
 		laserHitEmitterSpatial.setPosition(target.x, target.y);
 	}
 

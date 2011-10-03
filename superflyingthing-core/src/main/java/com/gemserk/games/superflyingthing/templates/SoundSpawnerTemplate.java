@@ -12,7 +12,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.reflection.Injector;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.SoundSpawnerComponent;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
@@ -34,7 +34,7 @@ public class SoundSpawnerTemplate extends EntityTemplateImpl {
 
 		@Override
 		public void onEvent(Event event) {
-			SoundSpawnerComponent soundSpawnerComponent = ComponentWrapper.getSoundSpawnerComponent(e);
+			SoundSpawnerComponent soundSpawnerComponent = GameComponents.getSoundSpawnerComponent(e);
 			soundPlayer.play(soundSpawnerComponent.sound.get());
 		}
 
@@ -47,14 +47,14 @@ public class SoundSpawnerTemplate extends EntityTemplateImpl {
 
 		@Override
 		public void init(World world, Entity e) {
-			SoundSpawnerComponent soundSpawnerComponent = ComponentWrapper.getSoundSpawnerComponent(e);
+			SoundSpawnerComponent soundSpawnerComponent = GameComponents.getSoundSpawnerComponent(e);
 			soundSpawnerComponent.listener = new SoundSpawnerEventListener(soundPlayer, e);
 			eventManager.register(soundSpawnerComponent.eventId, soundSpawnerComponent.listener);
 		}
 
 		@Override
 		public void dispose(World world, Entity e) {
-			SoundSpawnerComponent soundSpawnerComponent = ComponentWrapper.getSoundSpawnerComponent(e);
+			SoundSpawnerComponent soundSpawnerComponent = GameComponents.getSoundSpawnerComponent(e);
 			eventManager.unregister(soundSpawnerComponent.listener);
 		}
 

@@ -51,7 +51,7 @@ import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.PropertiesComponent;
 import com.gemserk.games.superflyingthing.gamestates.GameInformation;
@@ -81,7 +81,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 			@Override
 			public void update(com.artemis.World world, Entity e) {
 
-				PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
+				PropertiesComponent propertiesComponent = GameComponents.getPropertiesComponent(e);
 				GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
 
 				if (currentItems == gameData.currentItems)
@@ -122,7 +122,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
-				PropertiesComponent propertiesComponent = ComponentWrapper.getPropertiesComponent(e);
+				PropertiesComponent propertiesComponent = GameComponents.getPropertiesComponent(e);
 				GameData gameData = (GameData) propertiesComponent.properties.get("gameData");
 
 				timerLabelBuilder.delete(0, timerLabelBuilder.length());

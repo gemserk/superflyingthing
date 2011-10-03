@@ -5,7 +5,7 @@ import com.gemserk.commons.artemis.components.TimerComponent;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class TimerScript extends ScriptJavaImpl {
 
@@ -18,7 +18,7 @@ public class TimerScript extends ScriptJavaImpl {
 	}
 
 	public void update(com.artemis.World world, Entity e) {
-		TimerComponent timerComponent = ComponentWrapper.getTimerComponent(e);
+		TimerComponent timerComponent = GameComponents.getTimerComponent(e);
 
 		float currentTime = timerComponent.getCurrentTime();
 		timerComponent.setCurrentTime(currentTime - GlobalTime.getDelta());

@@ -8,7 +8,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.Events;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.Replay.ReplayEntry;
@@ -33,7 +33,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 	@Handles(ids = { Events.gameOver, Events.shipDeath })
 	public void stopReplayRecording(Event event) {
-		ReplayListComponent replayListComponent = ComponentWrapper.getReplayComponent(owner);
+		ReplayListComponent replayListComponent = GameComponents.getReplayComponent(owner);
 		ReplayList replayList = replayListComponent.getReplayList();
 		replayList.add(currentReplay);
 		
@@ -72,7 +72,7 @@ public class ReplayRecorderScript extends ScriptJavaImpl {
 
 		replayTime += 100;
 
-		SpatialComponent spatialComponent = ComponentWrapper.getSpatialComponent(recordingShip);
+		SpatialComponent spatialComponent = GameComponents.getSpatialComponent(recordingShip);
 
 		// recordingShip could be deleted already :(
 		if (spatialComponent == null)

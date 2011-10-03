@@ -20,7 +20,7 @@ import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
@@ -38,7 +38,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Spatial spatial = GameComponents.getSpatial(e);
 			CameraComponent cameraComponent = Components.getCameraComponent(e);
 			Camera camera = cameraComponent.getCamera();
 			camera.setPosition(spatial.getX(), spatial.getY());
@@ -50,14 +50,14 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
+			TargetComponent targetComponent = GameComponents.getTargetComponent(e);
 			Entity target = targetComponent.target;
 			if (target == null)
 				return;
-			Spatial targetSpatial = ComponentWrapper.getSpatial(target);
+			Spatial targetSpatial = GameComponents.getSpatial(target);
 			if (targetSpatial == null)
 				return;
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Spatial spatial = GameComponents.getSpatial(e);
 			if (spatial == null)
 				return;
 			spatial.set(targetSpatial);
@@ -69,12 +69,12 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
+			MovementComponent movementComponent = GameComponents.getMovementComponent(e);
 			Vector2 direction = movementComponent.direction;
 
 			direction.nor();
 
-			Body body = ComponentWrapper.getPhysics(e).getBody();
+			Body body = GameComponents.getPhysics(e).getBody();
 
 			Vector2 position = body.getTransform().getPosition();
 			float desiredAngle = direction.angle();
@@ -102,17 +102,17 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e);
+			AttachmentComponent entityAttachment = GameComponents.getAttachmentComponent(e);
 
 			if (entityAttachment.entity == null)
 				return;
 
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Spatial spatial = GameComponents.getSpatial(e);
 			Vector2 position = spatial.getPosition();
 
 			Entity attachedEntity = entityAttachment.entity;
-			Spatial attachedEntitySpatial = ComponentWrapper.getSpatial(attachedEntity);
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(attachedEntity);
+			Spatial attachedEntitySpatial = GameComponents.getSpatial(attachedEntity);
+			MovementComponent movementComponent = GameComponents.getMovementComponent(attachedEntity);
 
 			Vector2 superSheepPosition = attachedEntitySpatial.getPosition();
 
@@ -134,7 +134,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e);
+			AttachmentComponent entityAttachment = GameComponents.getAttachmentComponent(e);
 			if (entityAttachment.entity == null)
 				return;
 			if (entityAttachment.joint != null)
@@ -142,13 +142,13 @@ public class Behaviors {
 
 			Gdx.app.log("SuperFlyingThing", "Building joint for ship with planet");
 
-			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(entityAttachment.entity);
+			AttachableComponent attachableComponent = GameComponents.getAttachableComponent(entityAttachment.entity);
 			attachableComponent.owner = e;
 
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			Spatial spatial = GameComponents.getSpatial(e);
 			entityAttachment.joint = jointBuilder.distanceJoint() //
-					.bodyA(ComponentWrapper.getPhysics(entityAttachment.entity).getBody()) //
-					.bodyB(ComponentWrapper.getPhysics(e).getBody()) //
+					.bodyA(GameComponents.getPhysics(entityAttachment.entity).getBody()) //
+					.bodyB(GameComponents.getPhysics(e).getBody()) //
 					.collideConnected(false) //
 					.length(spatial.getWidth() * 0.5f * 1.5f) //
 					.build();
@@ -159,7 +159,7 @@ public class Behaviors {
 	public static class RemoveWhenGrabbedScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e) {
-			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e);
+			GrabbableComponent grabbableComponent = GameComponents.getGrabbableComponent(e);
 			if (grabbableComponent.grabbed)
 				world.deleteEntity(e);
 		}
@@ -169,8 +169,8 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			MovementComponent movementComponent = ComponentWrapper.getMovementComponent(e);
-			ControllerComponent controllerComponent = ComponentWrapper.getControllerComponent(e);
+			MovementComponent movementComponent = GameComponents.getMovementComponent(e);
+			ControllerComponent controllerComponent = GameComponents.getControllerComponent(e);
 
 			if (movementComponent == null)
 				return;
@@ -199,9 +199,9 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			AnimationComponent animationComponent = ComponentWrapper.getAnimationComponent(e);
-			SpriteComponent spriteComponent = ComponentWrapper.getSpriteComponent(e);
-			Spatial spatial = ComponentWrapper.getSpatial(e);
+			AnimationComponent animationComponent = GameComponents.getAnimationComponent(e);
+			SpriteComponent spriteComponent = GameComponents.getSpriteComponent(e);
+			Spatial spatial = GameComponents.getSpatial(e);
 
 			float angle = spatial.getAngle();
 
@@ -231,7 +231,7 @@ public class Behaviors {
 	public static class AttachToAttachableScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e1) {
-			Physics physics = ComponentWrapper.getPhysics(e1);
+			Physics physics = GameComponents.getPhysics(e1);
 			if (physics == null)
 				return;
 			Contacts contacts = physics.getContact();
@@ -245,12 +245,12 @@ public class Behaviors {
 		}
 
 		private void updateAttachToAttachable(Entity e1, Entity e2) {
-			AttachmentComponent entityAttachment = ComponentWrapper.getAttachmentComponent(e2);
+			AttachmentComponent entityAttachment = GameComponents.getAttachmentComponent(e2);
 			if (entityAttachment == null)
 				return;
 			if (entityAttachment.entity != null)
 				return;
-			Spatial spatial = ComponentWrapper.getSpatial(e2);
+			Spatial spatial = GameComponents.getSpatial(e2);
 			if (spatial == null)
 				return;
 			entityAttachment.entity = e1;
@@ -262,7 +262,7 @@ public class Behaviors {
 		
 		@Override
 		public void update(World world, Entity e1) {
-			Physics physics = ComponentWrapper.getPhysics(e1);
+			Physics physics = GameComponents.getPhysics(e1);
 			if (physics == null)
 				return;
 			Contacts contacts = physics.getContact();
@@ -278,7 +278,7 @@ public class Behaviors {
 		private void updateGrabGrabbable(Entity e1, Entity e2) {
 			if (e2 == null)
 				return;
-			GrabbableComponent grabbableComponent = ComponentWrapper.getGrabbableComponent(e2);
+			GrabbableComponent grabbableComponent = GameComponents.getGrabbableComponent(e2);
 			if (grabbableComponent == null)
 				return;
 			if (grabbableComponent.grabbed)
@@ -293,13 +293,13 @@ public class Behaviors {
 	public static class FixCameraTargetScript extends ScriptJavaImpl {
 		@Override
 		public void update(World world, Entity e) {
-			GameDataComponent gameDataComponent = ComponentWrapper.getGameDataComponent(e);
+			GameDataComponent gameDataComponent = GameComponents.getGameDataComponent(e);
 			if (gameDataComponent == null)
 				return;
 			Entity camera = world.getTagManager().getEntity(Groups.MainCamera);
 			if (camera == null)
 				return;
-			TargetComponent targetComponent = ComponentWrapper.getTargetComponent(camera);
+			TargetComponent targetComponent = GameComponents.getTargetComponent(camera);
 
 			Entity ship = gameDataComponent.ship;
 			if (ship == null) {
@@ -307,7 +307,7 @@ public class Behaviors {
 				return;
 			}
 
-			AttachableComponent attachableComponent = ComponentWrapper.getAttachableComponent(ship);
+			AttachableComponent attachableComponent = GameComponents.getAttachableComponent(ship);
 			if (attachableComponent.getOwner() != null)
 				targetComponent.setTarget(attachableComponent.getOwner());
 			else
@@ -321,7 +321,7 @@ public class Behaviors {
 
 		@Override
 		public void update(World world, Entity e) {
-			Physics physics = ComponentWrapper.getPhysics(e);
+			Physics physics = GameComponents.getPhysics(e);
 			if (physics == null)
 				return;
 			Contacts contacts = physics.getContact();
@@ -331,18 +331,18 @@ public class Behaviors {
 				if (otherEntity == null)
 					continue;
 
-				HealthComponent healthComponent = ComponentWrapper.getHealthComponent(e);
+				HealthComponent healthComponent = GameComponents.getHealthComponent(e);
 				if (healthComponent == null)
 					continue;
 
-				Spatial spatial = ComponentWrapper.getSpatial(e);
+				Spatial spatial = GameComponents.getSpatial(e);
 
 				aux.set(1f, 0f).rotate(spatial.getAngle());
 				float dot = aux.dot(contact.getNormal());
 				if (dot < 0)
 					dot = -dot;
 
-				DamageComponent damageComponent = ComponentWrapper.getDamageComponent(otherEntity);
+				DamageComponent damageComponent = GameComponents.getDamageComponent(otherEntity);
 				if (damageComponent == null)
 					continue;
 				float damage = damageComponent.getDamage() * GlobalTime.getDelta() * dot;

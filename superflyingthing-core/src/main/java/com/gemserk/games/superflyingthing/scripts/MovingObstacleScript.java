@@ -7,7 +7,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Physics;
 import com.gemserk.commons.gdx.games.Spatial;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class MovingObstacleScript extends ScriptJavaImpl {
 
@@ -27,8 +27,8 @@ public class MovingObstacleScript extends ScriptJavaImpl {
 
 	@Override
 	public void update(com.artemis.World world, Entity e) {
-		Physics physics = ComponentWrapper.getPhysics(e);
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+		Physics physics = GameComponents.getPhysics(e);
+		Spatial spatial = GameComponents.getSpatial(e);
 
 		Body body = physics.getBody();
 

@@ -12,7 +12,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GlobalTime;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.Events;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 
 public class CameraScript extends ScriptJavaImpl {
@@ -38,14 +38,14 @@ public class CameraScript extends ScriptJavaImpl {
 
 	@Handles(ids = Events.moveCameraToEntity)
 	public void moveCameraToPlanet(Event event) {
-		Spatial spatial = ComponentWrapper.getSpatial(owner);
+		Spatial spatial = GameComponents.getSpatial(owner);
 		transitionOrigin.set(spatial.getPosition());
 
 		Entity entity = (Entity) event.getSource();
 		if (entity == null)
 			return;
 
-		Spatial targetSpatial = ComponentWrapper.getSpatial(entity);
+		Spatial targetSpatial = GameComponents.getSpatial(entity);
 		transitionTarget.set(targetSpatial.getPosition());
 
 		timeTransition.start(0.8f);
@@ -58,10 +58,10 @@ public class CameraScript extends ScriptJavaImpl {
 	}
 
 	private void updatePosition(com.artemis.World world, Entity e) {
-		TargetComponent targetComponent = ComponentWrapper.getTargetComponent(e);
+		TargetComponent targetComponent = GameComponents.getTargetComponent(e);
 		Entity target = targetComponent.target;
 
-		Spatial spatial = ComponentWrapper.getSpatial(e);
+		Spatial spatial = GameComponents.getSpatial(e);
 
 		if (target == null) {
 			timeTransition.update(GlobalTime.getDelta());
@@ -87,7 +87,7 @@ public class CameraScript extends ScriptJavaImpl {
 				return;
 			}
 			
-			Spatial targetSpatial = ComponentWrapper.getSpatial(target);
+			Spatial targetSpatial = GameComponents.getSpatial(target);
 			spatial.set(targetSpatial);
 		}
 

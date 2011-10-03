@@ -10,7 +10,7 @@ import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.ShipController;
-import com.gemserk.games.superflyingthing.components.ComponentWrapper;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class TargetControllerScript extends ScriptJavaImpl {
@@ -52,7 +52,7 @@ public class TargetControllerScript extends ScriptJavaImpl {
 		CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
 		Libgdx2dCamera libgdx2dCamera = cameraComponent.getLibgdx2dCamera();
 
-		Spatial shipSpatial = ComponentWrapper.getSpatial(ship);
+		Spatial shipSpatial = GameComponents.getSpatial(ship);
 		shipPosition.set(shipSpatial.getPosition());
 		float angle = shipSpatial.getAngle();
 
