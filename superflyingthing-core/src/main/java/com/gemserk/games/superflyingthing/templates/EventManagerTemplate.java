@@ -13,7 +13,7 @@ public class EventManagerTemplate extends EntityTemplateImpl {
 
 	@Override
 	public void apply(Entity entity) {
-		entity.addComponent(new TagComponent("EventManager"));
+		entity.addComponent(new TagComponent(Groups.EventManager));
 		entity.addComponent(new ScriptComponent(new EventSystemScript(eventManager)));
 	}
 

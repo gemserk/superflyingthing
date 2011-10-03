@@ -1,9 +1,11 @@
 package com.gemserk.games.superflyingthing.scenes;
 
+import java.util.ArrayList;
+
+import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -19,10 +21,8 @@ import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
-import com.gemserk.commons.artemis.systems.SoundSpawnerSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
-import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -36,38 +36,33 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
-import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.components.Replay;
+import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
-import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
 import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl;
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
-import com.gemserk.games.superflyingthing.templates.BasicAIControllerTemplate;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.LabelTemplate;
-import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
-import com.gemserk.games.superflyingthing.templates.SoundSpawnerTemplate;
-import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
-public class BackgroundSceneTemplate extends SceneTemplateImpl {
+public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
-	ResourceManager<String> resourceManager;
 	TimeStepProvider timeStepProvider;
+	ResourceManager<String> resourceManager;
 	Injector injector;
 
+	@Override
 	public void apply(WorldWrapper worldWrapper) {
 
 		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", true);
-		Integer levelNumber = getParameters().get("levelNumber", 1);
-		Rectangle adsArea = getParameters().get("adsArea");
 
-		final EventManager eventManager = new EventManagerImpl();
+		EventManager eventManager = new EventManagerImpl();
 
-		final com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
+		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
 		Libgdx2dCamera hudCamera = new Libgdx2dCameraTransformImpl();
@@ -82,7 +77,6 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
-
 		renderLayers.add(Layers.Hud, new RenderLayerSpriteBatchImpl(200, 10000, hudCamera));
 
 		World world = worldWrapper.getWorld();
@@ -92,17 +86,12 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		injector.bind("renderLayers", renderLayers);
 		injector.bind("physicsWorld", physicsWorld);
-		injector.bind("resourceManager", resourceManager);
 		injector.bind("entityBuilder", entityBuilder);
 		injector.bind("entityFactory", entityFactory);
 		injector.bind("eventManager", eventManager);
 		injector.bind("bodyBuilder", new BodyBuilder(physicsWorld));
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
 		injector.bind("jointBuilder", new JointBuilder(physicsWorld));
-
-		EntityTemplates entityTemplates = new EntityTemplates(injector);
-
-		// add render and all stuff...
 
 		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
@@ -113,60 +102,133 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		// testing event listener auto registration using reflection
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
-		worldWrapper.addUpdateSystem(injector.getInstance(SoundSpawnerSystem.class));
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
-		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
+
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
 
 		worldWrapper.init();
 
-		EntityTemplate basicAiControllerTemplate = injector.getInstance(BasicAIControllerTemplate.class);
-		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
-		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
-		EntityTemplate labelTemplate = injector.getInstance(LabelTemplate.class);
-		EntityTemplate soundTemplate = injector.getInstance(SoundSpawnerTemplate.class);
+		EntityTemplates entityTemplates = new EntityTemplates(injector);
+
+		// creates and registers all the controller templates
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, new ParametersWrapper() //
 				.put("color", Color.WHITE) //
-				.put("layer", -999) //
+				.put("layer", (-999)) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
 				.put("center", new Vector2(0, 0)) //
 				.put("spriteId", "BackgroundSprite") //
 				);
 
-		Resource<Level> levelResource = resourceManager.get(Levels.levelId(levelNumber));
-		Level level = levelResource.get();
+		// loadLevelForChallengeMode();
+
+		Level level = getParameters().get("level");
+		ReplayList replayList = getParameters().get("replayList");
+
+		// loadLevel(level, true);
 
 		new LevelLoader(entityTemplates, entityFactory, physicsWorld, worldCamera, false).loadLevel(level);
 
-		entityFactory.instantiate(basicAiControllerTemplate);
+		ArrayList<Replay> replays = replayList.getReplays();
 
-		entityFactory.instantiate(normalModeGameLogicTemplate, new ParametersWrapper());
+		for (int i = 0; i < replays.size(); i++) {
 
-		entityFactory.instantiate(eventManagerTemplate);
+			// could be a flag on the replay itself instead checking the last one.
+			Replay replay = replays.get(i);
 
+			parameters.clear();
+			Entity replayShip = entityFactory.instantiate(entityTemplates.replayShipTemplate, parameters //
+					.put("replay", replay) //
+					);
+
+			parameters.clear();
+			entityFactory.instantiate(entityTemplates.replayPlayerTemplate, parameters //
+					.put("replay", replay) //
+					.put("target", replayShip) //
+					);
+
+		}
+
+//		entityBuilder //
+//				.component(new ScriptComponent(new ScriptJavaImpl() {
+//
+//					@Override
+//					public void init(com.artemis.World world, Entity e) {
+//						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+//						TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
+//
+//						Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
+//						targetComponent.setTarget(mainReplayShip);
+//
+//						ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
+//						Replay replay = replayComponent.replay;
+//
+//						// also starts a timer to invoke game over game state
+//						entityFactory.instantiate(entityTemplates.timerTemplate, new ParametersWrapper() //
+//								.put("time", (float) (replay.duration - 100) * 0.001f) //
+//								.put("eventId", Events.gameOver));
+//
+//						eventManager.registerEvent(Events.gameStarted, e);
+//					}
+//
+//					@Handles(ids = Events.gameStarted)
+//					public void resetCameraZoomWhenGameStarted(Event event) {
+//						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+//						CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
+//
+//						Camera camera = cameraComponent.getCamera();
+//						camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
+//					}
+//
+//					@Handles(ids = Events.gameOver)
+//					public void gameOver(Event event) {
+//						Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+//						// mainCamera.delete();
+//						TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
+//						targetComponent.setTarget(null);
+//
+//						nextScreen();
+//					}
+//
+//				})) //
+//				.build();
+		
 		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
 				.put("camera", new CameraImpl()) //
 				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
 				);
 
+		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
 
+		// create gui label..
+
+		// BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
+
+		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
+		EntityTemplate labelTemplate = injector.getInstance(LabelTemplate.class);
+
+		entityFactory.instantiate(eventManagerTemplate);
+
 		entityFactory.instantiate(labelTemplate, new ParametersWrapper() //
-				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.02f + adsArea.getHeight())) //
-				.put("fontId", "VersionFont") //
-				.put("text", "Preview level " + levelNumber + "...") //
+				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f)) //
+				.put("text", "") //
+				.put("fontId", "LevelFont") //
 				.put("layer", 250) //
-				.put("center", new Vector2(0f, 1f))//
+				// .put(center, 0.5f, 0f)
+				// .put color
 				);
 
-		entityFactory.instantiate(soundTemplate, new ParametersWrapper() //
-				.put("soundId", "ExplosionSound") //
-				.put("eventId", Events.explosion)//
-				);
+		// guiContainer.add(GuiControls.label("Playing replay, touch to continue...") //
+		// .position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
+		// .center(0.5f, 0f) //
+		// .color(Colors.yellow) //
+		// .font(levelFont) //
+		// .build());
+
 	}
 
 }
