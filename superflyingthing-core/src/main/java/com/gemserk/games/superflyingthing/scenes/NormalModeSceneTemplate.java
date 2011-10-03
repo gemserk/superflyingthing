@@ -63,7 +63,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
-import com.gemserk.games.superflyingthing.templates.SoundTemplate;
+import com.gemserk.games.superflyingthing.templates.SoundSpawnerTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class NormalModeSceneTemplate extends SceneTemplateImpl {
@@ -288,7 +288,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		EntityTemplate itemTakenLabelTemplate = injector.getInstance(ItemsTakenLabelEntityTemplate.class);
 		EntityTemplate timerLabelTemplate = injector.getInstance(TimerLabelEntityTemplate.class);
 		EntityTemplate bestTimeLabelTemplate = injector.getInstance(BestTimeLabelTemplate.class);
-		EntityTemplate soundTemplate = injector.getInstance(SoundTemplate.class);
+		EntityTemplate soundTemplate = injector.getInstance(SoundSpawnerTemplate.class);
 
 		// EntityTemplate gameModeTemplate = injector.getInstance(GameModeEntityTemplate.class);
 
