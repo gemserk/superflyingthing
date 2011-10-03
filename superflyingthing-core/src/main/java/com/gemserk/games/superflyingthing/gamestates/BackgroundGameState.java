@@ -4,7 +4,6 @@ import com.artemis.Entity;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.gemserk.animation4j.transitions.TimeTransition;
@@ -20,8 +19,6 @@ import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.camera.Camera;
-import com.gemserk.commons.gdx.gui.Container;
-import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
@@ -41,7 +38,6 @@ public class BackgroundGameState extends GameStateImpl {
 	SpriteBatch spriteBatch;
 	boolean done;
 	WorldWrapper worldWrapper;
-	Container guiContainer;
 	TimeTransition restartTimeTransition;
 	Integer previewLevelNumber;
 	RenderLayers renderLayers;
@@ -95,6 +91,7 @@ public class BackgroundGameState extends GameStateImpl {
 		};
 
 		SceneTemplate sceneTemplate = injector.getInstance(BackgroundSceneTemplate.class);
+		sceneTemplate.getParameters().put("adsArea", game.getAdsMaxArea());
 		sceneTemplate.getParameters().put("levelNumber", levelNumber);
 		sceneTemplate.getParameters().put("backgroundEnabled", game.getGamePreferences().isFirstBackgroundEnabled());
 		sceneTemplate.apply(worldWrapper);
@@ -128,18 +125,6 @@ public class BackgroundGameState extends GameStateImpl {
 
 		worldWrapper.update(1);
 
-		//
-
-		BitmapFont font = resourceManager.getResourceValue("VersionFont");
-		
-		guiContainer = new Container();
-
-		guiContainer.add(GuiControls.label("Preview level " + levelNumber + "...") //
-				.id("PreviewLevelNumberLabel") //
-				.center(0f, 1f) //
-				.font(font) //
-				.position(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.02f + game.getAdsMaxArea().getHeight()) //
-				.build());
 	}
 
 	private void gameFinished() {
@@ -150,18 +135,12 @@ public class BackgroundGameState extends GameStateImpl {
 	@Override
 	public void render() {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
-
 		worldWrapper.render();
-
-		spriteBatch.begin();
-		guiContainer.draw(spriteBatch);
-		spriteBatch.end();
 	}
 
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		guiContainer.update();
 
 		if (restartTimeTransition != null) {
 			restartTimeTransition.update(getDelta());

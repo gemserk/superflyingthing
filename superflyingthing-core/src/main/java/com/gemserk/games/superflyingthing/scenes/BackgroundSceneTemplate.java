@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.scenes;
 import com.artemis.World;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
@@ -20,6 +21,7 @@ import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
+import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
@@ -43,6 +45,7 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.BasicAIControllerTemplate;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
+import com.gemserk.games.superflyingthing.templates.LabelTemplate;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
@@ -57,12 +60,14 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", true);
 		Integer levelNumber = getParameters().get("levelNumber", 1);
+		Rectangle adsArea = getParameters().get("adsArea");
 
 		final EventManager eventManager = new EventManagerImpl();
 
 		final com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
+		Libgdx2dCamera hudCamera = new Libgdx2dCameraTransformImpl();
 
 		Libgdx2dCamera backgroundLayerCamera = new Libgdx2dCameraTransformImpl();
 		Libgdx2dCamera secondBackgroundLayerCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -74,6 +79,8 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		renderLayers.add(Layers.StaticObstacles, new RenderLayerShapeImpl(-100, -50, worldCamera));
 		renderLayers.add(Layers.World, new RenderLayerSpriteBatchImpl(-50, 100, worldCamera));
 		renderLayers.add(Layers.Explosions, new RenderLayerParticleEmitterImpl(100, 200, worldCamera));
+
+		renderLayers.add(Layers.Hud, new RenderLayerSpriteBatchImpl(200, 10000, hudCamera));
 
 		injector.bind("renderLayers", renderLayers);
 
@@ -94,6 +101,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
+		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
 		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
 		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
 
@@ -115,6 +123,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		EntityTemplate basicAiControllerTemplate = injector.getInstance(BasicAIControllerTemplate.class);
 		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
 		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
+		EntityTemplate labelTemplate = injector.getInstance(LabelTemplate.class);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
 				.put("color", Color.WHITE) //
@@ -141,6 +150,13 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 				);
 
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
+
+		entityFactory.instantiate(labelTemplate, new ParametersWrapper() //
+				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.02f + adsArea.getHeight())) //
+				.put("fontId", "VersionFont") //
+				.put("text", "Preview level " + levelNumber + "...") //
+				.put("layer", 250) //
+				);
 	}
 
 }
