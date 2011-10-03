@@ -9,9 +9,15 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.EntityBuilder;
 import com.gemserk.commons.artemis.WorldWrapper;
+import com.gemserk.commons.artemis.components.CameraComponent;
+import com.gemserk.commons.artemis.components.Components;
+import com.gemserk.commons.artemis.components.ScriptComponent;
+import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.EventManagerImpl;
+import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
+import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.systems.CameraUpdateSystem;
 import com.gemserk.commons.artemis.systems.ContainerSystem;
 import com.gemserk.commons.artemis.systems.OwnerSystem;
@@ -29,6 +35,7 @@ import com.gemserk.commons.artemis.templates.EntityFactoryImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.box2d.JointBuilder;
+import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCameraTransformImpl;
@@ -37,7 +44,11 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
+import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.ReplayList;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
@@ -47,10 +58,61 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
+import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.LabelTemplate;
+import com.gemserk.games.superflyingthing.templates.TimerTemplate;
 import com.gemserk.resources.ResourceManager;
 
 public class ReplayGameSceneTemplate extends SceneTemplateImpl {
+
+	public static class ReplayScript extends ScriptJavaImpl {
+
+		EntityFactory entityFactory;
+		EventManager eventManager;
+		Injector injector;
+
+		private World world;
+
+		@Override
+		public void init(com.artemis.World world, Entity e) {
+			this.world = world;
+
+			Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+			TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
+
+			Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
+			targetComponent.setTarget(mainReplayShip);
+
+			ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
+			Replay replay = replayComponent.replay;
+
+			EntityTemplate timerTemplate = injector.getInstance(TimerTemplate.class);
+
+			// also starts a timer to invoke game over game state
+			entityFactory.instantiate(timerTemplate, new ParametersWrapper() //
+					.put("time", (float) (replay.duration - 100) * 0.001f) //
+					.put("eventId", Events.gameOver));
+
+			eventManager.registerEvent(Events.gameStarted, e);
+		}
+
+		@Handles(ids = Events.gameStarted)
+		public void resetCameraZoomWhenGameStarted(Event event) {
+			Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+			CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
+
+			Camera camera = cameraComponent.getCamera();
+			camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
+		}
+
+		@Handles(ids = Events.gameOver)
+		public void gameOver(Event event) {
+			Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+			TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
+			targetComponent.setTarget(null);
+		}
+
+	}
 
 	TimeStepProvider timeStepProvider;
 	ResourceManager<String> resourceManager;
@@ -140,62 +202,20 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 			// could be a flag on the replay itself instead checking the last one.
 			Replay replay = replays.get(i);
 
-			parameters.clear();
-			Entity replayShip = entityFactory.instantiate(entityTemplates.replayShipTemplate, parameters //
+			Entity replayShip = entityFactory.instantiate(entityTemplates.replayShipTemplate, new ParametersWrapper() //
 					.put("replay", replay) //
 					);
 
-			parameters.clear();
-			entityFactory.instantiate(entityTemplates.replayPlayerTemplate, parameters //
+			entityFactory.instantiate(entityTemplates.replayPlayerTemplate, new ParametersWrapper() //
 					.put("replay", replay) //
 					.put("target", replayShip) //
 					);
 
 		}
 
-		// entityBuilder //
-		// .component(new ScriptComponent(new ScriptJavaImpl() {
-		//
-		// @Override
-		// public void init(com.artemis.World world, Entity e) {
-		// Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-		// TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
-		//
-		// Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
-		// targetComponent.setTarget(mainReplayShip);
-		//
-		// ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
-		// Replay replay = replayComponent.replay;
-		//
-		// // also starts a timer to invoke game over game state
-		// entityFactory.instantiate(entityTemplates.timerTemplate, new ParametersWrapper() //
-		// .put("time", (float) (replay.duration - 100) * 0.001f) //
-		// .put("eventId", Events.gameOver));
-		//
-		// eventManager.registerEvent(Events.gameStarted, e);
-		// }
-		//
-		// @Handles(ids = Events.gameStarted)
-		// public void resetCameraZoomWhenGameStarted(Event event) {
-		// Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-		// CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
-		//
-		// Camera camera = cameraComponent.getCamera();
-		// camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);
-		// }
-		//
-		// @Handles(ids = Events.gameOver)
-		// public void gameOver(Event event) {
-		// Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
-		// // mainCamera.delete();
-		// TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
-		// targetComponent.setTarget(null);
-		//
-		// nextScreen();
-		// }
-		//
-		// })) //
-		// .build();
+		entityBuilder //
+				.component(new ScriptComponent(injector.getInstance(ReplayScript.class))) //
+				.build();
 
 		entityFactory.instantiate(entityTemplates.secondCameraTemplate, new ParametersWrapper() //
 				.put("camera", new CameraImpl()) //
