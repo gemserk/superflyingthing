@@ -19,6 +19,7 @@ import com.gemserk.commons.gdx.box2d.JointBuilder;
 import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.Scripts.DestinationPlanetScript;
 import com.gemserk.resources.ResourceManager;
 

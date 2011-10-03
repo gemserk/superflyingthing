@@ -26,9 +26,9 @@ import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scenes.BackgroundSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
-import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class BackgroundGameState extends GameStateImpl {

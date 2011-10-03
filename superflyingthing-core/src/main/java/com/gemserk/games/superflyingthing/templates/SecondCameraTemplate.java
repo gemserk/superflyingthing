@@ -8,6 +8,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
+import com.gemserk.games.superflyingthing.entities.Groups;
 
 public class SecondCameraTemplate extends EntityTemplateImpl {
 

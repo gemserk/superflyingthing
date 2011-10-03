@@ -17,6 +17,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogKeyboardControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;

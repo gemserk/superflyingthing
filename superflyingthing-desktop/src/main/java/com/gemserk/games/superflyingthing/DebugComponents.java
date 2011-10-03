@@ -19,9 +19,9 @@ import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
-import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class DebugComponents {
 

@@ -7,6 +7,7 @@ import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.templates.EntityFactory;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.games.superflyingthing.components.Components.GameDataComponent;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 
 public class NormalModeGameLogicTemplate extends EntityTemplateImpl {

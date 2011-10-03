@@ -53,6 +53,7 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.ReplayList;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -60,7 +61,6 @@ import com.gemserk.games.superflyingthing.systems.RenderLayerParticleEmitterImpl
 import com.gemserk.games.superflyingthing.systems.RenderLayerShapeImpl;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
-import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.LabelTemplate;
 import com.gemserk.games.superflyingthing.templates.SoundSpawnerTemplate;
 import com.gemserk.games.superflyingthing.templates.TimerTemplate;

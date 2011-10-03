@@ -20,10 +20,10 @@ import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.components.ReplayList;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.scenes.ReplayGameSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
-import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.resources.ResourceManager;
 
 public class ReplayPlayerGameState extends GameStateImpl {

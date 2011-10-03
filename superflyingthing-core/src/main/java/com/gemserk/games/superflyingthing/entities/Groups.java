@@ -1,4 +1,4 @@
-package com.gemserk.games.superflyingthing.templates;
+package com.gemserk.games.superflyingthing.entities;
 
 public class Groups {
 

@@ -30,7 +30,7 @@ import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
-import com.gemserk.games.superflyingthing.templates.Groups;
+import com.gemserk.games.superflyingthing.entities.Groups;
 
 public class Behaviors {
 

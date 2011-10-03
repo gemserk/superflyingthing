@@ -13,6 +13,7 @@ import com.gemserk.commons.gdx.camera.CameraImpl;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
 import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.CameraScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateCameraFromSpatialScript;
 import com.gemserk.games.superflyingthing.scripts.UpdateLibgdxCameraScript;

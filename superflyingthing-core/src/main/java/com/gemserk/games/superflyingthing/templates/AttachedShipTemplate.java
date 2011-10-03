@@ -19,6 +19,7 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.resources.ResourceManager;
 

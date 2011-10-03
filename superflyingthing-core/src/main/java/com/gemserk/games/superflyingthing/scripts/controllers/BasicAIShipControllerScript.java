@@ -16,7 +16,7 @@ import com.gemserk.games.superflyingthing.components.Components.ControllerCompon
 import com.gemserk.games.superflyingthing.components.Components.GrabbableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
-import com.gemserk.games.superflyingthing.templates.Groups;
+import com.gemserk.games.superflyingthing.entities.Groups;
 
 public class BasicAIShipControllerScript extends ScriptJavaImpl {
 

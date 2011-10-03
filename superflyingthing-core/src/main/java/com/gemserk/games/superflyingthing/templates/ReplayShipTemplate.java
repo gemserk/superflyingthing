@@ -18,6 +18,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.resources.ResourceManager;

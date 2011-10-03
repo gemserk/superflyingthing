@@ -33,9 +33,9 @@ import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetScript;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
-import com.gemserk.games.superflyingthing.templates.Groups;
 
 public class Scripts {
 

@@ -60,10 +60,10 @@ import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.GameComponents;
+import com.gemserk.games.superflyingthing.entities.Groups;
 import com.gemserk.games.superflyingthing.scripts.controllers.ControllerType;
 import com.gemserk.games.superflyingthing.templates.ControllerTemplates;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
-import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.UserMessageTemplate;
 import com.gemserk.resources.ResourceManager;
 
