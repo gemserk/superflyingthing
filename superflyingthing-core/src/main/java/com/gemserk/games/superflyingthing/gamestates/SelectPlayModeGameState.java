@@ -6,7 +6,6 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -29,7 +28,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	
 	SpriteBatch spriteBatch;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	Sprite whiteRectangleSprite;
 	Container container;
 
 	@Override
@@ -130,11 +128,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 			}
 		};
 
-		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
-		whiteRectangleSprite.setPosition(0, 0);
-		whiteRectangleSprite.setSize(width, height);
-		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
-
 		game.getBackgroundGameScreen().init();
 	}
 
@@ -174,7 +167,6 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().render();
 		spriteBatch.begin();
-		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}

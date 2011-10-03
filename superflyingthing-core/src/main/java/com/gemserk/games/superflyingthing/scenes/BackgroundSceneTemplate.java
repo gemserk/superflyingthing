@@ -36,6 +36,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
@@ -137,6 +138,14 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 				.put("spriteId", "BackgroundSprite") //
 				);
 
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, new ParametersWrapper() //
+				.put("color", new Color(0.2f, 0.2f, 0.2f, 0.3f)) //
+				.put("layer", 201) //
+				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
+				.put("center", new Vector2(0, 0)) //
+				.put("spriteId", "WhiteRectangle") //
+				);
+
 		Resource<Level> levelResource = resourceManager.get(Levels.levelId(levelNumber));
 		Level level = levelResource.get();
 
@@ -161,6 +170,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 				.put("text", "Preview level " + levelNumber + "...") //
 				.put("layer", 250) //
 				.put("center", new Vector2(0f, 1f))//
+				.put("color", Colors.yellow) //
 				);
 
 		entityFactory.instantiate(soundSpawnerTemplate, new ParametersWrapper() //

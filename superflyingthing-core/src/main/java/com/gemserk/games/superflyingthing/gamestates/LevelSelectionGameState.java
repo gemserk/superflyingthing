@@ -38,7 +38,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 	Container container;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	Sprite whiteRectangleSprite;
 
 	Rectangle selectionRectangle;
 	Sprite backgroundSprite;
@@ -178,11 +177,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 			}
 		};
 
-		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
-		whiteRectangleSprite.setPosition(0, 0);
-		whiteRectangleSprite.setSize(width, height);
-		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
-
 		game.getBackgroundGameScreen().init();
 	}
 
@@ -227,7 +221,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 		if (selectedLevel == null)
 			backgroundSprite.draw(spriteBatch);
 
-		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 

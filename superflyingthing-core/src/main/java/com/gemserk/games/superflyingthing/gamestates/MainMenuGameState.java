@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
@@ -30,7 +29,6 @@ public class MainMenuGameState extends GameStateImpl {
 	ResourceManager<String> resourceManager;
 
 	SpriteBatch spriteBatch;
-	Sprite whiteRectangleSprite;
 	Container container;
 
 	@Override
@@ -117,11 +115,6 @@ public class MainMenuGameState extends GameStateImpl {
 
 		container.add(panel);
 
-		whiteRectangleSprite = resourceManager.getResourceValue("WhiteRectangle");
-		whiteRectangleSprite.setPosition(0, 0);
-		whiteRectangleSprite.setSize(width, height);
-		whiteRectangleSprite.setColor(0.2f, 0.2f, 0.2f, 0.3f);
-
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
 		backgroundGameScreen.init();
 		game.getEventManager().registerEvent(Events.previewRandomLevel, this);
@@ -146,7 +139,6 @@ public class MainMenuGameState extends GameStateImpl {
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().render();
 		spriteBatch.begin();
-		whiteRectangleSprite.draw(spriteBatch);
 		container.draw(spriteBatch);
 		spriteBatch.end();
 	}
