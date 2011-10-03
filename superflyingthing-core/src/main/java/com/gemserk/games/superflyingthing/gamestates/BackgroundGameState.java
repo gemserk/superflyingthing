@@ -18,6 +18,7 @@ import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.commons.artemis.render.RenderLayers;
 import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
@@ -34,6 +35,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
+	SoundPlayer soundPlayer;
 	
 	SpriteBatch spriteBatch;
 	boolean done;
@@ -87,6 +89,7 @@ public class BackgroundGameState extends GameStateImpl {
 				bind("resourceManager", resourceManager);
 				bind("timeStepProvider", new TimeStepProviderGameStateImpl(BackgroundGameState.this));
 				bind("entityBuilder", new EntityBuilder(worldWrapper.getWorld()));
+				bind("soundPlayer", soundPlayer);
 			}
 		};
 

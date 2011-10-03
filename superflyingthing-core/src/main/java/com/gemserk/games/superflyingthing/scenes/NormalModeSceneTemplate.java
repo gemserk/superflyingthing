@@ -225,9 +225,7 @@ public class NormalModeSceneTemplate extends SceneTemplateImpl {
 		injector.bind("mesh2dBuilder", new Mesh2dBuilder());
 		injector.bind("jointBuilder", new JointBuilder(physicsWorld));
 		injector.bind("renderLayers", renderLayers);
-		
-//		EntitySystem soundSystem = injector.getInstance(SoundSpawnerSystem.class);
-		
+
 		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
 		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
 		worldWrapper.addUpdateSystem(new ScriptSystem());

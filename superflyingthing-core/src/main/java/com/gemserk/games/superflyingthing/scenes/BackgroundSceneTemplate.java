@@ -19,6 +19,7 @@ import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
+import com.gemserk.commons.artemis.systems.SoundSpawnerSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
@@ -35,6 +36,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
@@ -47,6 +49,7 @@ import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.LabelTemplate;
 import com.gemserk.games.superflyingthing.templates.NormalModeGameLogicTemplate;
+import com.gemserk.games.superflyingthing.templates.SoundSpawnerTemplate;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
@@ -82,33 +85,12 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		renderLayers.add(Layers.Hud, new RenderLayerSpriteBatchImpl(200, 10000, hudCamera));
 
-		injector.bind("renderLayers", renderLayers);
-
 		World world = worldWrapper.getWorld();
-		final EntityFactory entityFactory = new EntityFactoryImpl(world);
-		parameters = new ParametersWrapper();
-		// add render and all stuff...
 
-		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
-		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
-		worldWrapper.addUpdateSystem(new ScriptSystem());
-		worldWrapper.addUpdateSystem(new TagSystem());
-		worldWrapper.addUpdateSystem(new ContainerSystem());
-		worldWrapper.addUpdateSystem(new OwnerSystem());
+		EntityFactory entityFactory = new EntityFactoryImpl(world);
+		EntityBuilder entityBuilder = new EntityBuilder(world);
 
-		// testing event listener auto registration using reflection
-		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
-
-		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
-		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
-		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
-		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
-		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
-
-		worldWrapper.init();
-
-		final EntityBuilder entityBuilder = new EntityBuilder(world);
-
+		injector.bind("renderLayers", renderLayers);
 		injector.bind("physicsWorld", physicsWorld);
 		injector.bind("resourceManager", resourceManager);
 		injector.bind("entityBuilder", entityBuilder);
@@ -120,12 +102,34 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 
 		EntityTemplates entityTemplates = new EntityTemplates(injector);
 
+		// add render and all stuff...
+
+		worldWrapper.addUpdateSystem(new PreviousStateSpatialSystem());
+		worldWrapper.addUpdateSystem(new PhysicsSystem(physicsWorld));
+		worldWrapper.addUpdateSystem(new ScriptSystem());
+		worldWrapper.addUpdateSystem(new TagSystem());
+		worldWrapper.addUpdateSystem(new ContainerSystem());
+		worldWrapper.addUpdateSystem(new OwnerSystem());
+
+		// testing event listener auto registration using reflection
+		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
+		worldWrapper.addUpdateSystem(injector.getInstance(SoundSpawnerSystem.class));
+
+		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
+		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
+		worldWrapper.addRenderSystem(new TextLocationUpdateSystem());
+		worldWrapper.addRenderSystem(new RenderableSystem(renderLayers));
+		worldWrapper.addRenderSystem(new ParticleEmitterSystem());
+
+		worldWrapper.init();
+
 		EntityTemplate basicAiControllerTemplate = injector.getInstance(BasicAIControllerTemplate.class);
 		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
 		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
 		EntityTemplate labelTemplate = injector.getInstance(LabelTemplate.class);
+		EntityTemplate soundTemplate = injector.getInstance(SoundSpawnerTemplate.class);
 
-		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, parameters //
+		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, new ParametersWrapper() //
 				.put("color", Color.WHITE) //
 				.put("layer", -999) //
 				.put("spatial", new SpatialImpl(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), 0)) //
@@ -156,6 +160,11 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 				.put("fontId", "VersionFont") //
 				.put("text", "Preview level " + levelNumber + "...") //
 				.put("layer", 250) //
+				);
+
+		entityFactory.instantiate(soundTemplate, new ParametersWrapper() //
+				.put("soundId", "ExplosionSound") //
+				.put("eventId", Events.explosion)//
 				);
 	}
 
