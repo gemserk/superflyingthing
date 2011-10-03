@@ -1,6 +1,7 @@
 package com.gemserk.games.superflyingthing.templates;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.Vector2;
 import com.gemserk.commons.artemis.components.RenderableComponent;
@@ -21,11 +22,15 @@ public class LabelTemplate extends EntityTemplateImpl {
 		Integer layer = parameters.get("layer");
 		Vector2 position = parameters.get("position");
 		Vector2 center = parameters.get("center", new Vector2(0.5f, 0.5f));
+		Color color = parameters.get("color", Color.WHITE);
 
 		BitmapFont font = resourceManager.getResourceValue(fontId);
 
+		TextComponent textComponent = new TextComponent(text, font, 0f, 0f, center.x, center.y);
+		textComponent.color.set(color);
+
 		entity.addComponent(new SpatialComponent(new SpatialImpl(position.x, position.y)));
-		entity.addComponent(new TextComponent(text, font, 0f, 0f, center.x, center.y));
+		entity.addComponent(textComponent);
 		entity.addComponent(new RenderableComponent(layer));
 	}
 

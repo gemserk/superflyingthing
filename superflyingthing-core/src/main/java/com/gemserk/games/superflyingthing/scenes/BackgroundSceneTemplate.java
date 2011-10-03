@@ -127,7 +127,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
 		EntityTemplate normalModeGameLogicTemplate = injector.getInstance(NormalModeGameLogicTemplate.class);
 		EntityTemplate labelTemplate = injector.getInstance(LabelTemplate.class);
-		EntityTemplate soundTemplate = injector.getInstance(SoundSpawnerTemplate.class);
+		EntityTemplate soundSpawnerTemplate = injector.getInstance(SoundSpawnerTemplate.class);
 
 		entityFactory.instantiate(entityTemplates.staticSpriteTemplate, new ParametersWrapper() //
 				.put("color", Color.WHITE) //
@@ -163,7 +163,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 				.put("center", new Vector2(0f, 1f))//
 				);
 
-		entityFactory.instantiate(soundTemplate, new ParametersWrapper() //
+		entityFactory.instantiate(soundSpawnerTemplate, new ParametersWrapper() //
 				.put("soundId", "ExplosionSound") //
 				.put("eventId", Events.explosion)//
 				);

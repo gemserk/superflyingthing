@@ -27,6 +27,7 @@ import com.gemserk.commons.artemis.systems.ReflectionRegistratorEventSystem;
 import com.gemserk.commons.artemis.systems.RenderLayerSpriteBatchImpl;
 import com.gemserk.commons.artemis.systems.RenderableSystem;
 import com.gemserk.commons.artemis.systems.ScriptSystem;
+import com.gemserk.commons.artemis.systems.SoundSpawnerSystem;
 import com.gemserk.commons.artemis.systems.SpriteUpdateSystem;
 import com.gemserk.commons.artemis.systems.TagSystem;
 import com.gemserk.commons.artemis.systems.TextLocationUpdateSystem;
@@ -44,6 +45,7 @@ import com.gemserk.commons.gdx.graphics.Mesh2dBuilder;
 import com.gemserk.commons.gdx.time.TimeStepProvider;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Layers;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
@@ -60,6 +62,7 @@ import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 import com.gemserk.games.superflyingthing.templates.EventManagerTemplate;
 import com.gemserk.games.superflyingthing.templates.Groups;
 import com.gemserk.games.superflyingthing.templates.LabelTemplate;
+import com.gemserk.games.superflyingthing.templates.SoundSpawnerTemplate;
 import com.gemserk.games.superflyingthing.templates.TimerTemplate;
 import com.gemserk.resources.ResourceManager;
 
@@ -123,8 +126,6 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		Boolean backgroundEnabled = getParameters().get("backgroundEnabled", true);
 
-		EventManager eventManager = new EventManagerImpl();
-
 		com.badlogic.gdx.physics.box2d.World physicsWorld = new com.badlogic.gdx.physics.box2d.World(new Vector2(), false);
 
 		Libgdx2dCamera worldCamera = new Libgdx2dCameraTransformImpl(Gdx.graphics.getWidth() / 2, Gdx.graphics.getHeight() / 2);
@@ -146,6 +147,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		EntityFactory entityFactory = new EntityFactoryImpl(world);
 		EntityBuilder entityBuilder = new EntityBuilder(world);
+		EventManager eventManager = new EventManagerImpl();
 
 		injector.bind("renderLayers", renderLayers);
 		injector.bind("physicsWorld", physicsWorld);
@@ -165,6 +167,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		// testing event listener auto registration using reflection
 		worldWrapper.addUpdateSystem(new ReflectionRegistratorEventSystem(eventManager));
+		worldWrapper.addUpdateSystem(injector.getInstance(SoundSpawnerSystem.class));
 
 		worldWrapper.addRenderSystem(new CameraUpdateSystem(timeStepProvider));
 		worldWrapper.addRenderSystem(new SpriteUpdateSystem(timeStepProvider));
@@ -222,15 +225,11 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 				.put("libgdx2dCamera", secondBackgroundLayerCamera)//
 				);
 
-		// creates a new particle emitter spawner template which creates a new explosion when the ship dies.
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
-
-		// create gui label..
-
-		// BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
 
 		EntityTemplate eventManagerTemplate = injector.getInstance(EventManagerTemplate.class);
 		EntityTemplate labelTemplate = injector.getInstance(LabelTemplate.class);
+		EntityTemplate soundSpawnerTemplate = injector.getInstance(SoundSpawnerTemplate.class);
 
 		entityFactory.instantiate(eventManagerTemplate);
 
@@ -239,16 +238,14 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 				.put("text", "Playing replay, touch to continue...") //
 				.put("fontId", "LevelFont") //
 				.put("layer", 250) //
-				.put("center", new Vector2(0.5f, 0f))
-		// .put color
+				.put("center", new Vector2(0.5f, 0f)) //
+				.put("color", Colors.yellow) //
 				);
 
-		// guiContainer.add(GuiControls.label("Playing replay, touch to continue...") //
-		// .position(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f) //
-		// .center(0.5f, 0f) //
-		// .color(Colors.yellow) //
-		// .font(levelFont) //
-		// .build());
+		entityFactory.instantiate(soundSpawnerTemplate, new ParametersWrapper() //
+				.put("soundId", "ExplosionSound") //
+				.put("eventId", Events.explosion)//
+				);
 
 	}
 

@@ -11,6 +11,7 @@ import com.gemserk.commons.artemis.events.Event;
 import com.gemserk.commons.artemis.events.EventListener;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.gdx.GameStateImpl;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
@@ -27,12 +28,12 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
+	SoundPlayer soundPlayer;
 
 	boolean resetPressed;
 
 	EntityBuilder entityBuilder;
 	WorldWrapper worldWrapper;
-
 	EventManager eventManager;
 
 	private InputAdapter inputProcessor = new InputAdapter() {
@@ -55,6 +56,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 
 		Injector injector = new InjectorImpl();
 
+		injector.bind("soundPlayer", soundPlayer);
 		injector.bind("resourceManager", resourceManager);
 		injector.bind("timeStepProvider", new TimeStepProviderGameStateImpl(this));
 
@@ -70,7 +72,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 		sceneTemplate.apply(worldWrapper);
 
 		injector.injectMembers(this);
-
+		
 		eventManager.register(Events.gameOver, new EventListener() {
 			@Override
 			public void onEvent(Event event) {
