@@ -10,8 +10,6 @@ public class Tags {
 	public static final String ReplayRecorder = "ReplayRecorder";
 	public static final String MainReplayShip = "MainReplayShip";
 
-	public static final String ReplayShipGroup = "ReplayShipGroup";
-
 	public static final String NormalGameModeLogic = "NormalGameModeLogic";
 
 	// used for the controller itself, the entity with the controller script, etc
@@ -19,11 +17,6 @@ public class Tags {
 
 	public static final String EventManager = "EventManager";
 
-	/**
-	 * Identifies an entity which contains relevant information about the current game mode.
-	 */
-	public static final String GameMode = "GameMode";
-	
 	public static final String ReplayLabel = "ReplayLabel";
 
 }

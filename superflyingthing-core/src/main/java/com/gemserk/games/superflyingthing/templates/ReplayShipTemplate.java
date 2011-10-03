@@ -42,8 +42,6 @@ public class ReplayShipTemplate extends EntityTemplateImpl {
 
 		Color color = mainReplay ? Color.WHITE : new Color(0.5f, 0.5f, 0.5f, 1f);
 
-		entity.setGroup(Tags.ReplayShipGroup);
-
 		if (mainReplay)
 			entity.addComponent(new TagComponent(Tags.MainReplayShip));
 
