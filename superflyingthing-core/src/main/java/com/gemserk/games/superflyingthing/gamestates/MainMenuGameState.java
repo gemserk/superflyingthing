@@ -1,7 +1,6 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -21,7 +20,6 @@ import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
-import com.gemserk.resources.Resource;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
@@ -34,7 +32,6 @@ public class MainMenuGameState extends GameStateImpl {
 	SpriteBatch spriteBatch;
 	Sprite whiteRectangleSprite;
 	Container container;
-	Resource<Sound> buttonSound;
 
 	@Override
 	public void init() {
@@ -43,8 +40,6 @@ public class MainMenuGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		spriteBatch = new SpriteBatch();
-
-		buttonSound = resourceManager.get("ButtonReleasedSound");
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
@@ -80,7 +75,6 @@ public class MainMenuGameState extends GameStateImpl {
 						game.transition(Screens.SelectPlayMode) //
 								.disposeCurrent() //
 								.start();
-						soundPlayer.play(buttonSound.get());
 					}
 				})//
 				.build();
@@ -96,7 +90,6 @@ public class MainMenuGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						settings();
-						soundPlayer.play(buttonSound.get());
 					}
 				})//
 				.build();
@@ -112,7 +105,6 @@ public class MainMenuGameState extends GameStateImpl {
 					@Override
 					public void onReleased(Control control) {
 						aboutUs();
-						soundPlayer.play(buttonSound.get());
 					}
 				})//
 				.build();
