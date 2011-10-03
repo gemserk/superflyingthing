@@ -15,7 +15,7 @@ import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.gdx.graphics.SpriteBatchUtils;
 import com.gemserk.commons.gdx.graphics.SpriteUtils;
 import com.gemserk.games.superflyingthing.CustomResourceManager;
-import com.gemserk.games.superflyingthing.ScreenManager;
+import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.resources.Resource;
 import com.gemserk.resources.progress.TaskQueue;
@@ -23,19 +23,19 @@ import com.gemserk.resources.progress.tasks.SimulateLoadingTimeRunnable;
 
 public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingGameState {
 
+	Game game;
 	CustomResourceManager<String> resourceManager;
 	AdWhirlViewHandler adWhirlViewHandler;
-	ScreenManager screenManager;
 
-	private SpriteBatch spriteBatch;
-	private BitmapFont font;
+	SpriteBatch spriteBatch;
+	BitmapFont font;
 
-	private Sprite gemserkLogo;
-	private Sprite lwjglLogo;
-	private Sprite libgdxLogo;
-	private Sprite gemserkLogoBlur;
+	Sprite gemserkLogo;
+	Sprite lwjglLogo;
+	Sprite libgdxLogo;
+	Sprite gemserkLogoBlur;
 
-	private Color blurColor = new Color();
+	Color blurColor = new Color();
 	
 	@Override
 	public void init() {
@@ -93,7 +93,7 @@ public class SplashGameState extends com.gemserk.commons.gdx.gamestates.LoadingG
 	}
 
 	private void mainMenu() {
-		screenManager.transition(Screens.MainMenu) //
+		game.transition(Screens.MainMenu) //
 				.disposeCurrent() //
 				.start();
 	}
