@@ -19,7 +19,7 @@ import com.gemserk.commons.gdx.games.PhysicsImpl;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.AttachableComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scripts.Scripts;
 import com.gemserk.resources.ResourceManager;
 
@@ -59,7 +59,7 @@ public class AttachedShipTemplate extends EntityTemplateImpl {
 				.userData(e) //
 				.build();
 
-		e.addComponent(new TagComponent(Groups.ship));
+		e.addComponent(new TagComponent(Tags.Ship));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));
 		e.addComponent(new SpriteComponent(rotationAnimation.getCurrentFrame()));

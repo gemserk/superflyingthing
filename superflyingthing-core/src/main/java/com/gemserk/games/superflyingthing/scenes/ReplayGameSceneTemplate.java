@@ -53,7 +53,7 @@ import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.components.Replay;
 import com.gemserk.games.superflyingthing.components.ReplayList;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.gamestates.LevelLoader;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.systems.ParticleEmitterSystem;
@@ -80,10 +80,10 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 		public void init(com.artemis.World world, Entity e) {
 			this.world = world;
 
-			Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+			Entity mainCamera = world.getTagManager().getEntity(Tags.MainCamera);
 			TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
 
-			Entity mainReplayShip = world.getTagManager().getEntity(Groups.MainReplayShip);
+			Entity mainReplayShip = world.getTagManager().getEntity(Tags.MainReplayShip);
 			targetComponent.setTarget(mainReplayShip);
 
 			ReplayComponent replayComponent = mainReplayShip.getComponent(ReplayComponent.class);
@@ -101,7 +101,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		@Handles(ids = Events.gameStarted)
 		public void resetCameraZoomWhenGameStarted(Event event) {
-			Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+			Entity mainCamera = world.getTagManager().getEntity(Tags.MainCamera);
 			CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
 
 			Camera camera = cameraComponent.getCamera();
@@ -110,7 +110,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 
 		@Handles(ids = Events.gameOver)
 		public void gameOver(Event event) {
-			Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+			Entity mainCamera = world.getTagManager().getEntity(Tags.MainCamera);
 			TargetComponent targetComponent = GameComponents.getTargetComponent(mainCamera);
 			targetComponent.setTarget(null);
 		}
@@ -234,7 +234,7 @@ public class ReplayGameSceneTemplate extends SceneTemplateImpl {
 		entityFactory.instantiate(eventManagerTemplate);
 
 		entityFactory.instantiate(labelTemplate, new ParametersWrapper() //
-				.put("id", Groups.ReplayLabel) //
+				.put("id", Tags.ReplayLabel) //
 				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.5f, Gdx.graphics.getHeight() * 0.9f)) //
 				.put("text", "Playing replay, touch to continue...") //
 				.put("fontId", "LevelFont") //

@@ -21,7 +21,7 @@ import com.gemserk.componentsengine.utils.ParametersWrapper;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.LabelComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Level.DestinationPlanet;
 import com.gemserk.games.superflyingthing.levels.Level.LaserTurret;
@@ -237,7 +237,7 @@ public class LevelLoader {
 		entityFactory.instantiate(new EntityTemplateImpl() {
 			@Override
 			public void apply(Entity entity) {
-				entity.addComponent(new TagComponent(Groups.PlayerController));
+				entity.addComponent(new TagComponent(Tags.PlayerController));
 				entity.addComponent(new ControllerComponent(controller));
 			}
 		});

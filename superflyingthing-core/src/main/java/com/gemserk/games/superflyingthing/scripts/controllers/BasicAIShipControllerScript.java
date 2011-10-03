@@ -17,6 +17,7 @@ import com.gemserk.games.superflyingthing.components.Components.GrabbableCompone
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
 import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 
 public class BasicAIShipControllerScript extends ScriptJavaImpl {
 
@@ -89,7 +90,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 	@Override
 	public void update(com.artemis.World world, Entity e) {
 
-		Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+		Entity playerController = world.getTagManager().getEntity(Tags.PlayerController);
 		if (playerController == null)
 			return;
 		ControllerComponent controllerComponent = GameComponents.getControllerComponent(playerController);
@@ -103,7 +104,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 
 		float movementDirection = 0f;
 
-		Entity ship = world.getTagManager().getEntity(Groups.ship);
+		Entity ship = world.getTagManager().getEntity(Tags.Ship);
 		if (ship == null)
 			return;
 
@@ -204,7 +205,7 @@ public class BasicAIShipControllerScript extends ScriptJavaImpl {
 	}
 
 	private void updateShipInPlanetBehavior(com.artemis.World world, Entity e) {
-		Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+		Entity startPlanet = world.getTagManager().getEntity(Tags.StartPlanet);
 		controller.setShouldReleaseShip(false);
 
 		AttachmentComponent attachmentComponent = GameComponents.getAttachmentComponent(startPlanet);

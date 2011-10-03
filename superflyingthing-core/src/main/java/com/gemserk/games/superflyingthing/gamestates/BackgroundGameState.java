@@ -26,7 +26,7 @@ import com.gemserk.commons.reflection.InjectorImpl;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Layers;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scenes.BackgroundSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
 import com.gemserk.resources.ResourceManager;
@@ -118,7 +118,7 @@ public class BackgroundGameState extends GameStateImpl {
 
 			@Handles(ids = Events.gameStarted)
 			public void resetCameraZoomWhenGameStarted(Event event) {
-				Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+				Entity mainCamera = world.getTagManager().getEntity(Tags.MainCamera);
 				CameraComponent cameraComponent = Components.getCameraComponent(mainCamera);
 				Camera camera = cameraComponent.getCamera();
 				camera.setZoom(Gdx.graphics.getWidth() * 24f / 800f);

@@ -38,7 +38,7 @@ import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.GameData;
 import com.gemserk.games.superflyingthing.components.Components.ReplayListComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.levels.RandomLevelGenerator;
@@ -197,7 +197,7 @@ public class PlayGameState extends GameStateImpl {
 
 					@Handles(ids = Events.gameStarted)
 					public void createControllerWhenGameStarts(Event event) {
-						Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+						Entity playerController = world.getTagManager().getEntity(Tags.PlayerController);
 						if (playerController != null) {
 							ControllerComponent controllerComponent = playerController.getComponent(ControllerComponent.class);
 							// mark current controller to be deleted
@@ -250,15 +250,15 @@ public class PlayGameState extends GameStateImpl {
 					game.getGamePreferences().updatePlayerProfile(playerProfile);
 				}
 
-				Entity playerController = world.getTagManager().getEntity(Groups.PlayerController);
+				Entity playerController = world.getTagManager().getEntity(Tags.PlayerController);
 				if (playerController != null)
 					playerController.delete();
 
-				Entity controllerSwitcher = world.getTagManager().getEntity(Groups.ControllerSwitcher);
+				Entity controllerSwitcher = world.getTagManager().getEntity(Tags.ControllerSwitcher);
 				if (controllerSwitcher != null)
 					controllerSwitcher.delete();
 
-				Entity gameMode = world.getTagManager().getEntity(Groups.NormalGameModeLogic);
+				Entity gameMode = world.getTagManager().getEntity(Tags.NormalGameModeLogic);
 				gameMode.delete();
 
 				parameters.clear();
@@ -275,7 +275,7 @@ public class PlayGameState extends GameStateImpl {
 
 				// game.transition(game.getGameOverScreen(), 0, 300, false);
 
-				Entity replayRecorder = world.getTagManager().getEntity(Groups.ReplayRecorder);
+				Entity replayRecorder = world.getTagManager().getEntity(Tags.ReplayRecorder);
 
 				game.getGameOverScreen().getParameters().put("level", levelNumber);
 
@@ -400,7 +400,7 @@ public class PlayGameState extends GameStateImpl {
 
 		// recreate controller ...
 
-		Entity playerController = worldWrapper.getWorld().getTagManager().getEntity(Groups.PlayerController);
+		Entity playerController = worldWrapper.getWorld().getTagManager().getEntity(Tags.PlayerController);
 		if (playerController != null) {
 
 			ControllerComponent controllerComponent = playerController.getComponent(ControllerComponent.class);

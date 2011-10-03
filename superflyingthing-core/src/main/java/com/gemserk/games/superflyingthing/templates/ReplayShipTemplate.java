@@ -18,7 +18,7 @@ import com.gemserk.commons.gdx.box2d.BodyBuilder;
 import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.components.Components.ReplayComponent;
 import com.gemserk.games.superflyingthing.components.Replay;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.ShipAnimationScript;
 import com.gemserk.resources.ResourceManager;
@@ -42,10 +42,10 @@ public class ReplayShipTemplate extends EntityTemplateImpl {
 
 		Color color = mainReplay ? Color.WHITE : new Color(0.5f, 0.5f, 0.5f, 1f);
 
-		entity.setGroup(Groups.ReplayShipGroup);
+		entity.setGroup(Tags.ReplayShipGroup);
 
 		if (mainReplay)
-			entity.addComponent(new TagComponent(Groups.MainReplayShip));
+			entity.addComponent(new TagComponent(Tags.MainReplayShip));
 
 		Body body = bodyBuilder //
 				.fixture(bodyBuilder.fixtureDefBuilder() //

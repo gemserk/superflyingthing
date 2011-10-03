@@ -25,7 +25,7 @@ import com.gemserk.games.superflyingthing.components.Components.AttachableCompon
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
 import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.GrabGrabbableScript;
 import com.gemserk.games.superflyingthing.scripts.Scripts.ShipScript;
 import com.gemserk.resources.ResourceManager;
@@ -71,7 +71,7 @@ public class ShipTemplate extends EntityTemplateImpl {
 				.userData(e) //
 				.build();
 
-		e.addComponent(new TagComponent(Groups.ship));
+		e.addComponent(new TagComponent(Tags.Ship));
 		e.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 
 		e.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, width, height)));

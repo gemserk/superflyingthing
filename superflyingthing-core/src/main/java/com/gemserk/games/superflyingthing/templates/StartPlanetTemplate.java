@@ -22,7 +22,7 @@ import com.gemserk.commons.gdx.games.SpatialPhysicsImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.AttachmentComponent;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scripts.Scripts.StartPlanetScript;
 import com.gemserk.resources.ResourceManager;
 
@@ -56,7 +56,7 @@ public class StartPlanetTemplate extends EntityTemplateImpl {
 				.userData(entity) //
 				.build();
 
-		entity.addComponent(new TagComponent(Groups.startPlanet));
+		entity.addComponent(new TagComponent(Tags.StartPlanet));
 		entity.addComponent(new PhysicsComponent(new PhysicsImpl(body)));
 		entity.addComponent(new SpatialComponent(new SpatialPhysicsImpl(body, radius * 2, radius * 2)));
 		entity.addComponent(new AttachmentComponent());

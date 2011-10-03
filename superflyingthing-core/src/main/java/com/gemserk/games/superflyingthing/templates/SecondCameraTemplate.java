@@ -8,7 +8,7 @@ import com.gemserk.commons.artemis.scripts.ScriptJavaImpl;
 import com.gemserk.commons.artemis.templates.EntityTemplateImpl;
 import com.gemserk.commons.gdx.camera.Camera;
 import com.gemserk.commons.gdx.camera.Libgdx2dCamera;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 
 public class SecondCameraTemplate extends EntityTemplateImpl {
 
@@ -23,7 +23,7 @@ public class SecondCameraTemplate extends EntityTemplateImpl {
 
 			@Override
 			public void update(com.artemis.World world, Entity e) {
-				Entity mainCameraEntity = world.getTagManager().getEntity(Groups.MainCamera);
+				Entity mainCameraEntity = world.getTagManager().getEntity(Tags.MainCamera);
 				CameraComponent mainCameraComponent = Components.getCameraComponent(mainCameraEntity);
 				Camera mainCamera = mainCameraComponent.getCamera();
 

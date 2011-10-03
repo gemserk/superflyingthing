@@ -11,7 +11,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.componentsengine.utils.AngleUtils;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.GameComponents;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 
 public class TargetControllerScript extends ScriptJavaImpl {
 
@@ -41,11 +41,11 @@ public class TargetControllerScript extends ScriptJavaImpl {
 
 	public void updateMovementDirection(com.artemis.World world, Entity e) {
 
-		Entity ship = world.getTagManager().getEntity(Groups.ship);
+		Entity ship = world.getTagManager().getEntity(Tags.Ship);
 		if (ship == null)
 			return;
 
-		Entity mainCamera = world.getTagManager().getEntity(Groups.MainCamera);
+		Entity mainCamera = world.getTagManager().getEntity(Tags.MainCamera);
 		if (mainCamera == null)
 			return;
 

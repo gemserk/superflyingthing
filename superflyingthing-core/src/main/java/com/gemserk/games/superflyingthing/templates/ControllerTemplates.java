@@ -17,7 +17,7 @@ import com.gemserk.commons.gdx.games.Spatial;
 import com.gemserk.commons.gdx.games.SpatialImpl;
 import com.gemserk.games.superflyingthing.ShipController;
 import com.gemserk.games.superflyingthing.components.Components.ControllerComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AnalogKeyboardControllerScript;
 import com.gemserk.games.superflyingthing.scripts.controllers.AndroidClassicControllerScript;
@@ -34,7 +34,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			entity.addComponent(new ScriptComponent(new KeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
@@ -45,7 +45,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			entity.addComponent(new ScriptComponent(new AnalogKeyboardControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
@@ -58,7 +58,7 @@ public class ControllerTemplates {
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
 
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			Input input = parameters.get("input", Gdx.input);
 
 			entity.addComponent(new ScriptComponent(new AndroidClassicControllerScript(controller, input)));
@@ -99,7 +99,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			Integer layer = parameters.get("layer");
 
 			String spriteId = parameters.get("spriteId", "WhiteRectangle");
@@ -131,7 +131,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			Integer layer = parameters.get("layer");
 
 			String spriteId = parameters.get("spriteId", "WhiteRectangle");
@@ -152,7 +152,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			entity.addComponent(new ScriptComponent(new TiltAndroidControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));
@@ -163,7 +163,7 @@ public class ControllerTemplates {
 		@Override
 		public void apply(Entity entity) {
 			ShipController controller = parameters.get("controller");
-			String tag = parameters.get("tag", Groups.PlayerController);
+			String tag = parameters.get("tag", Tags.PlayerController);
 			entity.addComponent(new ScriptComponent(new TargetControllerScript(controller)));
 			entity.addComponent(new TagComponent(tag));
 			entity.addComponent(new ControllerComponent(controller));

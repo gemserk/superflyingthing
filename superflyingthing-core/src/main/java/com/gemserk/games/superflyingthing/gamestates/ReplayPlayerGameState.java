@@ -20,7 +20,7 @@ import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.components.ReplayList;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.levels.Level;
 import com.gemserk.games.superflyingthing.scenes.ReplayGameSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
@@ -79,7 +79,7 @@ public class ReplayPlayerGameState extends GameStateImpl {
 				nextScreen();
 				
 				World world = worldWrapper.getWorld();
-				Entity replayLabel = world.getTagManager().getEntity(Groups.ReplayLabel);
+				Entity replayLabel = world.getTagManager().getEntity(Tags.ReplayLabel);
 				if (replayLabel != null)
 					replayLabel.delete();
 			}

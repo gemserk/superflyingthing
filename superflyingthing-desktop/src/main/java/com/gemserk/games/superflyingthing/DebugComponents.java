@@ -19,7 +19,7 @@ import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.artemis.events.reflection.EventListenerReflectionRegistrator;
 import com.gemserk.commons.artemis.events.reflection.Handles;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.gamestates.PlayGameState;
 import com.gemserk.games.superflyingthing.scripts.controllers.KeyboardControllerScript;
 
@@ -168,7 +168,7 @@ public class DebugComponents {
 
 		private void setShipLinearSpeed(float speed) {
 
-			Entity shipEntity = world.getTagManager().getEntity(Groups.ship);
+			Entity shipEntity = world.getTagManager().getEntity(Tags.Ship);
 			if (shipEntity == null)
 				return;
 
@@ -182,7 +182,7 @@ public class DebugComponents {
 		
 		private void setShipAngularSpeed(float speed) {
 
-			Entity shipEntity = world.getTagManager().getEntity(Groups.ship);
+			Entity shipEntity = world.getTagManager().getEntity(Tags.Ship);
 			if (shipEntity == null)
 				return;
 

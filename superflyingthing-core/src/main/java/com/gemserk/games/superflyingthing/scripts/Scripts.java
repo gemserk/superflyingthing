@@ -33,7 +33,7 @@ import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.ParticleEmitterComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 import com.gemserk.games.superflyingthing.scripts.Behaviors.FixCameraTargetScript;
 import com.gemserk.games.superflyingthing.templates.EntityTemplates;
 
@@ -334,7 +334,7 @@ public class Scripts {
 			eventManager.registerEvent(Events.explosion, spatial);
 			eventManager.registerEvent(Events.disablePlanetReleaseShip, e);
 
-			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+			Entity startPlanet = world.getTagManager().getEntity(Tags.StartPlanet);
 			if (startPlanet != null)
 				eventManager.registerEvent(Events.moveCameraToEntity, startPlanet);
 		}
@@ -348,7 +348,7 @@ public class Scripts {
 			if (gameDataComponent.ship != null)
 				return;
 
-			Entity startPlanet = world.getTagManager().getEntity(Groups.startPlanet);
+			Entity startPlanet = world.getTagManager().getEntity(Tags.StartPlanet);
 			if (startPlanet == null)
 				return;
 
@@ -388,7 +388,7 @@ public class Scripts {
 
 			PhysicsComponent attachedShipPhysicsComponent = GameComponents.getPhysicsComponent(gameDataComponent.attachedShip);
 
-			Entity contollerEntity = world.getTagManager().getEntity(Groups.PlayerController);
+			Entity contollerEntity = world.getTagManager().getEntity(Tags.PlayerController);
 			if (contollerEntity == null) {
 				Gdx.app.log("SuperFlyingThing", "Failed to get controller for released ship");
 				return;

@@ -30,7 +30,7 @@ import com.gemserk.games.superflyingthing.components.Components.HealthComponent;
 import com.gemserk.games.superflyingthing.components.Components.MovementComponent;
 import com.gemserk.games.superflyingthing.components.Components.TargetComponent;
 import com.gemserk.games.superflyingthing.components.GameComponents;
-import com.gemserk.games.superflyingthing.entities.Groups;
+import com.gemserk.games.superflyingthing.entities.Tags;
 
 public class Behaviors {
 
@@ -296,7 +296,7 @@ public class Behaviors {
 			GameDataComponent gameDataComponent = GameComponents.getGameDataComponent(e);
 			if (gameDataComponent == null)
 				return;
-			Entity camera = world.getTagManager().getEntity(Groups.MainCamera);
+			Entity camera = world.getTagManager().getEntity(Tags.MainCamera);
 			if (camera == null)
 				return;
 			TargetComponent targetComponent = GameComponents.getTargetComponent(camera);
