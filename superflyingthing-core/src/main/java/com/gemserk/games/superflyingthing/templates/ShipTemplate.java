@@ -64,7 +64,7 @@ public class ShipTemplate extends EntityTemplateImpl {
 						.restitution(0f) //
 						.categoryBits(CategoryBits.ShipCategoryBits) //
 						.maskBits((short) (CategoryBits.AllCategoryBits & ~CategoryBits.MiniPlanetCategoryBits)) //
-						.boxShape(width * 0.25f, height * 0.1f))//
+						.boxShape(width * 0.2f, height * 0.05f))//
 				.mass(50f) //
 				.position(spatial.getX(), spatial.getY()) //
 				.type(BodyType.DynamicBody) //
