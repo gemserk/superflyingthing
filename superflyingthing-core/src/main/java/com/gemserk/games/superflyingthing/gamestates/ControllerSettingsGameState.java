@@ -106,14 +106,6 @@ public class ControllerSettingsGameState extends GameStateImpl {
 
 		}
 
-		@Override
-		public void setPosition(float x, float y) {
-			for (int i = 0; i < getControls().size(); i++) {
-				Control control = getControls().get(i);
-				control.setPosition(x + control.getX(), y + control.getY());
-			}
-		}
-
 	}
 
 	Game game;
