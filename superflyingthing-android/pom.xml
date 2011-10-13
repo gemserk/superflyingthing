@@ -87,7 +87,6 @@
 					<undeployBeforeDeploy>true</undeployBeforeDeploy>
 					<assetsDirectory>../superflyingthing-desktop/src/main/resources</assetsDirectory>
 					<jvmArguments>
-						<argument>-Xms256m</argument>
 						<argument>-Xmx512m</argument>
 					</jvmArguments>
 				</configuration>
