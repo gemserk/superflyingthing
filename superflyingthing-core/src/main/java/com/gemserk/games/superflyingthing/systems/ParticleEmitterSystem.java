@@ -1,6 +1,5 @@
 package com.gemserk.games.superflyingthing.systems;
 
-import com.artemis.ComponentMapper;
 import com.artemis.Entity;
 import com.artemis.EntityProcessingSystem;
 import com.badlogic.gdx.graphics.g2d.ParticleEmitter;
@@ -12,9 +11,7 @@ import com.gemserk.games.superflyingthing.components.GameComponents;
 
 public class ParticleEmitterSystem extends EntityProcessingSystem {
 
-	// protected static final Logger logger = LoggerFactory.getLogger(ParticleEmitterSystem.class);
-
-	ComponentMapper<ParticleEmitterComponent> particleEmitterComponentMapper;
+	private static final Class<ParticleEmitterComponent> particleEmitterComponentClass = ParticleEmitterComponent.class;
 
 	public ParticleEmitterSystem() {
 		super(ParticleEmitterComponent.class);
@@ -23,24 +20,11 @@ public class ParticleEmitterSystem extends EntityProcessingSystem {
 	@Override
 	protected void initialize() {
 		super.initialize();
-		particleEmitterComponentMapper = new ComponentMapper<ParticleEmitterComponent>(ParticleEmitterComponent.class, world.getEntityManager());
-	}
-
-	@Override
-	protected void added(Entity e) {
-		// if (logger.isDebugEnabled())
-		// logger.debug("Entity with particle emitter added");
-	}
-
-	@Override
-	protected void removed(Entity e) {
-		// if (logger.isDebugEnabled())
-		// logger.debug("Entity with particle emitter removed");
 	}
 
 	@Override
 	protected void process(Entity e) {
-		ParticleEmitterComponent particleEmitterComponent = particleEmitterComponentMapper.get(e);
+		ParticleEmitterComponent particleEmitterComponent = e.getComponent(particleEmitterComponentClass);
 
 		SpatialComponent spatialComponent = GameComponents.getSpatialComponent(e);
 
