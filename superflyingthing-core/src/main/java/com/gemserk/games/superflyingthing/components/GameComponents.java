@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.components;
 import com.artemis.Entity;
 import com.gemserk.commons.artemis.components.AnimationComponent;
 import com.gemserk.commons.artemis.components.PhysicsComponent;
+import com.gemserk.commons.artemis.components.PropertiesComponent;
 import com.gemserk.commons.artemis.components.SpatialComponent;
 import com.gemserk.commons.artemis.components.SpriteComponent;
 import com.gemserk.commons.artemis.components.TimerComponent;
