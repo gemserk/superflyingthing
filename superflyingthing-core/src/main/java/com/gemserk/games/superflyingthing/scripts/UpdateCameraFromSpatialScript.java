@@ -31,7 +31,7 @@ public class UpdateCameraFromSpatialScript extends ScriptJavaImpl {
 			previousCamera.setZoom(camera.getZoom());
 		}
 
-		SpatialComponent spatialComponent = Components.spatialComponent(e);
+		SpatialComponent spatialComponent = Components.getSpatialComponent(e);
 		Spatial spatial = spatialComponent.getSpatial();
 
 		camera.setPosition(spatial.getX(), spatial.getY());
