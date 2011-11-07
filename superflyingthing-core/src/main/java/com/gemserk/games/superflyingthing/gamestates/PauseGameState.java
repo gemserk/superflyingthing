@@ -88,20 +88,20 @@ public class PauseGameState extends GameStateImpl {
 					}
 				})//
 				.build());
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0.24f) //
-				.text("Settings") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						settings();
-					}
-				})//
-				.build());
+//		panel.add(GuiControls.textButton() //
+//				.position(centerX, height * 0.24f) //
+//				.text("Settings") //
+//				.font(buttonFont) //
+//				.overColor(Color.GREEN) //
+//				.notOverColor(Color.WHITE)//
+//				.boundsOffset(20, 20f) //
+//				.handler(new ButtonHandler() {
+//					@Override
+//					public void onReleased(Control control) {
+//						settings();
+//					}
+//				})//
+//				.build());
 		panel.add(GuiControls.textButton() //
 				.position(centerX, height * 0.12f) //
 				.text("Restart") //

@@ -109,7 +109,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 		// container.add(text);
 		panel.add(playButton);
-		panel.add(settingsButton);
+//		panel.add(settingsButton);
 		panel.add(aboutButton);
 		
 
