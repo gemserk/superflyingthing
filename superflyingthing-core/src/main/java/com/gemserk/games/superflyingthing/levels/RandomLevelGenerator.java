@@ -56,7 +56,7 @@ public class RandomLevelGenerator {
 		float startX = 5f;
 		float startY = 5f;
 
-		int maxLevelDepth = MathUtils.random(2, 7);
+		int maxLevelDepth = MathUtils.random(7, 7);
 
 		ArrayList<Shape> obstacles = new RandomLevelTileBasedGenerator().generateLevel(document, maxLevelDepth);
 		for (int i = 0; i < obstacles.size(); i++) {
