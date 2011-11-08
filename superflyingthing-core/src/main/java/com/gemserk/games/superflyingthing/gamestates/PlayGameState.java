@@ -123,8 +123,11 @@ public class PlayGameState extends GameStateImpl {
 		createWorld();
 
 		screen = new Container(Hud.Screen);
-		
+
 		float buttonScale = Gdx.graphics.getHeight() / 480f;
+
+		if (Gdx.graphics.getHeight() > 480f) 
+			buttonScale = 1f;
 
 		Sprite leftButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftButton);
 
@@ -132,7 +135,7 @@ public class PlayGameState extends GameStateImpl {
 				.id(Hud.LeftButton) //
 				.center(0f, 0f) //
 				.size(leftButtonSprite.getWidth() * buttonScale, leftButtonSprite.getHeight() * buttonScale) //
-				.position(10f, 10f) //
+				.position(10f * buttonScale, 10f * buttonScale) //
 				.build());
 
 		Sprite rightButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.RightButton);
@@ -141,7 +144,7 @@ public class PlayGameState extends GameStateImpl {
 				.id(Hud.RightButton) //
 				.center(1f, 0f) //
 				.size(leftButtonSprite.getWidth() * buttonScale, leftButtonSprite.getHeight() * buttonScale) //
-				.position(Gdx.graphics.getWidth() - 10f, 10f) //
+				.position(Gdx.graphics.getWidth() - 10f * buttonScale, 10f * buttonScale) //
 				.build());
 
 	}
@@ -403,7 +406,7 @@ public class PlayGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
-		
+
 		spriteBatch.begin();
 		screen.draw(spriteBatch);
 		spriteBatch.end();
@@ -419,7 +422,7 @@ public class PlayGameState extends GameStateImpl {
 
 		screen.update();
 		inputDevicesMonitor.update();
-		
+
 		Synchronizers.synchronize(getDelta());
 
 		if (inputDevicesMonitor.getButton("pause").isReleased()) {
