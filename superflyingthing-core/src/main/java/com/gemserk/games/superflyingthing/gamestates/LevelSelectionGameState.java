@@ -25,6 +25,7 @@ import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.levels.Levels;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class LevelSelectionGameState extends GameStateImpl {
@@ -55,7 +56,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
+		BitmapFont levelFont = resourceManager.getResourceValue(GameResources.Fonts.Level);
 
 		// Text title = new Text("Select Level", centerX, height * 0.90f).setColor(Color.GREEN);
 		// title.setFont(titleFont);
@@ -64,7 +65,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		// container.add(title);
 
-		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
+		Sprite levelThumbnail = resourceManager.getResourceValue(GameResources.Sprites.LevelButton);
 		Sprite tickSprite = resourceManager.getResourceValue("TickSprite");
 
 		backgroundSprite = resourceManager.getResourceValue("BackgroundSprite");

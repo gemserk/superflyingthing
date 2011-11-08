@@ -11,22 +11,36 @@ import com.gemserk.resources.monitor.FilesMonitor;
  * Declares all resources needed for the game.
  */
 public class GameResources extends LibgdxResourceBuilder {
-	
+
 	public static class Sprites {
-		
+
 		public static final String LeftButton = "LeftButtonSprite";
 		public static final String RightButton = "RightButtonSprite";
-		
+
 		public static final String RestartButton = "RestartButtonSprite";
 		public static final String MenuButton = "MenuButtonSprite";
 		public static final String NextLevelButton = "NextLevelButtonSprite";
-		
+
 		public static final String SquareButton = "SquareButtonSprite";
 		public static final String ToggleBackgroundButton = "ToggleBackgroundButtonSprite";
 		public static final String ToggleSoundsButton = "ToggleSoundsButtonSprite";
 		public static final String DisabledButtonOverlay = "DisabledButtonOverlaySprite";
 		public static final String LeftPanelBackground = "LeftPanelBackgroundSprite";
-		
+
+		public static final String LevelButton = "LevelButtonSprite";
+
+	}
+
+	public static class Fonts {
+
+		public static final String Level = "LevelFont";
+
+	}
+	
+	public static class MusicTracks {
+
+		public static final String Game = "GameMusicTrack";
+
 	}
 
 	private final FilesMonitor filesMonitor;
@@ -53,25 +67,29 @@ public class GameResources extends LibgdxResourceBuilder {
 			font("TitleFont", "data/fonts/purisa-24.png", "data/fonts/purisa-24.fnt", false);
 			font("ButtonFont", "data/fonts/purisa-18.png", "data/fonts/purisa-18.fnt", false);
 			font("GameFont", "data/fonts/purisa-24.png", "data/fonts/purisa-24.fnt", false);
-			font("LevelFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 			font("VersionFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
+
+			// resource(Fonts.LevelButton, font2("data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt"))
+			font(Fonts.Level, "data/fonts/purisa-18-bold.png", "data/fonts/purisa-18-bold.fnt", false);
 		} else if (Gdx.graphics.getHeight() >= 320) {
 			font("FpsFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("TitleFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("ButtonFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("GameFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
-			font("LevelFont", "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("VersionFont", "data/fonts/purisa-10.png", "data/fonts/purisa-10.fnt", false);
+
+			font(Fonts.Level, "data/fonts/purisa-14.png", "data/fonts/purisa-14.fnt", false);
 		} else {
 			font("FpsFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("TitleFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("ButtonFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("GameFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
-			font("LevelFont", "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 			font("InstructionsFont", "data/fonts/purisa-10.png", "data/fonts/purisa-10.fnt", false);
 			font("VersionFont", "data/fonts/purisa-10.png", "data/fonts/purisa-10.fnt", false);
+
+			font(Fonts.Level, "data/fonts/purisa-12.png", "data/fonts/purisa-12.fnt", false);
 		}
 
 		texture("BackgroundTexture", "data/images/background01-1024x512.jpg", false);
@@ -104,8 +122,8 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("PortalSprite", "TextureAtlas", "portal");
 		spriteAtlas("LaserSprite", "TextureAtlas", "laser-bullet");
 		spriteAtlas("TickSprite", "TextureAtlas", "tick");
-		spriteAtlas("LevelButtonSprite", "TextureAtlas", "level-button");
-		
+		spriteAtlas(Sprites.LevelButton, "TextureAtlas", "level-button");
+
 		spriteAtlas(Sprites.LeftButton, "TextureAtlas", "button-left");
 		spriteAtlas(Sprites.RightButton, "TextureAtlas", "button-right");
 		spriteAtlas(Sprites.RestartButton, "TextureAtlas", "button-restart");
@@ -119,13 +137,15 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas(Sprites.DisabledButtonOverlay, "TextureAtlas", "button-disabled-overlay");
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
-		
+
 		sound("ButtonReleasedSound", "data/audio/button01.wav");
 		sound("ExplosionSound", "data/audio/explosion.ogg");
+		
+		music(MusicTracks.Game, "data/audio/music-game.ogg");
 
 		Levels.declareLevelResources(resourceManager, filesMonitor);
 	}
-	
+
 	@Override
 	public void xmlDocument(String id, String file) {
 		super.xmlDocument(id, file);

@@ -36,6 +36,7 @@ import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.componentsengine.utils.Parameters;
 import com.gemserk.componentsengine.utils.ParametersWrapper;
+import com.gemserk.games.superflyingthing.audio.MusicPlayer;
 import com.gemserk.games.superflyingthing.gamestates.AboutGameState;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerSettingsGameState;
@@ -254,22 +255,23 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		screenManager = new ScreenManagerImpl(this);
 
 		GameResources.load(resourceManager, filesMonitor);
+		
+		MusicPlayer musicPlayer = new MusicPlayer(soundPlayer, resourceManager.get(GameResources.MusicTracks.Game));
 
 		fpsFontResource = resourceManager.get("FpsFont");
 		spriteBatch = new SpriteBatch();
 
-		Injector injector = new InjectorImpl() {
-			{
-				bind("game", Game.this);
-				bind("soundPlayer", soundPlayer);
-				bind("resourceManager", resourceManager);
-				bind("adWhirlViewHandler", adWhirlViewHandler);
-				bind("gamePreferences", gamePreferences);
-				bind("browserUtils", browserUtils);
-				bind("screenManager", screenManager);
-				bind("eventManager", eventManager);
-			}
-		};
+		Injector injector = new InjectorImpl();
+		
+		injector.bind("game", Game.this);
+		injector.bind("soundPlayer", soundPlayer);
+		injector.bind("musicPlayer", musicPlayer);
+		injector.bind("resourceManager", resourceManager);
+		injector.bind("adWhirlViewHandler", adWhirlViewHandler);
+		injector.bind("gamePreferences", gamePreferences);
+		injector.bind("browserUtils", browserUtils);
+		injector.bind("screenManager", screenManager);
+		injector.bind("eventManager", eventManager);
 
 		GameState mainMenuGameState = injector.getInstance(MainMenuGameState.class);
 

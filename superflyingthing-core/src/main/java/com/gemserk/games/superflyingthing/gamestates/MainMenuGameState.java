@@ -22,13 +22,17 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.audio.MusicPlayer;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
 
 	Game game;
+	
 	SoundPlayer soundPlayer;
+	MusicPlayer musicPlayer;
+	
 	AdWhirlViewHandler adWhirlViewHandler;
 	ResourceManager<String> resourceManager;
 	EventManager eventManager;
@@ -57,6 +61,8 @@ public class MainMenuGameState extends GameStateImpl {
 		BitmapFont versionFont = resourceManager.getResourceValue("VersionFont");
 
 		screen = new Container();
+		
+		musicPlayer.resumeGameMusic();
 
 		final Container settingsPanel = new Container();
 
@@ -121,6 +127,11 @@ public class MainMenuGameState extends GameStateImpl {
 
 								ImageButton disabledOverlay = settingsPanel.findControl(disabledOverlayId);
 								disabledOverlay.setColor(1f, 1f, 1f, soundPlayer.isMuted() ? 1f : 0f);
+								
+								if (soundPlayer.isMuted()) 
+									musicPlayer.pauseGameMusic();
+								else 
+									musicPlayer.resumeGameMusic();
 							}
 
 						}) //

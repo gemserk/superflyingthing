@@ -25,6 +25,7 @@ import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.audio.MusicPlayer;
 import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
@@ -32,7 +33,9 @@ public class PauseGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
+	
 	SoundPlayer soundPlayer;
+	MusicPlayer musicPlayer;
 
 	SpriteBatch spriteBatch;
 	Sprite whiteRectangle;
@@ -134,6 +137,11 @@ public class PauseGameState extends GameStateImpl {
 
 								ImageButton disabledOverlay = settingsPanel.findControl(disabledOverlayId);
 								disabledOverlay.setColor(1f, 1f, 1f, soundPlayer.isMuted() ? 1f : 0f);
+								
+								if (soundPlayer.isMuted()) 
+									musicPlayer.pauseGameMusic();
+								else 
+									musicPlayer.resumeGameMusic();
 							}
 
 						}) //
