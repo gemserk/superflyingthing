@@ -43,6 +43,9 @@ public class MainMenuGameState extends GameStateImpl {
 		float centerX = width * 0.5f;
 
 		float scale = Gdx.graphics.getHeight() / 480f;
+		
+		float scaleX = Gdx.graphics.getWidth() / 800f;
+		float scaleY = Gdx.graphics.getHeight() / 480f;
 
 		if (Gdx.graphics.getHeight() > 480f)
 			scale = 1f;
@@ -64,7 +67,7 @@ public class MainMenuGameState extends GameStateImpl {
 					.position(0f, 0f) //
 					.center(0f, 0f) //
 					.color(1f, 1f, 1f, 1f) //
-					.size(panelBackgroundSprite.getWidth() * Gdx.graphics.getWidth() / 800f, panelBackgroundSprite.getHeight() * Gdx.graphics.getHeight() / 480f) //
+					.size(panelBackgroundSprite.getWidth() * scaleY, panelBackgroundSprite.getHeight() * scaleY) //
 					.build());
 
 			{
@@ -72,10 +75,10 @@ public class MainMenuGameState extends GameStateImpl {
 				final String disabledOverlayId = "BackgroundDisabledOverlay";
 
 				settingsPanel.add(GuiControls.imageButton(toggleBackgroundSprite) //
-						.position(55f * scale, 300 * scale) //
+						.position(55f * scaleX, 300 * scaleY) //
 						.center(0.5f, 0.5f) //
 						.color(1f, 1f, 1f, 1f) //
-						.size(toggleBackgroundSprite.getWidth() * scale * 0.5f, toggleBackgroundSprite.getHeight() * scale * 0.5f) //
+						.size(toggleBackgroundSprite.getWidth() * scaleY * 0.5f, toggleBackgroundSprite.getHeight() * scaleY * 0.5f) //
 						.handler(new ButtonHandler() {
 							@Override
 							public void onReleased(Control control) {
@@ -92,10 +95,10 @@ public class MainMenuGameState extends GameStateImpl {
 
 				settingsPanel.add(GuiControls.imageButton(disabledOverlay) //
 						.id(disabledOverlayId) //
-						.position(55f * scale, 300 * scale) //
+						.position(55f * scaleX, 300 * scaleY) //
 						.center(0.5f, 0.5f) //
 						.color(1f, 1f, 1f, game.getGamePreferences().isFirstBackgroundEnabled() ? 0f : 1f) //
-						.size(disabledOverlay.getWidth() * scale * 0.5f, disabledOverlay.getHeight() * scale * 0.5f) //
+						.size(disabledOverlay.getWidth() * scaleY * 0.5f, disabledOverlay.getHeight() * scaleY * 0.5f) //
 						.build());
 			}
 
@@ -104,10 +107,10 @@ public class MainMenuGameState extends GameStateImpl {
 				final String disabledOverlayId = "SoundDisabledOverlay";
 
 				settingsPanel.add(GuiControls.imageButton(toggleSoundSprite) //
-						.position(55f * scale, 180 * scale) //
+						.position(55f * scaleX, 180f * scaleY) //
 						.center(0.5f, 0.5f) //
 						.color(1f, 1f, 1f, 1f) //
-						.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
+						.size(toggleSoundSprite.getWidth() * scaleY * 0.5f, toggleSoundSprite.getHeight() * scaleY * 0.5f) //
 						.handler(new ButtonHandler() {
 							@Override
 							public void onReleased(Control control) {
@@ -127,10 +130,10 @@ public class MainMenuGameState extends GameStateImpl {
 
 				settingsPanel.add(GuiControls.imageButton(disabledOverlay) //
 						.id(disabledOverlayId) //
-						.position(55f * scale, 180 * scale) //
+						.position(55f * scaleX, 180f * scaleY) //
 						.center(0.5f, 0.5f) //
 						.color(1f, 1f, 1f, soundPlayer.isMuted() ? 1f : 0f) //
-						.size(disabledOverlay.getWidth() * scale * 0.5f, disabledOverlay.getHeight() * scale * 0.5f) //
+						.size(disabledOverlay.getWidth() * scaleY * 0.5f, disabledOverlay.getHeight() * scaleY * 0.5f) //
 						.build());
 			}
 
