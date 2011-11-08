@@ -6,6 +6,7 @@ import com.artemis.Entity;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -23,6 +24,8 @@ import com.gemserk.commons.artemis.templates.EntityTemplate;
 import com.gemserk.commons.gdx.AverageFPS;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.audio.SoundPlayer;
+import com.gemserk.commons.gdx.gui.Container;
+import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.time.TimeStepProviderGameStateImpl;
 import com.gemserk.commons.reflection.Injector;
 import com.gemserk.commons.reflection.InjectorImpl;
@@ -45,6 +48,7 @@ import com.gemserk.games.superflyingthing.levels.RandomLevelGenerator;
 import com.gemserk.games.superflyingthing.preferences.GamePreferences;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile;
 import com.gemserk.games.superflyingthing.preferences.PlayerProfile.LevelInformation;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.games.superflyingthing.scenes.NormalModeSceneTemplate;
 import com.gemserk.games.superflyingthing.scenes.SceneTemplate;
 import com.gemserk.games.superflyingthing.scripts.CountTravelTimeScript;
@@ -57,11 +61,20 @@ import com.gemserk.resources.ResourceManager;
 
 public class PlayGameState extends GameStateImpl {
 
+	private static class Hud {
+
+		public static final String Screen = "Screen";
+
+		public static final String LeftButton = "LeftButton";
+		public static final String RightButton = "RightButton";
+
+	}
+
 	Game game;
 	ResourceManager<String> resourceManager;
 	GamePreferences gamePreferences;
 	SoundPlayer soundPlayer;
-	
+
 	private SpriteBatch spriteBatch;
 
 	// private Box2DCustomDebugRenderer box2dCustomDebugRenderer;
@@ -79,7 +92,6 @@ public class PlayGameState extends GameStateImpl {
 
 	EntityTemplate userMessageTemplate;
 
-
 	private boolean shouldDisposeWorldWrapper;
 
 	private static String[] endMessages = new String[] { "Great Job!", "Nicely Done!", "You made it!", "Good Work!", "You Rock!", };
@@ -89,6 +101,8 @@ public class PlayGameState extends GameStateImpl {
 	private Injector injector;
 
 	RenderLayers renderLayers;
+
+	Container screen;
 
 	@Handles
 	public void toggleFirstBackground(Event e) {
@@ -107,6 +121,29 @@ public class PlayGameState extends GameStateImpl {
 		averageFPS = new AverageFPS();
 		createALotOfStuff();
 		createWorld();
+
+		screen = new Container(Hud.Screen);
+		
+		float buttonScale = Gdx.graphics.getHeight() / 480f;
+
+		Sprite leftButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftButton);
+
+		screen.add(GuiControls.imageButton(leftButtonSprite) //
+				.id(Hud.LeftButton) //
+				.center(0f, 0f) //
+				.size(leftButtonSprite.getWidth() * buttonScale, leftButtonSprite.getHeight() * buttonScale) //
+				.position(10f, 10f) //
+				.build());
+
+		Sprite rightButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.RightButton);
+
+		screen.add(GuiControls.imageButton(rightButtonSprite) //
+				.id(Hud.RightButton) //
+				.center(1f, 0f) //
+				.size(leftButtonSprite.getWidth() * buttonScale, leftButtonSprite.getHeight() * buttonScale) //
+				.position(Gdx.graphics.getWidth() - 10f, 10f) //
+				.build());
+
 	}
 
 	private void createALotOfStuff() {
@@ -366,6 +403,10 @@ public class PlayGameState extends GameStateImpl {
 		Gdx.graphics.getGL10().glClear(GL10.GL_COLOR_BUFFER_BIT);
 
 		worldWrapper.render();
+		
+		spriteBatch.begin();
+		screen.draw(spriteBatch);
+		spriteBatch.end();
 
 		// if (Game.isShowBox2dDebug())
 		// box2dCustomDebugRenderer.render();
@@ -376,7 +417,9 @@ public class PlayGameState extends GameStateImpl {
 	public void update() {
 		averageFPS.update();
 
+		screen.update();
 		inputDevicesMonitor.update();
+		
 		Synchronizers.synchronize(getDelta());
 
 		if (inputDevicesMonitor.getButton("pause").isReleased()) {

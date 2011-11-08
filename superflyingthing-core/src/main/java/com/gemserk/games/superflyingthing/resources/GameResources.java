@@ -11,6 +11,13 @@ import com.gemserk.resources.monitor.FilesMonitor;
  * Declares all resources needed for the game.
  */
 public class GameResources extends LibgdxResourceBuilder {
+	
+	public static class Sprites {
+		
+		public static final String LeftButton = "LeftButtonSprite";
+		public static final String RightButton = "RightButtonSprite";
+		
+	}
 
 	private final FilesMonitor filesMonitor;
 
@@ -88,6 +95,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas("LaserSprite", "TextureAtlas", "laser-bullet");
 		spriteAtlas("TickSprite", "TextureAtlas", "tick");
 		spriteAtlas("LevelButtonSprite", "TextureAtlas", "level-button");
+		
+		spriteAtlas(Sprites.LeftButton, "TextureAtlas", "button-left");
+		spriteAtlas(Sprites.RightButton, "TextureAtlas", "button-right");
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
 		

@@ -31,6 +31,20 @@ level-button
   orig: 128, 128
   offset: 0, 0
   index: -1
+button-left
+  rotate: false
+  xy: 251, 130
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-right
+  rotate: false
+  xy: 380, 130
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
 planet
   rotate: false
   xy: 0, 387
@@ -54,14 +68,14 @@ white-rectangle-direction
   index: -1
 laser-bullet
   rotate: false
-  xy: 251, 130
+  xy: 251, 258
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 white-rectangle
   rotate: false
-  xy: 317, 130
+  xy: 251, 324
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
