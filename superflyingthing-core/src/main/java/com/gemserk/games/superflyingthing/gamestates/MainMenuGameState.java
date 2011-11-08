@@ -34,7 +34,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 	SpriteBatch spriteBatch;
 	Container screen;
-
+	
 	@Override
 	public void init() {
 		float width = Gdx.graphics.getWidth();
@@ -89,6 +89,16 @@ public class MainMenuGameState extends GameStateImpl {
 					.center(0.5f, 0.5f) //
 					.color(1f, 1f, 1f, 1f) //
 					.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
+					.handler(new ButtonHandler(){ 
+						@Override
+						public void onReleased(Control control) {
+							if (soundPlayer.isMuted())
+								soundPlayer.unmute();
+							else
+								soundPlayer.mute();
+						}
+						
+					}) //
 					.build());
 		}
 

@@ -12,6 +12,7 @@ import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
+import com.gemserk.commons.gdx.audio.SoundPlayer;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
@@ -30,13 +31,14 @@ public class PauseGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
+	SoundPlayer soundPlayer;
 
 	SpriteBatch spriteBatch;
 	Sprite whiteRectangle;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	Integer levelNumber;
 	Container container;
-	
+
 	EventManager eventManager;
 
 	@Override
@@ -100,9 +102,18 @@ public class PauseGameState extends GameStateImpl {
 					.center(0.5f, 0.5f) //
 					.color(1f, 1f, 1f, 1f) //
 					.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							if (soundPlayer.isMuted())
+								soundPlayer.unmute();
+							else
+								soundPlayer.mute();
+						}
+					}) //
 					.build());
 		}
-		
+
 		{
 			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
 
