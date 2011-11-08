@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.Screen;
 import com.gemserk.commons.gdx.audio.SoundPlayer;
@@ -16,7 +17,6 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Panel;
-import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
@@ -30,6 +30,7 @@ public class MainMenuGameState extends GameStateImpl {
 	SoundPlayer soundPlayer;
 	AdWhirlViewHandler adWhirlViewHandler;
 	ResourceManager<String> resourceManager;
+	EventManager eventManager;
 
 	SpriteBatch spriteBatch;
 	Container screen;
@@ -53,6 +54,44 @@ public class MainMenuGameState extends GameStateImpl {
 
 		screen = new Container();
 
+		Container settingsPanel = new Container();
+
+		{
+			Sprite panelBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftPanelBackground);
+
+			settingsPanel.add(GuiControls.imageButton(panelBackgroundSprite) //
+					.position(0f, 0f) //
+					.center(0f, 0f) //
+					.color(1f, 1f, 1f, 1f) //
+					.size(panelBackgroundSprite.getWidth() * Gdx.graphics.getWidth() / 800f, panelBackgroundSprite.getHeight() * Gdx.graphics.getHeight() / 480f) //
+					.build());
+
+			Sprite toggleBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleBackgroundButton);
+
+			settingsPanel.add(GuiControls.imageButton(toggleBackgroundSprite) //
+					.position(55f * scale, 300 * scale) //
+					.center(0.5f, 0.5f) //
+					.color(1f, 1f, 1f, 1f) //
+					.size(toggleBackgroundSprite.getWidth() * scale * 0.5f, toggleBackgroundSprite.getHeight() * scale * 0.5f) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							eventManager.registerEvent(Events.toggleFirstBackground, this);
+							eventManager.registerEvent(Events.toggleSecondBackground, this);
+						}
+					}) //
+					.build());
+
+			Sprite toggleSoundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleSoundsButton);
+
+			settingsPanel.add(GuiControls.imageButton(toggleSoundSprite) //
+					.position(55f * scale, 180 * scale) //
+					.center(0.5f, 0.5f) //
+					.color(1f, 1f, 1f, 1f) //
+					.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
+					.build());
+		}
+
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		panel.add(GuiControls.label("Super Flying Thing") //
@@ -68,29 +107,31 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(versionFont) //
 				.build());
 
-		Sprite playButtonBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+		{
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
 
-		panel.add(GuiControls.imageButton(playButtonBackgroundSprite) //
-				.position(centerX, height * 0.3f) //
-				.center(0.5f, 0.5f) //
-				.size(playButtonBackgroundSprite.getWidth() * scale, playButtonBackgroundSprite.getHeight() * scale) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						game.transition(Screens.SelectPlayMode) //
-								.disposeCurrent() //
-								.start();
-					}
-				})//
-				.build());
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.3f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							game.transition(Screens.SelectPlayMode) //
+									.disposeCurrent() //
+									.start();
+						}
+					})//
+					.build());
 
-		TextButton playButton = GuiControls.textButton() //
-				.position(centerX, height * 0.3f) //
-				.text("Play") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.build();
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0.3f) //
+					.text("Play") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.build());
+		}
 
 		// TextButton settingsButton = GuiControls.textButton() //
 		// .position(centerX, height * 0.2f) //
@@ -107,41 +148,37 @@ public class MainMenuGameState extends GameStateImpl {
 		// })//
 		// .build();
 
-		Sprite aboutButtonBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+		{
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
 
-		panel.add(GuiControls.imageButton(aboutButtonBackgroundSprite) //
-				.position(centerX, height * 0.1f) //
-				.center(0.5f, 0.5f) //
-				.size(aboutButtonBackgroundSprite.getWidth() * scale, aboutButtonBackgroundSprite.getHeight() * scale) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						aboutUs();
-					}
-				})//
-				.build());
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.1f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							aboutUs();
+						}
+					})//
+					.build());
 
-		TextButton aboutButton = GuiControls.textButton() //
-				.id("AboutButton") //
-				.position(centerX, height * 0.1f) //
-				.text("About us") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(40, 20f) //
-				// .handler(new ButtonHandler() {
-				// @Override
-				// public void onReleased(Control control) {
-				// aboutUs();
-				// }
-				// })//
-				.build();
+			panel.add(GuiControls.textButton() //
+					.id("AboutButton") //
+					.position(centerX, height * 0.1f) //
+					.text("About us") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(40, 20f) //
+					.build());
+		}
 
 		// container.add(text);
-		panel.add(playButton);
-		// panel.add(settingsButton);
-		panel.add(aboutButton);
 
+		// panel.add(settingsButton);
+
+		screen.add(settingsPanel);
 		screen.add(panel);
 
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();

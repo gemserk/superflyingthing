@@ -22,6 +22,9 @@ public class GameResources extends LibgdxResourceBuilder {
 		public static final String NextLevelButton = "NextLevelButtonSprite";
 		
 		public static final String SquareButton = "SquareButtonSprite";
+		public static final String ToggleBackgroundButton = "ToggleBackgroundButtonSprite";
+		public static final String ToggleSoundsButton = "ToggleSoundsButtonSprite";
+		public static final String LeftPanelBackground = "LeftPanelBackgroundSprite";
 		
 	}
 
@@ -108,6 +111,10 @@ public class GameResources extends LibgdxResourceBuilder {
 		spriteAtlas(Sprites.NextLevelButton, "TextureAtlas", "button-next");
 		spriteAtlas(Sprites.MenuButton, "TextureAtlas", "button-menu");
 		spriteAtlas(Sprites.SquareButton, "TextureAtlas", "squarebutton");
+
+		spriteAtlas(Sprites.LeftPanelBackground, "TextureAtlas", "left-panel");
+		spriteAtlas(Sprites.ToggleBackgroundButton, "TextureAtlas", "button-togglebackground");
+		spriteAtlas(Sprites.ToggleSoundsButton, "TextureAtlas", "button-togglesounds");
 
 		xmlDocument("RandomLevelTilesDocument", "data/levels/level-tiles-template.svg");
 		

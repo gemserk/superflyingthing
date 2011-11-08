@@ -10,6 +10,13 @@ fog
   orig: 256, 256
   offset: 0, 1
   index: -1
+left-panel
+  rotate: false
+  xy: 251, 0
+  size: 110, 480
+  orig: 110, 480
+  offset: 0, 0
+  index: -1
 tile01
   rotate: false
   xy: 0, 257
@@ -19,56 +26,21 @@ tile01
   index: -1
 planet
   rotate: false
-  xy: 251, 0
+  xy: 363, 0
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 level-button
   rotate: false
-  xy: 381, 0
+  xy: 363, 130
   size: 128, 128
   orig: 128, 128
   offset: 0, 0
   index: -1
 button-restart
   rotate: false
-  xy: 251, 130
-  size: 127, 126
-  orig: 128, 128
-  offset: 1, 1
-  index: -1
-button-togglebackground
-  rotate: false
-  xy: 380, 130
-  size: 127, 126
-  orig: 128, 128
-  offset: 1, 1
-  index: -1
-button-left
-  rotate: false
-  xy: 251, 258
-  size: 127, 126
-  orig: 128, 128
-  offset: 1, 1
-  index: -1
-button-right
-  rotate: false
-  xy: 251, 386
-  size: 127, 126
-  orig: 128, 128
-  offset: 1, 1
-  index: -1
-button-menu
-  rotate: false
-  xy: 380, 258
-  size: 127, 126
-  orig: 128, 128
-  offset: 1, 1
-  index: -1
-button-next
-  rotate: false
-  xy: 380, 386
+  xy: 363, 260
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
@@ -94,6 +66,20 @@ white-rectangle-direction
   orig: 64, 64
   offset: 0, 0
   index: -1
+laser-bullet
+  rotate: false
+  xy: 363, 388
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+white-rectangle
+  rotate: false
+  xy: 429, 388
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 star
   rotate: false
   xy: 122, 453
@@ -113,23 +99,51 @@ generated2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-laser-bullet
+button-togglebackground
   rotate: false
   xy: 0, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
   index: -1
-white-rectangle
+button-left
   rotate: false
-  xy: 66, 0
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
+  xy: 129, 0
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-right
+  rotate: false
+  xy: 0, 128
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-togglesounds
+  rotate: false
+  xy: 129, 128
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-menu
+  rotate: false
+  xy: 0, 256
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-next
+  rotate: false
+  xy: 129, 256
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
   index: -1
 squarebutton
   rotate: false
-  xy: 132, 0
+  xy: 0, 384
   size: 254, 52
   orig: 256, 64
   offset: 1, 5

@@ -266,6 +266,7 @@ public class Game extends com.gemserk.commons.gdx.Game {
 				bind("gamePreferences", gamePreferences);
 				bind("browserUtils", browserUtils);
 				bind("screenManager", screenManager);
+				bind("eventManager", eventManager);
 			}
 		};
 

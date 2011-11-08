@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
+import com.gemserk.commons.artemis.events.EventManager;
 import com.gemserk.commons.gdx.GameStateImpl;
 import com.gemserk.commons.gdx.GameTransitions.TransitionHandler;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
@@ -19,6 +20,7 @@ import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Colors;
+import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.resources.GameResources;
@@ -34,6 +36,8 @@ public class PauseGameState extends GameStateImpl {
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	Integer levelNumber;
 	Container container;
+	
+	EventManager eventManager;
 
 	@Override
 	public void init() {
@@ -61,12 +65,44 @@ public class PauseGameState extends GameStateImpl {
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.5f);
 
-		// panel.add(GuiControls.label("Game Paused") //
-		// .position(centerX, height * 0.60f) //
-		// .color(Colors.yellow) //
-		// .font(titleFont)//
-		// .build());
+		Container settingsPanel = new Container();
 
+		{
+			Sprite panelBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftPanelBackground);
+
+			settingsPanel.add(GuiControls.imageButton(panelBackgroundSprite) //
+					.position(0f, 0f) //
+					.center(0f, 0f) //
+					.color(1f, 1f, 1f, 1f) //
+					.size(panelBackgroundSprite.getWidth() * Gdx.graphics.getWidth() / 800f, panelBackgroundSprite.getHeight() * Gdx.graphics.getHeight() / 480f) //
+					.build());
+
+			Sprite toggleBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleBackgroundButton);
+
+			settingsPanel.add(GuiControls.imageButton(toggleBackgroundSprite) //
+					.position(55f * scale, 300 * scale) //
+					.center(0.5f, 0.5f) //
+					.color(1f, 1f, 1f, 1f) //
+					.size(toggleBackgroundSprite.getWidth() * scale * 0.5f, toggleBackgroundSprite.getHeight() * scale * 0.5f) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							eventManager.registerEvent(Events.toggleFirstBackground, this);
+							eventManager.registerEvent(Events.toggleSecondBackground, this);
+						}
+					}) //
+					.build());
+
+			Sprite toggleSoundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleSoundsButton);
+
+			settingsPanel.add(GuiControls.imageButton(toggleSoundSprite) //
+					.position(55f * scale, 180 * scale) //
+					.center(0.5f, 0.5f) //
+					.color(1f, 1f, 1f, 1f) //
+					.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
+					.build());
+		}
+		
 		{
 			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
 
@@ -186,6 +222,7 @@ public class PauseGameState extends GameStateImpl {
 		}
 
 		container.add(panel);
+		container.add(settingsPanel);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
