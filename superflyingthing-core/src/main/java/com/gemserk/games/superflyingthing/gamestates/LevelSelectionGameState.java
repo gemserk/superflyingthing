@@ -1,5 +1,7 @@
 package com.gemserk.games.superflyingthing.gamestates;
 
+import java.util.ArrayList;
+
 import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -8,18 +10,16 @@ import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.gdx.GameStateImpl;
-import com.gemserk.commons.gdx.graphics.ImmediateModeRendererUtils;
 import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.ImageButton;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
-import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
@@ -37,15 +37,17 @@ public class LevelSelectionGameState extends GameStateImpl {
 	Integer selectedLevel;
 
 	Container screen;
+	ArrayList<ImageButton> allLevelButtons;
+
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	Rectangle selectionRectangle;
+	// Rectangle selectionRectangle;
 	Sprite backgroundSprite;
 
 	@Override
 	public void init() {
 		selectedLevel = null;
-		selectionRectangle = new Rectangle();
+		// selectionRectangle = new Rectangle();
 
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
@@ -80,8 +82,10 @@ public class LevelSelectionGameState extends GameStateImpl {
 		float w = width * 0.1f;
 		float h = height * 0.15f;
 
-		selectionRectangle.setWidth(w + 2f);
-		selectionRectangle.setHeight(h + 2f);
+		// selectionRectangle.setWidth(w + 2f);
+		// selectionRectangle.setHeight(h + 2f);
+
+		allLevelButtons = new ArrayList<ImageButton>();
 
 		for (int i = 0; i < Levels.levelsCount(); i++) {
 
@@ -97,11 +101,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 			x += width * 0.15f;
 
-			Color color = new Color(Color.WHITE);
+			Color color = new Color(1f, 1f, 1f, 0.5f);
 			// if (!playerProfile.hasPlayedLevel(levelIndex + 1))
 			// color.set(0.5f, 0.5f, 0.5f, 1f);
 
-			screen.add(GuiControls.imageButton(levelThumbnail) //
+			ImageButton selectLevelButton = GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
 					.size(w, h) //
 					.position(x, y) //
@@ -115,12 +119,25 @@ public class LevelSelectionGameState extends GameStateImpl {
 								play();
 							else {
 								select(levelIndex + 1);
-								selectionRectangle.setX(control.getX());
-								selectionRectangle.setY(control.getY());
+								// selectionRectangle.setX(control.getX());
+								// selectionRectangle.setY(control.getY());
+
+								for (int j = 0; j < allLevelButtons.size(); j++) {
+									ImageButton imageButton = allLevelButtons.get(j);
+									imageButton.setColor(1f, 1f, 1f, 0.5f);
+									if (control == imageButton)
+										imageButton.setColor(1f, 1f, 1f, 1f);
+								}
+
 							}
 						}
 					}) //
-					.build());
+					.build();
+
+			allLevelButtons.add(selectLevelButton);
+
+			screen.add(selectLevelButton);
+
 			screen.add(GuiControls.label("" + (i + 1)) //
 					.position(x, y) //
 					.color(color) //
@@ -228,7 +245,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		if (selectedLevel == null)
 			return;
 
-		ImmediateModeRendererUtils.drawRectangle(selectionRectangle, 0.5f, 0.5f, Colors.yellow);
+		// ImmediateModeRendererUtils.drawRectangle(selectionRectangle, 0.5f, 0.5f, Colors.yellow);
 
 	}
 
