@@ -124,18 +124,18 @@ public class PlayGameState extends GameStateImpl {
 
 		screen = new Container(Hud.Screen);
 
-		float buttonScale = Gdx.graphics.getHeight() / 480f;
+		float scale = Gdx.graphics.getHeight() / 480f;
 
 		if (Gdx.graphics.getHeight() > 480f) 
-			buttonScale = 1f;
+			scale = 1f;
 
 		Sprite leftButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftButton);
 
 		screen.add(GuiControls.imageButton(leftButtonSprite) //
 				.id(Hud.LeftButton) //
 				.center(0f, 0f) //
-				.size(leftButtonSprite.getWidth() * buttonScale, leftButtonSprite.getHeight() * buttonScale) //
-				.position(10f * buttonScale, 10f * buttonScale) //
+				.size(leftButtonSprite.getWidth() * scale, leftButtonSprite.getHeight() * scale) //
+				.position(10f * scale, 10f * scale) //
 				.build());
 
 		Sprite rightButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.RightButton);
@@ -143,8 +143,8 @@ public class PlayGameState extends GameStateImpl {
 		screen.add(GuiControls.imageButton(rightButtonSprite) //
 				.id(Hud.RightButton) //
 				.center(1f, 0f) //
-				.size(leftButtonSprite.getWidth() * buttonScale, leftButtonSprite.getHeight() * buttonScale) //
-				.position(Gdx.graphics.getWidth() - 10f * buttonScale, 10f * buttonScale) //
+				.size(leftButtonSprite.getWidth() * scale, leftButtonSprite.getHeight() * scale) //
+				.position(Gdx.graphics.getWidth() - 10f * scale, 10f * scale) //
 				.build());
 
 	}

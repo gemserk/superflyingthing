@@ -21,19 +21,21 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
 import com.gemserk.games.superflyingthing.levels.Levels;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class GameOverGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
-	
+
 	SpriteBatch spriteBatch;
 	Sprite whiteRectangle;
-	Container container;
+	Container screen;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 	WorldWrapper worldWrapper;
 	Integer levelNumber;
@@ -44,10 +46,15 @@ public class GameOverGameState extends GameStateImpl {
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
 
+		float scale = Gdx.graphics.getHeight() / 480f;
+
+		if (Gdx.graphics.getHeight() > 480f)
+			scale = 1f;
+
 		spriteBatch = new SpriteBatch();
 
-		container = new Container();
-		
+		screen = new Container();
+
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		levelNumber = getParameters().get("level", 0);
@@ -60,65 +67,94 @@ public class GameOverGameState extends GameStateImpl {
 		whiteRectangle.setColor(0f, 0f, 0f, 0.25f);
 
 		worldWrapper = getParameters().get("worldWrapper");
-		
+
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
-			
-			panel.add(GuiControls.label(String.format(Locale.US, "Your time was: %1$.2f seconds", GameInformation.gameData.travelTime))
-					.position(centerX, height * 0.6f) //
+
+			panel.add(GuiControls.label(String.format(Locale.US, "Your time was: %1$.2f seconds", GameInformation.gameData.travelTime)).position(centerX, height * 0.6f) //
 					.font(buttonFont) //
 					.build());
-			
-			panel.add(GuiControls.textButton() //
-					.position(centerX, height * 0.4f) //
-					.text("Try Again") //
-					.font(buttonFont) //
-					.overColor(Color.GREEN) //
-					.notOverColor(Color.WHITE)//
-					.boundsOffset(20, 20f) //
+
+			{
+				Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+				panel.add(GuiControls.imageButton(squareButtonSprite) //
+						.position(centerX, height * 0.4f) //
+						.center(0.5f, 0.5f) //
+						.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+						.handler(new ButtonHandler() {
+							@Override
+							public void onReleased(Control control) {
+								restartLevel();
+							}
+						})//
+						.build());
+
+				panel.add(GuiControls.textButton() //
+						.position(centerX, height * 0.4f) //
+						.text("Try Again") //
+						.font(buttonFont) //
+						.overColor(Color.WHITE) //
+						.notOverColor(Colors.yellow)//
+						.boundsOffset(20, 20f) //
+						.build());
+			}
+		}
+
+		{
+			String nextLevelText = "Next Level";
+			if (GameInformation.gameMode == GameInformation.ChallengeGameMode && !Levels.hasLevel(levelNumber + 1))
+				nextLevelText = "Select Level";
+
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.2f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
 					.handler(new ButtonHandler() {
 						@Override
 						public void onReleased(Control control) {
-							restartLevel();
+							nextLevel();
 						}
 					})//
 					.build());
+
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0.2f) //
+					.text(nextLevelText) //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(20, 20f) //
+					.build());
 		}
 
-		String nextLevelText = "Next Level";
-		if (GameInformation.gameMode == GameInformation.ChallengeGameMode && !Levels.hasLevel(levelNumber + 1))
-			nextLevelText = "Select Level";
+		{
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
 
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0.2f) //
-				.text(nextLevelText) //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						nextLevel();
-					}
-				})//
-				.build());
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							mainMenu();
+						}
+					})//
+					.build());
 
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0f) //
-				.text("Main Menu") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						mainMenu();
-					}
-				})//
-				.build());
-		
-		container.add(panel);
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0f) //
+					.text("Main Menu") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(20, 20f) //
+					.build());
+		}
+
+		screen.add(panel);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
 		new LibgdxInputMappingBuilder<String>(inputDevicesMonitor, Gdx.input) {
@@ -132,11 +168,11 @@ public class GameOverGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level finished",GameInformation.gameData.averageFPS );
-		} else if(GameInformation.gameMode == GameInformation.RandomGameMode){
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level finished", GameInformation.gameData.averageFPS);
+		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackEvent("/random", "deaths", "Level finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/random", "stars", "Level finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackEvent("/random", "fps", "Level finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/random", "fps", "Level finished", GameInformation.gameData.averageFPS);
 		}
 	}
 
@@ -207,7 +243,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		spriteBatch.begin();
 		whiteRectangle.draw(spriteBatch);
-		container.draw(spriteBatch);
+		screen.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
@@ -219,7 +255,7 @@ public class GameOverGameState extends GameStateImpl {
 
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
-		container.update();
+		screen.update();
 
 		if (inputDevicesMonitor.getButton("mainMenu").isReleased())
 			mainMenu();

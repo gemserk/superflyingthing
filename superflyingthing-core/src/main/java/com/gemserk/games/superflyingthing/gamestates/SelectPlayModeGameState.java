@@ -6,6 +6,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
@@ -17,18 +18,20 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class SelectPlayModeGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
-	
+
 	SpriteBatch spriteBatch;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
-	Container container;
+	Container screen;
 
 	@Override
 	public void init() {
@@ -36,29 +39,32 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
 
+		float scale = Gdx.graphics.getHeight() / 480f;
+
+		if (Gdx.graphics.getHeight() > 480f)
+			scale = 1f;
+
 		spriteBatch = new SpriteBatch();
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 
-		container = new Container();
+		screen = new Container();
 
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
-		panel.add(GuiControls.label("Select Game Mode") //
-				.position(centerX, height * 0.60f) //
-				.color(Color.GREEN) //
-				.font(titleFont) //
-				.build());
+		// panel.add(GuiControls.label("Select Game Mode") //
+		// .position(centerX, height * 0.60f) //
+		// .color(Color.GREEN) //
+		// .font(titleFont) //
+		// .build());
 
-		panel.add(GuiControls.textButton() //
-				.text("Challenge") //
-				.font(buttonFont) //
-				.position(centerX, height * 0.4f) //
+		Sprite challengeButtonBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+		panel.add(GuiControls.imageButton(challengeButtonBackgroundSprite) //
+				.position(centerX, height * 0.3f) //
 				.center(0.5f, 0.5f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
-				.boundsOffset(30f, 30f) //
+				.size(challengeButtonBackgroundSprite.getWidth() * scale, challengeButtonBackgroundSprite.getHeight() * scale) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -68,13 +74,21 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				.build());
 
 		panel.add(GuiControls.textButton() //
-				.text("Random") //
+				.text("Challenge") //
 				.font(buttonFont) //
-				.position(centerX, height * 0.2f) //
+				.position(centerX, height * 0.3f) //
 				.center(0.5f, 0.5f) //
-				.notOverColor(Color.WHITE) //
-				.overColor(Color.GREEN) //
+				.overColor(Color.WHITE) //
+				.notOverColor(Colors.yellow)//
 				.boundsOffset(30f, 30f) //
+				.build());
+
+		Sprite randomButtonBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+		panel.add(GuiControls.imageButton(randomButtonBackgroundSprite) //
+				.position(centerX, height * 0.1f) //
+				.center(0.5f, 0.5f) //
+				.size(randomButtonBackgroundSprite.getWidth() * scale, randomButtonBackgroundSprite.getHeight() * scale) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -83,26 +97,20 @@ public class SelectPlayModeGameState extends GameStateImpl {
 				}) //
 				.build());
 
-		// panel.add(GuiControls.textButton() //
-		// .text("Practice") //
-		// .font(buttonFont) //
-		// .position(centerX, height * 0f) //
-		// .center(0.5f, 0.5f) //
-		// .notOverColor(Color.WHITE) //
-		// .overColor(Color.GREEN) //
-		// .boundsOffset(30f, 30f) //
-		// .handler(new ButtonHandler() {
-		// @Override
-		// public void onReleased(Control control) {
-		// practice();
-		// }
-		// }) //
-		// .build());
+		panel.add(GuiControls.textButton() //
+				.text("Random") //
+				.font(buttonFont) //
+				.position(centerX, height * 0.1f) //
+				.center(0.5f, 0.5f) //
+				.overColor(Color.WHITE) //
+				.notOverColor(Colors.yellow)//
+				.boundsOffset(30f, 30f) //
+				.build());
 
-		container.add(panel);
+		screen.add(panel);
 
 		if (Gdx.app.getType() != ApplicationType.Android)
-			container.add(GuiControls.textButton() //
+			screen.add(GuiControls.textButton() //
 					.text("Back") //
 					.font(buttonFont) //
 					.position(width * 0.98f, height * 0.05f) //
@@ -167,7 +175,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().render();
 		spriteBatch.begin();
-		container.draw(spriteBatch);
+		screen.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
@@ -175,7 +183,7 @@ public class SelectPlayModeGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
-		container.update();
+		screen.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			game.transition(Screens.MainMenu) //
 					.disposeCurrent() //

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+ xmlns:dc="http://purl.org/dc/elements/1.1/"
+ xmlns:cc="http://creativecommons.org/ns#"
+ xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+ xmlns:svg="http://www.w3.org/2000/svg"
+ xmlns="http://www.w3.org/2000/svg"
+ xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+ xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+ width="256"
+ height="64"
+ id="svg5753"
+ version="1.1"
+ inkscape:version="0.48.1 r9760"
+ sodipodi:docname="New document 16">
+<defs
+ id="defs5755" />
+<sodipodi:namedview
+ id="base"
+ pagecolor="#ffffff"
+ bordercolor="#666666"
+ borderopacity="1.0"
+ inkscape:pageopacity="0.0"
+ inkscape:pageshadow="2"
+ inkscape:zoom="1.89219"
+ inkscape:cx="217.438"
+ inkscape:cy="-11.5999"
+ inkscape:document-units="px"
+ inkscape:current-layer="layer1"
+ showgrid="false"
+ inkscape:window-width="1440"
+ inkscape:window-height="849"
+ inkscape:window-x="0"
+ inkscape:window-y="24"
+ inkscape:window-maximized="1" />
+<metadata
+ id="metadata5758">
+<rdf:RDF>
+<cc:Work
+ rdf:about="">
+<dc:format>image/svg+xml</dc:format>
+<dc:type
+ rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+<dc:title></dc:title>
+</cc:Work>
+</rdf:RDF>
+</metadata>
+<g
+ inkscape:label="Layer 1"
+ inkscape:groupmode="layer"
+ id="layer1"
+ transform="translate(0,-988.362)">
+<g
+ transform="matrix(0.988321,0,0,1,-20.8718,990.057)"
+ style="display:inline"
+ id="g5682">
+<path
+ sodipodi:nodetypes="caacaccscaaascc"
+ inkscape:connector-curvature="0"
+ id="path5163"
+ d="M 22.7847,17.3959 C 22.7847,17.3959 24.7004,25.6405 25.1666,29.8371 25.7399,34.9982 25.0665,40.2495 25.6666,45.4075 26.0956,49.0944 27.874,56.3217 27.874,56.3217 27.874,56.3217 73.7109,53.5982 96.634,52.317 120.167,51.0017 167.241,48.5367 167.241,48.5367 L 278.328,47.6545 C 278.328,47.6545 271.412,28.638 271.357,25.174 271.271,19.7446 276.325,6.94517 276.325,6.94517 276.325,6.94517 264.294,5.87557 258.265,5.94942 246.799,6.08987 235.424,8.06168 223.974,8.68401 188.307,10.6227 152.575,12.3185 116.859,11.7936 90.5061,11.4063 59.8304,5.63063 37.9266,7.17779 32.4889,7.56188 22.3554,12.1765 22.3554,12.1765 z"
+ style="fill:#0d3254;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+<path
+ sodipodi:nodetypes="sassaaaasasaaaaass"
+ inkscape:connector-curvature="0"
+ id="path5674"
+ d="M 26.851,16.1161 C 25.2804,19.6072 27.6622,29.3696 28,36 28.2886,41.6648 26.8558,49.6558 28.75,53 30.472,56.0403 37.7308,54.2637 42.25,54.25 56.4136,54.2069 69.4039,51.7568 83,50.75 96.1491,49.7763 109.309,48.9228 122.479,48.2929 150.303,46.9621 178.144,45.3588 206,45.5 213.981,45.5405 221.941,46.4396 229.922,46.5429 244.866,46.7363 274.122,47.4902 274.75,45.75 276.596,40.6336 268.998,33.2933 268.308,26.591 267.707,20.7562 273.513,10.0784 270.399,9.11872 267.424,8.20189 246.713,9.59491 234.875,10 223.412,10.3922 211.964,11.1472 200.5,11.5 189.045,11.8525 177.574,11.6168 166.125,12.1161 154.65,12.6165 143.236,14.4775 131.75,14.5 122.814,14.5175 113.922,13.251 105,12.75 82.9566,11.512 52.4983,9.69163 38.8384,9.64645 34.2978,9.63143 28.5741,12.2861 26.851,16.1161 z"
+ style="fill:#236492;fill-opacity:1;fill-rule:nonzero;stroke:none" />
+<path
+ sodipodi:nodetypes="aaaaaaaasaaaaaa"
+ inkscape:connector-curvature="0"
+ id="path5680"
+ d="M 32.8223,14.5192 C 32.1503,15.0394 31.6782,15.8348 31.4081,16.6406 30.1327,20.4464 28.0063,25.6866 30.701,28.6614 34.6602,33.0321 42.4832,29.2249 48.3787,29.3685 75.3597,30.0258 102.363,30.8206 129.342,30.0756 153.306,29.4138 177.14,25.4596 201.113,25.4794 213.825,25.4899 226.456,28.1041 239.168,27.9794 246.19,27.9105 254.239,29.9664 260.157,26.1865 264.161,23.6291 268.668,16.8658 267.228,13.8121 265.22,9.5523 247.446,12.1346 237.529,12.0444 211.817,11.8105 186.158,14.4951 160.455,15.2263 145.374,15.6553 130.283,16.2832 115.2,15.9334 98.0833,15.5365 81.0312,13.6765 63.935,12.7514 56.2777,12.3371 48.5428,10.588 40.954,11.6908 38.114,12.1035 35.0917,12.7624 32.8223,14.5192 z"
+ style="fill:#ffffff;fill-opacity:0.196078;fill-rule:nonzero;stroke:none" />
+</g>
+</g>
+</svg>

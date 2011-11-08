@@ -31,16 +31,44 @@ level-button
   orig: 128, 128
   offset: 0, 0
   index: -1
-button-left
+button-restart
   rotate: false
   xy: 251, 130
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
   index: -1
-button-right
+button-togglebackground
   rotate: false
   xy: 380, 130
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-left
+  rotate: false
+  xy: 251, 258
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-right
+  rotate: false
+  xy: 251, 386
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-menu
+  rotate: false
+  xy: 380, 258
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 1
+  index: -1
+button-next
+  rotate: false
+  xy: 380, 386
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
@@ -66,20 +94,6 @@ white-rectangle-direction
   orig: 64, 64
   offset: 0, 0
   index: -1
-laser-bullet
-  rotate: false
-  xy: 251, 258
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
-white-rectangle
-  rotate: false
-  xy: 251, 324
-  size: 64, 64
-  orig: 64, 64
-  offset: 0, 0
-  index: -1
 star
   rotate: false
   xy: 122, 453
@@ -93,4 +107,30 @@ tick
   size: 50, 52
   orig: 64, 64
   offset: 10, 9
+  index: -1
+
+generated2.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+laser-bullet
+  rotate: false
+  xy: 0, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+white-rectangle
+  rotate: false
+  xy: 66, 0
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+squarebutton
+  rotate: false
+  xy: 132, 0
+  size: 254, 52
+  orig: 256, 64
+  offset: 1, 5
   index: -1

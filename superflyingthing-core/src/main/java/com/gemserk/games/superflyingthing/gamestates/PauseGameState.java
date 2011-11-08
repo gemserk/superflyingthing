@@ -18,15 +18,17 @@ import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class PauseGameState extends GameStateImpl {
 
 	Game game;
 	ResourceManager<String> resourceManager;
-	
+
 	SpriteBatch spriteBatch;
 	Sprite whiteRectangle;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
@@ -39,10 +41,15 @@ public class PauseGameState extends GameStateImpl {
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
 
+		float scale = Gdx.graphics.getHeight() / 480f;
+
+		if (Gdx.graphics.getHeight() > 480f)
+			scale = 1f;
+
 		levelNumber = getParameters().get("level");
 
 		spriteBatch = new SpriteBatch();
-		
+
 		container = new Container();
 
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
@@ -54,83 +61,130 @@ public class PauseGameState extends GameStateImpl {
 		whiteRectangle.setSize(width, height);
 		whiteRectangle.setColor(0f, 0f, 0f, 0.5f);
 
-		panel.add(GuiControls.label("Game Paused") //
-				.position(centerX, height * 0.60f) //
-				.color(Color.GREEN) //
-				.font(titleFont)//
-				.build());
+		// panel.add(GuiControls.label("Game Paused") //
+		// .position(centerX, height * 0.60f) //
+		// .color(Colors.yellow) //
+		// .font(titleFont)//
+		// .build());
 
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0.48f) //
-				.text("Resume") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						resumeLevel();
-					}
-				})//
-				.build());
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0.36f) //
-				.text("Instructions") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						instructions();
-					}
-				})//
-				.build());
-//		panel.add(GuiControls.textButton() //
-//				.position(centerX, height * 0.24f) //
-//				.text("Settings") //
-//				.font(buttonFont) //
-//				.overColor(Color.GREEN) //
-//				.notOverColor(Color.WHITE)//
-//				.boundsOffset(20, 20f) //
-//				.handler(new ButtonHandler() {
-//					@Override
-//					public void onReleased(Control control) {
-//						settings();
-//					}
-//				})//
-//				.build());
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0.12f) //
-				.text("Restart") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						restartLevel();
-					}
-				})//
-				.build());
-		panel.add(GuiControls.textButton() //
-				.position(centerX, height * 0f) //
-				.text("Main Menu") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						mainMenu();
-					}
-				})//
-				.build());
-		
+		{
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.48f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							resumeLevel();
+						}
+					})//
+					.build());
+
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0.48f) //
+					.text("Resume") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(20, 20f) //
+					.build());
+		}
+
+		{
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.36f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							instructions();
+						}
+					})//
+					.build());
+
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0.36f) //
+					.text("Instructions") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(20, 20f) //
+					.build());
+
+		}
+
+		// panel.add(GuiControls.textButton() //
+		// .position(centerX, height * 0.24f) //
+		// .text("Settings") //
+		// .font(buttonFont) //
+		// .overColor(Color.GREEN) //
+		// .notOverColor(Color.WHITE)//
+		// .boundsOffset(20, 20f) //
+		// .handler(new ButtonHandler() {
+		// @Override
+		// public void onReleased(Control control) {
+		// settings();
+		// }
+		// })//
+		// .build());
+
+		{
+
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.12f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							restartLevel();
+						}
+					})//
+					.build());
+
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0.12f) //
+					.text("Restart") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(20, 20f) //
+					.build());
+
+		}
+
+		{
+			Sprite squareButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+			panel.add(GuiControls.imageButton(squareButtonSprite) //
+					.position(centerX, height * 0.0f) //
+					.center(0.5f, 0.5f) //
+					.size(squareButtonSprite.getWidth() * scale, squareButtonSprite.getHeight() * scale) //
+					.handler(new ButtonHandler() {
+						@Override
+						public void onReleased(Control control) {
+							mainMenu();
+						}
+					})//
+					.build());
+
+			panel.add(GuiControls.textButton() //
+					.position(centerX, height * 0f) //
+					.text("Main Menu") //
+					.font(buttonFont) //
+					.overColor(Color.WHITE) //
+					.notOverColor(Colors.yellow)//
+					.boundsOffset(20, 20f) //
+					.build());
+		}
+
 		container.add(panel);
 
 		inputDevicesMonitor = new InputDevicesMonitorImpl<String>();
@@ -175,15 +229,15 @@ public class PauseGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level not finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level not finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level not finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level not finished", GameInformation.gameData.averageFPS);
 			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/restart", "/challenge/" + levelNumber + "/restart", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			Analytics.traker.trackEvent("/practice", "fps", "Level not finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/practice", "fps", "Level not finished", GameInformation.gameData.averageFPS);
 			Analytics.traker.trackPageView("/practice/restart", "/practice/restart", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackEvent("/random", "deaths", "Level not finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/random", "stars", "Level not finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackEvent("/random", "fps", "Level not finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/random", "fps", "Level not finished", GameInformation.gameData.averageFPS);
 			Analytics.traker.trackPageView("/random/restart", "/random/restart", null);
 		}
 	}
@@ -202,15 +256,15 @@ public class PauseGameState extends GameStateImpl {
 		if (GameInformation.gameMode == GameInformation.ChallengeGameMode) {
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "deaths", "Level not finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/challenge/" + levelNumber, "stars", "Level not finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level not finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/challenge/" + levelNumber, "fps", "Level not finished", GameInformation.gameData.averageFPS);
 			Analytics.traker.trackPageView("/challenge/" + levelNumber + "/exit", "/challenge/" + levelNumber + "/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.PracticeGameMode) {
-			Analytics.traker.trackEvent("/practice", "fps", "Level not finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/practice", "fps", "Level not finished", GameInformation.gameData.averageFPS);
 			Analytics.traker.trackPageView("/practice/exit", "/practice/exit", null);
 		} else if (GameInformation.gameMode == GameInformation.RandomGameMode) {
 			Analytics.traker.trackEvent("/random", "deaths", "Level not finished", GameInformation.gameData.deaths);
 			Analytics.traker.trackEvent("/random", "stars", "Level not finished", GameInformation.gameData.currentItems);
-			Analytics.traker.trackEvent("/random", "fps", "Level not finished",GameInformation.gameData.averageFPS );
+			Analytics.traker.trackEvent("/random", "fps", "Level not finished", GameInformation.gameData.averageFPS);
 			Analytics.traker.trackPageView("/random/exit", "/random/exit", null);
 		}
 	}

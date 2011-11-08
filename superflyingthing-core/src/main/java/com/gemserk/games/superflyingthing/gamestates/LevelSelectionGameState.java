@@ -16,7 +16,6 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
-import com.gemserk.commons.gdx.gui.Text;
 import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
@@ -36,7 +35,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	SpriteBatch spriteBatch;
 	Integer selectedLevel;
 
-	Container container;
+	Container screen;
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
 	Rectangle selectionRectangle;
@@ -58,11 +57,12 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		BitmapFont levelFont = resourceManager.getResourceValue("LevelFont");
 
-		Text title = new Text("Select Level", centerX, height * 0.90f).setColor(Color.GREEN);
-		title.setFont(titleFont);
+		// Text title = new Text("Select Level", centerX, height * 0.90f).setColor(Color.GREEN);
+		// title.setFont(titleFont);
 
-		container = new Container();
-		container.add(title);
+		screen = new Container();
+
+		// container.add(title);
 
 		Sprite levelThumbnail = resourceManager.getResourceValue("LevelButtonSprite");
 		Sprite tickSprite = resourceManager.getResourceValue("TickSprite");
@@ -100,7 +100,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 			// if (!playerProfile.hasPlayedLevel(levelIndex + 1))
 			// color.set(0.5f, 0.5f, 0.5f, 1f);
 
-			container.add(GuiControls.imageButton(levelThumbnail) //
+			screen.add(GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
 					.size(w, h) //
 					.position(x, y) //
@@ -120,14 +120,14 @@ public class LevelSelectionGameState extends GameStateImpl {
 						}
 					}) //
 					.build());
-			container.add(GuiControls.label("" + (i + 1)) //
+			screen.add(GuiControls.label("" + (i + 1)) //
 					.position(x, y) //
 					.color(color) //
 					.font(levelFont) //
 					.build());
 
 			if (playerProfile.hasPlayedLevel(levelIndex + 1))
-				container.add(GuiControls.imageButton(tickSprite) //
+				screen.add(GuiControls.imageButton(tickSprite) //
 						.position(x + w * 0.5f, y - h * 0.5f) //
 						.center(1f, 0f) //
 						.size(w * 0.5f, h * 0.5f) //
@@ -135,7 +135,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		}
 
-		container.add(GuiControls.textButton() //
+		screen.add(GuiControls.textButton() //
 				.id("PlayButton") //
 				.text("Play") //
 				.font(titleFont) //
@@ -154,7 +154,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
-			container.add(GuiControls.textButton() //
+			screen.add(GuiControls.textButton() //
 					.text("Back") //
 					.font(buttonFont) //
 					.position(width * 0.98f, height * 0.05f) //
@@ -203,7 +203,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		game.getEventManager().registerEvent(Events.previewLevel, level);
 
-		TextButton playButton = container.findControl("PlayButton");
+		TextButton playButton = screen.findControl("PlayButton");
 		playButton.setOverColor(Color.GREEN);
 		playButton.setNotOverColor(Color.WHITE);
 	}
@@ -221,7 +221,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 		if (selectedLevel == null)
 			backgroundSprite.draw(spriteBatch);
 
-		container.draw(spriteBatch);
+		screen.draw(spriteBatch);
 		spriteBatch.end();
 
 		if (selectedLevel == null)
@@ -235,7 +235,7 @@ public class LevelSelectionGameState extends GameStateImpl {
 	public void update() {
 		Synchronizers.synchronize(getDelta());
 		inputDevicesMonitor.update();
-		container.update();
+		screen.update();
 		if (inputDevicesMonitor.getButton("back").isReleased())
 			back();
 		game.getBackgroundGameScreen().setDelta(getDelta());

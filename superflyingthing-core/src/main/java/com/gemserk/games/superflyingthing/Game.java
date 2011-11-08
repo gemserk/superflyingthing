@@ -1,7 +1,6 @@
 package com.gemserk.games.superflyingthing;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Properties;
 
 import com.badlogic.gdx.Application.ApplicationType;
@@ -61,7 +60,7 @@ import com.gemserk.resources.monitor.FilesMonitorNullImpl;
 import com.gemserk.util.ScreenshotSaver;
 
 public class Game extends com.gemserk.commons.gdx.Game {
-	
+
 	public static final String blogUrl = "http://blog.gemserk.com/";
 	public static final String desktopMoreGamesUrl = "http://blog.gemserk.com/games";
 	public static final String androidMoreGamesUrl = "market://search?q=pub:Gemserk Studios";
@@ -362,11 +361,12 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Game.setDebugMode(!Game.isDebugMode());
 
 		if (inputDevicesMonitor.getButton("reloadResources").isReleased()) {
-			ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
-			for (int i = 0; i < registeredResources.size(); i++) {
-				String resourceId = registeredResources.get(i);
-				resourceManager.get(resourceId).reload();
-			}
+//			ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
+//			for (int i = 0; i < registeredResources.size(); i++) {
+//				String resourceId = registeredResources.get(i);
+//				resourceManager.get(resourceId).reload();
+//			}
+			getScreen().restart();
 		}
 
 		if (inputDevicesMonitor.getButton("toggleBackground").isReleased()) {

@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.gemserk.animation4j.transitions.sync.Synchronizers;
 import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
@@ -16,9 +17,11 @@ import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.commons.gdx.gui.TextButton;
+import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
 import com.gemserk.games.superflyingthing.Game;
 import com.gemserk.games.superflyingthing.Screens;
+import com.gemserk.games.superflyingthing.resources.GameResources;
 import com.gemserk.resources.ResourceManager;
 
 public class MainMenuGameState extends GameStateImpl {
@@ -29,7 +32,7 @@ public class MainMenuGameState extends GameStateImpl {
 	ResourceManager<String> resourceManager;
 
 	SpriteBatch spriteBatch;
-	Container container;
+	Container screen;
 
 	@Override
 	public void init() {
@@ -37,19 +40,24 @@ public class MainMenuGameState extends GameStateImpl {
 		float height = Gdx.graphics.getHeight();
 		float centerX = width * 0.5f;
 
+		float scale = Gdx.graphics.getHeight() / 480f;
+
+		if (Gdx.graphics.getHeight() > 480f)
+			scale = 1f;
+
 		spriteBatch = new SpriteBatch();
 
 		BitmapFont titleFont = resourceManager.getResourceValue("TitleFont");
 		BitmapFont buttonFont = resourceManager.getResourceValue("ButtonFont");
 		BitmapFont versionFont = resourceManager.getResourceValue("VersionFont");
 
-		container = new Container();
+		screen = new Container();
 
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);
 
 		panel.add(GuiControls.label("Super Flying Thing") //
 				.position(centerX, height * 0.60f) //
-				.color(Color.GREEN) //
+				.color(Colors.yellow) //
 				.font(titleFont) //
 				.build());
 
@@ -60,13 +68,12 @@ public class MainMenuGameState extends GameStateImpl {
 				.font(versionFont) //
 				.build());
 
-		TextButton playButton = GuiControls.textButton() //
-				.position(centerX, height * 0.4f) //
-				.text("Play") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
+		Sprite playButtonBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+		panel.add(GuiControls.imageButton(playButtonBackgroundSprite) //
+				.position(centerX, height * 0.3f) //
+				.center(0.5f, 0.5f) //
+				.size(playButtonBackgroundSprite.getWidth() * scale, playButtonBackgroundSprite.getHeight() * scale) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
@@ -75,45 +82,67 @@ public class MainMenuGameState extends GameStateImpl {
 								.start();
 					}
 				})//
-				.build();
+				.build());
 
-		TextButton settingsButton = GuiControls.textButton() //
-				.position(centerX, height * 0.2f) //
-				.text("Settings") //
+		TextButton playButton = GuiControls.textButton() //
+				.position(centerX, height * 0.3f) //
+				.text("Play") //
 				.font(buttonFont) //
 				.overColor(Color.GREEN) //
 				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						settings();
-					}
-				})//
 				.build();
 
-		TextButton aboutButton = GuiControls.textButton() //
-				.id("AboutButton").position(centerX, height * 0f) //
-				.text("About us") //
-				.font(buttonFont) //
-				.overColor(Color.GREEN) //
-				.notOverColor(Color.WHITE)//
-				.boundsOffset(20, 20f) //
+		// TextButton settingsButton = GuiControls.textButton() //
+		// .position(centerX, height * 0.2f) //
+		// .text("Settings") //
+		// .font(buttonFont) //
+		// .overColor(Color.GREEN) //
+		// .notOverColor(Color.WHITE)//
+		// .boundsOffset(40, 20f) //
+		// .handler(new ButtonHandler() {
+		// @Override
+		// public void onReleased(Control control) {
+		// settings();
+		// }
+		// })//
+		// .build();
+
+		Sprite aboutButtonBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.SquareButton);
+
+		panel.add(GuiControls.imageButton(aboutButtonBackgroundSprite) //
+				.position(centerX, height * 0.1f) //
+				.center(0.5f, 0.5f) //
+				.size(aboutButtonBackgroundSprite.getWidth() * scale, aboutButtonBackgroundSprite.getHeight() * scale) //
 				.handler(new ButtonHandler() {
 					@Override
 					public void onReleased(Control control) {
 						aboutUs();
 					}
 				})//
+				.build());
+
+		TextButton aboutButton = GuiControls.textButton() //
+				.id("AboutButton") //
+				.position(centerX, height * 0.1f) //
+				.text("About us") //
+				.font(buttonFont) //
+				.overColor(Color.GREEN) //
+				.notOverColor(Color.WHITE)//
+				.boundsOffset(40, 20f) //
+				// .handler(new ButtonHandler() {
+				// @Override
+				// public void onReleased(Control control) {
+				// aboutUs();
+				// }
+				// })//
 				.build();
 
 		// container.add(text);
 		panel.add(playButton);
-//		panel.add(settingsButton);
+		// panel.add(settingsButton);
 		panel.add(aboutButton);
-		
 
-		container.add(panel);
+		screen.add(panel);
 
 		Screen backgroundGameScreen = game.getBackgroundGameScreen();
 		backgroundGameScreen.init();
@@ -139,14 +168,14 @@ public class MainMenuGameState extends GameStateImpl {
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().render();
 		spriteBatch.begin();
-		container.draw(spriteBatch);
+		screen.draw(spriteBatch);
 		spriteBatch.end();
 	}
 
 	@Override
 	public void update() {
 		Synchronizers.synchronize(getDelta());
-		container.update();
+		screen.update();
 		game.getBackgroundGameScreen().setDelta(getDelta());
 		game.getBackgroundGameScreen().update();
 	}
