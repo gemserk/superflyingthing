@@ -99,16 +99,23 @@ generated2.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-button-togglebackground
+button-disabled-overlay
   rotate: false
   xy: 0, 0
+  size: 127, 126
+  orig: 128, 128
+  offset: 1, 2
+  index: -1
+button-togglebackground
+  rotate: false
+  xy: 129, 0
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
   index: -1
 button-left
   rotate: false
-  xy: 129, 0
+  xy: 258, 0
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
@@ -122,28 +129,28 @@ button-right
   index: -1
 button-togglesounds
   rotate: false
-  xy: 129, 128
+  xy: 0, 256
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
   index: -1
 button-menu
   rotate: false
-  xy: 0, 256
+  xy: 0, 384
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
   index: -1
 button-next
   rotate: false
-  xy: 129, 256
+  xy: 129, 128
   size: 127, 126
   orig: 128, 128
   offset: 1, 1
   index: -1
 squarebutton
   rotate: false
-  xy: 0, 384
+  xy: 258, 128
   size: 254, 52
   orig: 256, 64
   offset: 1, 5

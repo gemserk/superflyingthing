@@ -16,6 +16,7 @@ import com.gemserk.commons.gdx.gui.ButtonHandler;
 import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
+import com.gemserk.commons.gdx.gui.ImageButton;
 import com.gemserk.commons.gdx.gui.Panel;
 import com.gemserk.games.superflyingthing.Colors;
 import com.gemserk.games.superflyingthing.Events;
@@ -34,7 +35,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 	SpriteBatch spriteBatch;
 	Container screen;
-	
+
 	@Override
 	public void init() {
 		float width = Gdx.graphics.getWidth();
@@ -54,7 +55,7 @@ public class MainMenuGameState extends GameStateImpl {
 
 		screen = new Container();
 
-		Container settingsPanel = new Container();
+		final Container settingsPanel = new Container();
 
 		{
 			Sprite panelBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftPanelBackground);
@@ -66,40 +67,73 @@ public class MainMenuGameState extends GameStateImpl {
 					.size(panelBackgroundSprite.getWidth() * Gdx.graphics.getWidth() / 800f, panelBackgroundSprite.getHeight() * Gdx.graphics.getHeight() / 480f) //
 					.build());
 
-			Sprite toggleBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleBackgroundButton);
+			{
+				Sprite toggleBackgroundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleBackgroundButton);
+				final String disabledOverlayId = "BackgroundDisabledOverlay";
 
-			settingsPanel.add(GuiControls.imageButton(toggleBackgroundSprite) //
-					.position(55f * scale, 300 * scale) //
-					.center(0.5f, 0.5f) //
-					.color(1f, 1f, 1f, 1f) //
-					.size(toggleBackgroundSprite.getWidth() * scale * 0.5f, toggleBackgroundSprite.getHeight() * scale * 0.5f) //
-					.handler(new ButtonHandler() {
-						@Override
-						public void onReleased(Control control) {
-							eventManager.registerEvent(Events.toggleFirstBackground, this);
-							eventManager.registerEvent(Events.toggleSecondBackground, this);
-						}
-					}) //
-					.build());
+				settingsPanel.add(GuiControls.imageButton(toggleBackgroundSprite) //
+						.position(55f * scale, 300 * scale) //
+						.center(0.5f, 0.5f) //
+						.color(1f, 1f, 1f, 1f) //
+						.size(toggleBackgroundSprite.getWidth() * scale * 0.5f, toggleBackgroundSprite.getHeight() * scale * 0.5f) //
+						.handler(new ButtonHandler() {
+							@Override
+							public void onReleased(Control control) {
+								eventManager.registerEvent(Events.toggleFirstBackground, this);
+								eventManager.registerEvent(Events.toggleSecondBackground, this);
 
-			Sprite toggleSoundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleSoundsButton);
+								ImageButton disabledOverlay = settingsPanel.findControl(disabledOverlayId);
+								disabledOverlay.setColor(1f, 1f, 1f, game.getGamePreferences().isFirstBackgroundEnabled() ? 1f : 0f);
+							}
+						}) //
+						.build());
 
-			settingsPanel.add(GuiControls.imageButton(toggleSoundSprite) //
-					.position(55f * scale, 180 * scale) //
-					.center(0.5f, 0.5f) //
-					.color(1f, 1f, 1f, 1f) //
-					.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
-					.handler(new ButtonHandler(){ 
-						@Override
-						public void onReleased(Control control) {
-							if (soundPlayer.isMuted())
-								soundPlayer.unmute();
-							else
-								soundPlayer.mute();
-						}
-						
-					}) //
-					.build());
+				Sprite disabledOverlay = resourceManager.getResourceValue(GameResources.Sprites.DisabledButtonOverlay);
+
+				settingsPanel.add(GuiControls.imageButton(disabledOverlay) //
+						.id(disabledOverlayId) //
+						.position(55f * scale, 300 * scale) //
+						.center(0.5f, 0.5f) //
+						.color(1f, 1f, 1f, game.getGamePreferences().isFirstBackgroundEnabled() ? 0f : 1f) //
+						.size(disabledOverlay.getWidth() * scale * 0.5f, disabledOverlay.getHeight() * scale * 0.5f) //
+						.build());
+			}
+
+			{
+				Sprite toggleSoundSprite = resourceManager.getResourceValue(GameResources.Sprites.ToggleSoundsButton);
+				final String disabledOverlayId = "SoundDisabledOverlay";
+
+				settingsPanel.add(GuiControls.imageButton(toggleSoundSprite) //
+						.position(55f * scale, 180 * scale) //
+						.center(0.5f, 0.5f) //
+						.color(1f, 1f, 1f, 1f) //
+						.size(toggleSoundSprite.getWidth() * scale * 0.5f, toggleSoundSprite.getHeight() * scale * 0.5f) //
+						.handler(new ButtonHandler() {
+							@Override
+							public void onReleased(Control control) {
+								if (soundPlayer.isMuted())
+									soundPlayer.unmute();
+								else
+									soundPlayer.mute();
+
+								ImageButton disabledOverlay = settingsPanel.findControl(disabledOverlayId);
+								disabledOverlay.setColor(1f, 1f, 1f, soundPlayer.isMuted() ? 1f : 0f);
+							}
+
+						}) //
+						.build());
+
+				Sprite disabledOverlay = resourceManager.getResourceValue(GameResources.Sprites.DisabledButtonOverlay);
+
+				settingsPanel.add(GuiControls.imageButton(disabledOverlay) //
+						.id(disabledOverlayId) //
+						.position(55f * scale, 180 * scale) //
+						.center(0.5f, 0.5f) //
+						.color(1f, 1f, 1f, soundPlayer.isMuted() ? 1f : 0f) //
+						.size(disabledOverlay.getWidth() * scale * 0.5f, disabledOverlay.getHeight() * scale * 0.5f) //
+						.build());
+			}
+
 		}
 
 		Panel panel = new Panel(0, game.getAdsMaxArea().height + height * 0.15f);

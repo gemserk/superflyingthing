@@ -15,7 +15,7 @@
  version="1.1"
  inkscape:version="0.48.1 r9760"
  sodipodi:docname="buttons.svg"
- inkscape:export-filename="/home/acoppes/workspace/superflyingthing/assets/generated/button-togglebackground.png"
+ inkscape:export-filename="/home/acoppes/workspace/superflyingthing/assets/generated/button-disabled-overlay.png"
  inkscape:export-xdpi="90"
  inkscape:export-ydpi="90">
 <defs
@@ -37,11 +37,11 @@
  borderopacity="1.0"
  inkscape:pageopacity="0.0"
  inkscape:pageshadow="2"
- inkscape:zoom="1.9114"
- inkscape:cx="134.775"
- inkscape:cy="52.6432"
+ inkscape:zoom="2.58338"
+ inkscape:cx="106.729"
+ inkscape:cy="64.5218"
  inkscape:document-units="px"
- inkscape:current-layer="layer15"
+ inkscape:current-layer="layer16"
  showgrid="false"
  inkscape:window-width="1440"
  inkscape:window-height="849"
@@ -68,7 +68,7 @@
 <dc:format>image/svg+xml</dc:format>
 <dc:type
  rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-<dc:title />
+<dc:title></dc:title>
 </cc:Work>
 </rdf:RDF>
 </metadata>
@@ -180,7 +180,7 @@
  sodipodi:cy="32"
  sodipodi:rx="32"
  sodipodi:ry="32"
- d="M 64,32 C 64,49.6731 49.6731,64 32,64 14.3269,64 0,49.6731 0,32 0,14.3269 14.3269,0 32,0 49.6731,0 64,14.3269 64,32 z"
+ d="M 64,32 A 32,32 0 1 1 0,32 32,32 0 1 1 64,32 z"
  transform="matrix(1.90156,0,0,1.91187,165.551,1130.66)" />
 <path
  sodipodi:type="arc"
@@ -190,7 +190,7 @@
  sodipodi:cy="32"
  sodipodi:rx="32"
  sodipodi:ry="32"
- d="M 64,32 C 64,49.6731 49.6731,64 32,64 14.3269,64 0,49.6731 0,32 0,14.3269 14.3269,0 32,0 49.6731,0 64,14.3269 64,32 z"
+ d="M 64,32 A 32,32 0 1 1 0,32 32,32 0 1 1 64,32 z"
  transform="matrix(1.8489,0,0,1.85892,167.146,1132.86)" />
 <path
  sodipodi:nodetypes="cscsc"
@@ -200,7 +200,7 @@
  style="fill:#ffffff;fill-opacity:0.446237;fill-rule:nonzero;stroke:none;display:inline" />
 <path
  transform="matrix(1.7533,0,0,1.76281,170.142,1135.98)"
- d="M 64,32 C 64,49.6731 49.6731,64 32,64 14.3269,64 0,49.6731 0,32 0,14.3269 14.3269,0 32,0 49.6731,0 64,14.3269 64,32 z"
+ d="M 64,32 A 32,32 0 1 1 0,32 32,32 0 1 1 64,32 z"
  sodipodi:ry="32"
  sodipodi:rx="32"
  sodipodi:cy="32"
@@ -421,12 +421,22 @@
  inkscape:groupmode="layer"
  id="layer15"
  inkscape:label="togglesounds"
- style="display:inline">
+ style="display:none">
 <path
  style="fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none"
  d="M 37.625,58.3769 38.0187,80.8721 46.6817,82.9486 C 46.6817,82.9486 55.1242,90.6813 59.2823,94.5999 65.4708,100.431 77.6582,112.25 77.6582,112.25 L 75.8205,82.9486 78.4457,82.7179 78.7082,57.108 75.8205,56.8773 77.3956,22.5 C 77.3956,22.5 64.8429,34.5823 59.0198,40.9576 54.3963,46.0195 45.8941,56.6466 45.8941,56.6466 z"
  id="path6038"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="cccaccccccacc" />
+</g>
+<g
+ inkscape:groupmode="layer"
+ id="layer16"
+ inkscape:label="disabled">
+<path
+ style="fill:#d40000;fill-opacity:1;fill-rule:nonzero;stroke:none;display:inline"
+ d="M 60.3717,0.924451 C 58.5,0.927451 56.6309,1.03645 54.778,1.23645 44.2609,2.37345 34.1819,8.19945 26.2779,15.2365 15.3489,24.9645 6.10586,37.9285 2.46586,52.1115 -0.291139,62.8395 1.35486,74.7405 4.80986,85.2635 7.62286,93.8335 12.5839,102.083 19.2779,108.143 28.3129,116.313 40.0429,121.993 51.9655,124.483 63.5591,126.903 76.2907,126.633 87.4343,122.613 98.7397,118.543 109.084,110.683 116.402,101.143 121.805,94.1135 125.021,85.1935 126.184,76.3935 127.969,62.8835 127.393,48.0695 121.527,35.7685 116.743,25.7405 107.835,17.4655 98.1843,11.9555 86.856,5.48845 73.4744,0.900451 60.3717,0.924451 z M 61.903,14.4865 C 72.3518,14.4675 83.0255,18.1105 92.0593,23.2685 94.1465,24.4595 96.2057,25.7985 98.153,27.2995 L 87.0905,39.3615 73.5593,50.5805 19.3719,86.2035 C 19.3709,86.2035 19.3429,86.2035 19.3409,86.2035 18.6859,84.7435 18.1159,83.2335 17.6219,81.7335 14.8669,73.3365 13.5489,63.8545 15.7469,55.2995 18.6499,43.9885 26.0299,33.6505 34.7469,25.8935 41.0469,20.2815 49.0475,15.6115 57.4343,14.7055 58.9117,14.5465 60.4103,14.4895 61.903,14.4865 z M 111.402,43.8305 C 115.424,53.3165 115.751,64.4325 114.402,74.6435 113.475,81.6635 110.899,88.7835 106.59,94.3935 100.755,102.003 92.5125,108.263 83.4967,111.513 74.6103,114.713 64.4609,114.943 55.2155,113.013 45.7075,111.033 36.3569,106.503 29.1539,99.9835 28.9069,99.7635 28.6749,99.5235 28.4349,99.2935 L 34.0599,98.2035 62.3093,84.6435 91.7467,57.1745 111.402,43.8305 z"
+ id="path7203"
+ inkscape:connector-curvature="0" />
 </g>
 </svg>

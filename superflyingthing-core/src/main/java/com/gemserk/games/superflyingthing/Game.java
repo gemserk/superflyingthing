@@ -223,8 +223,6 @@ public class Game extends com.gemserk.commons.gdx.Game {
 		Converters.register(Color.class, LibgdxConverters.color());
 		Converters.register(Float.class, Converters.floatValue());
 
-		soundPlayer = new SoundPlayer();
-
 		gameData = new ParametersWrapper();
 
 		try {
@@ -247,6 +245,9 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			gamePreferences.updatePlayerProfile(playerProfile);
 		}
 
+		soundPlayer = new SoundPlayer();
+		soundPlayer.setVolume(1f);
+		
 		eventManager = new EventManagerImpl();
 
 		resourceManager = new CustomResourceManager<String>();
