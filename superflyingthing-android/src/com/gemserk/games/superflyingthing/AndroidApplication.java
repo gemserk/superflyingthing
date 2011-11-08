@@ -19,6 +19,7 @@ import com.gemserk.analytics.Analytics;
 import com.gemserk.analytics.googleanalytics.android.AnalyticsStoredConfig;
 import com.gemserk.analytics.googleanalytics.android.BasicConfig;
 import com.gemserk.commons.adwhirl.AdWhirlAndroidHandler;
+import com.gemserk.commons.adwhirl.AdWhirlViewHandler;
 import com.gemserk.commons.adwhirl.CustomAdViewHandler;
 import com.gemserk.commons.adwhirl.PausableAdWhirlLayout;
 import com.gemserk.commons.utils.BrowserUtilsAndroidImpl;
@@ -45,17 +46,17 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		config.useCompass = true;
 		config.useWakelock = true;
 		
-		AdWhirlManager.setConfigExpireTimeout(1000 * 15);
-		AdWhirlTargeting.setAge(23);
-		AdWhirlTargeting.setGender(AdWhirlTargeting.Gender.MALE);
-		AdWhirlTargeting.setKeywords("online games gaming");
-		AdWhirlTargeting.setPostalCode("94123");
-		AdWhirlTargeting.setTestMode(false);
-
-		PausableAdWhirlLayout adView = new PausableAdWhirlLayout(this, "5d99c9fc499b41e5be30b22e3b52d799");
-		
-		Handler handler = new AdWhirlAndroidHandler(adView);
-		CustomAdViewHandler adWhirlViewHandler = new CustomAdViewHandler(handler);
+//		AdWhirlManager.setConfigExpireTimeout(1000 * 15);
+//		AdWhirlTargeting.setAge(23);
+//		AdWhirlTargeting.setGender(AdWhirlTargeting.Gender.MALE);
+//		AdWhirlTargeting.setKeywords("online games gaming");
+//		AdWhirlTargeting.setPostalCode("94123");
+//		AdWhirlTargeting.setTestMode(false);
+//
+//		PausableAdWhirlLayout adView = new PausableAdWhirlLayout(this, "5d99c9fc499b41e5be30b22e3b52d799");
+//		
+//		Handler handler = new AdWhirlAndroidHandler(adView);
+//		CustomAdViewHandler adWhirlViewHandler = new CustomAdViewHandler(handler);
 		
 		Game game = new Game() {
 			@Override
@@ -65,7 +66,8 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 			}
 		};
 		
-		game.setAdWhirlViewHandler(adWhirlViewHandler);
+//		game.setAdWhirlViewHandler(adWhirlViewHandler);
+		game.setAdWhirlViewHandler(new AdWhirlViewHandler());
 		game.setBrowserUtils(new BrowserUtilsAndroidImpl(this));
 		
 		View gameView = initializeForView(game, config);
@@ -75,9 +77,9 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		
 		float density = getResources().getDisplayMetrics().density;
 
-		adView.setAdWhirlInterface(this);
-		adView.setMaxWidth((int) (diWidth * density));
-		adView.setMaxHeight((int) (diHeight * density));
+//		adView.setAdWhirlInterface(this);
+//		adView.setMaxWidth((int) (diWidth * density));
+//		adView.setMaxHeight((int) (diHeight * density));
 		
 		log("SuperFlyingThing", "Device max Ads area: (" + (int) (diWidth * density) + ", " + (int) (diHeight * density) + ")");
 
@@ -86,9 +88,9 @@ public class AndroidApplication extends com.badlogic.gdx.backends.android.Androi
 		adParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
 
 		layout.addView(gameView);
-		layout.addView(adView, adParams);
+//		layout.addView(adView, adParams);
 
-		setContentView(layout);
+		setContentView(layout); 
 		
 		storedConfig = new AnalyticsStoredConfig(getApplicationContext());
 		visitorData = storedConfig.loadVisitor();
