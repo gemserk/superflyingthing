@@ -17,7 +17,6 @@ import com.gemserk.commons.gdx.gui.Container;
 import com.gemserk.commons.gdx.gui.Control;
 import com.gemserk.commons.gdx.gui.GuiControls;
 import com.gemserk.commons.gdx.gui.ImageButton;
-import com.gemserk.commons.gdx.gui.TextButton;
 import com.gemserk.componentsengine.input.InputDevicesMonitorImpl;
 import com.gemserk.componentsengine.input.LibgdxInputMappingBuilder;
 import com.gemserk.games.superflyingthing.Events;
@@ -41,13 +40,11 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 	InputDevicesMonitorImpl<String> inputDevicesMonitor;
 
-	// Rectangle selectionRectangle;
 	Sprite backgroundSprite;
 
 	@Override
 	public void init() {
 		selectedLevel = null;
-		// selectionRectangle = new Rectangle();
 
 		float width = Gdx.graphics.getWidth();
 		float height = Gdx.graphics.getHeight();
@@ -82,9 +79,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 		float w = width * 0.1f;
 		float h = height * 0.15f;
 
-		// selectionRectangle.setWidth(w + 2f);
-		// selectionRectangle.setHeight(h + 2f);
-
 		allLevelButtons = new ArrayList<ImageButton>();
 
 		for (int i = 0; i < Levels.levelsCount(); i++) {
@@ -102,8 +96,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 			x += width * 0.15f;
 
 			Color color = new Color(1f, 1f, 1f, 0.5f);
-			// if (!playerProfile.hasPlayedLevel(levelIndex + 1))
-			// color.set(0.5f, 0.5f, 0.5f, 1f);
 
 			ImageButton selectLevelButton = GuiControls.imageButton(levelThumbnail) //
 					.color(color) //
@@ -119,8 +111,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 								play();
 							else {
 								select(levelIndex + 1);
-								// selectionRectangle.setX(control.getX());
-								// selectionRectangle.setY(control.getY());
 
 								for (int j = 0; j < allLevelButtons.size(); j++) {
 									ImageButton imageButton = allLevelButtons.get(j);
@@ -152,24 +142,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 						.build());
 
 		}
-
-		screen.add(GuiControls.textButton() //
-				.id("PlayButton") //
-				.text("Play") //
-				.font(titleFont) //
-				.position(width * 0.5f, height * 0.25f) //
-				.center(0.5f, 0.5f) //
-				.notOverColor(0.7f, 0.7f, 0.7f, 0f) //
-				.overColor(0.7f, 0.7f, 0.7f, 0f) //
-				.boundsOffset(30f, 30f) //
-				.handler(new ButtonHandler() {
-					@Override
-					public void onReleased(Control control) {
-						if (selectedLevel != null)
-							play();
-					}
-				}) //
-				.build());
 
 		if (Gdx.app.getType() != ApplicationType.Android)
 			screen.add(GuiControls.textButton() //
@@ -220,10 +192,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 		Gdx.app.log("SuperFlyingThing", "Level " + selectedLevel + " selected");
 
 		game.getEventManager().registerEvent(Events.previewLevel, level);
-
-		TextButton playButton = screen.findControl("PlayButton");
-		playButton.setOverColor(Color.GREEN);
-		playButton.setNotOverColor(Color.WHITE);
 	}
 
 	@Override
@@ -244,8 +212,6 @@ public class LevelSelectionGameState extends GameStateImpl {
 
 		if (selectedLevel == null)
 			return;
-
-		// ImmediateModeRendererUtils.drawRectangle(selectionRectangle, 0.5f, 0.5f, Colors.yellow);
 
 	}
 
