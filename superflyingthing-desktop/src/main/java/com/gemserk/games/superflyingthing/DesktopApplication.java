@@ -25,6 +25,32 @@ import com.gemserk.resources.monitor.FilesMonitorNullImpl;
 public class DesktopApplication {
 
 	protected static final Logger logger = LoggerFactory.getLogger(DesktopApplication.class);
+	
+	private static class Arguments {
+
+		int width = 800;
+		int height = 480;
+
+		public void parse(String[] argv) {
+			if (argv.length == 0)
+				return;
+
+			String displayString = argv[0];
+			String[] displayValues = displayString.split("x");
+
+			if (displayValues.length < 2)
+				return;
+
+			try {
+				width = Integer.parseInt(displayValues[0]);
+				height = Integer.parseInt(displayValues[1]);
+			} catch (NumberFormatException e) {
+				System.out.println("error when parsing resolution from arguments: " + displayString);
+			}
+
+		}
+
+	}
 
 	public static void main(String[] argv) {
 
@@ -43,17 +69,14 @@ public class DesktopApplication {
 			logger.info("Running in debug mode, File monitoring enabled");
 			filesMonitor = new FilesMonitorImpl();
 		}
+		
+		Arguments arguments = new Arguments();
+		arguments.parse(argv);
 
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.width = 800;
-		config.height = 480;
-
-		// config.width = 320;
-		// config.height = 240;
-		 config.width = 480;
-		 config.height = 320;
-		// config.width = 1024;
-		// config.height = 768;
+		
+		config.width = arguments.width;
+		config.height = arguments.height;
 
 		config.fullscreen = false;
 		config.title = "Super Flying Thing";
