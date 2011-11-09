@@ -165,7 +165,7 @@ public class BackgroundSceneTemplate extends SceneTemplateImpl {
 		entityFactory.instantiate(entityTemplates.particleEmitterSpawnerTemplate);
 
 		entityFactory.instantiate(labelTemplate, new ParametersWrapper() //
-				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.02f, Gdx.graphics.getHeight() * 0.02f + adsArea.getHeight())) //
+				.put("position", new Vector2(Gdx.graphics.getWidth() * 0.40f, Gdx.graphics.getHeight() * 0.02f + adsArea.getHeight())) //
 				.put("fontId", "VersionFont") //
 				.put("text", "Preview level " + levelNumber + "...") //
 				.put("layer", 250) //
