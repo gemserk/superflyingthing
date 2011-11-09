@@ -8,6 +8,7 @@
 	</formats>
 	<dependencySets>
 		<dependencySet>
+			<outputFileNameMapping>${artifact.artifactId}-${artifact.baseVersion}${dashClassifier?}.${artifact.extension}</outputFileNameMapping>
 			<outputDirectory>libs</outputDirectory>
 			<scope>runtime</scope>
 		</dependencySet>
