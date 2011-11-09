@@ -15,7 +15,7 @@
  version="1.1"
  inkscape:version="0.48.1 r9760"
  sodipodi:docname="level-button.svg"
- inkscape:export-filename="/home/acoppes/workspace/superflyingthing/assets/generated/button-left.png"
+ inkscape:export-filename="/home/acoppes/workspace/superflyingthing/assets/generated/level-button.png"
  inkscape:export-xdpi="90"
  inkscape:export-ydpi="90"
  style="display:inline">
@@ -28,9 +28,9 @@
  borderopacity="1.0"
  inkscape:pageopacity="0.0"
  inkscape:pageshadow="2"
- inkscape:zoom="2"
- inkscape:cx="-110.723"
- inkscape:cy="-107.679"
+ inkscape:zoom="1.35156"
+ inkscape:cx="194.427"
+ inkscape:cy="-18.8398"
  inkscape:document-units="px"
  inkscape:current-layer="layer1"
  showgrid="false"
@@ -120,19 +120,7 @@
  x="19.5541"
  y="20.1883"
  style="font-size:11px" /></flowRegion><flowPara
- id="flowPara5010"></flowPara></flowRoot><flowRoot
- xml:space="preserve"
- id="flowRoot5012"
- style="font-size:49.756401px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa Bold"
- transform="matrix(1.44705,0,0,1.44705,-31.4651,933.07)"><flowRegion
- id="flowRegion5014"><rect
- id="rect5016"
- width="98.2989"
- height="96.7135"
- x="16.9116"
- y="14.9034"
- style="font-size:49.756401px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;font-family:Purisa;-inkscape-font-specification:Purisa Bold" /></flowRegion><flowPara
- id="flowPara5018">2</flowPara></flowRoot><path
+ id="flowPara5010" /></flowRoot><path
  style="fill:#459bd0;fill-opacity:1;fill-rule:nonzero;stroke:none"
  d="M 111.078,1032.85 C 108.842,1033.88 106.68,1035.6 105.624,1037.84 105.014,1039.12 104.427,1041.05 105.387,1042.1 106.826,1043.68 109.843,1043.22 111.788,1042.34 114.295,1041.2 116.163,1038.56 117.004,1035.94 117.391,1034.73 117.743,1032.96 116.767,1032.13 115.295,1030.92 112.813,1032.05 111.078,1032.85 z"
  id="path4991"
@@ -516,5 +504,17 @@
  id="path5699"
  inkscape:connector-curvature="0"
  sodipodi:nodetypes="aaccccccaa" />
-</g>
+<flowRoot
+ xml:space="preserve"
+ id="flowRoot5012"
+ style="font-size:49.756401px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#ffffff;fill-opacity:1;stroke:none;font-family:Purisa;-inkscape-font-specification:Purisa Bold"
+ transform="matrix(1.44705,0,0,1.44705,-220.136,927.891)"><flowRegion
+ id="flowRegion5014"><rect
+ id="rect5016"
+ width="98.2989"
+ height="96.7135"
+ x="16.9116"
+ y="14.9034"
+ style="font-size:49.756401px;font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;text-align:center;text-anchor:middle;fill:#ffffff;fill-opacity:1;font-family:Purisa;-inkscape-font-specification:Purisa Bold" /></flowRegion><flowPara
+ id="flowPara5018">2</flowPara></flowRoot></g>
 </svg>

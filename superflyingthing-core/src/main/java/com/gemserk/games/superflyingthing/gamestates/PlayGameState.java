@@ -3,6 +3,7 @@ package com.gemserk.games.superflyingthing.gamestates;
 import org.w3c.dom.Document;
 
 import com.artemis.Entity;
+import com.badlogic.gdx.Application.ApplicationType;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
@@ -126,26 +127,28 @@ public class PlayGameState extends GameStateImpl {
 
 		float scale = Gdx.graphics.getHeight() / 480f;
 
-		if (Gdx.graphics.getHeight() > 480f) 
+		if (Gdx.graphics.getHeight() > 480f)
 			scale = 1f;
 
-		Sprite leftButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftButton);
+		if (Gdx.app.getType() == ApplicationType.Android) {
+			Sprite leftButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.LeftButton);
 
-		screen.add(GuiControls.imageButton(leftButtonSprite) //
-				.id(Hud.LeftButton) //
-				.center(0f, 0f) //
-				.size(leftButtonSprite.getWidth() * scale, leftButtonSprite.getHeight() * scale) //
-				.position(10f * scale, 10f * scale) //
-				.build());
+			screen.add(GuiControls.imageButton(leftButtonSprite) //
+					.id(Hud.LeftButton) //
+					.center(0f, 0f) //
+					.size(leftButtonSprite.getWidth() * scale, leftButtonSprite.getHeight() * scale) //
+					.position(10f * scale, 10f * scale) //
+					.build());
 
-		Sprite rightButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.RightButton);
+			Sprite rightButtonSprite = resourceManager.getResourceValue(GameResources.Sprites.RightButton);
 
-		screen.add(GuiControls.imageButton(rightButtonSprite) //
-				.id(Hud.RightButton) //
-				.center(1f, 0f) //
-				.size(leftButtonSprite.getWidth() * scale, leftButtonSprite.getHeight() * scale) //
-				.position(Gdx.graphics.getWidth() - 10f * scale, 10f * scale) //
-				.build());
+			screen.add(GuiControls.imageButton(rightButtonSprite) //
+					.id(Hud.RightButton) //
+					.center(1f, 0f) //
+					.size(leftButtonSprite.getWidth() * scale, leftButtonSprite.getHeight() * scale) //
+					.position(Gdx.graphics.getWidth() - 10f * scale, 10f * scale) //
+					.build());
+		}
 
 	}
 
