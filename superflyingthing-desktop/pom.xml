@@ -67,7 +67,7 @@
 			<plugin>
 				<groupId>com.googlecode.mavennatives</groupId>
 				<artifactId>maven-nativedependencies-plugin</artifactId>
-				<version>0.0.5</version>
+				<version>${mavennatives.version}</version>
 				<executions>
 					<execution>
 						<phase>generate-resources</phase>

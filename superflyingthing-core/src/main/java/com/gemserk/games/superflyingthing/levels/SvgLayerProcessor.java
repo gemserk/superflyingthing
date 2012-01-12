@@ -51,7 +51,6 @@ public class SvgLayerProcessor {
 					svgParser.processChildren(false);
 					return;
 				}
-
 				Matrix3f transform = new Matrix3f(svgInkscapeGroup.getTransform());
 				transform.mul(transformStack.peek());
 				transformStack.push(transform);

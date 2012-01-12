@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.gemserk.analytics.Analytics;
 import com.gemserk.animation4j.converters.Converters;
 import com.gemserk.animation4j.gdx.converters.LibgdxConverters;
@@ -41,6 +42,7 @@ import com.gemserk.games.superflyingthing.gamestates.AboutGameState;
 import com.gemserk.games.superflyingthing.gamestates.BackgroundGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerSettingsGameState;
 import com.gemserk.games.superflyingthing.gamestates.ControllerTestGameState;
+import com.gemserk.games.superflyingthing.gamestates.GameInformation;
 import com.gemserk.games.superflyingthing.gamestates.GameOverGameState;
 import com.gemserk.games.superflyingthing.gamestates.InstructionsGameState;
 import com.gemserk.games.superflyingthing.gamestates.LevelSelectionGameState;
@@ -230,8 +232,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Properties properties = new Properties();
 			properties.load(Gdx.files.classpath("version.properties").read());
 			getGameData().put("version", properties.getProperty("version"));
+		} catch (GdxRuntimeException e) {
+			Gdx.app.error(GameInformation.applicationId, "Failed to get game version from version.properties, " + e.getMessage());
+			getGameData().put("version", "undefined");
 		} catch (IOException e) {
-			throw new RuntimeException(e);
+			throw new RuntimeException("Error while reading version.properties file", e);
 		}
 
 		Preferences preferences = Gdx.app.getPreferences("gemserk-superflyingthing");
@@ -248,21 +253,21 @@ public class Game extends com.gemserk.commons.gdx.Game {
 
 		soundPlayer = new SoundPlayer();
 		soundPlayer.setVolume(1f);
-		
+
 		eventManager = new EventManagerImpl();
 
 		resourceManager = new CustomResourceManager<String>();
 		screenManager = new ScreenManagerImpl(this);
 
 		GameResources.load(resourceManager, filesMonitor);
-		
+
 		MusicPlayer musicPlayer = new MusicPlayer(soundPlayer, resourceManager.get(GameResources.MusicTracks.Game));
 
 		fpsFontResource = resourceManager.get("FpsFont");
 		spriteBatch = new SpriteBatch();
 
 		Injector injector = new InjectorImpl();
-		
+
 		injector.bind("game", Game.this);
 		injector.bind("soundPlayer", soundPlayer);
 		injector.bind("musicPlayer", musicPlayer);
@@ -365,11 +370,11 @@ public class Game extends com.gemserk.commons.gdx.Game {
 			Game.setDebugMode(!Game.isDebugMode());
 
 		if (inputDevicesMonitor.getButton("reloadResources").isReleased()) {
-//			ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
-//			for (int i = 0; i < registeredResources.size(); i++) {
-//				String resourceId = registeredResources.get(i);
-//				resourceManager.get(resourceId).reload();
-//			}
+			// ArrayList<String> registeredResources = resourceManager.getRegisteredResources();
+			// for (int i = 0; i < registeredResources.size(); i++) {
+			// String resourceId = registeredResources.get(i);
+			// resourceManager.get(resourceId).reload();
+			// }
 			getScreen().restart();
 		}
 
